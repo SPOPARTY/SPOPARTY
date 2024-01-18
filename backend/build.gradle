@@ -2,8 +2,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript{
     ext {
-        springBootVer = '2.4.5'
-        querydslVer = '4.4.0'
+        springBootVer = '2.7.7'
+        querydslVer = '5.0.0'
         querydslPluginVer = '1.0.10'
         springDependencyMgmtVer = '1.0.11'
         springLoadedVer = '1.2.8'
@@ -172,11 +172,11 @@ dependencies {
 
     implementation("com.auth0:java-jwt:3.10.3")
     
-    implementation("io.springfox:springfox-swagger2:3.0.0")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0")
-    implementation("io.springfox:springfox-data-rest:3.0.0")
-    implementation("io.springfox:springfox-bean-validators:3.0.0")
-    implementation("io.springfox:springfox-boot-starter:3.0.0")
+//    implementation("io.springfox:springfox-swagger2:3.0.0")
+//    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+//    implementation("io.springfox:springfox-data-rest:3.0.0")
+//    implementation("io.springfox:springfox-bean-validators:3.0.0")
+//    implementation("io.springfox:springfox-boot-starter:3.0.0")
 
 //    compile("javax.annotation:javax.annotation-api:1.2")
 //    api("javax.annotation:javax.annotation-api:1.2")
