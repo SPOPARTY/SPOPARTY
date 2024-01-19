@@ -1,8 +1,9 @@
 import { createRouter,createWebHistory } from "vue-router";
-import MainPageView from "../views/MainPageView.vue";
-import MatchView from "../views/MatchView.vue";
-import LeagueView from "../views/LeagueView.vue";
-
+import MainPageView from "@/views/MainPageView.vue";
+import MatchView from "@/views/MatchView.vue";
+import LeagueView from "@/views/LeagueView.vue";
+import Signup from "@/components/user/Signup.vue";
+import Login from "@/components/user/Login.vue";
 
 
 const router = createRouter({
@@ -20,8 +21,18 @@ const router = createRouter({
         },
         {
             path:"/league",
-            name:"/",
+            name:"LeagueView",
             component:LeagueView
+        },
+        {
+            path:"/signup",
+            name:"Signup",
+            component:Signup
+        },
+        {
+            path:"/login",
+            name:"Login",
+            component:Login
         },
     ]
 })
