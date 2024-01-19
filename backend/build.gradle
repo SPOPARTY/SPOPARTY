@@ -84,9 +84,10 @@ project.ext.set("build.date", buildTime())
 processResources {
     with copySpec {
         from "src/main/resources"
-//        include "**/application*.yml"
+        include "**/application.yml"
+//        include "**/application-private.yml"
 //        include "**/application*.yaml"
-        include "**/application*.properties"
+//        include "**/application*.properties"
         project.properties.findAll().each {
             prop ->
                 if (prop.value != null) {
