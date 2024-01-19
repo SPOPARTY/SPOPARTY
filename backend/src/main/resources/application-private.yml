@@ -1,0 +1,12 @@
+
+# Datasource
+spring:
+  config:
+    activate:
+      on-profile: private
+  datasource:
+    hikari:
+      driver-class-name: org.mariadb.jdbc.Driver
+      username: S10P12A802
+      password: RcvhlwMo5J
+    url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S10P12A802?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8

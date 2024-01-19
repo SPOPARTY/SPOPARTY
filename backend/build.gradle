@@ -2,8 +2,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript{
     ext {
-        springBootVer = '2.4.5'
-        querydslVer = '4.4.0'
+        springBootVer = '3.0.0'
+        querydslVer = '5.0.0'
         querydslPluginVer = '1.0.10'
         springDependencyMgmtVer = '1.0.11'
         springLoadedVer = '1.2.8'
@@ -18,7 +18,7 @@ buildscript{
         classpath "io.spring.gradle:dependency-management-plugin:${springDependencyMgmtVer}.RELEASE"
         classpath "org.springframework:springloaded:${springLoadedVer}.RELEASE"
         //이클립스인 경우를 위한 QueryDSL 플러그인. IntelliJ는 불필요. [시작]
-        classpath "gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:${querydslPluginVer}"
+//        classpath "gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:${querydslPluginVer}"
         //[끝] 
         classpath "com.github.node-gradle:gradle-node-plugin:3.1.0"
     }
@@ -34,7 +34,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'eclipse'
 apply plugin: 'com.github.node-gradle.node'
 //이클립스인 경우를 위한 QueryDSL 플러그인. IntelliJ는 불필요.
-apply plugin: 'com.ewerk.gradle.plugins.querydsl'
+//apply plugin: 'com.ewerk.gradle.plugins.querydsl'
 
 
 repositories {
@@ -48,7 +48,7 @@ repositories {
 
 group 'com.ssafy'
 version '1.0-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '17'
 
 node {
     download = true
@@ -84,9 +84,10 @@ project.ext.set("build.date", buildTime())
 processResources {
     with copySpec {
         from "src/main/resources"
-        include "**/application*.yml"
-        include "**/application*.yaml"
-        include "**/application*.properties"
+        include "**/application.yml"
+//        include "**/application-private.yml"
+//        include "**/application*.yaml"
+//        include "**/application*.properties"
         project.properties.findAll().each {
             prop ->
                 if (prop.value != null) {
@@ -99,31 +100,33 @@ processResources {
 }
 
 //이클립스인 경우를 위한 QueryDSL 설정. IntelliJ는 불필요. [시작]
-def querydslDir = 'src/main/generated'
-querydsl {
-    library = "com.querydsl:querydsl-apt"
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java', querydslDir]
-        }
-    }
-}
-
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-}
-
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
+//def querydslDir = 'src/main/generated'
+//querydsl {
+//    library = "com.querydsl:querydsl-apt"
+//    jpa = true
+//    querydslSourcesDir = querydslDir
+//}
+//
+//sourceSets {
+//    main {
+//        java {
+//            srcDirs = ['src/main/java', querydslDir]
+//        }
+//    }
+//}
+//
+//compileQuerydsl {
+//    options.annotationProcessorPath = configurations.querydsl
+//}
+//
+//configurations {
+//    querydsl.extendsFrom compileClasspath
+//}
 //[끝]
 
 dependencies {
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -132,7 +135,6 @@ dependencies {
     implementation("org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE")
     testImplementation("org.springframework.security:spring-security-test")
     annotationProcessor("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtimeOnly("mysql:mysql-connector-java")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -140,8 +142,10 @@ dependencies {
     implementation("org.apache.commons:commons-collections4:4.4")
     implementation("org.apache.commons:commons-lang3:3.9")
 
-    implementation("com.querydsl:querydsl-jpa:${querydslVer}")
-    implementation("com.querydsl:querydsl-apt:${querydslVer}")
+    implementation "com.querydsl:querydsl-jpa:${querydslVer}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${querydslVer}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     //STOMP 웹소캣 서버 사이드 테스트를 위한 의존성 추가
     implementation("org.springframework.boot:spring-boot-starter-mustache")
@@ -159,7 +163,7 @@ dependencies {
 
     //IntelliJ용
     //IntelliJ에서는 하기 annotationProcessor를 쓰면 별도의 querydsl 플러그인 및 플러그인 설정이 불필요.
-    //annotationProcessor("com.querydsl:querydsl-apt:${querydslVer}:jpa")
+    annotationProcessor("com.querydsl:querydsl-apt:${querydslVer}:jpa")
 
     implementation("com.squareup.retrofit2:retrofit:2.7.1")
     implementation("com.squareup.retrofit2:converter-jackson:2.7.1")
@@ -172,20 +176,27 @@ dependencies {
 
     implementation("com.auth0:java-jwt:3.10.3")
     
-    implementation("io.springfox:springfox-swagger2:3.0.0")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0")
-    implementation("io.springfox:springfox-data-rest:3.0.0")
-    implementation("io.springfox:springfox-bean-validators:3.0.0")
-    implementation("io.springfox:springfox-boot-starter:3.0.0")
+//    implementation("io.springfox:springfox-swagger2:3.0.0")
+//    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+//    implementation("io.springfox:springfox-data-rest:3.0.0")
+//    implementation("io.springfox:springfox-bean-validators:3.0.0")
+//    implementation("io.springfox:springfox-boot-starter:3.0.0")
 
-    compile("javax.annotation:javax.annotation-api:1.2")
+//    compile("javax.annotation:javax.annotation-api:1.2")
+//    api("javax.annotation:javax.annotation-api:1.2")
+//    implementation("jakarta.annotation:jakarta.annotation-api:1.3.5")
 
     implementation("org.projectlombok:lombok:1.18.20")
     annotationProcessor("org.projectlombok:lombok:1.18.20")
 
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+//    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
 test {
+    processResources {
+        duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
+    }
+
     useJUnitPlatform()
 }
