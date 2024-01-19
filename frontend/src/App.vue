@@ -4,11 +4,12 @@ import HeaderNav from "./components/common/HeaderNav.vue";
 import Footer from "./components/common/Footer.vue";
 </script>
 <template>
-  <div>
-    
+  <div class="header">
     <HeaderNav/>
+    </div>
+    <div class="main">
     <RouterView/>
-  </div>
+    </div>
 </template>
 
 <style scoped>
