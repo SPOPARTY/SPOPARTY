@@ -13,16 +13,12 @@ import Footer from "./components/common/Footer.vue";
 </template>
 
 <style scoped>
-/* .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.header {
+  background-color: #c7c7c7;
+  margin-bottom: 6px;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.main {
+  background-color: #c7c7c7;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-} */
 </style>
