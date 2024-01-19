@@ -1,0 +1,85 @@
+# it will be set build date by gradle. if this value is @build.date@, front-end is development mode
+build:
+  date: "@build.date@"
+
+server:
+  port: 8080
+  address: localhost
+  servlet:
+    contextPath: "/"
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+# for SPA
+spa:
+  default-file: "/dist/index.html"
+
+spring:
+  profiles:
+    default: private
+  web:
+    resources:
+      static-locations: "classpath:/dist/"
+      add-mappings: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  devtools:
+    livereload:
+      enabled: true
+
+  # gzip compression
+  server:
+    compression:
+      enabled: true
+      mime-types: "application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css"
+
+  # mariaDB
+  jpa:
+    hibernate:
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+      ddl-auto: update
+    properties:
+      hibernate:
+        show-sql: true
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+
+# jwt
+jwt:
+  secret: dyAeHubOOc8KaOfYB6XEQoEj1QzRlVgtjNL8PYs1A1tymZvvqkcEU7L1imkKHeDa
+  expiration: 1296000000
+
+#logging
+logging:
+  file:
+    name: "./ssafy-web.log"
+  level:
+    root: INFO
+    com:
+      samsung:
+        security: DEBUG
+    org:
+      springframework:
+        web: DEBUG
+        apache:
+          tiles: INFO
+        springframework:
+          boot: DEBUG
+          security: DEBUG
+
+# for health check
+management:
+  servlet:
+    context-path: "/manage"
+  health:
+    db:
+      enabled: true
+    default:
+      enabled: true
+    diskspace:
+      enabled: true
