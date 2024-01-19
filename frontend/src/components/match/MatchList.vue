@@ -1,12 +1,15 @@
 <template>
     <div>
-        <h1>회원가입</h1>
+        <h1>경기 목록</h1>
+        
     </div>
 </template>
 
 <script setup>
+
+
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 </style>
