@@ -1,88 +1,48 @@
 <template>
-<div class="modal">
-    <div class="modal-content">
-    <h2>이메일 인증</h2>
-    <p>인증 코드가 이메일 주소로 전송되었습니다. 코드를 입력해 주세요.</p>
-    <div class="input-group">
-      <input type="text" placeholder="인증 코드 입력" />
-    </div>
-    <div class="button-group">
-        <button @click="verifyEmail">인증</button>
-        <button @click="closeModal">취소</button>
-    </div>
-    </div>
-</div>
+  <v-dialog
+    v-model="modalVisible"
+    width="400"
+    persistent
+  >
+    <v-card class="justify-center">
+      <v-card-title class="text-h5">이메일 인증</v-card-title>
+      <v-card-text>
+        <p>인증 코드가 이메일 주소로 전송되었습니다.</p>
+        <p> 코드를 입력해 주세요.</p>
+        <v-text-field
+          solo
+          placeholder="인증 코드 입력"
+          type="text"
+        ></v-text-field>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" @click="verifyEmail">인증</v-btn>
+        <v-btn color="grey" @click="closeModal">취소</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
+const modalVisible = ref(true); // 모달의 가시성을 제어하는 변수, 필요에 따라 부모 컴포넌트로부터 prop으로 받거나 다른 로직에 의해 변경될 수 있음
+
+// 이벤트를 발생시키기 위한 함수 정의
 const emit = defineEmits(['close']);
 
 function verifyEmail() {
+    // 여기에 인증 로직을 추가하세요
     closeModal();
 }
 
 function closeModal() {
-    emit('close');
+    modalVisible.value = false; // 모달을 숨김
+    emit('close'); // 부모 컴포넌트에 'close' 이벤트를 발생시킴
 }
 </script>
 
 <style scoped>
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.6); /* 오버레이 */
-  z-index: 100; /* 레이어 순서 */
-}
-
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* 상자 그림자 */
-  width: 90%; /* 모달 너비 */
-  max-width: 400px; /* 모달 최대 너비 */
-}
-
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-.input-group {
-  width: 100%; /* 입력 그룹 너비를 부모 요소에 맞춤 */
-  display: flex; /* 플렉스박스를 사용하여 자식 요소들을 플렉스 아이템으로 만듦 */
-  justify-content: center; /* 플렉스 아이템들을 가운데 정렬 */
-  margin: 10px 0; /* 위, 아래 여백 추가 */
-}
-
-.input-group input[type="text"] {
-  width: 80%; /* 입력 필드 너비를 input-group의 80%로 설정 */
-  /* ... 기존 input 스타일 ... */
-}
-
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: #5c6bc0;
-  color: white;
-  font-weight: bold;
-}
-
-button:hover {
-  background-color: #3949ab;
-}
-
-button:active {
-  background-color: #283593;
-}
 
 </style>

@@ -1,23 +1,52 @@
 <template>
-    <div class="login-form">
-        <h1>로그인</h1>
-        <form @submit.prevent="handleSubmit">
-          <div>
-            <label for="loginId">아이디</label>
-            <input type="text" id="loginId" v-model="loginRequest.loginId" >
-          </div>
-          <div>
-            <label for="loginPwd">비밀번호</label>
-            <input type="password" id="loginPwd" v-model="loginRequest.loginPwd" >
-          </div>
-          <div class="button-group">
-            <button type="submit">로그인</button>
-            <button type="button" @click="handleSignup">회원가입</button>
-            <button type="button" @click="showFindPwdModal">비밀번호 찾기</button>
-            <FindPwd v-if="isPwdModalVisible" @close="isPwdModalVisible = false" />
-          </div>
-        </form>
-    </div>
+  <v-container class="login-form" fluid fill-height>
+    <v-row justify="center" align="center">
+      <v-col cols="12" sm="8" md="6" lg="5">
+        <v-card class="pa-5" outlined>
+          <v-card-title class="justify-center">로그인</v-card-title>
+          <v-card-text>
+            <v-form @submit.prevent="handleSubmit">
+
+              <v-text-field
+                label="아이디"
+                v-model="loginRequest.loginId"
+                outlined
+                dense
+                class="mb-4"
+              ></v-text-field>
+
+              <v-text-field
+                label="비밀번호"
+                v-model="loginRequest.loginPwd"
+                :type="'password'"
+                outlined
+                dense
+                class="mb-4"
+              ></v-text-field>
+
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-btn color="primary" type="submit" block>로그인</v-btn>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-btn text color="primary" @click="handleSignup" block>회원가입</v-btn>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-btn text color="primary" @click="showFindPwdModal" block>비밀번호 찾기</v-btn>
+                </v-col>
+              </v-row>
+
+              <FindPwd v-if="isPwdModalVisible" @close="isPwdModalVisible = false" />
+
+            </v-form>
+          </v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn class="kakao" justify="center">카카오로 로그인하기</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
@@ -49,62 +78,22 @@ function showFindPwdModal() {
 
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width:500px;
-  height:500px;
-  margin:auto;
-  padding:20px;
-  box-sizing: border-box; // 패딩과 테두리가 너비와 높이에 포함되도록 설정
-  background-color: #f9f9f9; // 배경색
-  border-radius: 10px; // 테두리 둥글게 (필요에 따라 변경 가능)
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // 그림자 효과 (필요에 따라 변경 가능)
+  background-color: #f9f9f9;
   min-height: 100vh;
-
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
-  div {
-    display: flex; // 플렉스박스를 사용하여 내부 요소들을 나란히 정렬
-    align-items: center; // 세로축을 중심으로 정렬
-    margin-bottom: 15px;
+.v-card{
+  margin-top:100px;
+}
 
-  label {
-    width: 100px; // 레이블의 너비를 고정
-    margin-right: 10px;
-  }
-
-
-  input {
-    flex-grow: 1; // 남은 공간을 모두 차지
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-
-  .button-group {
-    display: flex;
-    justify-content: space-between; // 버튼 사이에 공간을 균등하게 분배
-
-    button {
-      padding: 10px 15px;
-      background-color: #5c6bc0;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-
-      &:not(:last-child) {
-        margin-right: 10px; // 마지막 버튼을 제외하고 오른쪽에 여백을 추가
-      }
-
-      &:hover {
-        background-color: #3949ab;
-      }
-    }
-  }
+.kakao{
+  background-color: yellow; 
+  width:200px; 
+  height:50px;
+  align-items: center;
 }
 </style>
