@@ -1,6 +1,6 @@
-package com.spoparty.db.repository;
+package com.spoparty.api.member.repository;
 
-import com.spoparty.db.entity.User;
+import com.spoparty.api.member.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

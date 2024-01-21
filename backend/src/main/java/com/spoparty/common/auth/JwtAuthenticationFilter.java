@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.spoparty.api.service.UserService;
+import com.spoparty.api.member.service.UserService;
 import com.spoparty.common.util.JwtTokenUtil;
 import com.spoparty.common.util.ResponseBodyWriteUtil;
-import com.spoparty.db.entity.User;
+import com.spoparty.api.member.entity.User;
 
 /**
  * 요청 헤더에 jwt 토큰이 있는 경우, 토큰 검증 및 인증 처리 로직 정의.

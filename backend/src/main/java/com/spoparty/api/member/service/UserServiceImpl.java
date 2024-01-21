@@ -1,13 +1,13 @@
-package com.spoparty.api.service;
+package com.spoparty.api.member.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.spoparty.api.request.UserRegisterPostReq;
-import com.spoparty.db.entity.User;
-import com.spoparty.db.repository.UserRepository;
-import com.spoparty.db.repository.UserRepositorySupport;
+import com.spoparty.api.member.request.UserRegisterPostReq;
+import com.spoparty.api.member.entity.User;
+import com.spoparty.api.member.repository.UserRepository;
+import com.spoparty.api.member.repository.UserRepositorySupport;
 
 /**
  *	유저 관련 비즈니스 로직 처리를 위한 서비스 구현 정의.

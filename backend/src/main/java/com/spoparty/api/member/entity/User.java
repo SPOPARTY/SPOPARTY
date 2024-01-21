@@ -1,8 +1,9 @@
-package com.spoparty.db.entity;
+package com.spoparty.api.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.spoparty.api.common.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ import jakarta.persistence.Entity;
 @Entity
 @Getter
 @Setter
-public class User extends BaseEntity{
+public class User extends BaseEntity {
     String position;
     String department;
     String name;

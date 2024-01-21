@@ -1,4 +1,4 @@
-package com.spoparty.db.entity;
+package com.spoparty.api.common.entity;
 
 import lombok.Getter;
 import lombok.Setter;
