@@ -1,30 +1,92 @@
 <template>
-  <div class="navigation">
-    <RouterLink to="/">SPOPARTY | </RouterLink>
-    <RouterLink to="/match">경기일정 | </RouterLink>
-    <RouterLink to="/league">리그 목록 | </RouterLink>
-    <RouterLink to="/signup">회원가입 | </RouterLink>
-    <RouterLink to="/login">로그인 | </RouterLink>
-  </div>
+
+    <v-navigation-drawer v-model="drawer" app permanent color="grey darken-3">
+      <!-- 네비게이션 타이틀 굵은 글씨로 -->
+      <v-list-item class="py-2">
+        <v-subheader class="text-h6 font-weight-bold">클럽 목록</v-subheader>
+      </v-list-item>
+
+      <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
+      <v-list dense class="overflow-auto" style="max-height: 800px;">
+        <v-list-item v-for="(club, index) in clubs" :key="index" class="mb-1">
+          <v-btn text block @click="openClubInNewTab(club.id)" class="d-flex justify-start"
+            style="text-transform: none; padding-top: 16px; padding-bottom: 16px;">
+            <v-list-item-content class="align-start">
+              <v-list-item-title>{{ club.name }}</v-list-item-title>
+              <!-- 버튼 크기 조절 가능하게 해야함 -->
+            </v-list-item-content>
+          </v-btn>
+        </v-list-item>
+
+        <!-- 새 클럽 추가 버튼 -->
+        <v-list-item>
+          <v-btn text block @click="goToNewClubPage" class="d-flex justify-start"
+            style="text-transform: none; padding-top: 16px; padding-bottom: 16px;">
+            <v-list-item-content class="align-start">
+              <v-list-item-title>새 클럽</v-list-item-title>
+            </v-list-item-content>
+          </v-btn>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app color="indigo" dark>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title @click="goHome" style="cursor: pointer;">SPOPARTY</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-divider vertical class="mx-2"></v-divider>
+      <v-btn text to="/match" class="mx-2">경기일정</v-btn>
+      <v-divider vertical class="mx-2"></v-divider>
+      <v-btn text to="/league" class="mx-2">리그 목록</v-btn>
+      <v-divider vertical class="mx-2"></v-divider>
+      <v-btn text to="/signup" class="mx-2">회원가입</v-btn>
+      <v-divider vertical class="mx-2"></v-divider>
+      <v-btn text to="/login" class="mx-2">로그인</v-btn>
+    </v-app-bar>
+
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+const drawer = ref(false);
+
+function goHome() {
+  router.push('/');
+}
+
+// 예시 클럽 데이터
+const clubs = ref([
+  { id: 1, name: '클럽 A' },
+  { id: 2, name: '클럽 B' },
+  { id: 3, name: '클럽 C' },
+]);
+
+// 클럽 페이지를 새 탭에서 열기
+function openClubInNewTab(clubId) {
+  const url = router.resolve({ name: 'ClubView', params: { clubId } }).href;
+  window.open(url, '_blank');
+}
+
+
+// 새 클럽 만들기 페이지
+function goToNewClubPage() {
+  router.push('/new-club'); // '새 클럽' 페이지로 라우팅하는 경로를 적절히 조정하세요.
+}
 </script>
 
 <style scoped>
-스타일 코드
-.navigation {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  /* padding-left: 20px; */
-
-  background-color: #c7c7c7;
+.overflow-auto {
+  overflow: auto;
 }
 
-/* 라우터링크에게 적용되는 css */
-.navigation a {
-  white-space: nowrap;
+.text-h6 {
+  font-size: 1.25rem;
+}
+
+.font-weight-bold {
+  font-weight: bold;
 }
 </style>
