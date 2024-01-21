@@ -21,16 +21,22 @@ public class QUser extends EntityPathBase<User> {
 
     public final com.spoparty.api.common.entity.QBaseEntity _super = new com.spoparty.api.common.entity.QBaseEntity(this);
 
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdTime = _super.createdTime;
+
     public final StringPath department = createString("department");
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final BooleanPath isDeleted = _super.isDeleted;
 
     public final StringPath name = createString("name");
 
     public final StringPath password = createString("password");
 
     public final StringPath position = createString("position");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedTime = _super.updatedTime;
 
     public final StringPath userId = createString("userId");
 

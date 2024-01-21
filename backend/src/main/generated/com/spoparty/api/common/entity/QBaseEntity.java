@@ -21,8 +21,6 @@ public class QBaseEntity extends EntityPathBase<BaseEntity> {
 
     public final DateTimePath<java.time.LocalDateTime> createdTime = createDateTime("createdTime", java.time.LocalDateTime.class);
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
     public final DateTimePath<java.time.LocalDateTime> updatedTime = createDateTime("updatedTime", java.time.LocalDateTime.class);
