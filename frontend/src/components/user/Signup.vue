@@ -39,7 +39,7 @@
             <v-col cols="12" md="4">
               <v-text-field
                 label="이메일"
-                v-model="signupRequest.emailId"
+                v-model="emailId"
                 outlined
                 required
                 dense
@@ -49,14 +49,14 @@
             <v-col cols="12" md="4">
               <v-text-field
                 label="도메인"
-                v-model="signupRequest.emailDomain"
+                v-model="emailDomain"
                 outlined
                 required
                 dense
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="3">
-              <v-btn 
+              <v-btn class="email-verify"
                 color="primary"
                 @click="showEmailVerify"
                 >이메일 인증</v-btn>
@@ -91,17 +91,22 @@
   
   <script setup>
   import {useRouter} from 'vue-router';
-  import { ref } from 'vue';
+  import { ref,computed } from 'vue';
   import EmailVerify from '@/components/user/EmailVerify.vue'
 
   const router = useRouter()
+  const emailId = ref('');
+  const emailDomain = ref('');
+  const email = computed(() => {
+    return `${emailId.value}@${emailDomain.value}`
+  } )
+
   
   const signupRequest = ref({
     loginId: '',
     nickname:'',
     loginPwd: '',
-    emailId : '',
-    emailDomain : '',
+    email : email,
     team: ''
   });
 
@@ -113,7 +118,7 @@
         requireCheckPwd.value = true;
         return;
     }
-    console.log(signupForm.value);
+    console.log(signupRequest.value);
   }
 
   const isEmailVerifyVisible = ref(false);
@@ -127,8 +132,16 @@
   }
   </script>
   
-  <style scoped>
-  .signup-container {
-    max-width: 600px;
-  }
-  </style>
+<style scoped>
+.signup-container {
+  max-width: 600px;
+}
+
+.justify-center{
+  text-align: center;
+} 
+
+.email-verify{
+  margin-bottom:20px;
+}
+</style>

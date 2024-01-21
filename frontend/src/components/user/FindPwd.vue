@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="modalVisible" persistent max-width="400px">
     <v-card>
-      <v-card-title class="text-h5">비밀번호 재설정</v-card-title>
+      <v-card-title class="text-h5">비밀번호 찾기</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="submitForm">
           <v-text-field
@@ -32,7 +32,7 @@
     <v-card>
       <v-card-text class="text-center">
         <p>임시 비밀번호가 발급되었습니다. 5분 동안 유효합니다.</p>
-        <v-btn color="primary" text @click="closeMessageModal">확인</v-btn>
+        <v-btn color="primary" text @click="isMessageModalVisible=false">확인</v-btn>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -41,15 +41,15 @@
 <script setup>
 import { ref } from 'vue';
 
-const modalVisible = ref(true); // 메인 모달의 가시성
+const modalVisible = ref(true); // 메인 모달 보이게 할지말지
 const loginId = ref('');
 const email = ref('');
-const isMessageModalVisible = ref(false); // 메시지 모달의 가시성
+const isMessageModalVisible = ref(false); // 메시지 모달 보이게 할지말지
 const emit = defineEmits(['close']);
 
 function submitForm() {
   console.log(`임시 비밀번호 발급 요청: 아이디=${loginId.value}, 이메일=${email.value}`);
-  // 임시 비밀번호 발급 로직 여기에 추가...
+  // 임시 비밀번호 발급 로직 -> 추가 예정
   // 로직 완료 후 메시지 모달 표시
   isMessageModalVisible.value = true;
 }
@@ -59,9 +59,7 @@ function closeModal() {
   emit('close');
 }
 
-function closeMessageModal() {
-  isMessageModalVisible.value = false;
-}
+
 </script>
 
 <style scoped>

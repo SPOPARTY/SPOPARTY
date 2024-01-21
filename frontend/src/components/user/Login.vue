@@ -26,7 +26,7 @@
 
               <v-row>
                 <v-col cols="12" md="4">
-                  <v-btn color="primary" type="submit" block>로그인</v-btn>
+                  <v-btn color="primary" type="submit" block @click="goMyPage">로그인</v-btn>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-btn text color="primary" @click="handleSignup" block>회원가입</v-btn>
@@ -70,6 +70,10 @@ function handleSignup() {
   router.push({name : "Signup"})
 }
 
+function goMyPage() {
+  router.push({name : "Mypage"})
+}
+
 const isPwdModalVisible = ref(false);
 
 function showFindPwdModal() {
@@ -88,6 +92,10 @@ function showFindPwdModal() {
 
 .v-card{
   margin-top:100px;
+}
+
+.justify-center{
+  text-align: center;
 }
 
 .kakao{
