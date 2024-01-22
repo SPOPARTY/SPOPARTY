@@ -1,49 +1,42 @@
 <template>
+  <v-navigation-drawer v-model="drawer" app permanent color="grey darken-3">
+    <!-- 네비게이션 타이틀 굵은 글씨로 -->
+    <v-list-item class="py-2">
+      <v-subheader class="text-h6 font-weight-bold">클럽 목록</v-subheader>
+    </v-list-item>
 
-    <v-navigation-drawer v-model="drawer" app permanent color="grey darken-3">
-      <!-- 네비게이션 타이틀 굵은 글씨로 -->
-      <v-list-item class="py-2">
-        <v-subheader class="text-h6 font-weight-bold">클럽 목록</v-subheader>
+    <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
+    <v-list dense class="overflow-auto" style="max-height: 800px;">
+      <v-list-item v-for="(club, index) in clubs" :key="index" class="mb-1">
+        <div @click="openClubInNewTab(club.id)" class="d-flex justify-start align-center club-item"
+          style="text-transform: none; padding: 16px; cursor: pointer;">
+          <v-list-item-title class="align-start">{{ club.name }}<br>{{ 'ID: ' + club.id }}</v-list-item-title>
+        </div>
       </v-list-item>
 
-      <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
-      <v-list dense class="overflow-auto" style="max-height: 800px;">
-        <v-list-item v-for="(club, index) in clubs" :key="index" class="mb-1">
-          <v-btn text block @click="openClubInNewTab(club.id)" class="d-flex justify-start"
-            style="text-transform: none; padding-top: 16px; padding-bottom: 16px;">
-            <v-list-item-content class="align-start">
-              <v-list-item-title>{{ club.name }}</v-list-item-title>
-              <!-- 버튼 크기 조절 가능하게 해야함 -->
-            </v-list-item-content>
-          </v-btn>
-        </v-list-item>
+      <!-- 새 클럽 추가 버튼 -->
+      <v-list-item>
+        <div @click="goToNewClubPage" class="d-flex justify-start align-center club-item"
+          style="text-transform: none; padding: 16px; cursor: pointer;">
+          <v-list-item-title class="align-start">새 클럽</v-list-item-title>
+        </div>
+      </v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 
-        <!-- 새 클럽 추가 버튼 -->
-        <v-list-item>
-          <v-btn text block @click="goToNewClubPage" class="d-flex justify-start"
-            style="text-transform: none; padding-top: 16px; padding-bottom: 16px;">
-            <v-list-item-content class="align-start">
-              <v-list-item-title>새 클럽</v-list-item-title>
-            </v-list-item-content>
-          </v-btn>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-app-bar app color="indigo" dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title @click="goHome" style="cursor: pointer;">SPOPARTY</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-divider vertical class="mx-2"></v-divider>
-      <v-btn text to="/match" class="mx-2">경기일정</v-btn>
-      <v-divider vertical class="mx-2"></v-divider>
-      <v-btn text to="/league" class="mx-2">리그 목록</v-btn>
-      <v-divider vertical class="mx-2"></v-divider>
-      <v-btn text to="/signup" class="mx-2">회원가입</v-btn>
-      <v-divider vertical class="mx-2"></v-divider>
-      <v-btn text to="/login" class="mx-2">로그인</v-btn>
-    </v-app-bar>
-
+  <v-app-bar app color="indigo" dark>
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-toolbar-title @click="goHome" style="cursor: pointer;">SPOPARTY</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-divider vertical class="mx-2"></v-divider>
+    <v-btn text to="/match" class="mx-2">경기일정</v-btn>
+    <v-divider vertical class="mx-2"></v-divider>
+    <v-btn text to="/league" class="mx-2">리그 목록</v-btn>
+    <v-divider vertical class="mx-2"></v-divider>
+    <v-btn text to="/signup" class="mx-2">회원가입</v-btn>
+    <v-divider vertical class="mx-2"></v-divider>
+    <v-btn text to="/login" class="mx-2">로그인</v-btn>
+  </v-app-bar>
 </template>
 
 <script setup>
@@ -78,6 +71,16 @@ function goToNewClubPage() {
 </script>
 
 <style scoped>
+.club-item {
+  width: 100%;
+  background-color: grey;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  /* 모서리를 약간 둥글게 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+  /* 약간의 그림자 효과 */
+}
+
 .overflow-auto {
   overflow: auto;
 }
@@ -88,5 +91,4 @@ function goToNewClubPage() {
 
 .font-weight-bold {
   font-weight: bold;
-}
-</style>
+}</style>

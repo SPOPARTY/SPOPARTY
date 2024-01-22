@@ -1,26 +1,26 @@
 <template>
-    <v-container fluid class="pa-2 fill-height">
-      <v-row justify="center">
-        <v-col cols="12">
-          <v-card color="grey lighten-1" class="d-flex flex-column align-center justify-center" height="300px">
-            <v-card-title class="text-h4">응원 투표</v-card-title>
-            <v-card-text class="pt-5 d-flex justify-space-between align-center">
-              <v-btn icon @click="prevVote" class="mx-3">
-                <v-icon>mdi-chevron-left</v-icon>
-              </v-btn>
-              <v-spacer></v-spacer> <!-- 좌우 버튼 사이에 공간을 추가해야함-->
-              <v-btn color="primary" width="200px" class="mx-3">{{ currentVote.team1 }}</v-btn>
-              <v-btn color="primary" width="200px" class="mx-3">{{ currentVote.team2 }}</v-btn>
-              <v-spacer></v-spacer> <!-- 좌우 버튼 사이에 공간을 추가해야함 -->
-              <v-btn icon @click="nextVote" class="mx-3">
-                <v-icon>mdi-chevron-right</v-icon>
-              </v-btn>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </template>
+  <v-container fluid class="pa-2 fill-height">
+    <v-row justify="center">
+      <v-col cols="12">
+        <v-card color="grey lighten-1" class="d-flex flex-column align-center justify-center" height="300px">
+          <v-card-title class="text-h4">응원 투표</v-card-title>
+          <v-card-text class="d-flex justify-center align-center" style="width: 100%;">
+            <v-btn icon @click="prevVote" class="mx-2">
+              <v-icon size="x-large">mdi-chevron-left</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" class="mx-2 team-name">{{ currentVote.team1 }}</v-btn>
+            <v-btn color="primary" class="mx-2 team-name">{{ currentVote.team2 }}</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="nextVote" class="mx-2">
+              <v-icon size="x-large">mdi-chevron-right</v-icon>
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
   
   <script setup>
   import { ref, reactive } from 'vue';
@@ -71,6 +71,11 @@
     justify-content: space-around;
     align-items: center;
     width: 100%;
+  }
+
+  .team-name {
+    /* width: 30%; */
+    width: 350px;
   }
   </style>
   
