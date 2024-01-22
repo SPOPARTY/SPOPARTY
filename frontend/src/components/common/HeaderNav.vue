@@ -29,7 +29,7 @@
     <v-toolbar-title @click="goHome" style="cursor: pointer;">SPOPARTY</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-divider vertical class="mx-2"></v-divider>
-    <v-btn text to="/match" class="mx-2">경기일정</v-btn>
+    <v-btn text to="/match" class="mx-2">경기 일정</v-btn>
     <v-divider vertical class="mx-2"></v-divider>
     <v-btn text to="/league" class="mx-2">리그 목록</v-btn>
     <v-divider vertical class="mx-2"></v-divider>
