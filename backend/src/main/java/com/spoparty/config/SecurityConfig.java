@@ -14,10 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.spoparty.api.member.repository.MemberRepository;
-import com.spoparty.security.jwt.JwtAuthenticationFilter;
 import com.spoparty.security.jwt.JwtAuthenticationProvider;
 import com.spoparty.security.service.PrincipalDetailService;
 
@@ -43,18 +41,18 @@ public class SecurityConfig {
 		log.info("filterChain 실행");
 		return http
 
-			.addFilterAfter(new JwtAuthenticationFilter(authenticationManager()),
-				UsernamePasswordAuthenticationFilter.class)
+			// .addFilterAfter(new JwtAuthenticationFilter(authenticationManager()),
+			// 	UsernamePasswordAuthenticationFilter.class)
 			// .addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), memberRepository),
 			// 	UsernamePasswordAuthenticationFilter.class)
 
 			// '/' 와 '/members/join 은 권한없이 접근가능
 			// '/admin/' 은 권한이 ROLE_ADMIN인 사람만 접근 가능
-			// 나머지 경로에 대해서 인증(로그인)된 사람만 접근 가능
+			// 나머지 경로에 대해서 인증(로그인)된 사람만 접근 가능 ( 임시로 모두가능하게 설정 )
 			.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
 				.requestMatchers("/", "/members/join", "/members/login", "/login").permitAll()
 				.requestMatchers("/admin").hasAnyRole("ADMIN")
-				.anyRequest().authenticated()
+				.anyRequest().permitAll()
 			)
 
 			.sessionManagement(sessionManagement -> sessionManagement
