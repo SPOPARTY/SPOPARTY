@@ -15,4 +15,4 @@
 > ex) 메서드 XXX의 이름을 더 잘 짓고 싶은데 혹시 좋은 명칭이 있을까요?
 
 /assign me
-/assign_reviewer @gogoadl @kbumk1234 @joeunbyeol98 @gyfl5542 @rlawldbs42 @jason9865
+/assign_reviewer @gogoadl @kbumk1234 @joeunbyeol98 @gyfl5542

@@ -1,3 +1,4 @@
+application-private.yml
 HELP.md
 .gradle
 build/
@@ -37,3 +38,4 @@ out/
 
 ### VS Code ###
 .vscode/
+ 
