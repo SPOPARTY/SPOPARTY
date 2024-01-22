@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -31,11 +30,9 @@ public class JwtTokenUtil {
 	private static String refreshSecretKey;
 	private static Integer refreshExpirationTime;
 
-
 	public static final String TOKEN_PREFIX = "Bearer ";
 	public static final String HEADER_STRING = "Authorization";
 	public static final String ISSUER = "ssafy.com";
-
 
 	// 토큰 시크릿 키, 만료일 변수값 할당
 	public JwtTokenUtil(@Value("${jwt.access.secret}") String accessSecretKey,
@@ -49,26 +46,16 @@ public class JwtTokenUtil {
 		this.refreshExpirationTime = refreshExpirationTime;
 	}
 
-	// public void setExpirationTime() {
-	// 	//JwtTokenUtil.expirationTime = Integer.parseInt(expirationTime);
-	// 	JwtTokenUtil.expirationTime = expirationTime;
-	// }
-
-	// public static JWTVerifier getVerifier() {
-	// 	return JWT
-	// 		.require(Algorithm.HMAC512(secretKey.getBytes()))
-	// 		.withIssuer(ISSUER)
-	// 		.build();
-	// }
 
 
-	// 현재 날짜, 시간으로부터 토큰
+	// 현재 시간으로부터 토큰 만료 시간 얻기
 	public static Date getTokenExpiration(int expirationTime) {
 		Date now = new Date();
 		return new Date(now.getTime() + expirationTime);
 	}
 
 
+	// access 토큰 얻기
 	public static String getAccessToken(String userId) {
 		Date expires = JwtTokenUtil.getTokenExpiration(accessExpirationTime);
 		return JWT.create()
@@ -80,6 +67,8 @@ public class JwtTokenUtil {
 			.sign(Algorithm.HMAC512(accessSecretKey.getBytes()));
 	}
 
+
+	// 리프레쉬 토큰 얻기
 	public static String getRefreshToken() {
 		Date expires = JwtTokenUtil.getTokenExpiration(refreshExpirationTime);
 		return JWT.create()
@@ -91,15 +80,7 @@ public class JwtTokenUtil {
 	}
 
 
-	// public static String getToken(Instant expires, String userId) {
-	// 	return JWT.create()
-	// 		.withSubject(userId)
-	// 		.withExpiresAt(Date.from(expires))
-	// 		.withIssuer(ISSUER)
-	// 		.withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-	// 		.sign(Algorithm.HMAC512(secretKey.getBytes()));
-	// }
-
+	// access 토큰 검증하기
 	public static void verifyAccessToken(String token) {
 		JWTVerifier verifier = JWT
 			.require(Algorithm.HMAC512(accessSecretKey.getBytes()))
@@ -130,6 +111,7 @@ public class JwtTokenUtil {
 	}
 
 
+	// 리프레쉬 토큰 검증하기
 	public static void verifyRefreshToken(String token) {
 		JWTVerifier verifier = JWT
 			.require(Algorithm.HMAC512(refreshSecretKey.getBytes()))
@@ -159,29 +141,4 @@ public class JwtTokenUtil {
 		}
 	}
 
-//
-//
-// 	public static void handleError(JWTVerifier verifier, String token) {
-// 		try {
-// 			verifier.verify(token.replace(TOKEN_PREFIX, ""));
-// 		} catch (AlgorithmMismatchException ex) {
-// 			throw ex;
-// 		} catch (InvalidClaimException ex) {
-// 			throw ex;
-// 		} catch (SignatureGenerationException ex) {
-// 			throw ex;
-// 		} catch (SignatureVerificationException ex) {
-// 			throw ex;
-// 		} catch (TokenExpiredException ex) {
-// 			throw ex;
-// 		} catch (JWTCreationException ex) {
-// 			throw ex;
-// 		} catch (JWTDecodeException ex) {
-// 			throw ex;
-// 		} catch (JWTVerificationException ex) {
-// 			throw ex;
-// 		} catch (Exception ex) {
-// 			throw ex;
-// 		}
-// 	}
-// }
+}
