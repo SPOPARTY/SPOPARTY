@@ -42,17 +42,37 @@
             
             <v-row>
                 <v-col cols="8">
-                <v-select
-                    label="대표 앰블럼"
-                    :items="emblems"
-                    outlined dense
-                ></v-select>
+                    <v-btn style="width:100%; height:100%;" @click="showEmblemModal">
+                        <img :src="emblemIcon" :alt="emblemName" style="width:64px; height:64px;">
+                        {{ emblemName }}
+                    </v-btn>
                 </v-col>
                 <v-col cols="4" md="4">
                     <v-btn color="#4F4557" style="margin-top:10px;" @click="showEmblemModal">엠블럼 목록</v-btn>
                 </v-col>
             </v-row>
-            <EmblemList v-if="isEmblemModalVisible" @emblem-list-close="isEmblemModalVisible = false"/>
+            <EmblemList 
+                v-if="isEmblemModalVisible"
+                :emblem-icon="emblemIcon"
+                :emblem-name="emblemName"
+                @emblem-list-close="isEmblemModalVisible = false"
+                @select-emblem="setEmblem($event)"
+                />
+            
+            <v-row>
+                <v-col cols="8">
+                    <v-btn 
+                        style="width:100% "
+                        @click="showFollowModal"
+                    >팔로우 중인 구단 수 : {{followingClubNum}}</v-btn>
+                </v-col>
+            </v-row>
+            <FollowList
+                v-if="isFollowModalVisible"
+                @follow-list-close = "isFollowModalVisible = false"
+                @follow-club="setFollowClubNumber($event)"
+                @unfollow-club="setFollowClubNumber($event)"
+            />
 
             <v-card-actions class="text-center">
                 <v-spacer></v-spacer>
@@ -65,29 +85,25 @@
 
 <script setup>
 import {useRouter} from 'vue-router'
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import SetNewPwd from '@/components/user/SetNewPwd.vue';
-import SetNewEmail from './SetNewEmail.vue';
-import EmblemList from './EmblemList.vue';
+import SetNewEmail from '@/components/user/SetNewEmail.vue';
+import EmblemList from '@/components/user/EmblemList.vue';
+import FollowList from '@/components/user/FollowList.vue';
 
 const router = useRouter();
 
 const emailId = ref("kimbumki");
 const emailDomain = ref("naver.com")
 
-// 앰블럼 선택을 위한 아이템 배열
-const emblems = [
-    '토트넘 FC',
-    '리버풀 FC',
-    '토론토 FC'
-];
-
+// 비밀번호 수정 모달 띄우기
 const isPwdModalVisible = ref(false) // 비밀번호 수정 모달 보일까 말까
 
 function showChangePwdModal() {
     isPwdModalVisible.value = true
 }
 
+// 이메일 수정 모달 띄우기
 const isEmailModalVisible = ref(false) // 이메일 수정 모달 보일까 말까
 
 function showChangeEmailModal() {
@@ -99,14 +115,40 @@ function updateEmail(newEmailData) {
     emailDomain.value = newEmailData.newEmailDomain;
 }
 
+// 엠블럼 수정 모달 띄우기
 const isEmblemModalVisible = ref(false) // 엠블럼 수정 모달 보일까 말까
 function showEmblemModal() {
     isEmblemModalVisible.value = true;
 }
 
+const emblemIcon = ref('/src/assets/mancity.png');
+const emblemName = ref('맨체스터 시티');
+
+function setEmblem(newEmblem) {
+    emblemIcon.value = newEmblem.newEmblemIcon;
+    emblemName.value = newEmblem.newEmblemName;
+}
+
+// 구단 팔로우 모달
+const isFollowModalVisible = ref(false)
+function showFollowModal() {
+    isFollowModalVisible.value = true;
+}
+
+// 팔로우 중인 구단 수 
+// 실제로 유저 정보를 받아올 때 onMounted를 통해 업데이트 되도록 한다 현재는 더미값
+const followingClubNum = ref(4); 
+
+const setFollowClubNumber = (followingCount) => {
+    followingClubNum.value = followingCount;
+}
+
+
+// 이전 화면으로 되돌아가기
 function goBack() {
     router.back()
 }
+
 
 </script>
 
