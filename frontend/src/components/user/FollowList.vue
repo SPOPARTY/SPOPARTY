@@ -45,25 +45,31 @@
               item-height="68"
             >
               <template v-slot="{ item }">
-                <v-list-item >
-                  <v-list-item-avatar>
-                    <img :src="item.src" :alt="item.name" style="width:64px; height:64px;">
-                  </v-list-item-avatar>
-                  
-                  <v-list-item-content>
-                    <v-list-item-title>{{ item.name }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
-                  </v-list-item-content>
-  
-                  <v-list-item-action>
-                    <v-btn icon v-if="clubData.following.includes(item)" @click="unfollowClub(item)">
-                        <v-icon color="red">mdi-delete</v-icon>
-                    </v-btn>
-
-                    <v-btn icon v-else @click="followClub(item)">
-                      <v-icon color="green">mdi-plus</v-icon>
-                    </v-btn>
-                  </v-list-item-action>
+                <v-list-item>
+                  <v-row>
+                    <v-col cols="3">
+                      <v-list-item-avatar>
+                        <img :src="item.src" :alt="item.name" style="width:64px; height:64px;">
+                      </v-list-item-avatar>
+                    </v-col>
+                    <v-col cols="6">
+                      <v-list-item-content class="grow">
+                        <v-list-item-title>{{ item.name }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-col>
+                    <v-col cols="3">
+                      <v-list-item-action>
+                        <v-btn icon v-if="clubData.following.includes(item)" @click="unfollowClub(item)">
+                            <v-icon color="red">mdi-delete</v-icon>
+                        </v-btn>
+      
+                        <v-btn icon v-else @click="followClub(item)">
+                          <v-icon color="green">mdi-plus</v-icon>
+                        </v-btn>
+                      </v-list-item-action>
+                    </v-col>
+                  </v-row>
                 </v-list-item>
                 <v-divider inset></v-divider>
               </template>
