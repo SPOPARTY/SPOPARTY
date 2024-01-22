@@ -4,6 +4,7 @@ import MatchView from "@/views/MatchView.vue";
 import LeagueView from "@/views/LeagueView.vue";
 import Signup from "@/components/user/Signup.vue";
 import Login from "@/components/user/Login.vue";
+import MyPage from "@/components/user/MyPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -33,6 +34,12 @@ const router = createRouter({
       name: "Login",
       component: Login
     },
+    {
+      path:"/mypage",
+      name:"Mypage",
+      component: MyPage,
+    },
+
     {
       path: "/club/:clubId",
       name: "ClubView",
