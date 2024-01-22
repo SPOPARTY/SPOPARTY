@@ -41,7 +41,14 @@
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-center">
-            <v-btn class="kakao" justify="center">카카오로 로그인하기</v-btn>
+            <v-btn 
+              class="kakao" 
+              justify="center"
+              @click="showKakaoLoginModal"
+              >
+              카카오로 로그인하기
+            </v-btn>
+            <KakaoLogin v-if="isKakaoLoginModalVisible" @kakao-login-close="isKakaoLoginModalVisible = false"/>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -53,6 +60,7 @@
 import {ref} from 'vue';
 import {useRouter} from 'vue-router'
 import FindPwd from '@/components/user/FindPwd.vue';
+import KakaoLogin from '@/components/user/KakaoLogin.vue';
 
 const router = useRouter();
 
@@ -74,12 +82,18 @@ function goMyPage() {
   router.push({name : "Mypage"})
 }
 
+// 비밀번호 찾기 모달
 const isPwdModalVisible = ref(false);
 
 function showFindPwdModal() {
   isPwdModalVisible.value = true;
 }
 
+// 카카오 로그인 모달
+const isKakaoLoginModalVisible = ref(false)
+function showKakaoLoginModal() {
+  isKakaoLoginModalVisible.value = true;
+}
 </script>
 
 <style scoped>

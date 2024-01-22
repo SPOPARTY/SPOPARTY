@@ -1,5 +1,10 @@
 <template>
-    <v-dialog v-model="isModalVisible" max-width="800px" max-height="400px">
+    <v-dialog 
+        v-model="isModalVisible" 
+        max-width="800px" 
+        max-height="400px"
+        @click:outside="closeModal"
+        persistent        >
         <v-card>
             <v-row>
                 <v-col class="text-left">

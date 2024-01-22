@@ -1,5 +1,9 @@
 <template>
-    <v-dialog v-model="isModalVisible" persistent max-width="300px">
+    <v-dialog 
+        v-model="isModalVisible"
+        max-width="300px"
+        @click:outside="closeModal"
+        persistent        >
         <v-card>
             <v-card-title class="text-h4">비밀번호 재설정</v-card-title>
             <v-card-text>

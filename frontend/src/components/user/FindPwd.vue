@@ -1,5 +1,9 @@
 <template>
-  <v-dialog v-model="modalVisible" persistent max-width="400px">
+  <v-dialog 
+    v-model="modalVisible" 
+    max-width="400px"
+    @click:outside="closeModal"
+    persistent    >
     <v-card>
       <v-card-title class="text-h5">비밀번호 찾기</v-card-title>
       <v-card-text>

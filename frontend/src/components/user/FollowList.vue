@@ -1,7 +1,11 @@
 <template>
-    <v-dialog v-model="isModalVisible" max-width="800px">
+    <v-dialog 
+      v-model="isModalVisible" 
+      max-width="800px"
+      @click:outside="closeModal"
+      persistent      >
       <v-card>
-  
+        
         <v-card-title class="justify-space-between">
           <span>팔로우 중인 구단 목록</span>
           <v-btn icon @click="closeModal">
@@ -95,7 +99,7 @@ const emit = defineEmits([
 // 검색어 찾기
 const search = ref('');
 
-// 구단 목록 더미 데이터
+// 전체 구단 목록 더미 데이터
 const allClubs = [
     { name: '맨체스터 유나이티드', src: '/src/assets/manutd.png', subtitle:'프리미어리그' },
     { name: '첼시', src: '/src/assets/chelsea.png', subtitle:'프리미어리그' },
@@ -107,6 +111,7 @@ const allClubs = [
     { name: '바이에른 뮌헨', src: '/src/assets/bayernMunich.png', subtitle:'분데스리가' },
 ];
 
+// 팔로우 중인 구단 목록 더미 데이터
 const follwingClubs = [
     { name: '바이에른 뮌헨', src: '/src/assets/bayernMunich.png', subtitle:'분데스리가' },
     { name: '토리노FC', src: '/src/assets/torinoFC.png', subtitle:'세리에A' },

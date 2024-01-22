@@ -2,6 +2,7 @@
   <v-dialog
     v-model="modalVisible"
     width="400"
+    @click:outside="closeModal"
     persistent
   >
     <v-card class="justify-center">
@@ -40,6 +41,7 @@ function verifyEmail() {
 function closeModal() {
     modalVisible.value = false; // 모달을 숨김
     emit('close'); // 부모 컴포넌트에 'close' 이벤트를 발생시킴
+    console.log("modalVisible ->" ,modalVisible.value)
 }
 </script>
 

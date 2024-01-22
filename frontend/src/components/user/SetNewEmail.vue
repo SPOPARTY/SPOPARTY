@@ -1,9 +1,9 @@
 <template>
     <v-dialog 
         v-model="isModalVisible"
-        persistent
         max-width="500px"
-        >
+        @click:outside="closeModal"
+        persistent        >
         <v-card>
             <v-card-title class="text-h4">이메일 수정</v-card-title>
             <v-card-text>
