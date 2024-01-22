@@ -49,10 +49,7 @@ spring:
       pageable:
         one-indexed-parameters: true
 
-# jwt
-jwt:
-  secret: dyAeHubOOc8KaOfYB6XEQoEj1QzRlVgtjNL8PYs1A1tymZvvqkcEU7L1imkKHeDa
-  expiration: 1296000000
+
 
 #logging
 logging:
