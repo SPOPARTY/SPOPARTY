@@ -45,8 +45,8 @@ public class JwtTokenUtil {
 		this.accessSecretKey = accessSecretKey;
 		this.accessExpirationTime = accessExpirationTime;
 
-		this.refreshSecretKey = accessSecretKey;
-		this.refreshExpirationTime = accessExpirationTime;
+		this.refreshSecretKey = refreshSecretKey;
+		this.refreshExpirationTime = refreshExpirationTime;
 	}
 
 	// public void setExpirationTime() {
