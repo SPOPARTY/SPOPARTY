@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.spoparty.api.service.UserService;
-import com.spoparty.db.entity.User;
+import com.spoparty.api.member.service.UserService;
+import com.spoparty.api.member.entity.User;
 
 
 /**

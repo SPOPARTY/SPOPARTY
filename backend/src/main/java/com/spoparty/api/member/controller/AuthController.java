@@ -1,4 +1,4 @@
-package com.spoparty.api.controller;
+package com.spoparty.api.member.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spoparty.api.request.UserLoginPostReq;
-import com.spoparty.api.response.UserLoginPostRes;
-import com.spoparty.api.service.UserService;
+import com.spoparty.api.member.request.UserLoginPostReq;
+import com.spoparty.api.member.response.UserLoginPostRes;
+import com.spoparty.api.member.service.UserService;
 import com.spoparty.common.util.JwtTokenUtil;
-import com.spoparty.db.entity.User;
+import com.spoparty.api.member.entity.User;
 
 /**
  * 인증 관련 API 요청 처리를 위한 컨트롤러 정의.

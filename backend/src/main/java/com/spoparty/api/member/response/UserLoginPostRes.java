@@ -1,4 +1,4 @@
-package com.spoparty.api.response;
+package com.spoparty.api.member.response;
 
 import com.spoparty.common.model.response.BaseResponseBody;
 

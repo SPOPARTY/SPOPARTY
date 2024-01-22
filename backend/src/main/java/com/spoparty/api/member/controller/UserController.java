@@ -1,4 +1,4 @@
-package com.spoparty.api.controller;
+package com.spoparty.api.member.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spoparty.api.request.UserRegisterPostReq;
-import com.spoparty.api.response.UserRes;
-import com.spoparty.api.service.UserService;
+import com.spoparty.api.member.request.UserRegisterPostReq;
+import com.spoparty.api.member.response.UserRes;
+import com.spoparty.api.member.service.UserService;
 import com.spoparty.common.auth.SsafyUserDetails;
 import com.spoparty.common.model.response.BaseResponseBody;
-import com.spoparty.db.entity.User;
+import com.spoparty.api.member.entity.User;
 
 /**
  * 유저 관련 API 요청 처리를 위한 컨트롤러 정의.

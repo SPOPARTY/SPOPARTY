@@ -1,6 +1,6 @@
-package com.spoparty.api.response;
+package com.spoparty.api.member.response;
 
-import com.spoparty.db.entity.User;
+import com.spoparty.api.member.entity.User;
 
 import lombok.Getter;
 import lombok.Setter;

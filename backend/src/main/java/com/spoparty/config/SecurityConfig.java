@@ -1,6 +1,6 @@
 package com.spoparty.config;
 
-import com.spoparty.api.service.UserService;
+import com.spoparty.api.member.service.UserService;
 import com.spoparty.common.auth.SsafyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

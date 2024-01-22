@@ -1,25 +1,29 @@
-package com.spoparty.db.entity;
+package com.spoparty.api.common.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
-import javax.annotation.Generated;
+import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 
 
 /**
  * QBaseEntity is a Querydsl query type for BaseEntity
  */
-@Generated("com.querydsl.codegen.SupertypeSerializer")
+@Generated("com.querydsl.codegen.DefaultSupertypeSerializer")
 public class QBaseEntity extends EntityPathBase<BaseEntity> {
 
-    private static final long serialVersionUID = 1717725014L;
+    private static final long serialVersionUID = -966092355L;
 
     public static final QBaseEntity baseEntity = new QBaseEntity("baseEntity");
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
+    public final DateTimePath<java.time.LocalDateTime> createdTime = createDateTime("createdTime", java.time.LocalDateTime.class);
+
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
+    public final DateTimePath<java.time.LocalDateTime> updatedTime = createDateTime("updatedTime", java.time.LocalDateTime.class);
 
     public QBaseEntity(String variable) {
         super(BaseEntity.class, forVariable(variable));

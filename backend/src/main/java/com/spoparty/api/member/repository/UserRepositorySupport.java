@@ -1,11 +1,11 @@
-package com.spoparty.db.repository;
+package com.spoparty.api.member.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spoparty.db.entity.QUser;
-import com.spoparty.db.entity.User;
+import com.spoparty.api.member.entity.QUser;
 
 import java.util.Optional;
 
+import com.spoparty.api.member.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

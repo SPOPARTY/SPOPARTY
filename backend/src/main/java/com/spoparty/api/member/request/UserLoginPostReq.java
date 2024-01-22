@@ -1,4 +1,4 @@
-package com.spoparty.api.request;
+package com.spoparty.api.member.request;
 
 import lombok.Getter;
 import lombok.Setter;
