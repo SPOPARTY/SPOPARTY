@@ -10,7 +10,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spoparty.api.member.entity.Member;
-import com.spoparty.security.JwtTokenUtil;
+import com.spoparty.common.util.JwtTokenUtil;
 import com.spoparty.security.model.PrincipalDetails;
 
 import jakarta.servlet.FilterChain;
@@ -19,14 +19,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
+// 32번째 줄에 적인 경로로 오는 POST요청을 받아 회원정보를 DB에서 조회하고, 인증에 성공하면 successfulAuthentication()이
+// 호출에서 토큰을 발행한다.
+// successfulAuthentication()에서는 chain.doFilter(request, respose); 를 하지 않으면 다음 필터체인으로 이동하지 않고 바로 응답이 반환되게 된다.
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final AuthenticationManager authenticationManager;
+	private final JwtTokenUtil jwtTokenUtil;
 
-	public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+	public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
 		super(authenticationManager);
 		this.authenticationManager = authenticationManager;
+		this.jwtTokenUtil = jwtTokenUtil;
+		setFilterProcessesUrl("/members/login");
 		log.info("JwtAuthenticationFilter 생성");
 	}
 
@@ -34,8 +40,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws
 		AuthenticationException {
 		log.info("JwtAuthenticationFilter.attemptAuthentication() 실행");
-		log.info("@@@@@@@@@@@@@@@@@@@@@@" + request.getMethod());
-		log.info("@@@@@@@@@@@@@@@@@@@@@@" + request.getRequestURL());
 		ObjectMapper mapper = new ObjectMapper();
 		Member member = null;
 		try {
@@ -45,7 +49,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authentication = authenticationManager.authenticate(token);
 			log.info(authentication.getPrincipal().toString());
 			return authentication;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
 		return null;
@@ -58,12 +62,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		log.info("JwtAuthenticationFilter.successfulAuthentication() 실행");
 		PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
 		Member member = principalDetails.getMember();
-		String accessToken = JwtTokenUtil.createAccessToken(member.getMemberId() + "");
-		String refreshToken = JwtTokenUtil.createRefreshToken();
+		String accessToken = jwtTokenUtil.createAccessToken(member.getMemberId() + "");
+		String refreshToken = jwtTokenUtil.createRefreshToken();
 		response.addHeader("accessToken", accessToken);
 		response.addHeader("refreshToken", refreshToken);
 		log.info("accessToken: " + accessToken);
 		log.info("refreshToken: " + refreshToken);
+		log.info("토큰발급완료");
 	}
 
 }

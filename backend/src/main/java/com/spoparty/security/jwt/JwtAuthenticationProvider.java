@@ -14,6 +14,7 @@ import com.spoparty.security.service.PrincipalDetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+// principalDetailService를 호출하여 DB에서 사용자를 조회하고 Authentication객체를 반환한다.
 @Component
 @Slf4j
 @RequiredArgsConstructor
