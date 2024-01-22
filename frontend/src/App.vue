@@ -4,24 +4,18 @@ import HeaderNav from "./components/common/HeaderNav.vue";
 import Footer from "./components/common/Footer.vue";
 </script>
 <template>
+  <v-app>
   <div>
-    
     <HeaderNav/>
-    <RouterView/>
-  </div>
+    </div>
+    <v-main class="mt-1">
+      <RouterView/>
+    </v-main>
+  </v-app>
 </template>
 
 <style scoped>
-/* .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-} */
+
+
+
 </style>
