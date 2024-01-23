@@ -15,27 +15,31 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class Team extends FootballBaseEntity {
+public class Coach extends FootballBaseEntity {
 	@Id
 	@GeneratedValue
-	@Column(name="team_id")
+	@Column(name="coach_id")
 	private long id;
 
 	@Size(min=0, max=100)
 	@Column(length=100, nullable=false)
 	private String nameKr;
 
-
 	@Size(min=0, max=200)
 	@Column(length=200, nullable=false)
 	private String nameEng;
 
+	@Column(nullable=false)
+	private int age;
+
+	@Size(min=0, max=100)
+	@Column(length=100, nullable=false)
+	private String nationality;
+
 	@Size(min=0, max=200)
 	@Column(length=200, nullable=false)
-	private String logo;
+	private String photo;
 
-	@OneToMany(mappedBy="team")
+	@OneToMany(mappedBy="coach")
 	List<SeasonLeagueTeam> seasonLeagueTeams = new ArrayList<>();
-
-	
 }

@@ -1,6 +1,7 @@
 package com.spoparty.api.football.entity;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.checkerframework.checker.units.qual.Length;
@@ -29,5 +30,5 @@ public class Season extends FootballBaseEntity {
 	private String value;
 
 	@OneToMany(mappedBy = "season")
-	List<SeasonLeague> seasonLeagues;
+	List<SeasonLeague> seasonLeagues = new ArrayList<>();
 }

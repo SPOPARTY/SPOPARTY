@@ -1,11 +1,14 @@
 package com.spoparty.api.football.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.spoparty.api.common.entity.FootballBaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -23,11 +26,11 @@ public class League extends FootballBaseEntity {
 
 	@Size(min=0, max=100)
 	@Column(length=100, nullable=false)
-	private String name_kr;
+	private String nameKr;
 
 	@Size(min=0, max=200)
 	@Column(length=200, nullable=false)
-	private String name_eng;
+	private String nameEng;
 
 	@Size(min=0, max=200)
 	@Column(length=200, nullable=false)
@@ -39,13 +42,14 @@ public class League extends FootballBaseEntity {
 
 	@Size(min=0, max=200)
 	@Column(length=200, nullable=false)
-	private String country_logo;
+	private String countryLogo;
 
+	@Enumerated(EnumType.STRING)
 	@Size(min=0, max=10)
 	@Column(length=10, nullable=false)
-	private String type;
+	private LeagueType type;
 
 	@OneToMany(mappedBy="league")
-	List<SeasonLeague> seasonLeagues;
+	List<SeasonLeague> seasonLeagues = new ArrayList<>();
 
 }
