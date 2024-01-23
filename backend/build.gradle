@@ -1,6 +1,6 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-buildscript{
+buildscript {
     ext {
         springBootVer = '3.0.0'
         querydslVer = '5.0.0'
@@ -66,7 +66,7 @@ configurations {
 }*/
 
 task webpack(type: NpmTask, dependsOn: 'npmInstall') {
-    args = ['run','build']
+    args = ['run', 'build']
 }
 
 // processResources is a Java task. Run the webpack bundling before this task using the 'build' task in the package.json
@@ -91,9 +91,9 @@ processResources {
         project.properties.findAll().each {
             prop ->
                 if (prop.value != null) {
-                    filter(ReplaceTokens, tokens: [ (prop.key): String.valueOf(prop.value)])
-                    filter(ReplaceTokens, tokens: [ ('project.' + prop.key): String.valueOf(prop.value)])
-                    filter(ReplaceTokens, tokens: [ ('project.ext.' + prop.key): String.valueOf(prop.value)])
+                    filter(ReplaceTokens, tokens: [(prop.key): String.valueOf(prop.value)])
+                    filter(ReplaceTokens, tokens: [('project.' + prop.key): String.valueOf(prop.value)])
+                    filter(ReplaceTokens, tokens: [('project.ext.' + prop.key): String.valueOf(prop.value)])
                 }
         }
     }
@@ -125,6 +125,9 @@ processResources {
 //[끝]
 
 dependencies {
+    // stmp
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -176,7 +179,7 @@ dependencies {
     testImplementation("com.jayway.jsonpath:json-path:2.4.0")
 
     implementation("com.auth0:java-jwt:3.10.3")
-    
+
 //    implementation("io.springfox:springfox-swagger2:3.0.0")
 //    implementation("io.springfox:springfox-swagger-ui:3.0.0")
 //    implementation("io.springfox:springfox-data-rest:3.0.0")
