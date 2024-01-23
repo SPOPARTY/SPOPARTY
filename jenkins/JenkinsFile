@@ -1,46 +1,135 @@
 pipeline {
     agent any
+    tools {
+        nodejs "nodejs"
+    }
 
     stages {
-        stage('Git Clone') {
-            steps {
-                git branch: 'backend', credentialsId: 'gitlab-eunbyeol', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A802'
-            }
-            post {
-                failure{
-                    error "Fail Cloned Repository"
+        stage('BE CI') {
+            parallel {
+                stage('BE - Git Clone') {
+                    steps {
+                        git branch: 'backend', credentialsId: 'gitlab-eunbyeol', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A802'
+                    }
+                    post {
+                        success {
+                            echo(message: 'BE - Success Cloned Repository')
+                        }
+                        failure {
+                            error "BE - Fail Cloned Repository"
+                        }
+                    }
+                }
+                stage('BE - Build') {
+                    steps{
+                        dir('backend'){
+                            sh'''
+                                chmod +x gradlew
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo(message: 'BE - Success Build')
+                        }
+                        failure{
+                            error 'BE - Fail Build'
+                        }
+                    }
+                }
+                stage('BE - Test') {
+                    steps{
+                        dir('backend'){
+                            sh'''
+                                ./gradlew test
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo(message: 'BE - Success Test')
+                        }
+                        failure{
+                            error 'BE - Fail Test'
+                        }
+                    }
                 }
             }
         }
-        
-        stage('Build') {
-            steps{
-                dir('backend'){
-                    sh'''
-                        pwd
-                        chmod +x gradlew
-                        ./gradlew clean build
-                    '''
+        stage('FE CI') {
+            parallel {
+                stage('FE - Git Clone') {
+                    steps {
+                        git branch: 'frontend', credentialsId: 'gitlab-eunbyeol', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A802'
+                    }
+                    post {
+                        success {
+                            echo(message: 'FE - Success Cloned Repository')
+                        }
+                        failure{
+                            error "FE - Fail Cloned Repository"
+                        }
+                    }
                 }
-            }
-            post{
-                failure{
-                    error 'Fail Build'
+                stage('FE - Build') {
+                    steps{
+                        dir('frontend'){
+                            sh'''
+                                npm install
+                                npm run build
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo(message: 'BE - Success Build')
+                        }
+                        failure{
+                            error 'FE - Fail Build'
+                        }
+                    }
                 }
+                // stage('FE - Test') {
+                //     steps{
+                //         dir('backend'){
+                //             sh'''
+                //             
+                //             '''
+                //         }
+                //     }
+                //     post{
+                //         success {
+                //             echo(message: 'FE - Success Test')
+                //         }
+                //         failure{
+                //             error 'FE - Fail Test'
+                //         }
+                //     }
+                // }
             }
         }
-        
-        stage('Test') {
-            steps{
-                dirs('backend'){
-                    sh'''
-                        './gradlew test'
-                    '''
+        post {
+            success {
+                script {
+                    def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                    def Author_Commit = sh(script: "git --no-pager show -s --format=%B ${env.GIT_COMMIT}", returnStdout: true).trim();
+                    mattermostSend (color: 'good',
+                    message: "Succeeded: Job '${env.JOB_NAME} [#${env.BUILD_NUMBER}] - ${Author_Commit} by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
+                    channel: 'A802-Alert'
+                    )
                 }
             }
-            post{
-                failure{
-                    error 'Fail Test'
+            failure {
+                script {
+                    def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                    def Author_Commit = sh(script: "git --no-pager show -s --format=%B ${env.GIT_COMMIT}", returnStdout: true).trim();
+                    mattermostSend (color: 'danger',
+                    message: "Failed: Job '${env.JOB_NAME} [#${env.BUILD_NUMBER}] - ${Author_Commit} by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
+                    channel: 'A802-Alert'
+                    )
                 }
             }
         }
