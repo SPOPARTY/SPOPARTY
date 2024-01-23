@@ -38,4 +38,10 @@ public class MemberController {
 		return "회원가입이 완료되었습니다." + member.toString();
 	}
 
+	@GetMapping("/maru")
+	public String maru() {
+		Member member = memberRepository.findByLoginId("kbumk123");
+		return member.toString();
+	}
+
 }
