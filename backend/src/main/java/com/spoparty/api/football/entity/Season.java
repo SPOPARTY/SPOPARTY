@@ -15,7 +15,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -32,4 +35,8 @@ public class Season extends FootballBaseEntity {
 
 	@OneToMany(mappedBy = "season")
 	List<SeasonLeague> seasonLeagues = new ArrayList<>();
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 }
