@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spoparty.api.football.entity.Team;
+import com.spoparty.api.football.repository.TeamRepository;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.repository.MemberRepository;
 import com.spoparty.security.model.PrincipalDetails;
@@ -22,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 
 	private final MemberRepository memberRepository;
+	private final TeamRepository teamRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@GetMapping("/user")
@@ -36,6 +39,9 @@ public class MemberController {
 		if (LonginMember != null)
 			return "이미 가입된 사용자 입니다.";
 		member.setLoginPwd(bCryptPasswordEncoder.encode(member.getLoginPwd()));
+		log.info("encodePwd: {}", member.getLoginPwd());
+		Team team = teamRepository.findById(member.getTeamInfo().getId()).get();
+		member.setTeamInfo(team);
 		memberRepository.save(member);
 		return "회원가입이 완료되었습니다." + member.toString();
 	}

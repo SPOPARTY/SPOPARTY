@@ -11,31 +11,29 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
+import lombok.Data;
 
+@Data
 @Entity
-@Getter
 public class Team extends FootballBaseEntity {
 	@Id
 	@GeneratedValue
-	@Column(name="team_id")
+	@Column(name = "team_id")
 	private long id;
 
-	@Size(min=0, max=100)
-	@Column(length=100, nullable=false)
+	@Size(min = 0, max = 100)
+	@Column(length = 100, nullable = false)
 	private String nameKr;
 
-
-	@Size(min=0, max=200)
-	@Column(length=200, nullable=false)
+	@Size(min = 0, max = 200)
+	@Column(length = 200, nullable = false)
 	private String nameEng;
 
-	@Size(min=0, max=200)
-	@Column(length=200, nullable=false)
+	@Size(min = 0, max = 200)
+	@Column(length = 200, nullable = false)
 	private String logo;
 
-	@OneToMany(mappedBy="team")
+	@OneToMany(mappedBy = "team")
 	List<SeasonLeagueTeam> seasonLeagueTeams = new ArrayList<>();
 
-	
 }

@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		log.info("JwtAuthenticationFilter.successfulAuthentication() 실행");
 		PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
 		Member member = principalDetails.getMember();
-		String accessToken = jwtTokenUtil.createAccessToken(member.getMemberId() + "");
+		String accessToken = jwtTokenUtil.createAccessToken(member.getId() + "");
 		String refreshToken = jwtTokenUtil.createRefreshToken();
 		response.addHeader("accessToken", accessToken);
 		response.addHeader("refreshToken", refreshToken);
