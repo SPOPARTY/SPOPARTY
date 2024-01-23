@@ -1,18 +1,17 @@
 package com.spoparty.api.member.controller;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spoparty.api.football.entity.Team;
-import com.spoparty.api.football.repository.TeamRepository;
 import com.spoparty.api.member.entity.Member;
-import com.spoparty.api.member.repository.MemberRepository;
-import com.spoparty.security.model.PrincipalDetails;
+import com.spoparty.api.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,39 +22,40 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/members")
 public class MemberController {
 
-	private final MemberRepository memberRepository;
-	private final TeamRepository teamRepository;
-	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	private final MemberService memberService;
 
-	@GetMapping("/user")
-	public String user() {
-		return "user";
+	@GetMapping("/{memberId}")
+	public ResponseEntity<?> getMember(@PathVariable("memberId") Long memberId) {
+		Member member = memberService.findById(memberId);
+		if (member == null)
+			return ResponseEntity.status(404).body(null);
+
+		return ResponseEntity.status(200).body(member);
 	}
 
-	@PostMapping("/join")
-	public String join(@RequestBody Member member) {
-		log.info("MemberController.join{}: ", member);
-		Member LonginMember = memberRepository.findByLoginId(member.getLoginId());
-		if (LonginMember != null)
-			return "이미 가입된 사용자 입니다.";
-		member.setLoginPwd(bCryptPasswordEncoder.encode(member.getLoginPwd()));
-		log.info("encodePwd: {}", member.getLoginPwd());
-		Team team = teamRepository.findById(member.getTeamInfo().getId()).get();
-		member.setTeamInfo(team);
-		memberRepository.save(member);
-		return "회원가입이 완료되었습니다." + member.toString();
+	@PostMapping
+	public ResponseEntity<?> registerMember(@RequestBody Member member) {
+		log.info("MemberController.register{}: ", member);
+		Member loginMember = memberService.findByLoginId(member.getLoginId());
+		if (loginMember != null)
+			return ResponseEntity.status(409).body(null);
+
+		member = memberService.register(member);
+		return ResponseEntity.status(201).body(member);
 	}
 
-	@GetMapping("/maru")
-	public String maru() {
-		Member member = memberRepository.findByLoginId("kbumk123");
-		return member.toString();
+	@PutMapping
+	public ResponseEntity<?> modifyMember(@RequestBody Member member) {
+		member = memberService.update(member);
+		if (member == null)
+			return ResponseEntity.status(404).body(null);
+		return ResponseEntity.status(200).body(member);
 	}
 
-	@GetMapping("test")
-	public String getPrincipal(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-		Member member = principalDetails.getMember();
-		return member.toString();
+	@DeleteMapping("/{memberId}")
+	public ResponseEntity<?> deleteMember(@PathVariable("memberId") Long memberId) {
+		memberService.delete(memberId);
+		return ResponseEntity.status(200).body(null);
 	}
 
 }
