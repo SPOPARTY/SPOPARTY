@@ -43,7 +43,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show-sql: true
+#        show-sql: true
+      format_sql: true
   data:
     web:
       pageable:
@@ -61,10 +62,12 @@ logging:
       samsung:
         security: DEBUG
     org:
+      hibernate.SQL: debug
+      hibernate.orm.jdbd.bind: trace
       springframework:
         web: DEBUG
         apache:
-          tiles: INFO
+          tiles: DEBUG
         springframework:
           boot: DEBUG
           security: DEBUG
