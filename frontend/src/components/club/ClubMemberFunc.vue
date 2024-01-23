@@ -1,6 +1,5 @@
 <template>
     <v-card class="ma-5" outlined>
-      <!-- 상단 그레이 박스 -->
         <v-row class="pa-4" align="center" justify="start" no-gutters style="background-color: #E0E0E0;">
             <v-col cols="10">
                 <div class="headline">그룹 이름</div>

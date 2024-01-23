@@ -4,7 +4,7 @@
             <v-toolbar-title>추억 아카이브</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-            <RouterLink>
+            <RouterLink :to="`/club/${clubId}/archieve`">
                 <v-btn icon>
                     <v-icon>mdi-plus</v-icon>
                 </v-btn>
@@ -32,13 +32,12 @@
 
 <script setup>
 import {ref} from 'vue'
+import {useRoute, useRouter} from 'vue-router';
 
-// import {useRoute, useRouter} from 'vue-router';
+const routes = useRoute();
+const clubId = routes.params.clubId;
 
-// const routes = useRoute();
-// const clubId = routes.params.clubId;
-
-// console.log("clubId -> ", clubId)
+console.log("clubId -> ", clubId)
 
 const dummy = ref([
     {title : "제목", img : "/src/assets/never_heard.jpg"},

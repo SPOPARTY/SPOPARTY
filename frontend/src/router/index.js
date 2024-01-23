@@ -11,6 +11,8 @@ import ClubMain from "@/components/club/ClubMain.vue";
 import ArchieveList from "@/components/archieve/ArchieveList.vue"
 
 import BoardList from "@/components/board/BoardList.vue"
+import WriteBoard from "@/components/board/WriteBoard.vue"
+import EditBoard from "@/components/board/EditBoard.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -66,6 +68,16 @@ const router = createRouter({
           path : "board",
           name : "BoardList",
           component : BoardList
+        },
+        {
+          path : "board/write",
+          name : "WriteBoard",
+          component : WriteBoard
+        },
+        {
+          path : "board/edit",
+          name : "EditBoard",
+          component : EditBoard
         }
       ]
     }
