@@ -10,21 +10,29 @@
   },
   "dependencies": {
     "axios": "^1.6.5",
+    "date-fns": "^3.3.0",
     "jwt-decode": "^4.0.0",
     "openvidu-browser": "^2.29.0",
     "pinia": "^2.1.7",
+    "styled-components": "^6.1.8",
+    "sweetalert2": "^11.10.3",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5",
+    "vuetify": "^3.5.0",
     "vuex": "^4.1.0",
     "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
+    "@mdi/font": "^7.4.47",
+    "@mdi/js": "^7.4.47",
     "@vitejs/plugin-vue": "^4.5.2",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-vue": "^9.20.1",
     "prettier": "^3.2.3",
+    "sass": "^1.70.0",
+    "vee-validate": "^4.12.4",
     "vite": "^5.0.8"
   }
 }
