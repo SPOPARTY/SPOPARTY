@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git branch: 'backend', credentialsId: 'gitlab-eunbyeol', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A802'
+            }
+            post {
+                failure{
+                    error "Fail Cloned Repository"
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps{
+                dir('backend'){
+                    sh'''
+                        pwd
+                        chmod +x gradlew
+                        ./gradlew clean build
+                    '''
+                }
+            }
+            post{
+                failure{
+                    error 'Fail Build'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps{
+                dirs('backend'){
+                    sh'''
+                        './gradlew test'
+                    '''
+                }
+            }
+            post{
+                failure{
+                    error 'Fail Test'
+                }
+            }
+        }
+    }
+}
