@@ -51,7 +51,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		String id = jwtTokenUtil.checkAccessToken(token);
 		log.info("memberId: " + id);
 		if (id != null) {
-			Member member = (Member)memberRepository.findByMemberId(Long.parseLong(id));
+			Member member = memberRepository.findById(Long.parseLong(id)).get();
 			PrincipalDetails principalDetails = new PrincipalDetails(member);
 			Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null,
 				principalDetails.getAuthorities());
