@@ -2,6 +2,7 @@ package com.spoparty.api.football.entity;
 
 
 import com.spoparty.api.common.entity.FootballBaseEntity;
+import com.spoparty.api.member.entity.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;

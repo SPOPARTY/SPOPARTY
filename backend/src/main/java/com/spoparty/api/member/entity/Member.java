@@ -45,9 +45,9 @@ public class Member {
 	@Column(nullable = false, columnDefinition = "varchar(255) default 'ROLE_USER'")
 	private String roleName;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "teamId", referencedColumnName = "teamId")
-	private Team teamInfo;
+	// @OneToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "teamId", referencedColumnName = "teamId")
+	// private Team teamInfo;
 
 	@Column(nullable = false, columnDefinition = "varchar(255) default 0")
 	private int status;

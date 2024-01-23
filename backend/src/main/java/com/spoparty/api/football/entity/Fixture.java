@@ -65,7 +65,7 @@ public class Fixture extends FootballBaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "season_league_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private SeasonLeague seasonLeauge;
+	private SeasonLeague seasonLeague;
 
 	@OneToMany(mappedBy = "fixture")
 	private List<Lineup> lineups = new ArrayList<>();

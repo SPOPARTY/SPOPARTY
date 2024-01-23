@@ -43,7 +43,7 @@ public class LineupPlayer extends FootballBaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="lineup_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Lineup linup;
+	private Lineup lineup;
 
 
 	@ManyToOne(fetch = FetchType.LAZY)
