@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>게시글 만들기</h1>
+        <h1>그룹 게시판 상세</h1>
         
     </div>
 </template>
