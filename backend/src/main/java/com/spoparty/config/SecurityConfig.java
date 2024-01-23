@@ -78,7 +78,7 @@ public class SecurityConfig {
 
 	}
 
-	// UsernamePasswordAuthenticationFilter -> AuthenticationManager -> AuthenticationProvider -> UserDetailsService
+	// 인증시에 UsernamePasswordAuthenticationFilter -> AuthenticationManager -> AuthenticationProvider -> UserDetailsService
 	// 로 가는 구조를 그대로 구현한다.
 	// Filter에서 발행한 인증 토큰을 처리할 적절한 Provider를 선택하는 것이 Manager의 역할이다.
 	@Bean
