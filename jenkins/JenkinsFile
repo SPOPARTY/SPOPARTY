@@ -17,7 +17,6 @@ pipeline {
             steps{
                 dir('backend'){
                     sh'''
-                        pwd
                         chmod +x gradlew
                         ./gradlew clean build
                     '''
@@ -32,9 +31,9 @@ pipeline {
         
         stage('Test') {
             steps{
-                dirs('backend'){
+                dir('backend'){
                     sh'''
-                        './gradlew test'
+                        ./gradlew test
                     '''
                 }
             }
