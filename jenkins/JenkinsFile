@@ -109,29 +109,29 @@ pipeline {
                 // }
             }
         }
-        post {
-            success {
-                script {
-                    def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
-                    def Author_Commit = sh(script: "git --no-pager show -s --format=%B ${env.GIT_COMMIT}", returnStdout: true).trim();
-                    mattermostSend (color: 'good',
-                    message: "Succeeded: Job '${env.JOB_NAME} [#${env.BUILD_NUMBER}] - ${Author_Commit} by ${Author_Name} (<${env.BUILD_URL}|Details>)",
-                    endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
-                    channel: 'A802-Alert'
-                    )
-                }
-            }
-            failure {
-                script {
-                    def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
-                    def Author_Commit = sh(script: "git --no-pager show -s --format=%B ${env.GIT_COMMIT}", returnStdout: true).trim();
-                    mattermostSend (color: 'danger',
-                    message: "Failed: Job '${env.JOB_NAME} [#${env.BUILD_NUMBER}] - ${Author_Commit} by ${Author_Name} (<${env.BUILD_URL}|Details>)",
-                    endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
-                    channel: 'A802-Alert'
-                    )
-                }
+    }
+    post {
+        success {
+            script {
+                def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                // def Author_Commit = sh(script: "git --no-pager show -s --format=%an ${env.GIT_COMMIT}", returnStdout: true).trim();
+                mattermostSend (color: 'good',
+                message: "Succeeded: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
+                channel: 'A802-Alert'
+                )
             }
         }
-    }
+        failure {
+            script {
+                def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                // def Author_Commit = sh(script: "git --no-pager show -s --format=%an ${env.GIT_COMMIT}", returnStdout: true).trim();
+                mattermostSend (color: 'danger',
+                message: "Failed: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
+                channel: 'A802-Alert'
+                )
+            }
+        }
+    }  
 }
