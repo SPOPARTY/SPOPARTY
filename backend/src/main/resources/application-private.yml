@@ -1,0 +1,44 @@
+# Datasource
+spring:
+  config:
+    activate:
+      on-profile: private
+  datasource:
+    hikari:
+      driver-class-name: org.mariadb.jdbc.Driver
+      username: admin
+      password: ssafya802
+    url: jdbc:mariadb://spoparty-database.cpqorrmhxcvs.ap-northeast-2.rds.amazonaws.com:3306/spoparty?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+
+  # Smtp
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: spoparty123@gmail.com
+    password: tjbp bgca mree laud
+    properties:
+      mail:
+        smtp:
+          auth: true # Autentication
+          timeout: 5000 # Socket Read Timeout (ms)
+          starttls:
+            enable: true # StartTLS
+
+# Smtp mail content
+smtp:
+  mail:
+    subject: "SPOPARTY 이메일 인증"
+    prefix: "# 인증번호 : "
+    suffix: "\n 5분안에 입력해주세요"
+
+
+
+# Jwt
+jwt:
+  access:
+    secret: dyAeHub00pwL4F2Lcse52l1z5A003L3Bjtw4lcq751tymZvvqkcEU7L1imkKHeDa
+    expiration: 1800000
+  refresh:
+    secret: syLzLe230fFXO0OfYB6XEQoEj1QzRlVgtjNL8PYs1A1tymCL1ctob5dlwoqhvhDa
+    expiration: 1209600000
+
