@@ -11,6 +11,7 @@ import com.spoparty.api.common.entity.FootballBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
@@ -21,7 +22,7 @@ import lombok.Getter;
 public class Season extends FootballBaseEntity {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "season_id")
 	private long id;
 
