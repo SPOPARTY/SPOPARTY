@@ -37,9 +37,9 @@
    
    
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, computed } from 'vue';
 import MatchList from '@/components/match/MatchList.vue';
-import { format, subDays, addDays } from 'date-fns';
+import { format, addDays } from 'date-fns';
 import { differenceInCalendarDays } from 'date-fns';
 
 const selectedDate = ref(new Date());

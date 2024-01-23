@@ -25,6 +25,11 @@ const router = createRouter({
       component: LeagueView
     },
     {
+      path: "/league/:leagueId",
+      name: "LeagueDetailView",
+      component: () => import("@/views/LeagueDetailView.vue")
+    },
+    {
       path: "/signup",
       name: "Signup",
       component: Signup
