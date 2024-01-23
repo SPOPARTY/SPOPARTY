@@ -39,7 +39,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 		throws IOException, ServletException {
 		log.info("JwtAuthorizationFilter.doFilterInternal() : 인증 및 권한 확인");
-		String jwtHeader = request.getHeader("Authorization");
+		String jwtHeader = request.getHeader(JwtTokenUtil.HEADER_STRING);
 		log.info("jwtHeader: " + jwtHeader);
 
 		if (jwtHeader == null || !jwtHeader.startsWith("Bearer")) {

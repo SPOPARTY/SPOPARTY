@@ -16,48 +16,48 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JwtTokenUtil {
 
-	private final String accessSecretKey;
+	private final String ACCESS_SECRET_KEY;
 
-	private final String refreshSecretKey;
-	private final Integer accessExpirationTime;
-	private final Integer refreshExpirationTime;
-	private static final String prefix = "Bearer ";
-	private static final String issuer = "com.spoparty";
+	private final String REFRESH_SECRET_KEY;
+	private final Integer ACCESS_EXPIRATION_TIME;
+	private final Integer REFRESH_EXPIRATION_TIME;
+	public static final String PREFIX = "Bearer ";
+	private static final String ISSUER = "com.spoparty";
 	public static final String HEADER_STRING = "Authorization";
 
-	public JwtTokenUtil(@Value("${jwt.access.secret}") String accessSecretKey,
-		@Value("${jwt.refresh.secret}") String refreshSecretKey,
-		@Value("${jwt.access.expiration}") Integer accessExpirationTime,
-		@Value("${jwt.refresh.expiration}") Integer refreshExpirationTime) {
-		this.accessSecretKey = accessSecretKey;
-		this.accessExpirationTime = accessExpirationTime;
-		this.refreshSecretKey = refreshSecretKey;
-		this.refreshExpirationTime = refreshExpirationTime;
+	public JwtTokenUtil(@Value("${jwt.access.secret}") String ACCESS_SECRET_KEY,
+		@Value("${jwt.refresh.secret}") String REFRESH_SECRET_KEY,
+		@Value("${jwt.access.expiration}") Integer ACCESS_EXPIRATION_TIME,
+		@Value("${jwt.refresh.expiration}") Integer REFRESH_EXPIRATION_TIME) {
+		this.ACCESS_SECRET_KEY = ACCESS_SECRET_KEY;
+		this.ACCESS_EXPIRATION_TIME = ACCESS_EXPIRATION_TIME;
+		this.REFRESH_SECRET_KEY = REFRESH_SECRET_KEY;
+		this.REFRESH_EXPIRATION_TIME = REFRESH_EXPIRATION_TIME;
 	}
 
 	public String createAccessToken(String id) {
 		String jwtToken = JWT.create()
 			.withSubject("accessToken")
-			.withExpiresAt(new Date(System.currentTimeMillis() + accessExpirationTime))
-			.withIssuer(issuer)
+			.withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_TIME))
+			.withIssuer(ISSUER)
 			.withClaim("id", id)
-			.sign(Algorithm.HMAC512(accessSecretKey));
+			.sign(Algorithm.HMAC512(ACCESS_SECRET_KEY));
 
-		return prefix + jwtToken;
+		return PREFIX + jwtToken;
 	}
 
 	public String createRefreshToken() {
 		String jwtToken = JWT.create()
 			.withSubject("refreshToken")
-			.withExpiresAt(new Date(System.currentTimeMillis() + refreshExpirationTime))
-			.withIssuer(issuer)
-			.sign(Algorithm.HMAC512(refreshSecretKey));
-		return prefix + jwtToken;
+			.withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
+			.withIssuer(ISSUER)
+			.sign(Algorithm.HMAC512(REFRESH_SECRET_KEY));
+		return PREFIX + jwtToken;
 	}
 
 	public String checkAccessToken(String token) {
-		token = token.replace(prefix, "");
-		DecodedJWT decodedJWT = verify(token, accessSecretKey);
+		token = token.replace(PREFIX, "");
+		DecodedJWT decodedJWT = verify(token, ACCESS_SECRET_KEY);
 		if (decodedJWT != null && decodedJWT.getSubject().equals("accessToken")) {
 			return decodedJWT.getClaim("id").asString();
 		} else {
@@ -66,8 +66,8 @@ public class JwtTokenUtil {
 	}
 
 	public boolean checkRefreshToken(String token) {
-		token = token.replace(prefix, "");
-		DecodedJWT decodedJWT = verify(token, refreshSecretKey);
+		token = token.replace(PREFIX, "");
+		DecodedJWT decodedJWT = verify(token, REFRESH_SECRET_KEY);
 		if (decodedJWT != null && decodedJWT.getSubject().equals("refreshToken")) {
 			return true;
 		} else {
@@ -79,7 +79,7 @@ public class JwtTokenUtil {
 		JWTVerifier jwtVerifier = null;
 		DecodedJWT decodedJWT = null;
 		try {
-			jwtVerifier = JWT.require(Algorithm.HMAC512(key)).withIssuer(issuer).build();
+			jwtVerifier = JWT.require(Algorithm.HMAC512(key)).withIssuer(ISSUER).build();
 			decodedJWT = jwtVerifier.verify(token);
 		} catch (Exception e) {
 			log.error(e.getMessage());
