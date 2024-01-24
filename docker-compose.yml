@@ -34,27 +34,27 @@ services:
     ports:
       - "80:80"
       - "443:443"
-  jenkins:
-    image: jenkins/jenkins:jdk17
-    container_name: jenkins
-    user: root
-    environment:
-      - JENKINS_OPTS=--httpPort=8080
-      - TZ=Asia/Seoul
-    ports:
-      - "8080:8080"
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /jenkins:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
-  openvidu:
-    image: openvidu/openvidu-dev:2.29.0
-    container_name: openvidu
-    ports:
-      - "4443:4443"
-    environment:
-      - OPENVIDU_SECRET=MY_SECRET
+  # jenkins:
+  #   image: jenkins/jenkins:jdk17
+  #   container_name: jenkins
+  #   user: root
+  #   environment:
+  #     - JENKINS_OPTS=--httpPort=8080
+  #     - TZ=Asia/Seoul
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /jenkins:/var/jenkins_home
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+  # openvidu:
+  #   image: openvidu/openvidu-dev:2.29.0
+  #   container_name: openvidu
+  #   ports:
+  #     - "4443:4443"
+  #   environment:
+  #     - OPENVIDU_SECRET=MY_SECRET
     #networks:
     #react-spring: {}
     #spring-mysql: {}
