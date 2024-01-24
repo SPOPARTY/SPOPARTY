@@ -3,9 +3,7 @@
         <h1 style="align-items:center">게시글 작성</h1>
         <v-text-field
             v-model = "title"
-            label = "게시글 제목"
             :rules="titleRules"
-            :hide-details="true"
             outlined
             class="title"
         />

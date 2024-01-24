@@ -49,7 +49,7 @@ const router = createRouter({
     },
     {
       path:"/mypage",
-      name:"MyPage",
+      name:"Mypage",
       component: MyPage,
     },
 

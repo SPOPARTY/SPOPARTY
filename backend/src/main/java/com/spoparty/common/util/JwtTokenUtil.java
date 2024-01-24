@@ -1,125 +1,90 @@
 package com.spoparty.common.util;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.*;
+import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
-import static com.google.common.collect.Lists.newArrayList;
+import lombok.extern.slf4j.Slf4j;
 
-/**
- * jwt 토큰 유틸 정의.
- */
+@Slf4j
 @Component
 public class JwtTokenUtil {
-    private static String secretKey;
-    private static Integer expirationTime;
 
-    public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String HEADER_STRING = "Authorization";
-    public static final String ISSUER = "ssafy.com";
-    
-    @Autowired
-	public JwtTokenUtil(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration}") Integer expirationTime) {
-		this.secretKey = secretKey;
-		this.expirationTime = expirationTime;
+	private final String ACCESS_SECRET_KEY;
+
+	private final String REFRESH_SECRET_KEY;
+	private final Integer ACCESS_EXPIRATION_TIME;
+	private final Integer REFRESH_EXPIRATION_TIME;
+	public static final String PREFIX = "Bearer ";
+	private static final String ISSUER = "com.spoparty";
+	public static final String HEADER_STRING = "Authorization";
+
+	public JwtTokenUtil(@Value("${jwt.access.secret}") String ACCESS_SECRET_KEY,
+		@Value("${jwt.refresh.secret}") String REFRESH_SECRET_KEY,
+		@Value("${jwt.access.expiration}") Integer ACCESS_EXPIRATION_TIME,
+		@Value("${jwt.refresh.expiration}") Integer REFRESH_EXPIRATION_TIME) {
+		this.ACCESS_SECRET_KEY = ACCESS_SECRET_KEY;
+		this.ACCESS_EXPIRATION_TIME = ACCESS_EXPIRATION_TIME;
+		this.REFRESH_SECRET_KEY = REFRESH_SECRET_KEY;
+		this.REFRESH_EXPIRATION_TIME = REFRESH_EXPIRATION_TIME;
 	}
-    
-	public void setExpirationTime() {
-    		//JwtTokenUtil.expirationTime = Integer.parseInt(expirationTime);
-    		JwtTokenUtil.expirationTime = expirationTime;
+
+	public String createAccessToken(String id) {
+		String jwtToken = JWT.create()
+			.withSubject("accessToken")
+			.withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_TIME))
+			.withIssuer(ISSUER)
+			.withClaim("id", id)
+			.sign(Algorithm.HMAC512(ACCESS_SECRET_KEY));
+
+		return PREFIX + jwtToken;
 	}
 
-	public static JWTVerifier getVerifier() {
-        return JWT
-                .require(Algorithm.HMAC512(secretKey.getBytes()))
-                .withIssuer(ISSUER)
-                .build();
-    }
-    
-    public static String getToken(String userId) {
-    		Date expires = JwtTokenUtil.getTokenExpiration(expirationTime);
-        return JWT.create()
-                .withSubject(userId)
-                .withExpiresAt(expires)
-                .withIssuer(ISSUER)
-                .withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .sign(Algorithm.HMAC512(secretKey.getBytes()));
-    }
+	public String createRefreshToken() {
+		String jwtToken = JWT.create()
+			.withSubject("refreshToken")
+			.withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
+			.withIssuer(ISSUER)
+			.sign(Algorithm.HMAC512(REFRESH_SECRET_KEY));
+		return PREFIX + jwtToken;
+	}
 
-    public static String getToken(Instant expires, String userId) {
-        return JWT.create()
-                .withSubject(userId)
-                .withExpiresAt(Date.from(expires))
-                .withIssuer(ISSUER)
-                .withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .sign(Algorithm.HMAC512(secretKey.getBytes()));
-    }
-    
-    public static Date getTokenExpiration(int expirationTime) {
-    		Date now = new Date();
-    		return new Date(now.getTime() + expirationTime);
-    }
+	public String checkAccessToken(String token) {
+		token = token.replace(PREFIX, "");
+		DecodedJWT decodedJWT = verify(token, ACCESS_SECRET_KEY);
+		if (decodedJWT != null && decodedJWT.getSubject().equals("accessToken")) {
+			return decodedJWT.getClaim("id").asString();
+		} else {
+			return null;
+		}
+	}
 
-    public static void handleError(String token) {
-        JWTVerifier verifier = JWT
-                .require(Algorithm.HMAC512(secretKey.getBytes()))
-                .withIssuer(ISSUER)
-                .build();
+	public boolean checkRefreshToken(String token) {
+		token = token.replace(PREFIX, "");
+		DecodedJWT decodedJWT = verify(token, REFRESH_SECRET_KEY);
+		if (decodedJWT != null && decodedJWT.getSubject().equals("refreshToken")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-        try {
-            verifier.verify(token.replace(TOKEN_PREFIX, ""));
-        } catch (AlgorithmMismatchException ex) {
-            throw ex;
-        } catch (InvalidClaimException ex) {
-            throw ex;
-        } catch (SignatureGenerationException ex) {
-            throw ex;
-        } catch (SignatureVerificationException ex) {
-            throw ex;
-        } catch (TokenExpiredException ex) {
-            throw ex;
-        } catch (JWTCreationException ex) {
-            throw ex;
-        } catch (JWTDecodeException ex) {
-            throw ex;
-        } catch (JWTVerificationException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw ex;
-        }
-    }
+	public DecodedJWT verify(String token, String key) {
+		JWTVerifier jwtVerifier = null;
+		DecodedJWT decodedJWT = null;
+		try {
+			jwtVerifier = JWT.require(Algorithm.HMAC512(key)).withIssuer(ISSUER).build();
+			decodedJWT = jwtVerifier.verify(token);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return decodedJWT;
+	}
 
-    public static void handleError(JWTVerifier verifier, String token) {
-        try {
-            verifier.verify(token.replace(TOKEN_PREFIX, ""));
-        } catch (AlgorithmMismatchException ex) {
-            throw ex;
-        } catch (InvalidClaimException ex) {
-            throw ex;
-        } catch (SignatureGenerationException ex) {
-            throw ex;
-        } catch (SignatureVerificationException ex) {
-            throw ex;
-        } catch (TokenExpiredException ex) {
-            throw ex;
-        } catch (JWTCreationException ex) {
-            throw ex;
-        } catch (JWTDecodeException ex) {
-            throw ex;
-        } catch (JWTVerificationException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw ex;
-        }
-    }
 }
