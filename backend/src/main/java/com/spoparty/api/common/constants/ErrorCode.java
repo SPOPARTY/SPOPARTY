@@ -18,7 +18,9 @@ public enum ErrorCode {
 	BAD_PARAMETER(BAD_REQUEST, "요청 파라미터가 잘못되었습니다."),
 	BAD_PARAMETER_TYPE(BAD_REQUEST, "지원하지 않는 파라미터 형식입니다."),
 
-	// 도메인별 내용 추가
+	// 그룹
+	NO_GROUP_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 없습니다."),
+	MAX_GROUP_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 꽉 찼습니다"),
 
 	/* 401 UNAUTHORIZED: 인증 실패 */
 	UNAUTHORIZED_USER(UNAUTHORIZED, "만료되었거나 잘못된 토큰입니다. 토큰을 확인해주세요."),

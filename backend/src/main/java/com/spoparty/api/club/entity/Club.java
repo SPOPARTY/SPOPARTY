@@ -21,10 +21,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Club extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +52,18 @@ public class Club extends BaseEntity {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "party_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Party party;
+	//
+	// public boolean increaseCurrentParticipants() {
+	// 	if (currentParticipants == maxParticipants)
+	// 		throw new IllegalStateException(ErrorCode.MAX_GROUP_PARTICIPANTS.getMessage());
+	// 	this.currentParticipants++;
+	// 	return true;
+	// }
+	//
+	// public boolean decreaseCurrentParticipants() {
+	// 	if (currentParticipants == 0)
+	// 		throw new IllegalStateException(ErrorCode.NO_GROUP_PARTICIPANTS.getMessage());
+	// 	this.currentParticipants--;
+	// 	return true;
+	// }
 }
