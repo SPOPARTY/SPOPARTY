@@ -55,9 +55,6 @@ const posts = ref([
     {id: 9,title : "제목 9", nickname : "글쓴이 9" , created_time : "작성일 9", content:"작성내용 9", img : "/src/assets/never_heard.jpg"},
 ])
 
- // 현재 게시글을 담을 변수 -> store로직 추가하면서 바꾸자
-const currentPost = ref(null);
-
 const router = useRouter();
 const routes = useRoute();
 
@@ -70,6 +67,9 @@ function writeBoard() {
 function goBack() {
     router.push(`/club/${clubId}`)
 }
+
+// 현재 게시글을 담을 변수 -> store로직 추가하면서 바꾸자
+const currentPost = ref(null);
 
 // 게시글 상세 on/off
 const isDetailVisible = ref(false);
