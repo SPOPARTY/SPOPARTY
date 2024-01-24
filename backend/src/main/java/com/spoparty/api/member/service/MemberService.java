@@ -62,9 +62,9 @@ public class MemberService {
 	@Transactional
 	public Member deleteMember(Long id) {
 		Member member = memberRepository.findById(id, Member.class).orElse(null);
-		if (member == null || member.getStatus() == 2)
+		if (member == null || member.getState() == 2)
 			return null;
-		member.setStatus(2);
+		member.setState(2);
 		return member;
 	}
 

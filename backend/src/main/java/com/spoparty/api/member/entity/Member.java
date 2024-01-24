@@ -50,7 +50,7 @@ public class Member extends FootballBaseEntity {
 	@JoinColumn(name = "team_id", referencedColumnName = "team_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Team team;
 
-	@Column(nullable = false, length = 25)
-	private int status = 0;
+	@Column(nullable = false)
+	private int state = 0;
 
 }
