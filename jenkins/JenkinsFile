@@ -90,23 +90,6 @@ pipeline {
                         }
                     }
                 }
-                // stage('FE - Test') {
-                //     steps{
-                //         dir('backend'){
-                //             sh'''
-                //             
-                //             '''
-                //         }
-                //     }
-                //     post{
-                //         success {
-                //             echo(message: 'FE - Success Test')
-                //         }
-                //         failure{
-                //             error 'FE - Fail Test'
-                //         }
-                //     }
-                // }
             }
         }
     }
@@ -114,7 +97,6 @@ pipeline {
         success {
             script {
                 def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                // def Author_Commit = sh(script: "git --no-pager show -s --format=%an ${env.GIT_COMMIT}", returnStdout: true).trim();
                 mattermostSend (color: 'good',
                 message: "Succeeded: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
                 endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
@@ -125,7 +107,6 @@ pipeline {
         failure {
             script {
                 def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                // def Author_Commit = sh(script: "git --no-pager show -s --format=%an ${env.GIT_COMMIT}", returnStdout: true).trim();
                 mattermostSend (color: 'danger',
                 message: "Failed: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
                 endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
