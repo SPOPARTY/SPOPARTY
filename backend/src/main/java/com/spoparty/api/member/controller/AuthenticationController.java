@@ -19,8 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/authentication")
 @RestController
+@RequestMapping("/authentication")
 public class AuthenticationController {
 
 	private final EmailService emailService;

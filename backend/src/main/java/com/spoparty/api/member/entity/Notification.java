@@ -1,7 +1,6 @@
 package com.spoparty.api.member.entity;
 
-import com.spoparty.api.common.entity.BaseEntity;
-import com.spoparty.api.football.entity.Team;
+import com.spoparty.api.common.entity.FootballBaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -20,19 +19,24 @@ import lombok.ToString;
 @Setter
 @Getter
 @Entity
-public class FollowingTeam extends BaseEntity {
+public class Notification extends FootballBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "following_team_id")
+	@Column(name = "notification_id")
 	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name = "member_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member member;
 
-	@ManyToOne
-	@JoinColumn(name = "team_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Team team;
+	@Column(nullable = false, length = 50)
+	private String title;
+
+	@Column(nullable = false, length = 100)
+	private String content;
+
+	@Column(nullable = false)
+	private int state = 0;
 
 }
