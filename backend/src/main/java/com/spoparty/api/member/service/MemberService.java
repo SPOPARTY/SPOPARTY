@@ -37,7 +37,7 @@ public class MemberService {
 		return memberRepository.findByLoginId(loginId, Member.class).orElse(null);
 	}
 
-	public Member register(Member member) {
+	public Member registerMember(Member member) {
 		member.setLoginPwd(bCryptPasswordEncoder.encode(member.getLoginPwd()));
 		Team teamInfo = teamRepository.findById(member.getTeamInfo().getId()).orElse(null);
 		member.setTeamInfo(teamInfo);
@@ -46,7 +46,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public Member update(Member member) {
+	public Member updateMember(Member member) {
 		Member data = memberRepository.findById(member.getId(), Member.class).orElse(null);
 		if (data == null)
 			return null;
@@ -59,8 +59,13 @@ public class MemberService {
 		return data;
 	}
 
-	public void delete(Long id) {
-		memberRepository.deleteById(id);
+	@Transactional
+	public Member deleteMember(Long id) {
+		Member member = memberRepository.findById(id, Member.class).orElse(null);
+		if (member == null || member.getStatus() == 2)
+			return null;
+		member.setStatus(2);
+		return member;
 	}
 
 	public Member findByEmail(String email) {

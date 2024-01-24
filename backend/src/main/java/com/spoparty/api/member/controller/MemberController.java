@@ -46,13 +46,13 @@ public class MemberController {
 		if (loginMember != null)
 			return ResponseEntity.status(409).body(null);
 
-		member = memberService.register(member);
+		member = memberService.registerMember(member);
 		return ResponseEntity.status(201).body(member);
 	}
 
 	@PutMapping
 	public ResponseEntity<?> modifyMember(@RequestBody Member member) {
-		member = memberService.update(member);
+		member = memberService.updateMember(member);
 		if (member == null)
 			return ResponseEntity.status(404).body(null);
 		return ResponseEntity.status(200).body(member);
@@ -60,8 +60,11 @@ public class MemberController {
 
 	@DeleteMapping("/{memberId}")
 	public ResponseEntity<?> deleteMember(@PathVariable("memberId") Long memberId) {
-		memberService.delete(memberId);
-		return ResponseEntity.status(200).body(null);
+		Member member = memberService.deleteMember(memberId);
+		if (member == null)
+			return ResponseEntity.status(400).body(null);
+		else
+			return ResponseEntity.status(200).body(null);
 	}
 
 	// Follow 기능
