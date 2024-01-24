@@ -1,5 +1,7 @@
 package com.spoparty.api.member.repository.projection;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public interface MemberProjection {
 
 	Long getId();
@@ -15,6 +17,9 @@ public interface MemberProjection {
 	String getProvider();
 
 	String getRoleName();
+
+	@JsonProperty("teamId")
+	Long getTeam_id();
 
 	int getStatus();
 
