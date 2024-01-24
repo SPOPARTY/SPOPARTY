@@ -10,8 +10,11 @@ import com.spoparty.api.member.entity.Member;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-	public Optional<Member> findByLoginId(String loginId);
+	// Member 기능
+	<T> Optional<T> findById(Long id, Class<T> type);
 
-	public Optional<Member> findByEmail(String email);
+	<T> Optional<T> findByLoginId(String loginId, Class<T> type);
+
+	<T> Optional<T> findByEmail(String email, Class<T> type);
 
 }
