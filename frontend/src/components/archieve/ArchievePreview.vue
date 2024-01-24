@@ -15,15 +15,20 @@
         <v-row>
             <v-col
                 cols="12" sm="6" md="4" lg="3" 
-                v-for="(item, index) in dummy.slice(0, 8)"
+                v-for="(detail, index) in dummy.slice(0, 8)"
                 :key="index"
                 >
-                <v-card class="thumbnail">
-                    <v-card-text>{{ item.title }} {{ index + 1 }}</v-card-text>
+                <v-card class="thumbnail" @click="showDetailModal(detail)">
+                    <v-card-text>{{ detail.title }}</v-card-text>
                     <v-card-item>
-                        <img :src="item.img" :alt="item.img" class="thumb_img">
+                        <v-img :src="detail.img" :alt="detail.img" class="thumb_img"/>
                     </v-card-item>
                 </v-card>
+                <ArchieveDetail 
+                    v-if="isDetailVisible && currentDetail.id === detail.id"
+                    :detail="currentDetail" 
+                    @detail-close="isDetailVisible = false"
+                />
             </v-col>
         </v-row>
     </v-container>
@@ -33,6 +38,7 @@
 <script setup>
 import {ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router';
+import ArchieveDetail from '@/components/archieve/ArchieveDetail.vue';
 
 const routes = useRoute();
 const clubId = routes.params.clubId;
@@ -40,16 +46,28 @@ const clubId = routes.params.clubId;
 console.log("clubId -> ", clubId)
 
 const dummy = ref([
-    {title : "제목", img : "/src/assets/never_heard.jpg"},
-    {title : "제목", img : "/src/assets/never_heard.jpg"},
-    {title : "제목", img : "/src/assets/never_heard.jpg"},
-    {title : "제목", img : "/src/assets/never_heard.jpg"},
-    {title : "제목", img : "/src/assets/never_heard.jpg"},
-    {title : "제목", img : "/src/assets/never_heard.jpg"},
-    {title : "제목", img : "/src/assets/never_heard.jpg"},
-    {title : "제목", img : "/src/assets/never_heard.jpg"},
-    {title : "제목", img : "/src/assets/never_heard.jpg"},
+    {id : 1, title : "제목 1", img : "/src/assets/tear.png", created_time : "2024년 1월 24일", selected : false},
+    {id : 2, title : "제목 2", img : "/src/assets/tear.png", created_time : "2024년 1월 24일", selected : false},
+    {id : 3, title : "제목 3", img : "/src/assets/tear.png", created_time : "2024년 1월 24일", selected : false},
+    {id : 4, title : "제목 4", img : "/src/assets/tear.png", created_time : "2024년 1월 24일", selected : false},
+    {id : 5, title : "제목 5", img : "/src/assets/tear.png", created_time : "2024년 1월 24일", selected : false},
+    {id : 6, title : "제목 6", img : "/src/assets/tear.png", created_time : "2024년 1월 24일", selected : false},
+    {id : 7, title : "제목 7", img : "/src/assets/tear.png", created_time : "2024년 1월 24일", selected : false},
+    {id : 8, title : "제목 8", img : "/src/assets/tear.png", created_time : "2024년 1월 24일", selected : false},
+    {id : 9, title : "제목 9", img : "/src/assets/tear.png", created_time : "2024년 1월 24일", selected : false},
 ])
+
+// 아카이브 상세 모달 보이기
+const isDetailVisible = ref(false);
+
+// 지금 선택한 모달
+const currentDetail = ref(null);
+
+// 아카이브 상세모달 on
+const showDetailModal = (detail) => {
+    currentDetail.value = detail
+    isDetailVisible.value = true;
+}
 
 </script>
 
