@@ -4,7 +4,7 @@ import MatchView from "@/views/MatchView.vue";
 import LeagueView from "@/views/LeagueView.vue";
 import Signup from "@/components/user/Signup.vue";
 import Login from "@/components/user/Login.vue";
-import MyPage from "@/components/user/MyPage.vue";
+import MyPage from "@/components/user/Mypage.vue";
 
 import ClubMain from "@/components/club/ClubMain.vue";
 
@@ -49,7 +49,7 @@ const router = createRouter({
     },
     {
       path:"/mypage",
-      name:"Mypage",
+      name:"MyPage",
       component: MyPage,
     },
 
