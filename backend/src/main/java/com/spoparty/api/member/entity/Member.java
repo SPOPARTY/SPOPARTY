@@ -47,7 +47,7 @@ public class Member {
 
 	// @OneToOne(fetch = FetchType.LAZY)
 	// @JoinColumn(name = "teamId", referencedColumnName = "teamId")
-	// private Team teamInfo;
+	// private League teamInfo;
 
 	@Column(nullable = false, columnDefinition = "varchar(255) default 0")
 	private int status;

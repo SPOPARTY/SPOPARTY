@@ -57,13 +57,13 @@ logging:
   file:
     name: "./ssafy-web.log"
   level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
     root: INFO
     com:
       samsung:
         security: DEBUG
     org:
-      hibernate.SQL: debug
-      hibernate.orm.jdbd.bind: trace
       springframework:
         web: DEBUG
         apache:

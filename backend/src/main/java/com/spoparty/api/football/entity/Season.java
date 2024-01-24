@@ -10,6 +10,7 @@ import com.spoparty.api.common.entity.FootballBaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,7 +34,7 @@ public class Season extends FootballBaseEntity {
 	@Column(length = 4, nullable = false)
 	private String value;
 
-	@OneToMany(mappedBy = "season")
+	@OneToMany(mappedBy = "season", fetch = FetchType.LAZY)
 	List<SeasonLeague> seasonLeagues = new ArrayList<>();
 
 	public void setValue(String value) {

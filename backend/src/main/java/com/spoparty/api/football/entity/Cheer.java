@@ -29,14 +29,11 @@ public class Cheer extends FootballBaseEntity {
 	private CheerFixture cheerFixture;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "season_league_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "season_team_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam seasonLeagueTeam;
 
 	// 멤버 엔티티에 연관관계 설정 설명하기
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member member;
-
-
-
 }
