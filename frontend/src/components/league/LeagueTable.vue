@@ -8,25 +8,29 @@
                         <v-col cols="3" align="center">
                             <v-img :src="logoPath" class="league-logo mr-2" contain></v-img>
                         </v-col>
-                        <v-col cols="3" :style="{ fontSize: '1.5rem'}">
+                        <v-col cols="3" :style="{ fontSize: '1.5rem' }">
                             {{ league.name }} Ranking
                         </v-col>
                         <v-col cols="3"></v-col>
                     </v-row>
                     <v-spacer></v-spacer>
                     <v-row justify="center">
-                    <v-col cols="6">
-                    <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line
-                        hide-details style="width: 600px;" align="center"></v-text-field>
-                    </v-col>
-                </v-row>
+                        <v-col cols="6">
+                            <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details
+                                style="width: 600px;" align="center"></v-text-field>
+                        </v-col>
+                    </v-row>
                 </v-card-title>
-            
+
                 <v-data-table :headers="headers" :items="teams" :search="search" :items-per-page="-1" class="elevation-1"
                     hide-default-footer>
+                    <!-- 팀 상세 페이지로 보내기 (밑줄 none)-->
+                    <template v-slot:item.name="{ item }">
+                        <router-link :to="`/team/${item.teamId}`" style="text-decoration: none;">{{ item.name }}</router-link>
+                    </template>
                     <template v-slot:item.followed="{ item }">
-                        <v-icon v-if="item.followed" color="pink">mdi-heart</v-icon>
-                        <v-icon v-else color="grey">mdi-heart-outline</v-icon>
+                        <v-icon v-if="item.followed" color="pink" @click="item.followed = !item.followed">mdi-heart</v-icon>
+                        <v-icon v-else color="grey" @click="item.followed = !item.followed">mdi-heart-outline</v-icon>
                     </template>
                     <template v-slot:no-results>
                         <v-alert :value="true" color="error" icon="mdi-alert">
@@ -42,6 +46,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 // Props 정의
 const props = defineProps({
@@ -72,8 +77,8 @@ const headers = ref([
 
 // 예시 데이터 // 비로그인시 팔로우 불가능
 const teams = ref([
-    { rank: 1, name: '팀 A', points: 30, wins: 9, losses: 3, draws: 3, goalsFor: 25, goalsAgainst: 10, goalDifference: 15, recentForm: 'W-W-D-L-W', followed: true },
-    { rank: 2, name: '팀 B', points: 28, wins: 8, losses: 4, draws: 4, goalsFor: 22, goalsAgainst: 12, goalDifference: 10, recentForm: 'L-W-W-W-D', followed: false },
+    { teamId: 1, rank: 1, name: '팀 A', points: 30, wins: 9, losses: 3, draws: 3, goalsFor: 25, goalsAgainst: 10, goalDifference: 15, recentForm: 'W-W-D-L-W', followed: true },
+    { teamId: 2, rank: 2, name: '팀 B', points: 28, wins: 8, losses: 4, draws: 4, goalsFor: 22, goalsAgainst: 12, goalDifference: 10, recentForm: 'L-W-W-W-D', followed: false },
     // 추가 팀 데이터...
 ]);
 
@@ -104,10 +109,8 @@ const league = computed(() => {
     return foundLeague || { name: 'Unknown League', logo: '' };
 });
 
-const logoPath = computed(() => `/public/${league.value.logo}`);
+const logoPath = computed(() => `/src/assets/${league.value.logo}`);
 // const logoPath = '/public/premier_league.png';
-
-console.log(logoPath);
 
 </script>
 
@@ -124,5 +127,12 @@ console.log(logoPath);
 
 .card-ranking {
     width: 100%;
+}
+
+.team-name-link {
+    cursor: pointer;
+    color: #1976D2;
+    /* Vuetify 기본 색상 */
+    /* text-decoration: underline; */
 }
 </style>
