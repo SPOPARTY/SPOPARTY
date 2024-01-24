@@ -44,7 +44,7 @@ public class Member extends FootballBaseEntity {
 	@Column(nullable = false, length = 25)
 	private String roleName = "ROLE_USER";
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "team_id", referencedColumnName = "team_id")
 	private Team teamInfo;
 
