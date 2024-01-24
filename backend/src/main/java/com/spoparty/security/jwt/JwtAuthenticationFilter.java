@@ -62,13 +62,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		log.info("JwtAuthenticationFilter.successfulAuthentication() 실행");
 		PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
 		Member member = principalDetails.getMember();
-		String accessToken = jwtTokenUtil.createAccessToken(member.getMemberId() + "");
+		String accessToken = jwtTokenUtil.createAccessToken(member.getId() + "");
 		String refreshToken = jwtTokenUtil.createRefreshToken();
 		response.addHeader("accessToken", accessToken);
 		response.addHeader("refreshToken", refreshToken);
 		log.info("accessToken: " + accessToken);
 		log.info("refreshToken: " + refreshToken);
 		log.info("토큰발급완료");
+
+		// response.setStatus(200);
+		// PrintWriter writer = response.getWriter();
+		// ObjectMapper mapper = new ObjectMapper();
+		// mapper.registerModule(new JavaTimeModule());
+		// writer.write(mapper.writeValueAsString(member));
+		// writer.flush();
 	}
 
 }

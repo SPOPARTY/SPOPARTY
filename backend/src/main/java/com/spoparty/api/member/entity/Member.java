@@ -1,9 +1,7 @@
 package com.spoparty.api.member.entity;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.spoparty.api.common.entity.FootballBaseEntity;
+import com.spoparty.api.football.entity.Team;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,47 +11,42 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-public class Member {
+public class Member extends FootballBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long memberId;
+	@Column(name = "member_id")
+	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 30)
 	private String loginId;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 100)
 	private String loginPwd;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 30)
 	private String nickname;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 30)
 	private String email;
 
-	@Column(nullable = false, columnDefinition = "varchar(255) default 'basic'")
-	private String provider;
+	@Column(nullable = false, length = 30)
+	private String provider = "basic";
 
-	@Column(nullable = false, columnDefinition = "varchar(255) default 'ROLE_USER'")
-	private String roleName;
+	@Column(nullable = false, length = 10)
+	private String roleName = "ROLE_USER";
 
-	// @OneToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "teamId", referencedColumnName = "teamId")
-	// private Team teamInfo;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "team_id", referencedColumnName = "team_id")
+	private Team teamInfo;
 
-	@Column(nullable = false, columnDefinition = "varchar(255) default 0")
-	private int status;
+	@Column(nullable = false, length = 10)
+	private int status = 0;
 
-	@CreationTimestamp
-	private LocalDateTime createdTime;
-	@UpdateTimestamp
-	private LocalDateTime updatedTime;
 }
