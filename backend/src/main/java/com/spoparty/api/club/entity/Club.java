@@ -1,10 +1,11 @@
 package com.spoparty.api.club.entity;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+
 import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 
-import com.spoparty.api.common.constants.ErrorCode;
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.party.entity.Party;
@@ -18,7 +19,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
@@ -52,18 +52,18 @@ public class Club extends BaseEntity {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "party_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Party party;
-	//
-	// public boolean increaseCurrentParticipants() {
-	// 	if (currentParticipants == maxParticipants)
-	// 		throw new IllegalStateException(ErrorCode.MAX_GROUP_PARTICIPANTS.getMessage());
-	// 	this.currentParticipants++;
-	// 	return true;
-	// }
-	//
-	// public boolean decreaseCurrentParticipants() {
-	// 	if (currentParticipants == 0)
-	// 		throw new IllegalStateException(ErrorCode.NO_GROUP_PARTICIPANTS.getMessage());
-	// 	this.currentParticipants--;
-	// 	return true;
-	// }
+
+	public boolean increaseCurrentParticipants() {
+		if (currentParticipants == maxParticipants)
+			throw new IllegalStateException(NOT_ENOUGH_GROUP_PARTICIPANTS.getMessage());
+		this.currentParticipants++;
+		return true;
+	}
+
+	public boolean decreaseCurrentParticipants() {
+		if (currentParticipants == 0)
+			throw new IllegalStateException(ENOUGH_GROUP_PARTICIPANTS.getMessage());
+		this.currentParticipants--;
+		return true;
+	}
 }
