@@ -4,4 +4,4 @@ MAINTAINER HyeonWoo <gogoadl@naver.com>
 
 RUN \
     apt-get update && \
-    apt-get install vim \
+    apt-get install -y vim \
