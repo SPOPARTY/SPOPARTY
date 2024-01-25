@@ -1,13 +1,20 @@
 package com.spoparty.api.member.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.spoparty.api.member.entity.Member;
 
+@Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-	public Member findByLoginId(String loginId);
+	// Member 기능
+	<T> Optional<T> findById(Long id, Class<T> type);
 
-	public Member findByMemberId(Long memberId);
+	<T> Optional<T> findByLoginId(String loginId, Class<T> type);
+
+	<T> Optional<T> findByEmail(String email, Class<T> type);
 
 }

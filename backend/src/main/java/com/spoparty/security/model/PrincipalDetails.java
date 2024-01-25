@@ -46,7 +46,7 @@ public class PrincipalDetails implements UserDetails {
 	// status가 0이 아니면(1:휴면, 2:정지) 계정 비활성화 상태
 	@Override
 	public boolean isEnabled() {
-		return member.getStatus() == 0;
+		return member.getState() == 0;
 	}
 
 	@Override

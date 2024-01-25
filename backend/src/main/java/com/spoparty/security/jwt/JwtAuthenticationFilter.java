@@ -1,6 +1,7 @@
 package com.spoparty.security.jwt;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.common.util.JwtTokenUtil;
 import com.spoparty.security.model.PrincipalDetails;
@@ -62,13 +64,21 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		log.info("JwtAuthenticationFilter.successfulAuthentication() 실행");
 		PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
 		Member member = principalDetails.getMember();
-		String accessToken = jwtTokenUtil.createAccessToken(member.getMemberId() + "");
+		String accessToken = jwtTokenUtil.createAccessToken(member.getId() + "");
 		String refreshToken = jwtTokenUtil.createRefreshToken();
 		response.addHeader("accessToken", accessToken);
 		response.addHeader("refreshToken", refreshToken);
 		log.info("accessToken: " + accessToken);
 		log.info("refreshToken: " + refreshToken);
 		log.info("토큰발급완료");
+
+		// 로그인을 성공하면, 200응답에 Member객체를 담아 JSON으로 보냄.
+		response.setStatus(200);
+		PrintWriter writer = response.getWriter();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		writer.write(mapper.writeValueAsString(member));
+		writer.flush();
 	}
 
 }
