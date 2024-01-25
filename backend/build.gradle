@@ -125,7 +125,7 @@ processResources {
 //[끝]
 
 dependencies {
-    // stmp
+    // smtp
     implementation("org.springframework.boot:spring-boot-starter-mail")
     // oauth2
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
