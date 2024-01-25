@@ -11,7 +11,7 @@
                     <v-card-title>추억 한 조각</v-card-title>
                 </v-col>
                 <v-col cols="2" style="margin-top:5px;">
-                    <v-btn icon @click="closeModal">
+                    <v-btn :ripple="false" @click="closeModal" class="no-background-hover">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-col>
@@ -64,5 +64,12 @@ onMounted(()=>{
 </script>
 
 <style lang="scss" scoped>
+.no-background-hover {
+  box-shadow: none !important;
+
+  &:hover {
+    background-color: transparent !important;
+  }
+}
 
 </style>

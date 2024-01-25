@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container class="test">
         <v-row>
             <v-col cols="10">
                 <h1 class="text-center">추억 아카이브</h1>
@@ -130,4 +130,6 @@ function goBack() {
     left : 0;
     top : 50%;
 }
+
+
 </style>

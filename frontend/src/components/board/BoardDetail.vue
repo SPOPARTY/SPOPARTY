@@ -1,16 +1,16 @@
 <template>
     <v-dialog 
         v-model="modalVisible"
-        max-width="1000px"
+        max-width="600px"
         max-height="600px"
         @click:outside="closeModal"
         persistent    
     >
         <v-card class="board-detail" >
-            <v-card-title primary-title class="justify-center">{{ props.post.title }}</v-card-title>
-            <v-card-subtitle>{{ props.post.nickname }}</v-card-subtitle>
+            <v-card-title class="text-center">{{ props.post.title }}</v-card-title>
+            <v-card-subtitle class="text-right">{{ props.post.nickname }}</v-card-subtitle>
             <v-card-item>
-                <v-img :src="props.post.img" class="img"></v-img>
+                <v-img :src="props.post.img" class="img" cover width="100%"></v-img>
             </v-card-item>
             <v-card-text>
                 {{ props.post.content }}

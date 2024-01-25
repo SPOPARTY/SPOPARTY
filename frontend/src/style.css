@@ -1,11 +1,11 @@
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #121212;
+  background-color: white;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -28,12 +28,14 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: white;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
 
 button {
   border-radius: 8px;
@@ -42,7 +44,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #121212;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -65,6 +67,11 @@ button:focus-visible {
   text-align: center;
 }
 
+.test{
+  background-color: gray;
+  color:white;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -76,4 +83,14 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+} */
+
+.v-toolbar__content, .v-navigation-drawer__content, a.v-btn{
+  background-color:#121212;
+  color:white; 
+}
+
+.plus-btn{
+  color:white;
+  transform: translateY(15px);
 }

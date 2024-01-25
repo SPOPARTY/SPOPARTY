@@ -2,7 +2,7 @@
   <v-navigation-drawer v-model="drawer" app permanent color="grey darken-3">
     <!-- 네비게이션 타이틀 굵은 글씨로 -->
     <v-list-item class="py-2">
-      <v-subheader class="text-h6 font-weight-bold">클럽 목록</v-subheader>
+      <div class="text-h5 font-weight-bold">클럽 목록</div>
     </v-list-item>
 
     <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
