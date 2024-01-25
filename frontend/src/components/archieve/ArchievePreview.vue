@@ -6,7 +6,7 @@
             <v-toolbar-items>
             <RouterLink :to="`/club/${clubId}/archieve`">
                 <v-btn icon>
-                    <v-icon>mdi-plus</v-icon>
+                    <v-icon class="plus-btn">mdi-plus</v-icon>
                 </v-btn>
             </RouterLink>
             </v-toolbar-items>
@@ -19,7 +19,7 @@
                 :key="index"
                 >
                 <v-card class="thumbnail" @click="showDetailModal(detail)">
-                    <v-card-text>{{ detail.title }}</v-card-text>
+                    <v-card-text class="text-center">{{ detail.title }}</v-card-text>
                     <v-card-item>
                         <v-img :src="detail.img" :alt="detail.img" class="thumb_img"/>
                     </v-card-item>
@@ -77,12 +77,13 @@ const showDetailModal = (detail) => {
 }
 
 .thumbnail {
-    height:200px;
+    height:100%;
+    width:100%
 }
 
 .thumb_img{
-    height:100px;
-    width:100px;
+    height:100%;
+    width:100%;
 }
 
 

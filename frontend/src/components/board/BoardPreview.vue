@@ -5,7 +5,7 @@
         <v-toolbar-items>
             <RouterLink :to="`/club/${clubId}/board`">
                 <v-btn icon>
-                    <v-icon>mdi-plus</v-icon>
+                    <v-icon class="plus-btn">mdi-plus</v-icon>
                 </v-btn>
             </RouterLink>
         </v-toolbar-items>
@@ -23,13 +23,13 @@
                     @delete-post="deletePost"
             />
             <v-card class="thumbnail" @click="showBoardDetail(post)">
-                <v-card-title>{{ post.title }}</v-card-title>
-                <v-card-subtitle>{{ post.nickname }}</v-card-subtitle>
-                <v-card-text>{{post.created_time}}</v-card-text>
-                <v-card-text>{{ post.content }}</v-card-text>
+                <v-card-title class="text-center">{{ post.title }}</v-card-title>
+                <v-card-subtitle class=text-right>{{ post.nickname }}</v-card-subtitle>
+                <v-card-text class="text-right">{{post.created_time}}</v-card-text>
                 <v-card-item>
                     <v-img :src="post.img" class="thumb_img"/>
                 </v-card-item>
+                <v-card-text>{{ post.content }}</v-card-text>
             </v-card>
         </v-col>
     </v-row>
@@ -81,11 +81,10 @@ const deletePost = (postId) => {
 }
 
 .thumbnail {
-    height:300px;
+    height:100%;
 }
 
 .thumb_img{
-    height:100px;
-    margin-left:50px;
+    width:100%;
 }
 </style>

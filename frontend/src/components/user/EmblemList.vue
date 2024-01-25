@@ -14,7 +14,7 @@
                 </v-col>
                 <v-spacer></v-spacer>
                 <v-col class="text-right">
-                    <v-btn icon @click="closeModal">
+                    <v-btn icon @click="closeModal" class="no-background-hover">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-col>
@@ -129,6 +129,15 @@ function selectEmblem(emblem) {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+
+.no-background-hover {
+  box-shadow: none !important;
+
+  &:hover {
+    background-color: transparent !important;
+  }
+}
 
 </style>

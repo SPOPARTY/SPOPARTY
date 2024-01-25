@@ -5,7 +5,7 @@
                 <ArchievePreview/>
             </v-col>
             <v-col cols="12" md="4">
-                <ClubMemberFunc/>
+                <ClubMembersFunc/>
             </v-col>
         </v-row>
     <BoardPreview style="margin-top:100px;"/>
@@ -14,7 +14,7 @@
 
 <script setup>
 import ArchievePreview from '@/components/archieve/ArchievePreview.vue';
-import ClubMemberFunc from '@/components/club/ClubMemberFunc.vue';
+import ClubMembersFunc from '@/components/club/ClubMembersFunc.vue';
 import BoardPreview from '@/components/board/BoardPreview.vue';
 
 </script>
