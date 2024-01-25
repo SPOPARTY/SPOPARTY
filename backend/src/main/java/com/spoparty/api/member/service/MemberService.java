@@ -39,7 +39,7 @@ public class MemberService {
 
 	public Member registerMember(Member member) {
 		member.setLoginPwd(bCryptPasswordEncoder.encode(member.getLoginPwd()));
-		Team teamInfo = teamRepository.findById(member.getTeam().getId()).orElse(null);
+		Team teamInfo = teamRepository.findById(member.getTeam().getId(), Team.class).orElse(null);
 		member.setTeam(teamInfo);
 		memberRepository.save(member);
 		return member;
