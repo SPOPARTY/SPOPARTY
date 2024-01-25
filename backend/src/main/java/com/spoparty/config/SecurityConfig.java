@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.spoparty.api.member.repository.MemberRepository;
@@ -21,6 +22,7 @@ import com.spoparty.common.util.JwtTokenUtil;
 import com.spoparty.security.jwt.JwtAuthenticationFilter;
 import com.spoparty.security.jwt.JwtAuthenticationProvider;
 import com.spoparty.security.jwt.JwtAuthorizationFilter;
+import com.spoparty.security.service.OAuth2UserService;
 import com.spoparty.security.service.PrincipalDetailService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,9 @@ public class SecurityConfig {
 
 	private final JwtAuthenticationProvider jwtAuthenticationProvider;
 	private final PrincipalDetailService principalDetailService;
+	private final OAuth2UserService oAuth2UserService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	// private final OAuth2LoginAuthenticationProvider oAuth2LoginAuthenticationProvider;
 	private final MemberRepository memberRepository;
 	private final JwtTokenUtil jwtTokenUtil;
 
@@ -45,7 +49,6 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		log.info("filterChain 실행");
 		return http
-
 			.addFilterAfter(new JwtAuthenticationFilter(authenticationManager(), jwtTokenUtil),
 				UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), memberRepository, jwtTokenUtil),
@@ -58,6 +61,13 @@ public class SecurityConfig {
 				.requestMatchers("/", "/members/join", "/members/login").permitAll()
 				.requestMatchers("/admin").hasAnyRole("ADMIN")
 				.anyRequest().permitAll()
+			)
+
+			.oauth2Login(oauth2Login -> oauth2Login
+				.loginPage("/login")
+				.successHandler(successHandler())
+				.userInfoEndpoint().userService(oAuth2UserService)
+
 			)
 
 			.sessionManagement(sessionManagement -> sessionManagement
@@ -89,8 +99,42 @@ public class SecurityConfig {
 		daoAuthenticationProvider.setUserDetailsService(principalDetailService);
 		daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
 		providers.add(daoAuthenticationProvider);
+		// providers.add(new OAuth2LoginAuthenticationProvider());
+		// providers.add(new OAuth2AuthorizationCodeAuthenticationProvider());
+		// providers.add(new OAuth2AuthenticationToken())
 		log.info("AuthenticationManager 생성");
 		return new ProviderManager(providers);
 	}
+
+	@Bean
+	public AuthenticationSuccessHandler successHandler() {
+		return ((request, response, authentication) -> {
+			log.info("dasasdsdaasdasds");
+			// DefaultOAuth2User defaultOAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
+			//
+			// String id = defaultOAuth2User.getAttributes().get("id").toString();
+			// String body = """
+			//         {"id":"%s"}
+			//         """.formatted(id);
+			//
+			// response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			// response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+			//
+			// PrintWriter writer = response.getWriter();
+			// writer.println(body);
+			// writer.flush();
+			response.getWriter().flush();
+		});
+	}
+
+	// @Autowired
+	// public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+	// 	// 여기서 다양한 인증 방식을 설정할 수 있습니다.
+	// 	auth
+	// 		.inMemoryAuthentication()
+	// 		.withUser("user").password("password").roles("USER")
+	// 		.and()
+	// 		.withUser("admin").password("password").roles("ADMIN");
+	// }
 
 }
