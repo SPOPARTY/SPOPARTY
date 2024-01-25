@@ -1,9 +1,8 @@
 package com.spoparty.api.party.entity;
 
-import java.util.List;
-
 import org.hibernate.annotations.ColumnDefault;
 
+import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.member.entity.Member;
@@ -18,12 +17,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Getter
+@Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Party extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,4 +51,8 @@ public class Party extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fixture_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Fixture fixture;
+
+	@OneToOne(mappedBy = "Party", fetch = FetchType.LAZY)
+	@JoinColumn(name = "club_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Club club;
 }

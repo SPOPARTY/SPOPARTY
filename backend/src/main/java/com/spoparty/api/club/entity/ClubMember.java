@@ -16,10 +16,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Getter
+@Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClubMember extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +41,12 @@ public class ClubMember extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private RoleType role;
+
+	// 생성 메서드
+	public static ClubMember createOrderItem(Member member, RoleType role) {
+		ClubMember clubMember = new ClubMember();
+		clubMember.setMember(member);
+		clubMember.setRole(role);
+		return clubMember;
+	}
 }
