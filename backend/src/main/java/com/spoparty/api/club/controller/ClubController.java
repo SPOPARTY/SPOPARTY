@@ -33,8 +33,9 @@ public class ClubController {
 	private final ClubService clubService;
 
 	@PostMapping
-	public ApiResponse<Boolean> create(@RequestBody @Valid ClubRequestDto clubRequestDto) {
-		Boolean response = clubService.createClub(clubRequestDto);
+	public ApiResponse<Long> create(@RequestBody @Valid ClubRequestDto clubRequestDto) {
+		// 회원 검증 로직 필요
+		Long response = clubService.createClub(clubRequestDto);
 		return ApiResponse.success(CLUB_CREATE_SUCCESS, response);
 	}
 

@@ -10,8 +10,14 @@ import com.spoparty.api.club.dto.ClubMemberResponseDto;
 import com.spoparty.api.club.dto.ClubRequestDto;
 import com.spoparty.api.club.dto.InviteRequestDto;
 import com.spoparty.api.club.dto.InviteResponseDto;
+import com.spoparty.api.club.entity.Club;
+import com.spoparty.api.club.entity.ClubMember;
 import com.spoparty.api.club.repository.ClubMemberRepository;
 import com.spoparty.api.club.repository.ClubRepository;
+import com.spoparty.api.common.entity.RoleType;
+import com.spoparty.api.member.entity.Member;
+import com.spoparty.api.member.repository.MemberRepository;
+import com.spoparty.api.party.repository.PartyRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,10 +27,17 @@ import lombok.RequiredArgsConstructor;
 public class ClubService {
 	private final ClubRepository clubRepository;
 	private final ClubMemberRepository clubMemberRepository;
-	// private final PartyRepository partyRepository;
+	private final PartyRepository partyRepository;
+	private final MemberRepository memberRepository;
 
-	public boolean createClub(ClubRequestDto clubRequestDto) {
-		return true;
+	public long createClub(ClubRequestDto clubRequestDto) {
+		Member member = memberRepository.findByMemberId(clubRequestDto.getMemberId());
+
+		ClubMember clubMember = ClubMember.createClubMember(member, RoleType.host);
+		Club club = Club.createClub(clubRequestDto.getName(), clubMember);
+
+		clubRepository.save(club);
+		return club.getId();
 	}
 
 	public List<ClubRequestDto> findRecentClubs(long memberId) {
