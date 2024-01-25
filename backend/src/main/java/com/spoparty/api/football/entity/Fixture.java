@@ -72,7 +72,7 @@ public class Fixture extends FootballBaseEntity {
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "season_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "season_league_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeague seasonLeague;
 
 	@OneToMany(mappedBy = "fixture")
@@ -83,8 +83,9 @@ public class Fixture extends FootballBaseEntity {
 
 
 	@Builder
-	public Fixture(LocalDateTime startTime, String roundKr, String roundEng, int homeTeamGoal, int awayTeamGoal,
+	public Fixture(long id, LocalDateTime startTime, String roundKr, String roundEng, int homeTeamGoal, int awayTeamGoal,
 		String status, SeasonLeagueTeam homeTeam, SeasonLeagueTeam awayTeam, SeasonLeague seasonLeague) {
+		this.id = id;
 		this.startTime = startTime;
 		this.roundKr = roundKr;
 		this.roundEng = roundEng;

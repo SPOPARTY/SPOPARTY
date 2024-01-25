@@ -4,7 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.spoparty.api.football.entity.Coach;
+import com.spoparty.api.football.entity.LineupPlayer;
 
 @Repository
-public interface LineupPlyaerRepository extends JpaRepository<Coach, Long> {
+public interface LineupPlayerRepository extends JpaRepository<LineupPlayer, Long> {
 }

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.football.entity.Fixture;
+import com.spoparty.api.football.entity.SeasonLeague;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
+import com.spoparty.api.football.entity.SeasonLeagueTeamPlayer;
 import com.spoparty.api.football.repository.FixtureRepository;
 import com.spoparty.api.football.repository.SeasonLeagueRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
@@ -29,6 +31,14 @@ public class FixtureTestController {
 	@GetMapping("/save")
 	public ResponseEntity<Fixture> save() {
 
+		SeasonLeagueTeam homeTeam = seasonLeagueTeamRepository.findById((long)2).orElse(null);
+		SeasonLeagueTeam awayTeam = seasonLeagueTeamRepository.findById((long)3).orElse(null);
+		SeasonLeague seasonLeague = seasonLeagueRepository.findById((long)5).orElse(null);
+
+		System.out.println(homeTeam.getSeasonLeague().getId());
+		System.out.println(awayTeam.getSeasonLeague().getId());
+		System.out.println(seasonLeague.getId());
+
 		Fixture fixture = Fixture.builder()
 			.awayTeamGoal(1)
 			.homeTeamGoal(1)
@@ -36,9 +46,9 @@ public class FixtureTestController {
 			.roundEng("Roung 4")
 			.startTime(LocalDateTime.of(2023, 1, 1, 1, 1))
 			.status("종료")
-			.homeTeam(seasonLeagueTeamRepository.findById((long)2).orElse(null))
-			.awayTeam(seasonLeagueTeamRepository.findById((long)3).orElse(null))
-			.seasonLeague(seasonLeagueRepository.findById((long)5).orElse(null))
+			.homeTeam(homeTeam)
+			.awayTeam(awayTeam)
+			.seasonLeague(seasonLeague)
 			.build();
 
 		Fixture fixture2 = fixtureRepository.save(fixture);

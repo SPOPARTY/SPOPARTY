@@ -48,7 +48,6 @@ public class SeasonLeagueTeamPlayer extends FootballBaseEntity {
 	private List<LineupPlayer> lineupPlayers = new ArrayList<>();
 
 	@Builder
-
 	public SeasonLeagueTeamPlayer(boolean captain, SeasonLeagueTeam seasonLeagueTeam, Player player) {
 		this.captain = captain;
 		this.seasonLeagueTeam = seasonLeagueTeam;

@@ -13,10 +13,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FixtureEvent extends FootballBaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +43,7 @@ public class FixtureEvent extends FootballBaseEntity {
 	private Fixture fixture;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="season_team_team_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name="season_league_team_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam seasonLeagueTeam;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -50,4 +54,15 @@ public class FixtureEvent extends FootballBaseEntity {
 	@JoinColumn(name="assist_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeamPlayer assist;
 
+	@Builder
+	public FixtureEvent(long time, String type, String detail, Fixture fixture, SeasonLeagueTeam seasonLeagueTeam,
+		SeasonLeagueTeamPlayer player, SeasonLeagueTeamPlayer assist) {
+		this.time = time;
+		this.type = type;
+		this.detail = detail;
+		this.fixture = fixture;
+		this.seasonLeagueTeam = seasonLeagueTeam;
+		this.player = player;
+		this.assist = assist;
+	}
 }
