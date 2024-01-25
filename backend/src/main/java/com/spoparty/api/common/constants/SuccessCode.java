@@ -12,9 +12,19 @@ import lombok.Getter;
 public enum SuccessCode {
 	// 일반
 	EXAMPLE_SUCCESS(OK, "예시 성공"),
-	GET_SUCCESS(OK, "조회 성공");
+	GET_SUCCESS(OK, "조회 성공"),
 
-	// 도메인별 내용 추가
+	// 그룹
+	CLUB_CREATE_SUCCESS(OK, "그룹 생성 성공"),
+	CLUB_UPDATE_SUCCESS(OK, "그룹 수정 성공"),
+	CLUB_DELETE_SUCCESS(OK, "그룹 삭제 성공"),
+	CLUB_READ_SUCCESS(OK, "그룹 조회 성공"),
+	INVITE_URL_CREATE_SUCCESS(OK, "초대 링크 반환 성공"),
+	CLUB_MEMBERS_READ_SUCCESS(OK, "그룹원 목록 조회 성공"),
+	CLUB_MEMBER_CREATE_SUCCESS(OK, "그룹원 생성 성공"),
+	CLUB_HOST_UPDATE_SUCCESS(OK, "그룹장 수정 성공"),
+	CLUB_MEMBER_DELETE_SUCCESS(OK, "그룹원 삭제 성공");
+
 
 	private final HttpStatus status;
 	private final String message;

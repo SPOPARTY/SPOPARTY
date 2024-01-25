@@ -21,6 +21,11 @@ public enum ErrorCode {
 	// 그룹
 	NOT_ENOUGH_GROUP_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 없습니다."),
 	ENOUGH_GROUP_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 꽉 찼습니다."),
+	NO_GROUP_MEMBER(BAD_REQUEST, "존재하지 않은 그룹원입니다."),
+	ALREADY_GROUP_MEMBER(BAD_REQUEST, "이미 존재하는 그룹원입니다."),
+
+	INVALID_INVITE_URL(BAD_REQUEST,"유효하지 않은 초대 링크입니다."),
+	NO_GROUP(BAD_REQUEST, "존재하지 않은 그룹입니다."),
 
 	/* 401 UNAUTHORIZED: 인증 실패 */
 	UNAUTHORIZED_USER(UNAUTHORIZED, "만료되었거나 잘못된 토큰입니다. 토큰을 확인해주세요."),
