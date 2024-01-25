@@ -52,7 +52,7 @@ public class Party extends BaseEntity {
 	@JoinColumn(name = "fixture_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Fixture fixture;
 
-	@OneToOne(mappedBy = "Party", fetch = FetchType.LAZY)
+	@OneToOne(mappedBy = "party", fetch = FetchType.LAZY)
 	@JoinColumn(name = "club_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Club club;
 }

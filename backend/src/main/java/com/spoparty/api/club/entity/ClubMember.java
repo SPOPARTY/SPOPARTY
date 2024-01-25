@@ -43,7 +43,7 @@ public class ClubMember extends BaseEntity {
 	private RoleType role;
 
 	// 생성 메서드
-	public static ClubMember createOrderItem(Member member, RoleType role) {
+	public static ClubMember createClubMember(Member member, RoleType role) {
 		ClubMember clubMember = new ClubMember();
 		clubMember.setMember(member);
 		clubMember.setRole(role);
