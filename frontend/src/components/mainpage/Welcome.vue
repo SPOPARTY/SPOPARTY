@@ -2,7 +2,7 @@
     <v-container fluid class="pa-2 fill-height">
         <v-row justify="center">
             <v-col cols="12">
-                <v-card color="grey lighten-1" class="d-flex flex-column align-center justify-center">
+                <v-card color="grey lighten-1" class="d-flex flex-column align-center justify-center pa-2">
                     <v-card-title class="text-h2 py-6">소개 컴포넌트(비로그인)</v-card-title>
                     <v-card-text class="py-6">
                         <div class="intro-text">
@@ -17,7 +17,7 @@
                                     <v-icon size="x-large">mdi-account-plus</v-icon>
                                 </v-btn>
                             </div>
-                            <v-divider class="my-3"></v-divider>
+                            <br>
                             <div class="text-center">
                                 <span class="asking">회원이시라면</span>
                                 <v-btn text to="/login" class="mx-2" color="primary">

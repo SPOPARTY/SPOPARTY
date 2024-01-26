@@ -116,3 +116,8 @@ hr.v-divider {
   color:white;
   transform: translateY(15px);
 }
+
+.button {
+  /* 수정필요 */
+  elevation: 0;
+}

@@ -70,7 +70,8 @@ const filteredLeagues = computed(() => {
 
 <style scoped>
 .title-section, .contents-section {
-  min-width: 800px; /* 타이틀과 컨텐츠 섹션의 최소 너비를 설정 */
+   /* 타이틀과 컨텐츠 섹션의 최소 너비를 설정 */
+  /* min-width: 800px; */
   /* background-color: #E0E0E0; */
   white-space: nowrap; /* 내용을 한 줄로 유지 */
 }
