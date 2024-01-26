@@ -85,20 +85,34 @@ button:focus-visible {
   }
 } */
 
-.v-toolbar__content, .v-navigation-drawer__content, a.v-btn{
-  background-color:#121212;
-  color:white; 
+:root {
+  font-family: 'Noto Sans KR', 'Roboto', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
+
+a:hover {
+  color: #BAA401;
+}
+
+.v-application__wrap, .v-toolbar__content {
+  background-color: #08042B;
+}
+
+.contents-section, .title-section {
+  background-color: #292646;
+  min-width: 900px;
+}
+
+hr.v-divider {
+  border-right-width : 6px;
+  border-bottom-width: 6px;
+}
+
+.v-navigation-drawer__content{
+  background-color:#08042B;
+}
+
 
 .plus-btn{
   color:white;
   transform: translateY(15px);
-}
-
-.no-background-hover {
-  box-shadow: none !important;
-
-  &:hover {
-    background-color: transparent !important;
-  }
 }
