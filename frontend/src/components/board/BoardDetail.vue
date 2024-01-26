@@ -1,15 +1,110 @@
 <template>
-    <div>
-        <h1>게시글 만들기</h1>
-        
-    </div>
+    <v-dialog 
+        v-model="modalVisible"
+        max-width="600px"
+        max-height="600px"
+        @click:outside="closeModal"
+        persistent    
+    >
+        <v-card class="board-detail" >
+            <v-card-title class="text-center">{{ props.post.title }}</v-card-title>
+            <v-card-subtitle class="text-right">{{ props.post.nickname }}</v-card-subtitle>
+            <v-card-item>
+                <v-img :src="props.post.img" class="img" cover width="100%"></v-img>
+            </v-card-item>
+            <v-card-text>
+                {{ props.post.content }}
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer/>
+                <v-btn v-if="currentUserId == 1" color="success" @click="showEditModal">수정하기</v-btn>
+                <v-btn v-if="currentUserId == 1" color="error" @click="confirmDelete">삭제하기</v-btn>
+                <v-btn v-else color="#121212" @click="closeModal">히히 버튼 발사</v-btn>
+                <v-btn color="red" @click="closeModal">닫기</v-btn>
+            </v-card-actions>
+            
+            <v-dialog v-model="deleteConfirmVisible" persistent max-width="500px">
+                <v-card>
+                    <v-card-title class="text-h5">게시글 삭제</v-card-title>
+                    <v-card-text>정말로 이 게시글을 삭제하시겠습니까?</v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" text @click="deleteConfirmVisible = false">취소</v-btn>
+                        <v-btn color="red darken-1" text @click="deletePost">삭제</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-card>
+    </v-dialog>
+    <EditBoard 
+        v-if="isEditModalVisible" 
+        :detail="post" 
+        @edit-close="editClose($event)"/>
 </template>
 
 <script setup>
+import  {ref, onMounted} from 'vue';
+import EditBoard from '@/components/board/EditBoard.vue';
 
+const currentUserId = ref(1); // 작성자 id
+
+const modalVisible = ref(true); // BoardDetail on/off 관장
+
+const props = defineProps({
+    post : Object
+})
+
+const emits = defineEmits(['detail-close', 'delete-post'])
+
+const isEditModalVisible = ref(false)
+
+// EditBoard모달 on
+function showEditModal() {
+    isEditModalVisible.value = true; // EditBoard on
+    modalVisible.value = false; // BoardDetail off
+}
+
+// EditBoard모달 off
+function editClose(editPost) {
+    isEditModalVisible.value = false // EditBoard off
+    modalVisible.value = true// BoardDetail on
+}
+
+// 삭제 확인 모달
+const deleteConfirmVisible = ref(false);
+const confirmDelete = () => {
+    deleteConfirmVisible.value = true;
+}
+
+// 진짜 삭제
+function deletePost() {
+    emits('delete-post',props.post.id)
+    closeModal()
+    deleteConfirmVisible.value = false;
+}
+
+// BoardDetail 모달 off
+function closeModal() {
+    modalVisible.value = false; // 1. modalVisible off
+    emits('detail-close') // 2. emit
+    console.log("BoardDetail닫음")
+    console.log("modalVisible --> ",modalVisible.value)
+}
+
+
+onMounted(() => {
+    console.log("히히 boardDetail 발사")
+})
 
 </script>
 
 <style lang="scss" scoped>
+
+.img{
+    border:solid;
+    border-radius: 20px;
+    width:50%;
+    height:50%;
+}
 
 </style>
