@@ -67,3 +67,14 @@ jwt:
     secret: syLzLe230fFXO0OfYB6XEQoEj1QzRlVgtjNL8PYs1A1tymCL1ctob5dlwoqhvhDa
     expiration: 1269600000
 
+# S3
+cloud:
+  aws:
+    s3:
+      bucket: spoparty-bucket
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: access
+      secretKey: secret
+
