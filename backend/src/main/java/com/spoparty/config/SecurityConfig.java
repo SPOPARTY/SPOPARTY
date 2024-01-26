@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -42,6 +43,7 @@ public class SecurityConfig {
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final MemberService memberService;
 	private final JwtTokenUtil jwtTokenUtil;
+	private final AuthenticationEntryPoint authenticationEntryPoint;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -56,9 +58,8 @@ public class SecurityConfig {
 			// '/admin' 은 권한이 'ROLE_ADMIN'인 사람만 접근 가능
 			// 나머지 경로에 대해서 인증(로그인)된 사람만 접근 가능 ( 임시로 모두가능하게 설정 )
 			.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-				.requestMatchers("/", "/members/join", "/members/login").permitAll()
+				.requestMatchers("/authentication/**", "/members/register", "/members/login", "/error").permitAll()
 				.requestMatchers("/admin").hasAnyRole("ADMIN")
-				.requestMatchers("/favicon.ico").denyAll()
 				.anyRequest().permitAll()
 			)
 
@@ -67,6 +68,10 @@ public class SecurityConfig {
 				.successHandler((request, response, authentication) ->
 					request.getRequestDispatcher("/authentication/token").forward(request, response))
 				.userInfoEndpoint().userService(oAuth2UserService)
+			)
+
+			.exceptionHandling(exceptionHandling -> exceptionHandling
+				.authenticationEntryPoint(authenticationEntryPoint)
 			)
 
 			.sessionManagement(sessionManagement -> sessionManagement
