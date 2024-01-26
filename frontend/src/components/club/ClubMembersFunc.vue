@@ -9,6 +9,7 @@
                 <v-icon large @click="showClubMemberFunc">mdi-cog</v-icon>
                 <ClubLeader 
                     v-if="isClubMemberFuncVisible && loginUser.role === '그룹장'"
+                    :role="loginUser.role"
                     @club-leader-close="closeClubMemberFunc"
                     />
                 <ClubMember 
@@ -54,7 +55,7 @@
             <v-card-title>초대 링크를 복사하세요!</v-card-title>
             <div class="text-to-copy">
                 <v-card-text class="invite">
-                    URL : {{ textToCopy }}
+                    URL : <b><u>{{ textToCopy }}</u></b>
                     <v-btn @click="copyText" class="copy-btn">
                         <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
@@ -80,9 +81,7 @@ const clubMembers = ref([
     {memberId : 6, name : "글로리맨유", role : "그룹원"},
 ])
 
-const loginUser = {
-    memberId : 2, name : "제라드", role : "그룹장"
-}
+const loginUser = clubMembers.value[1];
 
 // 그룹원 보기 on/off
 const isClubMemberVisible = ref(false)

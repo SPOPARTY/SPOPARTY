@@ -67,6 +67,7 @@ const sortedRecentRecords = computed(() => {
 <style scoped>
 .container {
     max-width: 500px;
+    min-width: 420px;
     padding: 20px;
     box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
     border-radius: 8px;

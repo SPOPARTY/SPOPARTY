@@ -55,7 +55,7 @@
                         >
                             <img :src="emblem.src" :alt="emblem.name" style="width:100%; height:100%;">
                         </v-avatar>
-                        <div class="club-name" style="font-size: 15px; text-align:center; margin-top:8px;">
+                        <div class="club-name">
                             {{ emblem.name }}  
                         </div>
                     </v-btn>
@@ -130,7 +130,11 @@ function selectEmblem(emblem) {
 </script>
 
 <style lang="scss" scoped>
-
+.club-name{
+    font-size: 15px; 
+    text-align:center; 
+    margin-top:8px;
+}
 
 .no-background-hover {
   box-shadow: none !important;

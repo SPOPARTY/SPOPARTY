@@ -2,30 +2,21 @@
      <v-app>
           <v-container fluid>
                <!-- 메인 컨텐츠 영역 -->
-               <v-row>
+               <v-row align="center" justify="center" class="contents-section mx-12 my-8 pa-1">
                     <!-- 비로그인 시 소개 출력 -->
-                    <v-col v-if="!isLogin" cols="12" class="my-1">
+                    <v-col v-if="!isLogin" cols="12" class="my-1 mx-12">
                          <Welcome />
                     </v-col>
                     <!-- 첫 번째 컨텐츠 영역: 응원 투표 -->
-                    <v-col cols="12" class="my-1">
+                    <v-col cols="12" class="my-1 mx-12">
                          <CheerVote />
                     </v-col>
 
                     <!-- 두 번째 컨텐츠 영역: 경기 일정 -->
-                    <v-col cols="12" class="my-1">
+                    <v-col cols="12" class="my-1 mx-12">
                          <MatchNear />
                     </v-col>
                </v-row>
-
-               <!-- 테스트 영역 -->
-               <!-- <v-row>
-                    <v-col cols="12">
-                         <div class="test">
-                              <h1>Test 2048px</h1>
-                         </div>
-                    </v-col>
-               </v-row> -->
           </v-container>
      </v-app>
 </template>
