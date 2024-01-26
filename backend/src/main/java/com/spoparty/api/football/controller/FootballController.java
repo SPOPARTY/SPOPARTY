@@ -46,9 +46,9 @@ public class FootballController {
 		ResponseDTO responseDTO = footballService.findFixtureByNext(next);
 
 
-		HttpStatusCode code = isContentExist(responseDTO);
+		// HttpStatusCode code = isContentExist(responseDTO);
 
-		return new ResponseEntity<>(responseDTO, code);
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
 
 
@@ -58,8 +58,8 @@ public class FootballController {
 
 		ResponseDTO responseDTO = footballService.findFixtureByDate(date);
 
-		HttpStatusCode code = isContentExist(responseDTO);
-		return new ResponseEntity<>(responseDTO, code);
+		// HttpStatusCode code = isContentExist(responseDTO);
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
 
 
@@ -71,28 +71,35 @@ public class FootballController {
 
 		ResponseDTO responseDTO = footballService.findFixtureByKeyWord(type, keyword);
 
-		HttpStatusCode code = isContentExist(responseDTO);
+		// HttpStatusCode code = isContentExist(responseDTO);
 
-		return new ResponseEntity<>(responseDTO, code);
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
 
 
 	// 파티에서 시청가능한 경기 조회
 	@GetMapping(value = "/fixtures", params = {"startDate", "endDate"})
 	ResponseEntity<ResponseDTO> findFixtureByStartEndDate(@RequestParam(value = "startDate") String startDate,@RequestParam(value = "endDate") String endDate){
-		return null;
+
+
+		ResponseDTO responseDTO = footballService.findFixtureByStartEndDate(startDate, endDate);
+
+		// HttpStatusCode code = isContentExist(responseDTO);
+
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
+
 	}
 
 
 
 
-	private HttpStatusCode isContentExist(ResponseDTO responseDTO) {
-		if (responseDTO.getData() == null) {
-			return HttpStatusCode.valueOf(204);
-		} else {
-			return HttpStatusCode.valueOf(200);
-		}
-	}
+	// private HttpStatusCode isContentExist(ResponseDTO responseDTO) {
+	// 	if (responseDTO.getData() == null) {
+	// 		return HttpStatusCode.valueOf(200);
+	// 	} else {
+	// 		return HttpStatusCode.valueOf(200);
+	// 	}
+	// }
 
 
 

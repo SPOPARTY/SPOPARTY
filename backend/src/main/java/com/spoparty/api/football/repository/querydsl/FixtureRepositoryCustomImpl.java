@@ -14,6 +14,8 @@ import com.spoparty.api.football.entity.QLeague;
 import com.spoparty.api.football.entity.QSeasonLeague;
 import com.spoparty.api.football.entity.QSeasonLeagueTeam;
 import com.spoparty.api.football.entity.QTeam;
+import com.spoparty.api.football.entity.SeasonLeague;
+import com.spoparty.api.football.entity.SeasonLeagueTeam;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,10 +26,13 @@ public class FixtureRepositoryCustomImpl implements FixtureRepositoryCustom{
 
 	private static final QFixture fixture = QFixture.fixture;
 	private static final QSeasonLeague seasonLeague = QSeasonLeague.seasonLeague;
+
 	private static final QSeasonLeagueTeam  homeSeasonLeagueTeam = new QSeasonLeagueTeam("homeSeasonLeagueTeam");
 	private static final QSeasonLeagueTeam  awaySeasonLeagueTeam = new QSeasonLeagueTeam("awaySeasonLeagueTeam");
 
+
 	private static final QLeague league = QLeague.league;
+
 
 	private static final QTeam homeTeam = new QTeam("homeTeam");
 	private static final QTeam awayTeam = new QTeam("awayTeam");
@@ -71,6 +76,7 @@ public class FixtureRepositoryCustomImpl implements FixtureRepositoryCustom{
 			.fetchJoin()
 			.join(awaySeasonLeagueTeam.team, awayTeam)
 			.fetchJoin()
+			.orderBy(fixture.startTime.asc())
 			.where(fixture.startTime.between(start, end))
 			.fetch();
 	}
@@ -93,6 +99,7 @@ public class FixtureRepositoryCustomImpl implements FixtureRepositoryCustom{
 			.fetchJoin()
 			.join(awaySeasonLeagueTeam.team, awayTeam)
 			.fetchJoin()
+			.orderBy(fixture.startTime.asc())
 			.where(league.nameKr.contains(keyword))
 			.fetch();
 	}
@@ -120,5 +127,9 @@ public class FixtureRepositoryCustomImpl implements FixtureRepositoryCustom{
 			.where(awayTeam.nameKr.contains(keyword))
 			.fetch();
 	}
+
+
+
+
 
 }

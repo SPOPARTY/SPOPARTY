@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.football.repository.FixtureRepository;
+import com.spoparty.api.football.repository.LeagueRepository;
+import com.spoparty.api.football.repository.TeamRepository;
 import com.spoparty.api.football.response.FixtureDTO;
 import com.spoparty.api.football.response.ResponseDTO;
 
@@ -22,6 +24,10 @@ public class FootballService {
 
 	private final FixtureRepository fixtureRepository;
 
+	private final TeamRepository teamRepository;
+
+	private final LeagueRepository league
+	private final
 
 
 	// 현재 시간부터 시작하는 경기 6개를 가져오기
@@ -80,8 +86,34 @@ public class FootballService {
 			List<FixtureDTO> fixtureDTOs = EntityToDTO(fixtures);
 
 			return ResponseDTO.toDTO(fixtureDTOs, "경기 조회 성공");
+	}
 
 
+
+	public ResponseDTO findFixtureByStartEndDate(String startDate, String endDate) {
+
+		LocalDateTime start = startDateTimeFormatter(startDate);
+		LocalDateTime end = endDateTimeFormatter(endDate);
+
+		List<Fixture> fixtures = fixtureRepository.findFixtureByDate(start, end);
+
+
+		if (!emptyCheck(fixtures)) {
+			return ResponseDTO.toDTO(null, "해당 날짜에 경기 없음");
+		}
+
+
+		List<FixtureDTO> fixtureDTOs = EntityToDTO(fixtures);
+
+		return ResponseDTO.toDTO(fixtureDTOs, "경기 조회 성공");
+	}
+
+
+	public ResponseDTO findTeamByKeyword(String keyword) {
+		List<fixtureRepository.findTeamByKeyword(keyword)
+	}
+
+	public ResponseDTO findLeagueByKeyword(String keyword) {
 
 	}
 
