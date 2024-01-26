@@ -16,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.spoparty.api.member.service.MemberService;
 import com.spoparty.common.util.JwtTokenUtil;
@@ -49,6 +52,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		log.info("filterChain 실행");
 		return http
+			.addFilter(corsFilter())
 			.addFilterAfter(new JwtAuthenticationFilter(authenticationManager(), jwtTokenUtil),
 				UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), memberService, jwtTokenUtil),
@@ -102,6 +106,21 @@ public class SecurityConfig {
 		providers.add(daoAuthenticationProvider);
 		log.info("AuthenticationManager 생성");
 		return new ProviderManager(providers);
+	}
+
+	@Bean
+	public CorsFilter corsFilter() {
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		CorsConfiguration config = new CorsConfiguration();
+		config.addAllowedOrigin("*");
+		config.addAllowedOriginPattern("*");
+		config.addAllowedMethod("*");
+		config.addAllowedHeader("*");
+		config.addExposedHeader("Authentication");
+		config.setAllowCredentials(true);
+		config.setMaxAge(3600L);
+		source.registerCorsConfiguration("/**", config);
+		return new CorsFilter(source);
 	}
 
 }
