@@ -24,6 +24,31 @@ spring:
           starttls:
             enable: true # StartTLS
 
+  # OAuth2 kakao
+  security:
+    oauth2:
+      client:
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+        registration:
+          kakao:
+            client-id: e6eaf57a86c5a93933a23dd63e73c44e
+            client-secret: bTZG4U0KETlDHaeaLuQEqpnuaNoC6wvZ
+            redirect-uri: http://localhost:9090/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+            client-name: Kakao
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+
+
+
 # Smtp mail content
 smtp:
   mail:
@@ -33,12 +58,23 @@ smtp:
 
 
 
-# Jwt
+# Jwt 1hour / 15day
 jwt:
   access:
     secret: dyAeHub00pwL4F2Lcse52l1z5A003L3Bjtw4lcq751tymZvvqkcEU7L1imkKHeDa
-    expiration: 1800000
+    expiration: 3600000
   refresh:
     secret: syLzLe230fFXO0OfYB6XEQoEj1QzRlVgtjNL8PYs1A1tymCL1ctob5dlwoqhvhDa
-    expiration: 1209600000
+    expiration: 1269600000
+
+# S3
+cloud:
+  aws:
+    s3:
+      bucket: spoparty-bucket
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: access
+      secretKey: secret
 

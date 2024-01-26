@@ -3,6 +3,7 @@ package com.spoparty.api.football.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spoparty.api.common.entity.FootballBaseEntity;
 
 import jakarta.persistence.Column;
@@ -17,10 +18,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Lineup extends FootballBaseEntity {
 
 	@Id
@@ -32,10 +37,12 @@ public class Lineup extends FootballBaseEntity {
 	@Column(nullable=false, length=20)
 	private String formation;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fixture_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Fixture fixture;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "season_league_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam seasonLeagueTeam;
@@ -43,4 +50,12 @@ public class Lineup extends FootballBaseEntity {
 	@OneToMany(mappedBy = "lineup")
 	private List<LineupPlayer> lineupPlayers = new ArrayList<>();
 
+
+	@Builder
+
+	public Lineup(String formation, Fixture fixture, SeasonLeagueTeam seasonLeagueTeam) {
+		this.formation = formation;
+		this.fixture = fixture;
+		this.seasonLeagueTeam = seasonLeagueTeam;
+	}
 }

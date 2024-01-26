@@ -10,10 +10,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Standings extends FootballBaseEntity {
 
 	@Id
@@ -60,4 +64,23 @@ public class Standings extends FootballBaseEntity {
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "standing")
 	private SeasonLeagueTeam seasonLeagueTeam;
+
+
+	@Builder
+
+	public Standings(int rank, int points, int goalDiff, String form, int played, int win, int draw, int lose,
+		int goalsFor,
+		int goalsAgainst) {
+		this.rank = rank;
+		this.points = points;
+		this.goalDiff = goalDiff;
+		this.form = form;
+		this.played = played;
+		this.win = win;
+		this.draw = draw;
+		this.lose = lose;
+		this.goalsFor = goalsFor;
+		this.goalsAgainst = goalsAgainst;
+	}
 }
+

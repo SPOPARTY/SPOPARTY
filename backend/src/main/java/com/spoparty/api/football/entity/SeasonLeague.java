@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spoparty.api.common.entity.FootballBaseEntity;
 
 import jakarta.persistence.Column;
@@ -19,10 +20,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SeasonLeague extends FootballBaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,10 +42,13 @@ public class SeasonLeague extends FootballBaseEntity {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime seasonEndDate;
 
+
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "season_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Season season;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "league_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private League league;
@@ -51,4 +59,13 @@ public class SeasonLeague extends FootballBaseEntity {
 	@OneToMany(mappedBy = "seasonLeague")
 	private List<Fixture> fixtures = new ArrayList<>();
 
+
+	@Builder
+
+	public SeasonLeague(LocalDateTime seasonStartDate, LocalDateTime seasonEndDate, Season season, League league) {
+		this.seasonStartDate = seasonStartDate;
+		this.seasonEndDate = seasonEndDate;
+		this.season = season;
+		this.league = league;
+	}
 }
