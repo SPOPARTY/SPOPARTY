@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spoparty.api.club.dto.ClubHostRequestDto;
 import com.spoparty.api.club.dto.ClubMemberResponseDto;
 import com.spoparty.api.club.dto.ClubRequestDto;
+import com.spoparty.api.club.dto.ClubResponseDto;
 import com.spoparty.api.club.dto.InviteRequestDto;
 import com.spoparty.api.club.dto.InviteResponseDto;
 import com.spoparty.api.club.service.ClubService;
@@ -40,8 +41,8 @@ public class ClubController {
 	}
 
 	@GetMapping("/recent/{memberId}")
-	public ApiResponse<List<ClubRequestDto>> getRecentClubs(@PathVariable long memberId) {
-		List<ClubRequestDto> response = clubService.findRecentClubs(memberId);
+	public ApiResponse<List<ClubResponseDto>> getRecentClubs(@PathVariable long memberId) {
+		List<ClubResponseDto> response = clubService.findRecentClubs(memberId);
 		return ApiResponse.success(GET_SUCCESS, response);
 	}
 

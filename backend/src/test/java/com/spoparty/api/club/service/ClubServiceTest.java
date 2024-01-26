@@ -2,18 +2,32 @@ package com.spoparty.api.club.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
+
+import com.spoparty.api.club.dto.ClubRequestDto;
+import com.spoparty.api.club.repository.ClubRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Transactional
 class ClubServiceTest {
+	@PersistenceContext
+	EntityManager em;
+
+	@Autowired
+	ClubService clubService;
+
+	@Autowired
+	ClubRepository clubRepository;
 
 	@Test
-	void createClub() {
-
+	void createClub() throws Exception{
+		ClubRequestDto clubRequestDto = new ClubRequestDto(1, "드르와드르와");
+		long clubId = clubService.createClub(clubRequestDto);
 	}
 
 	// @Test

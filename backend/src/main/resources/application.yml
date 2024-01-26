@@ -61,6 +61,7 @@ logging:
     com:
       samsung:
         security: DEBUG
+      spoparty.api: DEBUG
     org:
       hibernate.SQL: debug
       hibernate.orm.jdbd.bind: trace

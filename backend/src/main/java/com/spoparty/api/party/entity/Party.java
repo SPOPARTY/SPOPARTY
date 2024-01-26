@@ -22,9 +22,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter @Setter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Party extends BaseEntity {
 	@Id

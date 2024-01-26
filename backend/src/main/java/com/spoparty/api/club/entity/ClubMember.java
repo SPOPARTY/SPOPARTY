@@ -1,5 +1,7 @@
 package com.spoparty.api.club.entity;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.common.entity.RoleType;
 import com.spoparty.api.member.entity.Member;
@@ -17,13 +19,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Getter @Setter
+@Getter
+@ToString
+@Builder
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ClubMember extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,10 +51,11 @@ public class ClubMember extends BaseEntity {
 	private RoleType role;
 
 	// 생성 메서드
-	public static ClubMember createClubMember(Member member, RoleType role) {
+	public static ClubMember createClubMember(Member member, Club club, RoleType role) {
 		ClubMember clubMember = new ClubMember();
-		clubMember.setMember(member);
-		clubMember.setRole(role);
+		clubMember.member = member;
+		clubMember.club = club;
+		clubMember.role = role;
 		return clubMember;
 	}
 }

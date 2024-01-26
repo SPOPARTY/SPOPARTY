@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.spoparty.api.club.dto.ClubHostRequestDto;
 import com.spoparty.api.club.dto.ClubMemberResponseDto;
 import com.spoparty.api.club.dto.ClubRequestDto;
+import com.spoparty.api.club.dto.ClubResponseDto;
 import com.spoparty.api.club.dto.InviteRequestDto;
 import com.spoparty.api.club.dto.InviteResponseDto;
 import com.spoparty.api.club.entity.Club;
@@ -20,27 +21,38 @@ import com.spoparty.api.member.repository.MemberRepository;
 import com.spoparty.api.party.repository.PartyRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ClubService {
 	private final ClubRepository clubRepository;
 	private final ClubMemberRepository clubMemberRepository;
 	private final PartyRepository partyRepository;
 	private final MemberRepository memberRepository;
 
+	@Transactional
 	public long createClub(ClubRequestDto clubRequestDto) {
 		Member member = memberRepository.findByMemberId(clubRequestDto.getMemberId());
-
-		ClubMember clubMember = ClubMember.createClubMember(member, RoleType.host);
-		Club club = Club.createClub(clubRequestDto.getName(), clubMember);
-
+		Club club = Club.createClub(clubRequestDto.getName());
 		clubRepository.save(club);
+
+		// 클럽회원 생성
+		// 이미 존재하는 멤버인지 확인하는 로직 필요
+		ClubMember clubMember = ClubMember.createClubMember(member, club, RoleType.host);
+		club.addClubMember(clubMember);
+		clubMemberRepository.save(clubMember);
+
+		// log.debug("Member 조회 - {}", member);
+		// log.debug("ClubMember 조회 - {}", clubMember);
 		return club.getId();
 	}
 
-	public List<ClubRequestDto> findRecentClubs(long memberId) {
+	public List<ClubResponseDto> findRecentClubs(long memberId) {
+		Member member = memberRepository.findByMemberId(memberId);
+		
 		return null;
 	}
 

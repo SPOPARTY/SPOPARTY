@@ -200,8 +200,15 @@ dependencies {
 //        exclude group: "org.hamcrest", module: "hamcrest-core"
 //    }
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.1") {
+        exclude module:'junit-platform-commons'
+    }
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-engine:1.5.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-commons:1.5.1")
+
     testImplementation("com.h2database:h2")
 }
 

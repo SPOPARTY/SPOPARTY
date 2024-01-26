@@ -5,7 +5,7 @@ import static com.spoparty.api.common.constants.ErrorCode.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.party.entity.Party;
@@ -24,25 +24,29 @@ import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Getter @Setter
+@Getter
+@ToString
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Club extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "club_id")
+	@Column(name = "club_id", unique = true, nullable = false)
 	private long id;
 
 	@Column(nullable = false)
 	private String name;
 
-	@ColumnDefault("6")
-	private int maxParticipants;
+	@Column(nullable = false)
+	// @ColumnDefault("6")
+	private Integer maxParticipants = 6;
 
-	@ColumnDefault("1")
-	private int currentParticipants;
+	@Column(nullable = false)
+	// @ColumnDefault("0")
+	private Integer currentParticipants = 0;
 
 	@OneToMany(mappedBy = "club")
 	private List<ClubMember> clubMembers = new ArrayList<>(); // 그룹원
@@ -56,51 +60,39 @@ public class Club extends BaseEntity {
 	private Party party;
 
 	// 연관관계 매핑
-	private void addClubMember(ClubMember clubMember) {
-		clubMembers.add(clubMember);
-		clubMember.setClub(this);
-	}
-
 	public void setParty(Party party) {
 		this.party = party;
 		party.setClub(this);
 	}
 
 	// 생성 메서드
-	public static Club createClub(String name, ClubMember clubMember) {
+	public static Club createClub(String name) {
 		Club club = new Club();
-		club.setName(name);
-		club.addClubMember(clubMember);
+		club.name = name;
 		return club;
 	}
 
 	// 비즈니스 로직
-	public boolean increaseCurrentParticipants() {
-		if (currentParticipants == maxParticipants)
-			throw new IllegalStateException(NOT_ENOUGH_GROUP_PARTICIPANTS.getMessage());
-		this.currentParticipants++;
-		return true;
-	}
 
-	public boolean decreaseCurrentParticipants() {
-		if (currentParticipants == 0)
+	// private boolean decreaseCurrentParticipants() {
+	// 	if (currentParticipants == 0)
+	// 		throw new IllegalStateException(ENOUGH_GROUP_PARTICIPANTS.getMessage());
+	// 	this.currentParticipants--;
+	// 	return true;
+	// }
+	//
+	// public boolean deleteClubMember(ClubMember clubMember) {
+	// 	if (clubMembers.remove(clubMember)) {
+	// 		return true;
+	// 	}
+	// 	throw new IllegalStateException(NO_GROUP_MEMBER.getMessage());
+	// }
+
+	public void addClubMember(ClubMember clubMember) {
+		if (currentParticipants.equals(maxParticipants)) {
 			throw new IllegalStateException(ENOUGH_GROUP_PARTICIPANTS.getMessage());
-		this.currentParticipants--;
-		return true;
-	}
-
-	public boolean deleteClubMember(ClubMember clubMember) {
-		if (clubMembers.remove(clubMember)) {
-			return true;
 		}
-		throw new IllegalStateException(NO_GROUP_MEMBER.getMessage());
-	}
-
-	public boolean joinClubMember(ClubMember clubMember) {
-		if (clubMembers.contains(clubMember)) {
-			throw new IllegalStateException(ALREADY_GROUP_MEMBER.getMessage());
-		}
-		this.addClubMember(clubMember);
-		return true;
+		this.currentParticipants++;
+		clubMembers.add(clubMember);
 	}
 }
