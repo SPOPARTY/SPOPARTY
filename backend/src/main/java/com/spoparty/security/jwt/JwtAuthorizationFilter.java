@@ -44,7 +44,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			String token = jwtHeader.replace("Bearer ", "");
 			String id = jwtTokenUtil.checkAccessToken(token);
 			log.info("토큰 검사 실행 memberId:{}", id);
-			if (id != null) {
+
+			// memberToken 테이블에 refreshToken 이 있는지 조회한다. 없으면 로그아웃 상태이므로 accessToken 은 무시한다.
+			if (id != null && memberService.checkRefreshToken(Long.parseLong(id))) {
 				Member member = memberService.findById(Long.parseLong(id));
 				PrincipalDetails principalDetails = new PrincipalDetails(member);
 				Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null,

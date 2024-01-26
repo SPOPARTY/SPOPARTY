@@ -13,8 +13,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.spoparty.api.member.service.MemberService;
 import com.spoparty.common.util.JwtTokenUtil;
@@ -42,11 +46,13 @@ public class SecurityConfig {
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final MemberService memberService;
 	private final JwtTokenUtil jwtTokenUtil;
+	private final AuthenticationEntryPoint authenticationEntryPoint;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		log.info("filterChain 실행");
 		return http
+			.addFilter(corsFilter())
 			.addFilterAfter(new JwtAuthenticationFilter(authenticationManager(), jwtTokenUtil),
 				UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), memberService, jwtTokenUtil),
@@ -56,9 +62,8 @@ public class SecurityConfig {
 			// '/admin' 은 권한이 'ROLE_ADMIN'인 사람만 접근 가능
 			// 나머지 경로에 대해서 인증(로그인)된 사람만 접근 가능 ( 임시로 모두가능하게 설정 )
 			.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-				.requestMatchers("/", "/members/join", "/members/login").permitAll()
+				.requestMatchers("/authentication/**", "/members/register", "/members/login", "/error").permitAll()
 				.requestMatchers("/admin").hasAnyRole("ADMIN")
-				.requestMatchers("/favicon.ico").denyAll()
 				.anyRequest().permitAll()
 			)
 
@@ -67,6 +72,10 @@ public class SecurityConfig {
 				.successHandler((request, response, authentication) ->
 					request.getRequestDispatcher("/authentication/token").forward(request, response))
 				.userInfoEndpoint().userService(oAuth2UserService)
+			)
+
+			.exceptionHandling(exceptionHandling -> exceptionHandling
+				.authenticationEntryPoint(authenticationEntryPoint)
 			)
 
 			.sessionManagement(sessionManagement -> sessionManagement
@@ -97,6 +106,21 @@ public class SecurityConfig {
 		providers.add(daoAuthenticationProvider);
 		log.info("AuthenticationManager 생성");
 		return new ProviderManager(providers);
+	}
+
+	@Bean
+	public CorsFilter corsFilter() {
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		CorsConfiguration config = new CorsConfiguration();
+		config.addAllowedOrigin("*");
+		config.addAllowedOriginPattern("*");
+		config.addAllowedMethod("*");
+		config.addAllowedHeader("*");
+		config.addExposedHeader("Authentication");
+		config.setAllowCredentials(true);
+		config.setMaxAge(3600L);
+		source.registerCorsConfiguration("/**", config);
+		return new CorsFilter(source);
 	}
 
 }
