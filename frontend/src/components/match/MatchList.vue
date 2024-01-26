@@ -1,7 +1,10 @@
 <template>
-    <v-container class="list-match">
+    <v-container class="contents-section list-match">
         <v-row>
-            <v-col cols="12" v-for="match in filteredMatches" :key="match.id">
+            <v-col cols="12" class="text-center">
+                <span class="list-title">경기 목록</span>
+            </v-col>
+            <v-col cols="12" align="center" v-for="match in filteredMatches" :key="match.id">
                 <v-card class="card-match">
                     <v-card-subtitle>{{ match.league }}</v-card-subtitle>
                     <span>{{ match.startTime }} {{ getMatchStatus(match.startTime) }}</span>
@@ -11,13 +14,13 @@
                                 {{ match.teamA }}
                             </v-col>
                             <v-col cols="1" class="d-flex justify-center align-center">
-                                <v-img :src="match.teamALogo" contain class="team-logo">AA</v-img>
+                                <v-img :src="match.teamALogo" contain class="team-logo"></v-img>
                             </v-col>
                             <v-col cols="1" class="d-flex justify-center align-center">
                                 VS
                             </v-col>
                             <v-col cols="1" class="d-flex justify-center align-center">
-                                <v-img :src="match.teamBLogo" contain class="team-logo">BB</v-img>
+                                <v-img :src="match.teamBLogo" contain class="team-logo"></v-img>
                             </v-col>
                             <v-col cols="4" class="text-start">
                                 {{ match.teamB }}
@@ -35,11 +38,13 @@
                 </v-card>
             </v-col>
         </v-row>
-        <div v-if="filteredMatches.length === 0">
+        <v-row v-if="filteredMatches.length === 0">
+            <v-col cols="12" align="center">
             <v-card class="card-match mt-6">
-                예정된 경기가 없습니다!
+                <span>예정된 경기가 없습니다!</span>
             </v-card>
-        </div>
+        </v-col>
+        </v-row>
     </v-container>
 </template>
   
@@ -67,9 +72,9 @@ const matches = ref([
     {
         id: 1,
         teamA: 'FC 바르셀로나',
-        teamALogo: 'path/to/barcelona-logo.png',
+        teamALogo: 'src/assets/spo-icon.png',
         teamB: '레알 마드리드',
-        teamBLogo: 'path/to/real-madrid-logo.png',
+        teamBLogo: 'src/assets/spo-icon.png',
         // 현재 날짜에 시간을 설정
         startTime: format(set(now, { hours: 12, minutes: 0 }), 'yyyy-MM-dd HH:mm'),
         league: '라 리가',
@@ -80,9 +85,9 @@ const matches = ref([
     {
         id: 2,
         teamA: 'AC 밀란',
-        teamALogo: 'path/to/ac-milan-logo.png',
+        teamALogo: 'src/assets/spo-icon.png',
         teamB: '인터 밀란',
-        teamBLogo: 'path/to/inter-milan-logo.png',
+        teamBLogo: 'src/assets/spo-icon.png',
         // 현재 날짜에 시간을 설정
         startTime: format(set(now, { hours: 20, minutes: 0 }), 'yyyy-MM-dd HH:mm'),
         league: '세리에 A',
@@ -130,8 +135,15 @@ function getMatchStatus(startTime) {
 </script>
   
 <style scoped>
+.list-title {
+    color: white;
+    font-size: 2rem;
+    
+}
+
+
 .list-match {
-    background-color: beige;
+    /* background-color: #292646; */
     overflow-x: auto;
     /* 내용이 넘칠 경우 수평 스크롤 가능 */
     white-space: nowrap;
@@ -155,12 +167,13 @@ function getMatchStatus(startTime) {
     /* 카드를 인라인 블록 요소로 설정 */
     white-space: normal;
     /* 카드 내부의 텍스트는 정상적으로 줄바꿈 */
-    width: 100%;
+    width: 90%;
     /* 카드의 너비를 고정하지 않고 유연하게 조정 */
     min-width: 300px;
     /* 카드의 최소 너비 설정 */
     margin-right: 16px;
     /* 카드 간의 간격 조정 */
+    align-self: center;
 }
 
 .card-content {

@@ -17,15 +17,6 @@
                          <MatchNear />
                     </v-col>
                </v-row>
-
-               <!-- 테스트 영역 -->
-               <!-- <v-row>
-                    <v-col cols="12">
-                         <div class="test">
-                              <h1>Test 2048px</h1>
-                         </div>
-                    </v-col>
-               </v-row> -->
           </v-container>
      </v-app>
 </template>
