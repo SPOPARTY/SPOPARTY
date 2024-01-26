@@ -7,11 +7,11 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder
-public class ResponseDTO<T> {
+public class ResponseDTO {
 
 	private String message;
 
-	private T data;
+	private Object data;
 
 	public static ResponseDTO toDTO(Object data, String message) {
 		return ResponseDTO.builder()
