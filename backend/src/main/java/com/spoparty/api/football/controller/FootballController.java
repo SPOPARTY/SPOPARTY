@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.football.repository.FixtureRepository;
+import com.spoparty.api.football.response.FixtureDTO;
+import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.football.service.FootballService;
 import com.spoparty.common.util.JwtTokenUtil;
 
@@ -32,10 +34,11 @@ public class FootballController {
 
 
 	@GetMapping("/fixtures")
-	ResponseEntity<List<Fixture>> searchFixtureByDate(String date) {
-		List<Fixture> fixtures = footballService.findFixtureByDate(date);
-
-		return new ResponseEntity<>(fixtures, HttpStatusCode.valueOf(200));
+	ResponseEntity<ResponseDTO<List<FixtureDTO>>> searchFixtureByDate(String date) {
+		System.out.println("호출!!");
+		ResponseDTO<List<FixtureDTO>> responseDTO = footballService.findFixtureByDate(date);
+		System.out.println("*******************************************");
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
 
 

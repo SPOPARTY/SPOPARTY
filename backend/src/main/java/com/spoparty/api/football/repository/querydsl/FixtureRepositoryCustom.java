@@ -7,7 +7,7 @@ import java.util.List;
 import com.spoparty.api.football.entity.Fixture;
 
 public interface FixtureRepositoryCustom {
-	List<Fixture> findByStartTime(LocalDateTime time);
 
-	// List<Fixture> findByStartTime(LocalDate date);
+	public List<Fixture> findFixtureByDate(LocalDateTime start, LocalDateTime end);
+
 }

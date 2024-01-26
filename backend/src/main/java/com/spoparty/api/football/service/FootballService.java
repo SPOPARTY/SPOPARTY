@@ -3,6 +3,7 @@ package com.spoparty.api.football.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.football.repository.FixtureRepository;
+import com.spoparty.api.football.response.FixtureDTO;
+import com.spoparty.api.football.response.ResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,9 +45,22 @@ public class FootballService {
 
 
 
-	public List<Fixture> findFixtureByDate(String dateStr) {
+	public ResponseDTO<List<FixtureDTO>> findFixtureByDate(String dateStr) {
 		// LocalDateTime dateTime = dateTimeFormatter(dateStr);
+		List<Fixture> fixtures = fixtureRepository.findFixtureByDate(startDateTimeFormatter(dateStr), endDateTimeFormatter(dateStr));
 
-		return fixtureRepository.findByStartTimeBetween(startDateTimeFormatter(dateStr), endDateTimeFormatter(dateStr));
+		if (fixtures.isEmpty())
+			System.out.println("조회된 경기 일정이 없습니다.");
+		else {
+			System.out.println("조회된 경기가 있습니다.");
+		}
+
+		List<FixtureDTO> fixtureDTOs = new ArrayList<>();
+
+		for(Fixture f : fixtures) {
+			fixtureDTOs.add(FixtureDTO.toDTO(f));
+		}
+
+		return ResponseDTO.toDTO(fixtureDTOs, "경기 조회 성공");
 	}
 }
