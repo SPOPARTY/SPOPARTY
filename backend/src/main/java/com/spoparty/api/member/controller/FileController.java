@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,6 +59,12 @@ public class FileController {
 			log.error(e.getMessage());
 			return ResponseEntity.status(400).body(null);
 		}
+	}
+
+	@GetMapping("/{type}")
+	public ResponseEntity<?> findFileByType(@PathVariable("type") String type) {
+		List<File> list = fileRepository.findByType(type, File.class);
+		return ResponseEntity.status(200).body(list);
 	}
 
 }
