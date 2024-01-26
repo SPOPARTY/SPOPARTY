@@ -2,7 +2,7 @@
     <v-dialog
         v-model="ModalVisible"
         max-width="400px"
-        max-height="600px"
+        max-height="1000px"
         @click:outside="closeModal"
         persistent
         >
@@ -17,40 +17,92 @@
                     </v-btn>
                 </div>
             </div>
-            <div class="feature-container">
+            <div class="feature-container" @click.native="showChangeClubName">
                 <v-img class="img" src="/src/assets/change_club_name.png" alt="그룹명 바꾸기"/>
                 <v-card-text class="feature-text">그룹명 바꾸기</v-card-text>
             </div>
-            <div class="feature-container">
+            <div class="feature-container" @click="showQuitClub">
                 <v-img class="img" src="/src/assets/exit_club.png" alt="그룹 나가기"/>
                 <v-card-text class="feature-text">그룹 나가기</v-card-text>
             </div>
-            <div class="feature-container">
+            <div class="feature-container" @click="showBanClubMember">
                 <v-img class="img" src="/src/assets/ban_club_member.png" alt="그룹원 강퇴"/>
                 <v-card-text class="feature-text">그룹원 강퇴</v-card-text>
             </div>
         </v-card>
     </v-dialog>
+
+    <ChangeClubName
+        v-if="isChangeClubNameVisible"
+        @change-club-name-close="closeChangeClubName"
+    />
+    <QuitClub
+        v-if="isQuitClubVisible"
+        @quit-club-close="closeQuitClub"
+    />
+    <BanClubMemeber
+        v-if="isBanClubMemberVisible"
+        @ban-member-close="closeBanClubMember"
+    />
 </template>
 
 <script setup>
 import {ref, onMounted} from 'vue';
+import ChangeClubName from '@/components/club/ChangeClubName.vue';
+import QuitClub from '@/components/club/QuitClub.vue';
+import BanClubMemeber from '@/components/club/BanClubMemeber.vue';
 
-const ModalVisible = ref(true)
 
 const emits = defineEmits([
     'club-leader-close'
 ])
 
+const ModalVisible = ref(true)
 
+// 그룹명 바꾸기 
+const isChangeClubNameVisible = ref(false)
+
+function showChangeClubName() {
+    isChangeClubNameVisible.value = true
+}
+
+function closeChangeClubName() {
+    isChangeClubNameVisible.value = false
+}
+
+// 그룹 나가기
+const isQuitClubVisible = ref(false)
+
+function showQuitClub(){
+    isQuitClubVisible.value = true
+}
+
+function closeQuitClub() {
+    isQuitClubVisible.value = false
+}
+
+// 그룹원 강퇴
+const isBanClubMemberVisible = ref(false)
+
+function showBanClubMember() {
+    isBanClubMemberVisible.value = true
+}
+
+function closeBanClubMember() {
+    isBanClubMemberVisible.value = false;
+}
+
+
+// 그룹장 기능 모달 닫기
 function closeModal(){
     ModalVisible.value = false;
     emits('club-leader-close')
 }
 
+
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .no-background-hover {
   box-shadow: none !important;
 
@@ -79,6 +131,7 @@ function closeModal(){
     display : flex;
     flex-direction : row;
     margin: 8px 4px;
+    cursor: pointer;
 
 }
 
