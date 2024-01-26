@@ -1,17 +1,16 @@
 <template>
-    <v-container fluid class="pa-2 mt-3">
+    <v-container fluid>
         <!-- 타이틀 -->
-      <v-row align="center" justify="center" class="py-4 mb-1 title-section">
+      <v-row align="center" justify="center" class="py-4 mb-2 title-section">
         <h1>리그 목록</h1>
       </v-row>
-      <!-- 검색 필드 추가 -->
-      <v-row justify="center" class="mb-2">
-        <v-col cols="5">
+
+      <!-- 컨텐츠 -->
+      <v-row justify="center" class="py-4 mt-4 mx-12 contents-section">
+        <!-- 검색 필드 추가 -->
+        <v-col class="search-section" cols="6">
           <v-text-field class="searchBar" v-model="search" label="리그 검색" append-icon="mdi-magnify" single-line hide-details></v-text-field>
         </v-col>
-      </v-row>
-      <!-- 컨텐츠 -->
-      <v-row justify="center" class="py-4 mx-12 content-section">
         <v-col cols="10" v-for="league in filteredLeagues" :key="league.id">
           <v-card class="d-flex pa-6 flex-row align-center league-card">
             <v-img :src="league.logo" contain class="league-logo ml-12"></v-img>
@@ -70,11 +69,16 @@ const filteredLeagues = computed(() => {
 
 
 <style scoped>
-.title-section, .content-section {
+.title-section, .contents-section {
   min-width: 800px; /* 타이틀과 컨텐츠 섹션의 최소 너비를 설정 */
-  background-color: #E0E0E0;
+  /* background-color: #E0E0E0; */
   white-space: nowrap; /* 내용을 한 줄로 유지 */
 }
+
+h1 {
+  color: white;
+}
+
 
 .league-card {
   border-color: aquamarine;
@@ -92,6 +96,10 @@ const filteredLeagues = computed(() => {
 .searchBar {
   min-width: 400px;
   white-space: nowrap;
+}
+
+.search-section {
+  background-color: white;
 }
 
 </style>

@@ -1,10 +1,12 @@
 <template>
-    <v-container fluid class="pa-2 mt-3">
+    <v-container fluid>
         <!-- 타이틀 섹션 -->
         <v-row align="center" justify="space-around" class="py-4 mb-1 title-section">
             <v-col cols="1"></v-col>
             <v-col cols="3" class="d-flex justify-center align-center">
+                <div :background-color="white">
                 <v-img :src="leagueLogoPath" contain class="league-logo" @click="navigateToLeague"></v-img>
+            </div>
             </v-col>
             <v-col cols="4" class="d-flex justify-center align-center">
                 <v-img :src="teamLogoPath" contain class="team-logo"></v-img>
@@ -28,7 +30,7 @@
             <v-col cols="1"></v-col>
         </v-row>
         <!-- 컨텐츠 섹션 -->
-        <v-row justify="center" class="py-4 mx-12 content-section">
+        <v-row justify="center" class="py-4 mx-12 contents-section">
             <v-col cols="1"></v-col>
             <v-col cols="10">
                 <TeamInfoSummary class="mb-6" :team-id="teamId" />
@@ -41,6 +43,7 @@
             <v-col cols="6">
                 <TeamInfoMatches class="m-6" :team-id="teamId" />
             </v-col>
+            <v-col cols="1"></v-col>
         </v-row>
     </v-container>
 </template>
@@ -110,8 +113,8 @@ const leagues = ref([
 
 <style scoped>
 .title-section,
-.content-section {
-    background-color: #E0E0E0;
+.contents-section {
+    /* background-color: #E0E0E0; */
     padding: 20px;
     white-space: nowrap;
 }
@@ -124,6 +127,7 @@ const leagues = ref([
 
 .league-logo {
     cursor: pointer;
+    background-color: white;
 }
 
 h1,

@@ -1,6 +1,6 @@
 <template>
-     <v-container fluid class="pa-2 mt-3">
-          <v-row align="center" justify="center" class="pb-1 date-section">
+     <v-container fluid>
+          <v-row align="center" justify="center" class="pb-1 mb-2 contents-box title-section">
                <v-col cols="12" class="text-center">
                     <v-btn icon @click="changeDate(-1)" class="mx-12" :style="{ fontSize: '1.5rem' }">
                          <v-icon size="large">mdi-chevron-left</v-icon>
@@ -26,10 +26,7 @@
                     </v-menu>
                </v-col>
           </v-row>
-          <v-row class="mt-6 match-lists">
-               <v-col cols="12" class="text-center">
-                    <h2>경기목록</h2>
-               </v-col>
+          <v-row class="mt-6 mx-12 match-lists">
                <MatchList :selected-date="selectedDate" />
           </v-row>
      </v-container>
@@ -93,8 +90,8 @@ function datePickerSelected() {
 </script>
    
 <style scoped>
-.date-section {
-     background-color: #E0E0E0;
+.title-section {
+     /* background-color: #292646; */
      /* 날짜 관련 부분의 백그라운드 컬러 */
      white-space: nowrap;
 }
