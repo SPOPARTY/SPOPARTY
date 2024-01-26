@@ -17,11 +17,15 @@
                     </v-btn>
                 </div>
             </div>
-            <div class="feature-container">
+
+            <div class="feature-container" @click="showQuitClub">
                 <v-img class="img" src="/src/assets/exit_club.png" alt="그룹 나가기"/>
                 <v-card-text class="feature-text">그룹 나가기</v-card-text>
             </div>
-
+            <QuitClub
+                v-if="isQuitClubVisible"
+                @quit-club-close="closeQuitClub"
+            />
 
         </v-card>
     </v-dialog>
@@ -29,6 +33,7 @@
 
 <script setup>
 import {ref, onMounted} from 'vue';
+import QuitClub from '@/components/club/QuitClub.vue';
 
 const ModalVisible = ref(true)
 
@@ -40,6 +45,16 @@ const emits = defineEmits([
 function closeModal(){
     ModalVisible.value = false;
     emits('club-member-close')
+}
+
+const isQuitClubVisible = ref(false)
+
+function showQuitClub(){
+    isQuitClubVisible.value = true
+}
+
+function closeQuitClub() {
+    isQuitClubVisible.value = false
 }
 
 </script>
@@ -73,7 +88,7 @@ function closeModal(){
     display : flex;
     flex-direction : row;
     margin: 8px 4px;
-
+    cursor: pointer;
 }
 
 .feature-text {

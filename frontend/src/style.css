@@ -94,3 +94,11 @@ button:focus-visible {
   color:white;
   transform: translateY(15px);
 }
+
+.no-background-hover {
+  box-shadow: none !important;
+
+  &:hover {
+    background-color: transparent !important;
+  }
+}
