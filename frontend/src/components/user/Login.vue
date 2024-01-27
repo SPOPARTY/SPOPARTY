@@ -26,7 +26,7 @@
 
               <v-row>
                 <v-col cols="12" md="4">
-                  <v-btn color="primary" type="submit" block @click="goMyPage">로그인</v-btn>
+                  <v-btn color="primary" type="submit" block @click="doLogin">로그인</v-btn>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-btn text color="primary" @click="handleSignup" block>회원가입</v-btn>
@@ -59,15 +59,24 @@
 <script setup>
 import {ref} from 'vue';
 import {useRouter} from 'vue-router'
+import { useMemberStore } from '@/stores/members';
+
 import FindPwd from '@/components/user/FindPwd.vue';
 import KakaoLogin from '@/components/user/KakaoLogin.vue';
 
 const router = useRouter();
 
+const memberStore = useMemberStore();
+
 const loginRequest = ref({
   loginId : '',
   loginPwd:'',
 })
+
+const doLogin = () => {
+  let loginMember = loginRequest.value;
+  memberStore.login(loginMember)
+}
 
 function handleSubmit() {
   console.log(loginRequest.value);

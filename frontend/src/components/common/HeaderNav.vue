@@ -51,15 +51,30 @@
     <v-divider vertical class="mx-2"></v-divider>
     <v-btn text to="/league" class="mx-2 btn-text">리그 목록</v-btn>
     <v-divider vertical class="mx-2"></v-divider>
-    <v-btn text to="/signup" class="mx-2 btn-text">회원가입</v-btn>
+    <v-btn v-if="isLogined" text to="mypage" class="mx-2 btn-text">마이페이지</v-btn>
+    <v-btn v-else text to="/signup" class="mx-2 btn-text">회원가입</v-btn>
     <v-divider vertical class="mx-2"></v-divider>
-    <v-btn text to="/login" class="mx-2 btn-text">로그인</v-btn>
+    <v-btn v-if="isLogined" text class="mx-2 btn-text" @click="logout">로그아웃</v-btn>
+    <v-btn v-else text to="/login" class="mx-2 btn-text">로그인</v-btn>
   </v-app-bar>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref,computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useMemberStore} from '@/stores/members'
+
+const memberStore = useMemberStore()
+
+// 로그인 여부 감지
+const isLogined = computed(() => {  
+  return memberStore.isLogin
+});
+
+// 로그아웃
+const logout = () => {
+  memberStore.logout();
+}
 
 const router = useRouter();
 const drawer = ref(false);
@@ -91,6 +106,11 @@ function openClubInNewTab(clubId) {
 function goToNewClubPage() {
   router.push('/new-club'); // '새 클럽' 페이지로 라우팅하는 경로를 적절히 조정하세요.
 }
+
+onMounted(() => {
+    console.log(memberStore.isLogin)
+})
+
 </script>
 
 <style scoped>
