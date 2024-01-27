@@ -1,0 +1,128 @@
+pipeline {
+    agent any
+    tools {
+        nodejs "nodejs"
+    }
+    environment {
+        backImageName = "gogoadl247/spoparty-backend"
+        registryCredential = 'spoparty-docker'
+        
+        releaseServerAccount = 'ubuntu'
+        releaseServerUri = 'i10a802.p.ssafy.io'
+    }
+    stages {
+        stage ('1. Git Clone') {
+            steps {
+                echo 'master clone!'
+                dir ('') {
+                    git branch: 'develop', credentialsId: 'gitlab-eunbyeol', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A802'
+                }
+            }
+        }
+        stage ('2. Build') {
+            parallel {
+                stage ('BE') {
+                    steps {
+                        echo 'BE Build!'
+                        dir ('backend') {
+                            sh'''
+                                ls
+                                chmod +x gradlew
+                                ./gradlew clean build
+                            '''
+                        }
+                    }                    
+                }
+                stage ('FE') {
+                    steps {
+                        echo 'FE Build!'
+                        dir('frontend'){
+                            sh'''
+                                ls
+                                 npm install
+                                 npm run build
+                            '''
+                        }
+                    }
+                }
+            }
+
+        }
+        stage ('3. Test') {
+            parallel {
+                stage ('BE') {
+                    steps {
+                        echo 'BE Test!!'
+                    }
+                }
+            }
+        }
+        stage('4. Docker Publish') {
+            steps {
+                echo 'BE Publish Docker Hub!'
+                dir('backend') {
+                    script {
+                        docker.withRegistry('', registryCredential) {
+                            sh "docker buildx create --use --name spoparty-builder"
+                            sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${backImageName}:${BUILD_NUMBER} --push ."
+                            sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${backImageName}:latest --push ."
+                        }
+                    }
+                }
+            }
+        }
+        stage (' 5. FE Publish') {
+            steps {
+                 sshagent(credentials: ['ubuntu-a802']) {
+                sh '''
+                scp -i I10A802T.pem -r /var/jenkins_home/workspace/spoparty-publish/frontend/dist/. $releaseServerAccount@$releaseServerUri:/usr/share/nginx/html
+                 scp -i I10A802T.pem -r /var/jenkins_home/workspace/spoparty-publish/docker-compose.yml $releaseServerAccount@$releaseServerUri:/home/ubuntu
+                '''
+                }
+            }
+        }
+        stage ('6. Service Stop') {
+            steps {
+                sshagent(credentials: ['ubuntu-a802']) {
+                sh '''
+                ssh -o StrictHostKeyChecking=no $releaseServerAccount@$releaseServerUri 
+                docker-compose down
+                '''
+                }
+            }
+        }
+        stage ('8. Service Start') {
+             steps {
+                sshagent(credentials: ['ubuntu-a802']) {
+                sh '''
+                ssh -o StrictHostKeyChecking=no $releaseServerAccount@$releaseServerUri 
+                docker-compose up -d --remove-orphans
+                '''
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                mattermostSend (color: 'good',
+                message: "Succeeded: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
+                channel: 'A802-Alert'
+                )
+            }
+        }
+        failure {
+            script {
+                def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                mattermostSend (color: 'danger',
+                message: "Failed: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                endpoint: 'https://meeting.ssafy.com/hooks/6qfqc73iz7n4un3set8s6gahyc',
+                channel: 'A802-Alert'
+                )
+            }
+        }
+    }  
+
+}
