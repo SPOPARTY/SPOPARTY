@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tiptap/extension-image": "^2.1.16",
+    "@tiptap/starter-kit": "^2.1.16",
+    "@tiptap/vue-3": "^2.1.16",
     "axios": "^1.6.5",
     "date-fns": "^3.3.0",
     "jwt-decode": "^4.0.0",
