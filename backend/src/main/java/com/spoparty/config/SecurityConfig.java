@@ -112,7 +112,7 @@ public class SecurityConfig {
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		config.addAllowedOrigin("*");
+//		config.addAllowedOrigin("*");
 		config.addAllowedOriginPattern("*");
 		config.addAllowedMethod("*");
 		config.addAllowedHeader("*");
