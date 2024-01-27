@@ -85,12 +85,26 @@ button:focus-visible {
   }
 } */
 
+test-color {
+  /* 원래 쓰던 섹션 색 */
+  color: #292646;
+  /* 테스트 하려는 팔레트 */
+  color: #333D51;
+  color: #D3AC2B;
+  color: #CBD0D8;
+  color: #F4F3EA;
+}
+
+
+
+
+
 :root {
   font-family: 'Noto Sans KR', 'Roboto', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 a:hover {
-  color: #BAA401;
+  color: #D3AC2B;
 }
 
 .v-application__wrap, .v-toolbar__content {
@@ -98,8 +112,16 @@ a:hover {
 }
 
 .contents-section, .title-section {
-  background-color: #292646;
+  background-color: #333D51;
   min-width: 900px;
+}
+
+.contents-section, .part-section{
+  border-radius: 12px;
+}
+
+.part-section {
+  background-color: #CBD0D8;
 }
 
 hr.v-divider {
