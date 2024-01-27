@@ -78,3 +78,6 @@ cloud:
       accessKey: access
       secretKey: secret
 
+openvidu:
+  url: https://i10a802.p.ssafy.io/
+  secret: MY_SECRET
