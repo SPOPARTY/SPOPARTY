@@ -21,7 +21,8 @@ public class BoardService {
 	private final FileRepository fileRepository;
 
 	public List<Board> findByClubId(Long clubId) {
-		return boardRepository.findByClub_id(clubId, Board.class);
+		// return boardRepository.findByClub_id(clubId, Board.class);
+		return null;
 	}
 
 	public Board findById(Long id) {
