@@ -205,8 +205,6 @@ dependencies {
 //        exclude group: "org.hamcrest", module: "hamcrest-core"
 //    }
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnitVer}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVer}"
     testImplementation("com.h2database:h2")
