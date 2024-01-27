@@ -8,14 +8,12 @@ import Footer from "./components/common/Footer.vue";
   <div>
     <HeaderNav/>
     </div>
-    <v-main class="mt-1">
+    <v-main>
       <RouterView/>
     </v-main>
   </v-app>
 </template>
 
 <style scoped>
-
-
 
 </style>

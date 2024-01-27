@@ -14,14 +14,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Player extends FootballBaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="player_id")
 	private long id;
 
@@ -63,4 +66,19 @@ public class Player extends FootballBaseEntity {
 	@OneToMany(mappedBy = "player")
 	List<SeasonLeagueTeamPlayer> seasonLeagueTeamPlayers = new ArrayList<>();
 
+	@Builder
+
+	public Player(long id, String nameKr, String nameEng, int age, String nationality, String height, String weight,
+		String photo, String position, boolean captain) {
+		this.id = id;
+		this.nameKr = nameKr;
+		this.nameEng = nameEng;
+		this.age = age;
+		this.nationality = nationality;
+		this.height = height;
+		this.weight = weight;
+		this.photo = photo;
+		this.position = position;
+		this.captain = captain;
+	}
 }

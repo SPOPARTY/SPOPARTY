@@ -1,10 +1,6 @@
-# it will be set build date by gradle. if this value is @build.date@, front-end is development mode
-build:
-  date: "@build.date@"
-
 server:
-  port: 8080
-  address: localhost
+  port: 9090
+  # address: localhost
   servlet:
     contextPath: "/"
     encoding:
@@ -43,13 +39,17 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-#        show-sql: true
+      #        show-sql: true
       format_sql: true
   data:
     web:
       pageable:
         one-indexed-parameters: true
-
+  #  multiPartFile
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 
 #logging
@@ -57,13 +57,13 @@ logging:
   file:
     name: "./ssafy-web.log"
   level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
     root: INFO
     com:
       samsung:
         security: DEBUG
     org:
-      hibernate.SQL: debug
-      hibernate.orm.jdbd.bind: trace
       springframework:
         web: DEBUG
         apache:

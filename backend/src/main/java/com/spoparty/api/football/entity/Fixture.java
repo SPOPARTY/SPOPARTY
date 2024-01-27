@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spoparty.api.common.entity.FootballBaseEntity;
 
 import jakarta.persistence.Column;
@@ -22,13 +23,16 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Fixture extends FootballBaseEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "fixture_id")
 	private long id;
 
@@ -55,15 +59,18 @@ public class Fixture extends FootballBaseEntity {
 	private String status;
 
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "home_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam homeTeam;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "away_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam awayTeam;
 
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "season_league_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeague seasonLeague;
@@ -73,4 +80,20 @@ public class Fixture extends FootballBaseEntity {
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "fixture")
 	private CheerFixture cheerfixture;
+
+
+	@Builder
+	public Fixture(long id, LocalDateTime startTime, String roundKr, String roundEng, int homeTeamGoal, int awayTeamGoal,
+		String status, SeasonLeagueTeam homeTeam, SeasonLeagueTeam awayTeam, SeasonLeague seasonLeague) {
+		this.id = id;
+		this.startTime = startTime;
+		this.roundKr = roundKr;
+		this.roundEng = roundEng;
+		this.homeTeamGoal = homeTeamGoal;
+		this.awayTeamGoal = awayTeamGoal;
+		this.status = status;
+		this.homeTeam = homeTeam;
+		this.awayTeam = awayTeam;
+		this.seasonLeague = seasonLeague;
+	}
 }
