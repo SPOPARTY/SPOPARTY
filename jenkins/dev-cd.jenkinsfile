@@ -50,9 +50,22 @@ pipeline {
         }
         stage ('3. Test') {
             parallel {
-                stage ('BE') {
+                stage ('BE Test') {
                     steps {
-                        echo 'BE Test!!'
+                        echo 'BE - Test start'
+                        dir ('backend/backend'){
+                            sh'''
+                                ./gradlew test
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'BE - Success Test'
+                        }
+                        failure {
+                            error 'BE - Fail Test'
+                        }
                     }
                 }
             }
