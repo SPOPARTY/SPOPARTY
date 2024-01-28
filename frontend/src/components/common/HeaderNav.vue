@@ -67,9 +67,12 @@ import { useMemberStore} from '@/stores/members'
 const memberStore = useMemberStore()
 
 // 로그인 여부 감지
-const isLogined = computed(() => {  
-  return memberStore.isLogin
-});
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
+
+onMounted(() => {
+  console.log("로그인 됨?? -> " ,localStorage.getItem("accessToken") !== null)
+})
+
 
 // 로그아웃
 const logout = () => {
@@ -106,10 +109,6 @@ function openClubInNewTab(clubId) {
 function goToNewClubPage() {
   router.push('/new-club'); // '새 클럽' 페이지로 라우팅하는 경로를 적절히 조정하세요.
 }
-
-onMounted(() => {
-    console.log(memberStore.isLogin)
-})
 
 </script>
 

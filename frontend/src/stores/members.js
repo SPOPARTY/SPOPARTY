@@ -33,13 +33,14 @@ export const useMemberStore = defineStore("memberStore",() => {
                     isValidToken.value = true;
                     let decodedToken = jwtDecode(accessToken);
                     console.log("히히 decoded-token 발사 -> ",decodedToken);
-                    sessionStorage.setItem('accessToken',accessToken);
+                    localStorage.setItem('accessToken',accessToken);
                     sessionStorage.setItem('refreshToken',refreshToken);
                     sessionStorage.setItem("id",decodedToken.id);
                     memberId.value = sessionStorage.getItem("id");
-                    router.push("/");
+                    window.location.replace("/")
                     // getMemberInfo(accessToken)
-                } else{
+                } 
+                else{
                     console.log("히히 로그인 실패 발사")
                     isLogin.value = false;
                     isLoginError.value = true;
@@ -48,7 +49,10 @@ export const useMemberStore = defineStore("memberStore",() => {
             },
             (error) => {
                 console.log("*********비상!!!*********")
-                console.log(error);
+                console.log(error.response.status);
+                if (error.response.status === httpStatusCode.UNAUTHORIZED) {
+                    alert("등록되지 않은 회원입니다!")
+                }
             }
         )
     }
@@ -61,18 +65,19 @@ export const useMemberStore = defineStore("memberStore",() => {
         axios.delete(
             "http://localhost:9090/members/logout",{
             headers : {
-                "Authorization" : sessionStorage.getItem("accessToken")
+                "Authorization" : localStorage.getItem("accessToken")
             }
         })
         .then((res) => {
             console.log(res);
-            sessionStorage.removeItem("accessToken");
+            localStorage.removeItem("accessToken");
             sessionStorage.removeItem("refreshToken");
             sessionStorage.removeItem("id")
             isLogin.value = false;
             memberInfo.value = null;
             isValidToken.value = null;
             memberId.value = null;
+            window.location.replace("/")
         })
         .catch((err) => {
             console.error(err);

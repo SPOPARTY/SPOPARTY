@@ -11,7 +11,10 @@
                     <v-btn color="#393646" style="margin-top:10px" @click="showChangePwdModal" block>비밀번호 수정</v-btn>
                 </v-col>
             </v-row>
-            <SetNewPwd v-if="isPwdModalVisible" @setpwd-close="isPwdModalVisible = false"/>
+            <SetNewPwd 
+                v-if="isPwdModalVisible"
+                :current-pwd="memberInfo.loginPwd"
+                @set-pwd-close="changePwd($event)"/>
             
             <v-row>
                 <v-col cols="12">
@@ -120,19 +123,6 @@ const memberInfo = ref({
     status : "",
 })
 
-const updatedMember = ref({
-    id : "",
-    loginId : "",
-    loginPwd : "",
-    nickname : "",
-    email : "",
-    team : {
-        id : "",
-        logo : "",
-    },
-    status : "",
-})
-
 const emailId = ref(memberInfo.value.email.split("@")[0]);
 const emailDomain = ref(memberInfo.value.email.split("@")[1]);
 
@@ -156,7 +146,17 @@ const getMemberInfo = () => {
 }
 
 const updateChanges = () => {
-
+    console.log("수정된 회원 정보")
+    console.log(memberInfo.value)
+    updateMember(memberInfo.value, (response)=> {
+        if(response.status === httpStatusCode.OK) {
+            alert("회원정보 수정 완료!")
+            window.location.replace("/")
+        }
+    },(error) => {
+        console.log("살려줘!")
+        console.log(error);
+    })
 }
 
 const Withdraw = () => {
@@ -184,6 +184,15 @@ const isPwdModalVisible = ref(false) // 비밀번호 수정 모달 보일까 말
 
 function showChangePwdModal() {
     isPwdModalVisible.value = true
+}
+
+function changePwd(newPwds){
+    isPwdModalVisible.value = false;
+    console.log(newPwds)
+    memberInfo.value.loginPwd = newPwds.password;
+    console.log("새로 바뀐 비밀번호!")
+    console.log(memberInfo.value.loginPwd)
+    
 }
 
 // 이메일 수정 모달 띄우기

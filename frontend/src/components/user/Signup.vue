@@ -177,8 +177,8 @@
         if (res.status === httpStatusCode.OK) {
           console.log("히히 회원가입 성공")
           console.log(res);
-          alert("히히 회원가입 성송")
-          router.push("/")
+          alert("히히 회원가입 성공")
+          window.location.reload("/")
         } 
         else if (res.status === httpStatusCode.CONFLICT) {
           console.log("이미 등록된 아이디 ㅠㅠ")
