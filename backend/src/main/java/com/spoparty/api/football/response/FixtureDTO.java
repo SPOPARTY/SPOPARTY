@@ -1,8 +1,9 @@
 package com.spoparty.api.football.response;
 
-
 import java.time.format.DateTimeFormatter;
+
 import com.spoparty.api.football.entity.Fixture;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -22,24 +23,19 @@ public class FixtureDTO {
 
 	private int homeTeamGoal;
 
-
 	private int awayTeamGoal;
 
+	private SeasonLeagueDTO league;
 
+	private SeasonLeagueTeamDTO homeTeam;
 
-	private FixtureLeagueDTO league;
-
-
-	private FixtureTeamDTO homeTeam;
-
-
-	private FixtureTeamDTO awayTeam;
+	private SeasonLeagueTeamDTO awayTeam;
 
 	public static FixtureDTO toDTO(Fixture entity) {
 
-		FixtureLeagueDTO league = FixtureLeagueDTO.toDTO(entity.getSeasonLeague());
-		FixtureTeamDTO homeTeam = FixtureTeamDTO.toDTO(entity.getHomeTeam());
-		FixtureTeamDTO awayTeam = FixtureTeamDTO.toDTO(entity.getAwayTeam());
+		SeasonLeagueDTO league = SeasonLeagueDTO.toDTO(entity.getSeasonLeague());
+		SeasonLeagueTeamDTO homeTeam = SeasonLeagueTeamDTO.toDTO(entity.getHomeTeam());
+		SeasonLeagueTeamDTO awayTeam = SeasonLeagueTeamDTO.toDTO(entity.getAwayTeam());
 
 		return FixtureDTO.builder()
 			.fixtureId(entity.getId())

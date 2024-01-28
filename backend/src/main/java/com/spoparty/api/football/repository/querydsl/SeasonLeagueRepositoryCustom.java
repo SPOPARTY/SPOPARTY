@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.spoparty.api.football.entity.SeasonLeague;
 
-public interface LeagueRepositoryCustom{
+public interface SeasonLeagueRepositoryCustom {
 
 	public List<SeasonLeague> findLeagueByKeyword(String keyword);
+
+	public List<SeasonLeague> findAllLeague();
 }

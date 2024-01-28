@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder
-public class FixtureLeagueDTO {
+public class SeasonLeagueDTO {
 
 	private long leagueId;
 
@@ -17,12 +17,13 @@ public class FixtureLeagueDTO {
 
 	private String logo;
 
-	public static FixtureLeagueDTO toDTO(SeasonLeague entity){
-		return FixtureLeagueDTO.builder()
-				.leagueId(entity.getId())
-				.nameKr(entity.getLeague().getNameKr())
-				.logo(entity.getLeague().getLogo())
-				.build();
+	public static SeasonLeagueDTO toDTO(SeasonLeague entity) {
+
+		return SeasonLeagueDTO.builder()
+			.leagueId(entity.getId())
+			.nameKr(entity.getLeague().getNameKr())
+			.logo(entity.getLeague().getLogo())
+			.build();
 
 	}
 }

@@ -13,8 +13,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Repository
-public class LeagueRepositoryImpl implements LeagueRepositoryCustom{
-
+public class SeasonLeagueRepositoryCustomImpl implements SeasonLeagueRepositoryCustom {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
@@ -22,13 +21,24 @@ public class LeagueRepositoryImpl implements LeagueRepositoryCustom{
 
 	private static final QLeague league = QLeague.league;
 
-	public List<SeasonLeague> findLeagueByKeyword(String keyword){
+	public List<SeasonLeague> findLeagueByKeyword(String keyword) {
 
 		return jpaQueryFactory.select(seasonLeague)
 			.from(seasonLeague)
 			.join(seasonLeague.league, league)
 			.fetchJoin()
-			.where(league.nameKr.contains(keyword))
+			.where(league.nameKr.like("%" + keyword + "%"))
 			.fetch();
 	}
+
+	@Override
+	public List<SeasonLeague> findAllLeague() {
+
+		return jpaQueryFactory.select(seasonLeague)
+			.from(seasonLeague)
+			.join(seasonLeague.league, league)
+			.fetchJoin()
+			.fetch();
+	}
+
 }
