@@ -15,7 +15,7 @@ pipeline {
             steps {
                 echo 'master clone!'
                 dir ('') {
-                    git branch: 'develop', credentialsId: 'gitlab-eunbyeol', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A802'
+                    git branch: 'S10P12A802-283-openvidu-spoparty', credentialsId: 'gitlab-eunbyeol', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A802'
                 }
             }
         }
