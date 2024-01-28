@@ -7,21 +7,21 @@
           
           <v-text-field
             label="아이디"
-            v-model="signupRequest.loginId"
+            v-model="id"
             outlined
             required
           ></v-text-field>
           
           <v-text-field
             label="닉네임"
-            v-model="signupRequest.nickname"
+            v-model="nickname"
             outlined
             required
           ></v-text-field>
           
           <v-text-field
             label="비밀번호"
-            v-model="signupRequest.loginPwd"
+            v-model="password"
             :type="'password'"
             outlined
             required
@@ -29,7 +29,7 @@
           
           <v-text-field
             label="비밀번호 확인"
-            v-model="confirmPwd"
+            v-model="password2"
             :type="'password'"
             outlined
             required
@@ -66,9 +66,11 @@
           </v-row>
 
           <v-select
-            :items="['토트넘 FC', '리버풀 FC', '토론토 FC']"
+            :items="teamIds"
+            item-text="logo"
+            item-value="teamId"
             label="대표 앰블럼"
-            v-model="signupRequest.team"
+            v-model="teamId"
             required
             return-object
             outlined
@@ -92,33 +94,105 @@
   <script setup>
   import {useRouter} from 'vue-router';
   import { ref,computed } from 'vue';
+  import {registMember} from '@/api/members'
   import EmailVerify from '@/components/user/EmailVerify.vue'
+  import { httpStatusCode } from '@/util/http-status';
 
   const router = useRouter()
+
+  const id = ref("");
+  const nickname = ref("");
+  const password = ref("");
+  const password2 = ref("");
   const emailId = ref('');
   const emailDomain = ref('');
   const email = computed(() => {
     return `${emailId.value}@${emailDomain.value}`
   } )
+  const teamId = ref('');
 
+  const teamList = [
+      {teamId : 1, logo : "토트넘 FC", "isMain" : false},
+      {teamId : 2, logo : "리버풀", "isMain" : false},
+      {teamId : 3, logo : "토론토", "isMain" : false},
+    ]
   
-  const signupRequest = ref({
-    loginId: '',
-    nickname:'',
-    loginPwd: '',
-    email : email,
-    team: ''
-  });
+  const teamIds = teamList.map(t => t.teamId);
+  
+  const isEmailValid = (email) => {
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  };
 
-  const confirmPwd = ref('');
-  const requireCheckPwd = ref(false);
-  
+  const isPasswordValid = (pwd) => {
+    return pwd.length >= 8 && /[!@#$%^&*(),.?":{}|<>]/g.test(pwd);
+  };
+
+
   function submitSignup() {
-    if (signupRequest.value.loginId !== confirmPwd.value) {
-        requireCheckPwd.value = true;
+      if (
+      id.value === "" ||
+      password.value === "" ||
+      nickname.value === "" ||
+      email.value === "" ||
+      teamId.value === ""
+      ) {
+        alert("모든 내용을 입력해주세요");
+        console.log("id -> ",id.value)
+        console.log("password -> ",password.value)
+        console.log("nickname -> ",nickname.value)
+        console.log("email -> ",email.value)
+        console.log("teamId -> ",teamId.value)
         return;
+      }
+
+    if (password.value !== password2.value) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+      }
+
+    if (!isPasswordValid(password.value)) {
+        alert("비밀번호는 8자리 이상이며, 특수문자를 포함해야 합니다.");
+        return;
+      }
+
+    if (!isEmailValid(email.value)) {
+      alert("올바른 이메일 형식을 입력해주세요.");
+      return;
     }
-    console.log(signupRequest.value);
+
+    const member = {
+      loginId : id.value,
+      loginPwd : password.value,
+      nickname : nickname.value,
+      email : email.value,
+      team : {
+        id : teamId.value
+      }
+    }
+
+    registMember(member,
+      (res) => {
+        if (res.status === httpStatusCode.OK) {
+          console.log("히히 회원가입 성공")
+          console.log(res);
+          alert("히히 회원가입 성공")
+          window.location.reload("/")
+        } 
+        else if (res.status === httpStatusCode.CONFLICT) {
+          console.log("이미 등록된 아이디 ㅠㅠ")
+          alert("이미 등록된 아이디입니다. ")
+          return;
+        }
+      },
+      (error) => {
+        console.log(error)
+        console.log("ㅅㅂ")
+        alert("히히 회원가입 실패 발사")
+      }
+    )
+
   }
 
   const isEmailVerifyVisible = ref(false);

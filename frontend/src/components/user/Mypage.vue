@@ -5,27 +5,30 @@
         
             <v-row>
                 <v-col cols="12" md="8">
-                    <v-text-field label="아이디" value="kbukm123" outlined dense readonly></v-text-field>
+                    <v-text-field label="아이디" :value="memberInfo.loginId" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
                     <v-btn color="#393646" style="margin-top:10px" @click="showChangePwdModal" block>비밀번호 수정</v-btn>
                 </v-col>
             </v-row>
-            <SetNewPwd v-if="isPwdModalVisible" @setpwd-close="isPwdModalVisible = false"/>
+            <SetNewPwd 
+                v-if="isPwdModalVisible"
+                :current-pwd="memberInfo.loginPwd"
+                @set-pwd-close="changePwd($event)"/>
             
             <v-row>
                 <v-col cols="12">
-                    <v-text-field label="닉네임" value="버스터" outlined dense></v-text-field>
+                    <v-text-field label="닉네임" :value="memberInfo.nickname" outlined dense></v-text-field>
                 </v-col>
             </v-row>
             
             <v-row>
                 <v-col cols="4" md="4">
-                    <v-text-field label="이메일 아이디" v-model="emailId" outlined dense></v-text-field>
+                    <v-text-field label="이메일 아이디" :value="memberInfo.email.split('@')[0]" outlined dense></v-text-field>
                 </v-col>
                 <v-col cols="1" md="1" class="text-center">@</v-col>
                 <v-col cols="4" md="4">
-                    <v-text-field label="도메인" v-model="emailDomain" outlined dense></v-text-field>
+                    <v-text-field label="도메인" :value="memberInfo.email.split('@')[1]" outlined dense></v-text-field>
                 </v-col>
                 <v-col cols="3" md="3">
                     <v-btn color="#123421" style="margin-top:10px;" @click="showChangeEmailModal">이메일 수정</v-btn>
@@ -77,7 +80,8 @@
             <v-card-actions class="text-center">
                 <v-spacer></v-spacer>
                 <v-btn color="grey" @click="goBack">이전</v-btn>
-                <v-btn color="primary">저장</v-btn>
+                <v-btn color="primary" @click="updateChanges">수정</v-btn>
+                <v-btn color="red" @click="Withdraw">회원 탈퇴</v-btn>
             </v-card-actions>
         </v-card>
     </v-container>
@@ -85,22 +89,110 @@
 
 <script setup>
 import {useRouter} from 'vue-router'
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
+
+import { httpStatusCode } from '@/util/http-status';
+import {getMember, updateMember, deleteMember} from '@/api/members'
+
 import SetNewPwd from '@/components/user/SetNewPwd.vue';
 import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
 import FollowList from '@/components/user/FollowList.vue';
 
 const router = useRouter();
+const memberId = ref("");
 
-const emailId = ref("kimbumki");
-const emailDomain = ref("naver.com")
+onBeforeMount(async() => {
+    console.log("memberInfo =>", memberInfo.value)
+    await router.isReady()
+    memberId.value = sessionStorage.getItem("id");
+    console.log("id -> ",memberId.value)
+    getMemberInfo();
+})
+
+const memberInfo = ref({
+    id : "",
+    loginId : "",
+    loginPwd : "",
+    nickname : "",
+    email : "",
+    team : {
+        id : "",
+        logo : "",
+    },
+    status : "",
+})
+
+const emailId = ref(memberInfo.value.email.split("@")[0]);
+const emailDomain = ref(memberInfo.value.email.split("@")[1]);
+
+const getMemberInfo = () => {
+    console.log("이거 이용해서 바꿀꺼다 ->", memberId.value)
+    getMember(memberId.value,({data}) => {
+        console.log(data);
+        memberInfo.value.id = data.id;
+        memberInfo.value.loginId = data.loginId;
+        memberInfo.value.loginPwd = data.loginPwd;
+        memberInfo.value.nickname = data.nickname;
+        memberInfo.value.email = data.email;
+        memberInfo.value.team.id = data.team.id;
+        memberInfo.value.team.logo = data.team.logo;
+        memberInfo.value.team.status = data.status;
+    },(error) => {
+        console.log("살려줘")
+        console.log(error)
+    }
+    )
+}
+
+const updateChanges = () => {
+    console.log("수정된 회원 정보")
+    console.log(memberInfo.value)
+    updateMember(memberInfo.value, (response)=> {
+        if(response.status === httpStatusCode.OK) {
+            alert("회원정보 수정 완료!")
+            window.location.replace("/")
+        }
+    },(error) => {
+        console.log("살려줘!")
+        console.log(error);
+    })
+}
+
+const Withdraw = () => {
+    deleteMember(memberId.value,
+    (res) => {
+        if (res.status === httpStatusCode.OK) {
+            console.log(res)
+            sessionStorage.removeItem("accessToken");
+            sessionStorage.removeItem("refreshToken");
+            sessionStorage.removeItem("id")
+            alert("함께해서 더러웠고 다신 만나지 말자")
+            router.push("/")
+        } 
+    },
+    (error) => {
+        console.log(error)
+        alert("어딜가려고?")
+    }
+    )
+}
+
 
 // 비밀번호 수정 모달 띄우기
 const isPwdModalVisible = ref(false) // 비밀번호 수정 모달 보일까 말까
 
 function showChangePwdModal() {
     isPwdModalVisible.value = true
+}
+
+function changePwd(newPwds){
+    isPwdModalVisible.value = false;
+    console.log(newPwds)
+    memberInfo.value.loginPwd = newPwds.password;
+    console.log("새로 바뀐 비밀번호!")
+    console.log(memberInfo.value.loginPwd)
+    
 }
 
 // 이메일 수정 모달 띄우기
