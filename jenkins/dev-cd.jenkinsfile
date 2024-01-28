@@ -77,8 +77,8 @@ pipeline {
                     script {
                         docker.withRegistry('', registryCredential) {
                             sh "docker buildx create --use --name spoparty-builder"
-                            sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${backImageName}:${BUILD_NUMBER} --push ."
-                            sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${backImageName}:latest --push ."
+                            sh "docker buildx build --no-cache --platform linux/amd64,linux/arm64 -t ${backImageName}:${BUILD_NUMBER} --push ."
+                            sh "docker buildx build --no-cache --platform linux/amd64,linux/arm64 -t ${backImageName}:latest --push ."
                         }
                     }
                 }
