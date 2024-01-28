@@ -38,9 +38,10 @@ pipeline {
                         echo 'FE Build!'
                         dir('frontend'){
                             sh'''
-                                ls
-                                 npm install
-                                 npm run build
+                                npm cache clean --force
+                                rm -rf node_modules package-lock.json
+                                npm install --save
+                                npm run build
                             '''
                         }
                     }
