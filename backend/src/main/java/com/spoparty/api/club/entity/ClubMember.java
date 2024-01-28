@@ -1,6 +1,9 @@
 package com.spoparty.api.club.entity;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Where;
 
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.common.entity.RoleType;
@@ -23,6 +26,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -32,11 +36,12 @@ import lombok.ToString;
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Where(clause = "is_deleted = 0")
 public class ClubMember extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "club_member_id")
-	private long id;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "club_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -46,6 +51,7 @@ public class ClubMember extends BaseEntity {
 	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member member;
 
+	@Setter
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private RoleType role;
@@ -56,6 +62,20 @@ public class ClubMember extends BaseEntity {
 		clubMember.member = member;
 		clubMember.club = club;
 		clubMember.role = role;
+		club.addClubMember(clubMember);
 		return clubMember;
+	}
+
+	// 비즈니스 로직
+	public void deleteClubMember(Club club) {
+		if (club.getCurrentParticipants() == 1) { // 그룹에 남은 인원이 없는 경우 그룹은 삭제됨
+			club.deleteClub();
+			return;
+		}
+		if (role.equals(RoleType.host)) { // 그룹원이 남아있는데 그룹을 나가는 경우
+			throw new IllegalArgumentException(HOST_CANNOT_LEAVE_GROUP.getMessage());
+		}
+		this.softDelete();
+		club.removeClubMember(this);
 	}
 }
