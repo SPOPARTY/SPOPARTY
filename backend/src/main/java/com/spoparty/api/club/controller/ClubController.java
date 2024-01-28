@@ -4,6 +4,7 @@ import static com.spoparty.api.common.constants.SuccessCode.*;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +20,9 @@ import com.spoparty.api.club.dto.ClubRequestDto;
 import com.spoparty.api.club.dto.ClubResponseDto;
 import com.spoparty.api.club.dto.InviteRequestDto;
 import com.spoparty.api.club.dto.InviteResponseDto;
-import com.spoparty.api.club.service.ClubService;
+import com.spoparty.api.club.service.ClubServiceImpl;
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.security.model.PrincipalDetails;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,65 +33,73 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/clubs")
 public class ClubController {
-	private final ClubService clubService;
+	private final ClubServiceImpl clubService;
 
-	@PostMapping
-	public ApiResponse<Long> create(@RequestBody @Valid ClubRequestDto clubRequestDto) {
-		// 회원 검증 로직 필요
-		Long response = clubService.createClub(clubRequestDto);
-		return ApiResponse.success(CLUB_CREATE_SUCCESS, response);
-	}
-
-	@GetMapping("/recent/{memberId}")
-	public ApiResponse<List<ClubResponseDto>> getRecentClubs(@PathVariable long memberId) {
-		List<ClubResponseDto> response = clubService.findRecentClubs(memberId);
+	@GetMapping("/recent")
+	public ApiResponse<List<ClubResponseDto>> getRecentClubs(
+		@AuthenticationPrincipal PrincipalDetails principalDetails) {
+		log.debug("member 정보 - {}", principalDetails.getMember());
+		List<ClubResponseDto> response = clubService.findRecentClubs(principalDetails.getMember());
 		return ApiResponse.success(GET_SUCCESS, response);
 	}
 
+	@PostMapping
+	public ApiResponse<ClubResponseDto> create(@RequestBody @Valid ClubRequestDto clubRequestDto) {
+		log.debug("ClubRequestDto 정보 - {}", clubRequestDto);
+		ClubResponseDto response = clubService.createClub(clubRequestDto);
+		return ApiResponse.success(CLUB_CREATE_SUCCESS, response);
+	}
+
+	@GetMapping("/{clubId}")
+	public ApiResponse<ClubResponseDto> getClub(@PathVariable Long clubId) {
+		ClubResponseDto response = clubService.findClub(clubId);
+		return ApiResponse.success(CLUB_READ_SUCCESS, response);
+	}
+
 	@PutMapping("/{clubId}")
-	public ApiResponse<Boolean> update(@PathVariable long clubId, @RequestBody @Valid ClubRequestDto clubRequestDto) {
-		Boolean response = clubService.updateClubName(clubId, clubRequestDto);
+	public ApiResponse<ClubResponseDto> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
+		@PathVariable Long clubId, @RequestBody @Valid ClubRequestDto clubRequestDto) {
+		ClubResponseDto response = clubService.updateClubName(principalDetails.getMember(), clubId, clubRequestDto);
 		return ApiResponse.success(CLUB_UPDATE_SUCCESS, response);
 	}
 
 	@DeleteMapping("/{clubId}")
-	public ApiResponse<Boolean> delete(@PathVariable long clubId) {
-		// 그룹장 권한 검증 로직 추가 필요
-		Boolean response = clubService.deleteClub(clubId);
+	public ApiResponse<Long> delete(@AuthenticationPrincipal PrincipalDetails principalDetails,
+		@PathVariable Long clubId) {
+		Long response = clubService.deleteClub(principalDetails.getMember(), clubId);
 		return ApiResponse.success(CLUB_DELETE_SUCCESS, response);
 	}
 
-	@GetMapping("/{clubId}/invite")
-	public ApiResponse<InviteResponseDto> getInviteUrl(@PathVariable long clubId) {
+	@GetMapping("/invite/{clubId}")
+	public ApiResponse<InviteResponseDto> getInviteUrl(@PathVariable Long clubId) {
 		InviteResponseDto response = clubService.getInviteUrl(clubId);
-		return ApiResponse.success(CLUB_DELETE_SUCCESS, response);
+		return ApiResponse.success(INVITE_URL_GET_SUCCESS, response);
+	}
+
+	@PostMapping("/invite")
+	public ApiResponse<ClubMemberResponseDto> joinGroup(@RequestBody @Valid InviteRequestDto inviteRequestDto) {
+		ClubMemberResponseDto response = clubService.createGroupMember(inviteRequestDto);
+		return ApiResponse.success(CLUB_MEMBER_CREATE_SUCCESS, response);
 	}
 
 	@GetMapping("/{clubId}/participants")
-	public ApiResponse<List<ClubMemberResponseDto>> getAllGroupMembers(@PathVariable long clubId) {
+	public ApiResponse<List<ClubMemberResponseDto>> getAllGroupMembers(@PathVariable Long clubId) {
 		List<ClubMemberResponseDto> response = clubService.getGroupMembers(clubId);
 		return ApiResponse.success(CLUB_MEMBERS_READ_SUCCESS, response);
 	}
 
-	@PostMapping("/{clubId}/participants")
-	public ApiResponse<Boolean> joinGroup(@PathVariable long clubId, @RequestBody @Valid
-		InviteRequestDto inviteRequestDto) {
-		// 초대 링크 검증 로직 추가 필요
-		Boolean response = clubService.createGroupMember(clubId, inviteRequestDto);
-		return ApiResponse.success(CLUB_MEMBER_CREATE_SUCCESS, response);
-	}
-
 	@PutMapping("/{clubId}/host")
-	public ApiResponse<Boolean> assignHost(@PathVariable long clubId, @RequestBody @Valid
-		ClubHostRequestDto clubHostRequestDto) {
-		//그룹장 권한 검증 로직 필요
-		Boolean response = clubService.assignHost(clubId, clubHostRequestDto);
+	public ApiResponse<ClubMemberResponseDto> assignHost(@AuthenticationPrincipal PrincipalDetails principalDetails,
+		@PathVariable Long clubId, @RequestBody @Valid ClubHostRequestDto clubHostRequestDto) {
+		ClubMemberResponseDto response = clubService.assignHost(principalDetails.getMember(), clubId,
+			clubHostRequestDto);
 		return ApiResponse.success(CLUB_HOST_UPDATE_SUCCESS, response);
 	}
 
-	@DeleteMapping("/{clubId}/participants/{participantId}")
-	public ApiResponse<Boolean> leaveGroup(@PathVariable long clubId, @PathVariable("participantId") long memberId) {
-		Boolean response = clubService.deleteGroupMember(clubId, memberId);
+	@DeleteMapping("/{clubId}/participants")
+	public ApiResponse<Long> leaveGroup(@AuthenticationPrincipal PrincipalDetails principalDetails,
+		@PathVariable Long clubId) {
+		Long response = clubService.deleteGroupMember(principalDetails.getMember(), clubId);
 		return ApiResponse.success(CLUB_MEMBER_DELETE_SUCCESS, response);
 	}
 }
