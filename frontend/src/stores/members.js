@@ -49,6 +49,7 @@ export const useMemberStore = defineStore("memberStore",() => {
             },
             (error) => {
                 console.log("*********비상!!!*********")
+                console.log(error)
                 console.log(error.response.status);
                 if (error.response.status === httpStatusCode.UNAUTHORIZED) {
                     alert("등록되지 않은 회원입니다!")
