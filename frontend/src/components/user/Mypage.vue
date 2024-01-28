@@ -128,7 +128,9 @@ const emailDomain = ref(memberInfo.value.email.split("@")[1]);
 
 const getMemberInfo = () => {
     console.log("이거 이용해서 바꿀꺼다 ->", memberId.value)
-    getMember(memberId.value,({data}) => {
+    getMember(
+        memberId.value,
+        ({data}) => {
         console.log(data);
         memberInfo.value.id = data.id;
         memberInfo.value.loginId = data.loginId;
@@ -138,10 +140,11 @@ const getMemberInfo = () => {
         memberInfo.value.team.id = data.team.id;
         memberInfo.value.team.logo = data.team.logo;
         memberInfo.value.team.status = data.status;
-    },(error) => {
+        },
+        (error) => {
         console.log("살려줘")
         console.log(error)
-    }
+        }
     )
 }
 
@@ -202,9 +205,12 @@ function showChangeEmailModal() {
     isEmailModalVisible.value = true
 }
 
-function updateEmail(newEmailData) {
-    emailId.value = newEmailData.newEmailId;
-    emailDomain.value = newEmailData.newEmailDomain;
+function updateEmail(newEmail) {
+    console.log(newEmail.value)
+    emailId.value = newEmail.value.split("@")[0];
+    emailDomain.value = newEmail.value.split("@")[1];
+
+    memberInfo.value.email = newEmail.value;
 }
 
 // 엠블럼 수정 모달 띄우기
