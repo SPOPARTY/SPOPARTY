@@ -8,6 +8,7 @@ buildscript {
         springDependencyMgmtVer = '1.0.11'
         springLoadedVer = '1.2.8'
         jUnitVer = "5.6.0"
+        openViduVer = "2.29.0"
     }
     repositories {
         mavenCentral()
@@ -112,11 +113,8 @@ dependencies {
     implementation('org.webjars:sockjs-client:1.1.2')
     implementation('org.webjars:stomp-websocket:2.3.3-1')
     implementation('org.webjars:webjars-locator:0.30')
-    //WebRTC 클라이언트 의존성 추가
-    implementation('org.webjars.bower:webrtc-adapter:7.4.0')
-    //Kurento (미디어서버) 관련 의존성 추가
-    implementation('org.kurento:kurento-client:6.16.0')
-    implementation('org.kurento:kurento-utils-js:6.15.0')
+
+    implementation("io.openvidu:openvidu-java-client:${openViduVer}")
 
 
     //IntelliJ용
