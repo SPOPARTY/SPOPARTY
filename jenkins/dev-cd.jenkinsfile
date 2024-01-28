@@ -26,7 +26,6 @@ pipeline {
                         echo 'BE Build!'
                         dir ('backend') {
                             sh'''
-                                ls
                                 chmod +x gradlew
                                 ./gradlew clean build
                             '''
