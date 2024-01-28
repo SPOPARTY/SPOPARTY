@@ -3,12 +3,14 @@ package com.spoparty.api.club.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
+@ToString
 public class ClubHostRequestDto {
 	@NotBlank(message = "currentHostId가 없습니다.")
-	private long currentHostId;
+	private Long currentHostId;
 	@NotBlank(message = "nextHostId가 없습니다.")
-	private long nextHostId;
+	private Long nextHostId;
 }

@@ -4,16 +4,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class InviteRequestDto {
 	@NotBlank(message = "memberId가 없습니다.")
-	private long memberId;
-
+	private Long memberId;
 	@NotBlank(message = "초대 URL이 없습니다.")
 	private String inviteUrl;
 }
