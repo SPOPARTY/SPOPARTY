@@ -24,8 +24,9 @@ public enum ErrorCode {
 	NO_GROUP_MEMBER(BAD_REQUEST, "존재하지 않은 그룹원입니다."),
 	ALREADY_GROUP_MEMBER(BAD_REQUEST, "이미 존재하는 그룹원입니다."),
 
-	INVALID_INVITE_URL(BAD_REQUEST,"유효하지 않은 초대 링크입니다."),
-	NO_GROUP(BAD_REQUEST, "존재하지 않은 그룹입니다."),
+	INVALID_INVITE_URL(BAD_REQUEST, "유효하지 않은 초대 링크입니다."),
+	NO_GROUP_ID(BAD_REQUEST, "존재하지 않거나 삭제된 그룹입니다."),
+	HOST_CANNOT_LEAVE_GROUP(BAD_REQUEST, "그룹장은 그룹을 나갈 수 없습니다. 그룹장을 넘기세요."),
 
 	/* 401 UNAUTHORIZED: 인증 실패 */
 	UNAUTHORIZED_USER(UNAUTHORIZED, "만료되었거나 잘못된 토큰입니다. 토큰을 확인해주세요."),
