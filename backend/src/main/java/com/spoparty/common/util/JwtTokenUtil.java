@@ -76,15 +76,13 @@ public class JwtTokenUtil {
 	}
 
 	public DecodedJWT verify(String token, String key) {
-		JWTVerifier jwtVerifier = null;
-		DecodedJWT decodedJWT = null;
 		try {
-			jwtVerifier = JWT.require(Algorithm.HMAC512(key)).withIssuer(ISSUER).build();
-			decodedJWT = jwtVerifier.verify(token);
+			JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512(key)).withIssuer(ISSUER).build();
+			return jwtVerifier.verify(token);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		return decodedJWT;
+		return null;
 	}
 
 }

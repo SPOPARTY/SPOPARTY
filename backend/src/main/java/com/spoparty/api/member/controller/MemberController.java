@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import com.spoparty.api.member.entity.FollowingTeam;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.repository.projection.FollowingTeamProjection;
 import com.spoparty.api.member.service.MemberService;
+import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +41,7 @@ public class MemberController {
 		return ResponseEntity.status(200).body(member);
 	}
 
-	@PostMapping
+	@PostMapping("/register")
 	public ResponseEntity<?> registerMember(@RequestBody Member member) {
 		log.info("MemberController.register{}: ", member);
 		Member loginMember = memberService.findByLoginId(member.getLoginId());
@@ -97,4 +99,9 @@ public class MemberController {
 			return ResponseEntity.status(200).body(null);
 	}
 
+	@DeleteMapping("/logout")
+	public ResponseEntity<?> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+		memberService.deleteToken(principalDetails.getMember().getId());
+		return ResponseEntity.status(200).body(null);
+	}
 }

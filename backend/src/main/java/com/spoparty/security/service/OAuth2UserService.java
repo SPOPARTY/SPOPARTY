@@ -9,7 +9,9 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.repository.MemberRepository;
+import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,41 +28,31 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 		log.info("oAuth2User: {}", oAuth2User);
-		log.info("@@@@@@@@@@@@getAttribute(): {}", oAuth2User.getAttributes());
 
+		// kakao에서 넘어온 데이터 파싱
 		String provider = userRequest.getClientRegistration().getClientId();
-		String providerId = (String)oAuth2User.getAttributes().get("id");
+		String id = oAuth2User.getAttributes().get("id") + "";
+		Map<String, Object> userInfo = (Map<String, Object>)oAuth2User.getAttribute("kakao_account");
+		String email = (String)userInfo.get("email");
+		userInfo = (Map<String, Object>)userInfo.get("profile");
+		String nickname = (String)userInfo.get("nickname");
 
-		Map<String, Object> map = (Map<String, Object>)((Map<String, Object>)oAuth2User.getAttributes()
-			.get("properties")).get("kakao_account");
-		log.info("map: {}", map);
+		// 회원가입이 되어있는지 확인하고, 안되어있다면 회원가입
+		Member member = memberRepository.findByLoginId(provider + "_" + id, Member.class).orElse(null);
+		if (member == null) {
+			member = new Member();
+			member.setLoginId(provider + "_" + id);
+			member.setNickname(nickname);
+			member.setEmail(email);
+			member.setLoginPwd(bCryptPasswordEncoder.encode(id));
+			member.setProvider(provider);
+			member = memberRepository.save(member);
+			log.info("OAuth 회원가입 완료 : {}", member);
+		} else {
+			log.info("OAuth 로그인 : {}", member);
+		}
 
-		// 강제 회원가입
-		// String provider = userRequest.getClientRegistration().getClientId();
-		// String providerId = oAuth2User.getAttribute("sub");
-		// String username = provider+"_"+providerId;
-		// String email = oAuth2User.getAttribute("email");
-		// String password = bCryptPasswordEncoder.encode("겟인데어");
-		// String role = "ROLE_USER";
-		//
-		// User user = userRepository.findByUsername(username);
-		// System.out.println("asdasd "+username);
-		// if(user == null) {
-		// 	System.out.println("asdasd 자동로그인");
-		// 	user = User.builder()
-		// 			.username(username)
-		// 			.email(email)
-		// 			.password(password)
-		// 			.role(role)
-		// 			.provider(providerId)
-		// 			.providerId(providerId)
-		// 			.build();
-		// 	userRepository.save(user);
-		// }else {
-		// 	System.out.println("asdasd 이미로그인");
-		// }
-		// return new PrincipalDetails(user, oAuth2User.getAttributes());
-		return null;
+		return new PrincipalDetails(member);
 	}
 
 }

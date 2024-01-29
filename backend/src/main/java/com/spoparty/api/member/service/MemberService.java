@@ -10,9 +10,12 @@ import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.football.repository.TeamRepository;
 import com.spoparty.api.member.entity.FollowingTeam;
 import com.spoparty.api.member.entity.Member;
+import com.spoparty.api.member.entity.MemberToken;
 import com.spoparty.api.member.repository.FollowingTeamRepository;
 import com.spoparty.api.member.repository.MemberRepository;
+import com.spoparty.api.member.repository.MemberTokenRepository;
 import com.spoparty.api.member.repository.projection.FollowingTeamProjection;
+import com.spoparty.common.util.JwtTokenUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,8 @@ public class MemberService {
 	private final TeamRepository teamRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final FollowingTeamRepository followingTeamRepository;
+	private final JwtTokenUtil jwtTokenUtil;
+	private final MemberTokenRepository memberTokenRepository;
 
 	// Member 기능
 
@@ -39,8 +44,10 @@ public class MemberService {
 
 	public Member registerMember(Member member) {
 		member.setLoginPwd(bCryptPasswordEncoder.encode(member.getLoginPwd()));
-		Team teamInfo = teamRepository.findById(member.getTeam().getId()).orElse(null);
-		member.setTeam(teamInfo);
+		if (member.getTeam() != null) {
+			Team teamInfo = teamRepository.findById(member.getTeam().getId(), Team.class).orElse(null);
+			member.setTeam(teamInfo);
+		}
 		memberRepository.save(member);
 		return member;
 	}
@@ -105,6 +112,40 @@ public class MemberService {
 
 		followingTeam.softDelete();
 		return followingTeam;
+	}
+
+	public String generateAccessToken(Long id) {
+		return jwtTokenUtil.createAccessToken(id + "");
+	}
+
+	@Transactional
+	public String generateRefreshToken(Long id) {
+		String refreshToken = jwtTokenUtil.createRefreshToken();
+		Member member = memberRepository.findById(id, Member.class).orElse(null);
+		MemberToken token = new MemberToken();
+		token.setMember(member);
+		token.setRefreshToken(refreshToken);
+		memberTokenRepository.deleteByMember_id(member.getId());
+		memberTokenRepository.save(token);
+		return refreshToken;
+	}
+
+	public String regenerateToken(String accessToken, String refreshToken) {
+		MemberToken memberToken = memberTokenRepository.findByRefreshToken(refreshToken, MemberToken.class)
+			.orElse(null);
+		if (accessToken == null || memberToken == null)
+			return null;
+		return jwtTokenUtil.createAccessToken(memberToken.getMember().getId() + "");
+	}
+
+	public boolean checkRefreshToken(Long id) {
+		MemberToken token = memberTokenRepository.findByMember_id(id, MemberToken.class).orElse(null);
+		return token != null;
+	}
+
+	@Transactional
+	public void deleteToken(Long id) {
+		memberTokenRepository.deleteByMember_id(id);
 	}
 
 }
