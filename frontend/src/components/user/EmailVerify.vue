@@ -34,8 +34,8 @@ const modalVisible = ref(true); // 모달의 가시성을 제어하는 변수, �
 const emit = defineEmits(['close']);
 
 function verifyEmail() {
-    // 여기에 인증 로직을 추가하세요
-    closeModal();
+  
+  closeModal();
 }
 
 function closeModal() {

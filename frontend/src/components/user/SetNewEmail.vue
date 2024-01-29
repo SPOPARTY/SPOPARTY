@@ -24,14 +24,14 @@
                         />
                     </v-col>
                     <v-col cols="3">
-                        <v-btn color="black" @click="emailSent = true">인증코드 발송</v-btn>
+                        <v-btn color="black" @click="sendEmail">인증코드 발송</v-btn>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col cols="6" md="5">
                         <v-text-field 
                             label="인증코드 입력"
-                            v-model="myVerifyCode"
+                            v-model="verifyCode"
                             outlined
                         />
                     </v-col>
@@ -39,14 +39,14 @@
                         4:59
                     </v-col>
                     <v-col cols="4">
-                        <v-btn color="black" @click="checkCode">인증번호 확인</v-btn>
+                        <v-btn color="black" @click="checkVerifyCode">인증번호 확인</v-btn>
                     </v-col>
                 </v-row>
             </v-card-text>
             <v-card-actions>
                 <v-spacer/>
                 <v-btn color="red" @click="closeModal">닫기</v-btn>
-                <v-btn color="black" @click="checkVerified">수정</v-btn>
+                <v-btn color="black" @click="confirmChange">수정</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -113,59 +113,100 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {ref, computed} from 'vue';
+import {emailCheck,verifyCodeCheck} from '@/api/authentication'
+import { httpStatusCode } from '@/util/http-status';
+
 const isModalVisible = ref(true);
 
 const newEmailId = ref(""); // 새 이메일 ID
 const newEmailDomain = ref(""); // 새 이메일 도메인
-const verifyCode = "12345"; // 이메일에 전송될 인증번호 -> 아직은 임시
-const myVerifyCode = ref(""); // 내가 적은 인증번호
+const newEmail = computed(() => {
+    return `${newEmailId.value}@${newEmailDomain.value}`
+  } )
+
+const emailVerifiedConfirm = ref(false); // 이메일 수정 최종 승인
+
+const emailSent = ref(false); // 이메일에 인증코드가 전송되면 true
+
+const verifyDone = ref(false); // 이메일 인증 완료
+const verifyNotDone = ref(false); // 아직 이메일 인증이 완료되지 않음
+
+const emit = defineEmits(['setEmail-close','update-email'])
+
+
+function sendEmail () {
+    if(newEmailId.value === '' || newEmailDomain.value === '' ) {
+      alert("올바른 이메일을 입력해주세요!")
+      return;
+    }
+
+    console.log("새로운 이메일 잘 왔나 ->", newEmail.value)
+
+    emailCheck(
+      newEmail.value,
+      (res) => {
+        if(res.status === httpStatusCode.OK) {
+          console.log("잘 발송 되었음")
+          console.log(res.status)
+          emailSent.value = true;
+        }
+      },
+      (error) => {
+        if (error.response.status === httpStatusCode.CONFLICT) {
+          console.log(error)
+          alert("이미 사용 중인 이메일입니다!")
+        }
+      }
+    ) 
+}
+
+const verifyCode = ref(""); // 내가 적은 인증번호
 
 const codeChecked = ref(false); // (내가 쓴 인증코드) === (이메일에 전송된 코드)일 때 true
 const codeNotChecked = ref(false); // (내가 쓴 인증코드) !== (이메일에 전송된 코드)일 때 true
 
-const emailSent = ref(false); // 이메일에 인증코드가 전송되면 true
 
-const codeVerified = ref(false); //
-const verifyDone = ref(false); // 
-const verifyNotDone = ref(false); // 
-
-const emit = defineEmits(['setEmail-close','update-email'])
-
-function checkVerified() {
-    console.log("codeVerified",codeVerified.value)
-    console.log("verifyDone",verifyDone.value)
-    console.log("verifyNotDone",verifyNotDone.value)
-    if (codeVerified.value) {
-        const newEmailData = {
-            newEmailId : newEmailId.value,
-            newEmailDomain : newEmailDomain.value
+function checkVerifyCode () {
+    const data = {
+      email:newEmail.value,
+      code:verifyCode.value,
+    }
+    console.log(data)
+    verifyCodeCheck(
+      data,
+      (res)=>{
+        if(res.status === httpStatusCode.OK){
+          codeChecked.value = true
+          emailVerifiedConfirm.value = true;
         }
-        verifyDone.value = true;
+      },
+      (error)=>{
+        console.log(error)
+        if (error.response.status === "400") {
+          console.log(error)
+          codeNotChecked.value = true;
+        }
+      }
+    )
+}
 
-        console.log(newEmailData);
-        emit('update-email',newEmailData);
-    } 
+function confirmChange() {
+    if (emailVerifiedConfirm) {
+        verifyDone.value = true;
+        emit('update-email',newEmail)
+    }
     else {
         verifyNotDone.value = true;
     }
 }
 
+
+
 function closeModal() {
     isModalVisible.value = false;
     emit('setEmail-close')
 }
-
-function checkCode() {
-    console.log(verifyCode === myVerifyCode.value)
-    if (verifyCode === myVerifyCode.value) {
-        codeChecked.value = true;
-        codeVerified.value = true;
-    } else {
-        codeNotChecked.value = true;
-    }
-}
-
 
 </script>
 
