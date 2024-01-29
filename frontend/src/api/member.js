@@ -5,7 +5,7 @@ const local = localAxios();
 const memberUrl = "/members";
 
 function getMember(memberId, success, fail) {
-    local.get(`${memberUrl}/${memberId}`).then(success).catch(fail);
+    local.get(`/members/${memberId}`).then(success).catch(fail);
 }
 
 function registMember(member, success, fail) {
@@ -26,14 +26,15 @@ async function memberConfirm(params,success,fail) {
 }
 
 async function findById(memberId, success, fail) {
-    local.defaults.headers['Authorization'] = sessionStorage.getItem("accessToken");
     await local.get(`/members/${memberId}`).then(success).catch(fail);
 }
+
 
 // function logout(success, fail) {
 //     local.defaults.headers['Authorization'] = localStorage.getItem("accessToken")
 //     local.delete(`/members/logout`).then(success).catch(fail);
 // }
+
 
 export {
     getMember,

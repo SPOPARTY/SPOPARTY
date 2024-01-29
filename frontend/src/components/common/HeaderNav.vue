@@ -66,9 +66,9 @@
 <script setup>
 import { ref,computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useMemberStore } from '@/stores/members'
+import { useManagementStore} from "@/stores/member/managements"
 
-const memberStore = useMemberStore()
+const managemetStore = useManagementStore()
 
 // 로그인 여부 감지
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
@@ -80,7 +80,7 @@ onMounted(() => {
 
 // 로그아웃
 const logout = () => {
-  memberStore.logout();
+  managemetStore.logout();
 }
 
 const router = useRouter();
