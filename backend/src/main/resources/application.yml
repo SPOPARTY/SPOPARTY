@@ -41,7 +41,7 @@ spring:
       hibernate:
       #        show-sql: true
       format_sql: true
-    open-in-view: false
+  #    open-in-view: false
   data:
     web:
       pageable:
