@@ -78,8 +78,8 @@ public class Fixture extends FootballBaseEntity {
 	@OneToMany(mappedBy = "fixture")
 	private List<Lineup> lineups = new ArrayList<>();
 
-	// @OneToOne(fetch = FetchType.LAZY, mappedBy = "fixture")
-	// private CheerFixture cheerfixture;
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "fixture")
+	private CheerFixture cheerfixture;
 
 
 	@Builder
