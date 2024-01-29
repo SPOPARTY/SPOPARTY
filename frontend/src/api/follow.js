@@ -1,6 +1,6 @@
 import {localAxios} from '@/util/http-commons';
 
-const API_URL = "follows"
+const API_URL = "/follows"
 
 const local = localAxios();
 
@@ -16,12 +16,12 @@ function requestFollowList(memberId,success,fail) {
 
 function requestFollow(data,success,fail) {
     // local.default.header['Authorization'] = localStorage.getItem("accessToken")
-    local.post("members/follows",data).then(success).catch(fail)
+    local.post("/members/follows",data).then(success).catch(fail)
 }
 
 function requestUnFollow(teamId,success,fail) {
     // local.default.header['Authorization'] = localStorage.getItem("accessToken")
-    local.delete(`members/${API_URL}/${teamId}`).then(success).catch(fail)
+    local.delete(`/members/follows/${teamId}`).then(success).catch(fail)
 }
 
 export {
