@@ -32,10 +32,10 @@ public class CheerFixture extends BaseEntity {
 	private long id;
 
 	@Column(nullable = false)
-	private long home_count;
+	private long homeCount;
 
 	@Column(nullable = false)
-	private long away_count;
+	private long awayCount;
 
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
@@ -48,9 +48,9 @@ public class CheerFixture extends BaseEntity {
 
 	@Builder
 
-	public CheerFixture(long home_count, long away_count, Fixture fixture) {
-		this.home_count = home_count;
-		this.away_count = away_count;
+	public CheerFixture(long homeCount, long awayCount, Fixture fixture) {
+		this.homeCount = homeCount;
+		this.awayCount = awayCount;
 		this.fixture = fixture;
 	}
 }
