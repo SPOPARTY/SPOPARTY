@@ -25,6 +25,7 @@ function requestUnFollow(teamId,success,fail) {
 }
 
 export {
+    requestAllTeamList,
     requestFollowList,
     requestFollow,
     requestUnFollow,
