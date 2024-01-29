@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/S10P12A802.iml" filepath="$PROJECT_DIR$/.idea/S10P12A802.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ssafy-web-project.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ssafy-web-project.main.iml" />
     </modules>
   </component>
 </project>

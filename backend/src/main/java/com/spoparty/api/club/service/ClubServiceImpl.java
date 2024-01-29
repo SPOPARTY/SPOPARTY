@@ -49,8 +49,11 @@ public class ClubServiceImpl implements ClubService {
 
 	@Transactional
 	public ClubResponseDto createClub(ClubRequestDto clubRequestDto) {
+
 		Member member = memberRepository.findById(clubRequestDto.getMemberId()).orElseThrow(() -> new IllegalArgumentException(
 			USER_NOT_FOUND.getMessage()));
+
+
 		Club club = Club.createClub(clubRequestDto.getName(), member);
 		clubRepository.save(club);
 
