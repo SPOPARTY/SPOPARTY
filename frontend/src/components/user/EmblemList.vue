@@ -14,7 +14,7 @@
                 </v-col>
                 <v-spacer></v-spacer>
                 <v-col class="text-right">
-                    <v-btn icon @click="closeModal">
+                    <v-btn icon @click="closeModal" class="no-background-hover">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-col>
@@ -55,7 +55,7 @@
                         >
                             <img :src="emblem.src" :alt="emblem.name" style="width:100%; height:100%;">
                         </v-avatar>
-                        <div class="club-name" style="font-size: 15px; text-align:center; margin-top:8px;">
+                        <div class="club-name">
                             {{ emblem.name }}  
                         </div>
                     </v-btn>
@@ -129,6 +129,19 @@ function selectEmblem(emblem) {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.club-name{
+    font-size: 15px; 
+    text-align:center; 
+    margin-top:8px;
+}
+
+.no-background-hover {
+  box-shadow: none !important;
+
+  &:hover {
+    background-color: transparent !important;
+  }
+}
 
 </style>

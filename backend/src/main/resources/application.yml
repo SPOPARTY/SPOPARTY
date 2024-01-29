@@ -2,7 +2,7 @@ server:
   port: 9090
   # address: localhost
   servlet:
-    contextPath: "/"
+    contextPath: "/api/"
     encoding:
       charset: UTF-8
       enabled: true
@@ -41,6 +41,7 @@ spring:
       hibernate:
       #        show-sql: true
       format_sql: true
+  #    open-in-view: false
   data:
     web:
       pageable:
@@ -84,5 +85,4 @@ management:
       enabled: true
     diskspace:
       enabled: true
-
 

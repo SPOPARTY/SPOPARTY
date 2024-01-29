@@ -1,5 +1,6 @@
 package com.spoparty.api.board.entity;
 
+import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.member.entity.File;
 import com.spoparty.api.member.entity.Member;
@@ -34,9 +35,9 @@ public class Board extends BaseEntity {
 	@JoinColumn(name = "member_id", referencedColumnName = "member_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member member;
 
-	// @ManyToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "club_id", referencedColumnName = "club_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	// private Club club;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "club_id", referencedColumnName = "club_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Club club;
 
 	@Column(nullable = false, length = 50)
 	private String title = "";
