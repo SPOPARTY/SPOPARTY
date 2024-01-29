@@ -7,7 +7,8 @@ buildscript {
         querydslPluginVer = '1.0.10'
         springDependencyMgmtVer = '1.0.11'
         springLoadedVer = '1.2.8'
-        nodePluginVer = '1.3.1'
+        jUnitVer = "5.6.0"
+        openViduVer = "2.29.0"
     }
     repositories {
         mavenCentral()
@@ -17,10 +18,6 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVer}"
         classpath "io.spring.gradle:dependency-management-plugin:${springDependencyMgmtVer}.RELEASE"
         classpath "org.springframework:springloaded:${springLoadedVer}.RELEASE"
-        //이클립스인 경우를 위한 QueryDSL 플러그인. IntelliJ는 불필요. [시작]
-//        classpath "gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:${querydslPluginVer}"
-        //[끝] 
-        classpath "com.github.node-gradle:gradle-node-plugin:3.1.0"
     }
 }
 
@@ -31,10 +28,7 @@ plugins {
 }
 
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'eclipse'
-apply plugin: 'com.github.node-gradle.node'
-//이클립스인 경우를 위한 QueryDSL 플러그인. IntelliJ는 불필요.
-//apply plugin: 'com.ewerk.gradle.plugins.querydsl'
+
 
 
 repositories {
@@ -50,27 +44,9 @@ group 'com.ssafy'
 version '1.0-SNAPSHOT'
 sourceCompatibility = '17'
 
-node {
-    download = true
-    version = '14.17.0'
-    // Set the work directory where node_modules should be located
-    nodeModulesDir = file("${project.projectDir}/../frontend")
-}
-
 configurations {
     providedRuntime
 }
-
-/*task npmInstall(type: NpmTask, overwrite: true) {
-    args = ['install']
-}*/
-
-task webpack(type: NpmTask, dependsOn: 'npmInstall') {
-    args = ['run', 'build']
-}
-
-// processResources is a Java task. Run the webpack bundling before this task using the 'build' task in the package.json
-processResources.dependsOn 'webpack'
 
 //set build time and inject value to application.properties
 def buildTime() {
@@ -98,31 +74,6 @@ processResources {
         }
     }
 }
-
-//이클립스인 경우를 위한 QueryDSL 설정. IntelliJ는 불필요. [시작]
-//def querydslDir = 'src/main/generated'
-//querydsl {
-//    library = "com.querydsl:querydsl-apt"
-//    jpa = true
-//    querydslSourcesDir = querydslDir
-//}
-//
-//sourceSets {
-//    main {
-//        java {
-//            srcDirs = ['src/main/java', querydslDir]
-//        }
-//    }
-//}
-//
-//compileQuerydsl {
-//    options.annotationProcessorPath = configurations.querydsl
-//}
-//
-//configurations {
-//    querydsl.extendsFrom compileClasspath
-//}
-//[끝]
 
 dependencies {
     // smtp
@@ -162,11 +113,8 @@ dependencies {
     implementation('org.webjars:sockjs-client:1.1.2')
     implementation('org.webjars:stomp-websocket:2.3.3-1')
     implementation('org.webjars:webjars-locator:0.30')
-    //WebRTC 클라이언트 의존성 추가
-    implementation('org.webjars.bower:webrtc-adapter:7.4.0')
-    //Kurento (미디어서버) 관련 의존성 추가
-    implementation('org.kurento:kurento-client:6.16.0')
-    implementation('org.kurento:kurento-utils-js:6.15.0')
+
+    implementation("io.openvidu:openvidu-java-client:${openViduVer}")
 
 
     //IntelliJ용
@@ -184,28 +132,24 @@ dependencies {
 
     implementation("com.auth0:java-jwt:3.10.3")
 
-//    implementation("io.springfox:springfox-swagger2:3.0.0")
-//    implementation("io.springfox:springfox-swagger-ui:3.0.0")
-//    implementation("io.springfox:springfox-data-rest:3.0.0")
-//    implementation("io.springfox:springfox-bean-validators:3.0.0")
-//    implementation("io.springfox:springfox-boot-starter:3.0.0")
-
-//    compile("javax.annotation:javax.annotation-api:1.2")
-//    api("javax.annotation:javax.annotation-api:1.2")
-//    implementation("jakarta.annotation:jakarta.annotation-api:1.3.5")
-
     implementation("org.projectlombok:lombok:1.18.20")
     annotationProcessor("org.projectlombok:lombok:1.18.20")
 
-//    testCompile('org.springframework.boot:spring-boot-starter-test')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
 //    testImplementation("org.junit.vintage:junit-vintage-engine") {
 //        exclude group: "org.hamcrest", module: "hamcrest-core"
 //    }
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.1") {
+        exclude module:'junit-platform-commons'
+    }
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-engine:1.5.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-commons:1.5.1")
+
     testImplementation("com.h2database:h2")
 }
 

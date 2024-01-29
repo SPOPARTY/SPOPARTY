@@ -1,5 +1,7 @@
 package com.spoparty.api.common.entity;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -7,8 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.spoparty.api.common.constants.ErrorCode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -38,7 +38,7 @@ public abstract class BaseEntity {
 
 	public boolean softDelete() {
 		if (isDeleted)
-			throw new IllegalStateException(ErrorCode.ALREADY_DELETED.getMessage());
+			throw new IllegalStateException(ALREADY_DELETED.getMessage());
 		this.isDeleted = true;
 		return true;
 	}

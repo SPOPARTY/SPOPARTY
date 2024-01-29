@@ -63,6 +63,7 @@ logging:
     com:
       samsung:
         security: DEBUG
+      spoparty.api: DEBUG
     org:
       springframework:
         web: DEBUG

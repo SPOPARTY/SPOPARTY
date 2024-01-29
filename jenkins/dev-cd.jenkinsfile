@@ -50,9 +50,22 @@ pipeline {
         }
         stage ('3. Test') {
             parallel {
-                stage ('BE') {
+                stage ('BE Test') {
                     steps {
-                        echo 'BE Test!!'
+                        echo 'BE - Test start'
+                        dir ('backend'){
+                            sh'''
+                                ./gradlew test
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'BE - Success Test'
+                        }
+                        failure {
+                            error 'BE - Fail Test'
+                        }
                     }
                 }
             }
@@ -64,8 +77,8 @@ pipeline {
                     script {
                         docker.withRegistry('', registryCredential) {
                             sh "docker buildx create --use --name spoparty-builder"
-                            sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${backImageName}:${BUILD_NUMBER} --push ."
-                            sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${backImageName}:latest --push ."
+                            sh "docker buildx build --no-cache --platform linux/amd64,linux/arm64 -t ${backImageName}:${BUILD_NUMBER} --push ."
+                            sh "docker buildx build --no-cache --platform linux/amd64,linux/arm64 -t ${backImageName}:latest --push ."
                         }
                     }
                 }
@@ -125,4 +138,4 @@ pipeline {
         }
     }  
 
-}
+} 
