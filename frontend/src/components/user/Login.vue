@@ -59,14 +59,14 @@
 <script setup>
 import {ref} from 'vue';
 import {useRouter} from 'vue-router'
-import { useMemberStore } from '@/stores/members';
+import { useManagementStore } from '@/stores/member/managements';
 
 import FindPwd from '@/components/user/FindPwd.vue';
 import KakaoLogin from '@/components/user/KakaoLogin.vue';
 
 const router = useRouter();
 
-const memberStore = useMemberStore();
+const managementStore = useManagementStore();
 
 const loginRequest = ref({
   loginId : '',
@@ -85,7 +85,7 @@ const doLogin = () => {
   }
 
   let loginMember = loginRequest.value;
-  memberStore.login(loginMember)
+  managementStore.login(loginMember)
 }
 
 function handleSubmit() {

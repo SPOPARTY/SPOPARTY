@@ -183,7 +183,7 @@
   <script setup>
   import {useRouter} from 'vue-router';
   import { ref,computed } from 'vue';
-  import {registMember} from '@/api/members'
+  import {registMember} from '@/api/member'
   import {idCheck, emailCheck,verifyCodeCheck} from '@/api/authentication'
   import { httpStatusCode } from '@/util/http-status';
 

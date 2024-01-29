@@ -4,10 +4,10 @@ import {defineStore} from 'pinia'
 import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
 
-import {memberConfirm, registMember} from "@/api/members"
+import {memberConfirm} from "@/api/member"
 import {httpStatusCode} from "@/util/http-status"
 
-export const useMemberStore = defineStore("memberStore",() => {
+export const useManagementStore = defineStore("management",() => {
     const router = useRouter();
     const route = useRoute();
 
