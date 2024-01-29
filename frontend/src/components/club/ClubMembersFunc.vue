@@ -125,6 +125,7 @@ function closeClubMemberFunc() {
     isClubMemberFuncVisible.value = false
 }
 
+// 파티 페이지 로직
 const isPartyMade = ref(false)
 
 const goToPartyPage = () => {

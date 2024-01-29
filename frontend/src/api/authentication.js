@@ -16,6 +16,10 @@ function verifyCodeCheck(data,success,error) {
     local.post(`${API_URL}/email-check`,data).then(success).catch(error);
 }
 
+async function tokenRegeneration(refreshToken, success,fail) {
+    await local.post(`${API_URL}/token`,refreshToken).then(success).catch(fail);
+}
+
 export {
     idCheck,
     emailCheck,
