@@ -2,7 +2,7 @@ server:
   port: 9090
   # address: localhost
   servlet:
-    contextPath: "/"
+    contextPath: "/api/"
     encoding:
       charset: UTF-8
       enabled: true
