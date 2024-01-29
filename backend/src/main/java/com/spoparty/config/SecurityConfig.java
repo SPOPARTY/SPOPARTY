@@ -116,8 +116,8 @@ public class SecurityConfig {
 		config.addAllowedOriginPattern("*");
 		config.addAllowedMethod("*");
 		config.addAllowedHeader("*");
-		config.addExposedHeader("Authentication");
-		config.setAllowCredentials(true);
+		config.addExposedHeader("Authorization");
+		config.setAllowCredentials(false);
 		config.setMaxAge(3600L);
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);

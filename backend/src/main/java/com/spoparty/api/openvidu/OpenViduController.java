@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @Slf4j
-@RestController("/openvidu")
+@RestController
+@RequestMapping("/openvidu")
 public class OpenViduController {
     @Value("${openvidu.url}")
     private String OPENVIDU_URL;
