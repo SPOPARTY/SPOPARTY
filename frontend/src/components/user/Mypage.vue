@@ -89,7 +89,7 @@
 
 <script setup>
 import {useRouter} from 'vue-router'
-import { ref, computed, onBeforeMount,onMounted } from 'vue';
+import { ref, computed, watch,onMounted } from 'vue';
 
 import { httpStatusCode } from '@/util/http-status';
 import {getMember, updateMember, deleteMember} from '@/api/member'
@@ -106,24 +106,24 @@ const router = useRouter();
 const memberId = ref("");
 
 const followStore = useFollowStore();
-const followList = ref("");
-
-onBeforeMount(async() => {
-    console.log("************마운트 되기 전************")
-    console.log("followList -> ", followList.value, "당연히 없다")
-    console.log("memberInfo =>", memberInfo.value, "당연히 없다")
-    await router.isReady()
-    memberId.value = sessionStorage.getItem("id");
-    getMemberInfo();
-    console.log("memberId -->",memberId.value)
-    followStore.getFollowList(memberId.value);
-})
+const teamList = ref(null);
+const followList = ref(null);
 
 onMounted(() => {
-    console.log("************마운트 되어버림************")
-    followList.value = useFollowStore.followList
-    console.log(followList.value)
+    memberId.value = sessionStorage.getItem("id");
+    followStore.getFollowList(memberId.value);
+    followStore.getTeamList();
+    teamList.value = followStore.getTeamList();
+    console.log("히히 전체 팀 발사 -> ", followStore.getFollowList())
 })
+// 전체 팀 리스트 관찰
+
+// 팔로우 리스트 관찰
+watch(() => followStore.followList, (newFollowList) => {
+    followList.value = newFollowList
+    console.log("onMounted된 후 팔로우 리스트! -> ",followList.value);
+},{immediate:true})
+
 
 const memberInfo = ref({
     id : "",
@@ -249,7 +249,13 @@ function showFollowModal() {
 
 // 팔로우 중인 구단 수 
 // 실제로 유저 정보를 받아올 때 onMounted를 통해 업데이트 되도록 한다 현재는 더미값
-const followingClubNum = ref(4); 
+// const followingClubNum = computed(() => {
+//     return followList.value.length
+// }); // 이거 쓰면 followList 불러오기 전에 이게 평가되어서 에러 뜬다 ㅅㅂ
+const followingClubNum = computed(() => {
+    return followList.value ? followList.value.length : 0;
+});
+
 
 const setFollowClubNumber = (followingCount) => {
     followingClubNum.value = followingCount;

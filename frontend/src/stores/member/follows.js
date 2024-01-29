@@ -20,8 +20,9 @@ export const useFollowStore = defineStore("follow", () => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     console.log("히히 모든 팀 가져오기 발사")
-                    console.log(res.data)
                     teamList.value = res.data
+                    console.log(teamList.value)
+                    return teamList.value;
                 }
             },
             (error) => {
@@ -42,8 +43,8 @@ export const useFollowStore = defineStore("follow", () => {
             console.log(res)
             if(res.status === httpStatusCode.OK) {
                 console.log("히히 팔로우 리스트 발사")
-                console.log(res.data)
                 followList.value = res.data;
+                console.log(followList.value)
             }
         }),
         (error) => {
