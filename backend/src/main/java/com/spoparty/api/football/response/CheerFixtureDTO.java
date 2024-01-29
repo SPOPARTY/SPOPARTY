@@ -12,13 +12,19 @@ import lombok.ToString;
 public class CheerFixtureDTO {
 	private long cheerFixtureId;
 	private boolean alreadyCheer = false;
-	private long homeCount;
-	private long awayCount;
+	private Long homeCount;
+	private Long awayCount;
 	private FixtureDTO fixture;
 
-	public void switchAlreadyCheer(){
+	public void switchAlreadyCheer() {
 		alreadyCheer = true;
 	}
+
+	public void setCountAsNull() {
+		homeCount = null;
+		awayCount = null;
+	}
+
 	public static CheerFixtureDTO toDTO(CheerFixture entity) {
 
 		FixtureDTO fixtureDTO = FixtureDTO.toDTO(entity.getFixture());

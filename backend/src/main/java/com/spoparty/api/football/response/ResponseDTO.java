@@ -13,6 +13,10 @@ public class ResponseDTO {
 
 	private Object data;
 
+	public void changeMessage(String message) {
+		this.message = message;
+	}
+
 	public static ResponseDTO toDTO(Object data, String message) {
 		return ResponseDTO.builder()
 			.message(message)

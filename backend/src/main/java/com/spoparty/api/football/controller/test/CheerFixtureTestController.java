@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spoparty.api.football.entity.CheerFixture;
 import com.spoparty.api.football.repository.CheerFixtureRepository;
 import com.spoparty.api.football.repository.FixtureRepository;
-import com.spoparty.api.football.repository.SeasonLeagueTeamPlayerRepository;
-import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,17 +22,14 @@ public class CheerFixtureTestController {
 
 	private final CheerFixtureRepository cheerFixtureRepository;
 	private final FixtureRepository fixtureRepository;
+
 	@GetMapping("/save")
 	public ResponseEntity<CheerFixture> save() {
 
-
-
-
-
 		CheerFixture cheerFixture = CheerFixture.builder()
-			.fixture(fixtureRepository.findById((long)0).orElse(null))
-			.away_count(10)
-			.home_count(20)
+			// .fixture(fixtureRepository.findById((long)0).orElse(null))
+			.awayCount(10)
+			.homeCount(20)
 			.build();
 
 		CheerFixture cheerFixture2 = cheerFixtureRepository.save(cheerFixture);
