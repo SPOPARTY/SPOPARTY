@@ -1,20 +1,12 @@
 package com.spoparty.api.openvidu;
 
 
-
-import io.openvidu.java.client.Connection;
-import io.openvidu.java.client.ConnectionProperties;
-import io.openvidu.java.client.OpenVidu;
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
-import io.openvidu.java.client.Session;
-import io.openvidu.java.client.SessionProperties;
+import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@Slf4j
-@RequestMapping("/openvidu")
+@CrossOrigin(origins = "*")
 @RestController
 public class OpenViduController {
     @Value("${openvidu.url}")
@@ -39,40 +30,39 @@ public class OpenViduController {
     public void init() {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
+
+    @CrossOrigin(origins = "*")
     @PostMapping("/hello")
-    public ResponseEntity<String> hello()
+    public ResponseEntity<?> hello()
             throws OpenViduJavaClientException, OpenViduHttpException {
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/api/sessions")
-    public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params)
+    @PostMapping("/sessions")
+    public ResponseEntity<?> initializeSession(@RequestBody(required = false) Map<String, Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException {
         SessionProperties properties = SessionProperties.fromJson(params).build();
         Session session = openvidu.createSession(properties);
-        log.debug(("/api/session called"));
-        log.debug("params : {}", params);
-        log.debug("SessionProperties : {}", properties);
-        log.debug("Session : {}", session);
-        return ResponseEntity.status(HttpStatus.OK).body(session.getSessionId());
+        return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
     }
 
-    @PostMapping("/api/sessions/{sessionId}/connections")
-    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
+    @PostMapping("/sessions/{sessionId}/connections")
+    public ResponseEntity<?> createConnection(@PathVariable("sessionId") String sessionId,
                                                    @RequestBody(required = false) Map<String, Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException {
-        log.debug(("/api/sessionId/connections called"));
         Session session = openvidu.getActiveSession(sessionId);
         if (session == null) {
-            log.debug(("session is null"));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
         Connection connection = session.createConnection(properties);
-        log.debug("params : {}", params);
-        log.debug("Session : {}", session);
-        log.debug("ConnectionProperties : {}", properties);
-        log.debug("Connection : {}", connection);
-        return ResponseEntity.status(HttpStatus.OK).body(connection.getToken());
+        return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
+
+    // @GetMapping("/sessions/{sessionId}")
+    // public ResponseEntity<?> getSession(@PathVariable("sessionId") String sessionId) {
+    //
+    //     Session session = openvidu.getActiveSession()
+    //     return ResponseEntity.status(HttpStatus.OK).body()
+    // }
 }
