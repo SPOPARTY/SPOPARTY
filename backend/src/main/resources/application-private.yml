@@ -75,8 +75,8 @@ cloud:
     stack.auto: false
     region.static: ap-northeast-2
     credentials:
-      accessKey: access
-      secretKey: secret
+      accessKey: AKIATT55DVO6CEBMVMWS
+      secretKey: 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
 
 openvidu:
   url: https://i10a802.p.ssafy.io/
