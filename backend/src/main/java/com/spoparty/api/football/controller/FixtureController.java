@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.football.response.ResponseDTO;
-import com.spoparty.api.football.service.FixtureService;
+import com.spoparty.api.football.service.FixtureServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FixtureController {
 
-	private final FixtureService footballService;
+	private final FixtureServiceImpl footballService;
 
 	// 메인에 띄우는 다가올 가장 이른 경기 6개
 	@GetMapping(params = {"next"})

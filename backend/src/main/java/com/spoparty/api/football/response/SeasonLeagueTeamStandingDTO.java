@@ -18,7 +18,14 @@ public class SeasonLeagueTeamStandingDTO {
 
 	private String logo;
 
+	private boolean following = false;
+
 	private StandingDTO standing;
+
+	public void switchFollowing(){
+		following = true;
+	}
+
 
 	public static SeasonLeagueTeamStandingDTO toDTO(SeasonLeagueTeam entity) {
 

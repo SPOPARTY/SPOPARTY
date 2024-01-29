@@ -11,6 +11,8 @@ import lombok.ToString;
 @Builder
 public class SeasonLeagueTeamDTO {
 
+	private long seasonLeagueTeamId;
+
 	private long teamId;
 
 	private String nameKr;
@@ -22,7 +24,8 @@ public class SeasonLeagueTeamDTO {
 	public static SeasonLeagueTeamDTO toDTO(SeasonLeagueTeam entity) {
 
 		return SeasonLeagueTeamDTO.builder()
-			.teamId(entity.getId())
+			.seasonLeagueTeamId(entity.getId())
+			.teamId(entity.getTeam().getId())
 			.nameKr(entity.getTeam().getNameKr())
 			.nameEng(entity.getTeam().getNameEng())
 			.logo(entity.getTeam().getLogo())
