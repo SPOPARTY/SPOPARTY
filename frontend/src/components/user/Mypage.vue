@@ -72,6 +72,9 @@
             </v-row>
             <FollowList
                 v-if="isFollowModalVisible"
+                :team-list="teamList"
+                :follow-list="followList"
+                :member-id="memberId"
                 @follow-list-close = "isFollowModalVisible = false"
                 @follow-club="setFollowClubNumber($event)"
                 @unfollow-club="setFollowClubNumber($event)"
@@ -104,8 +107,7 @@ import FollowList from '@/components/user/FollowList.vue';
 
 const router = useRouter();
 const memberId = ref("");
-
-const followStore = useFollowStore();
+ const followStore = useFollowStore();
 const teamList = ref(null);
 const followList = ref(null);
 
@@ -114,6 +116,8 @@ onMounted(() => {
     followStore.getFollowList(memberId.value);
     followStore.getTeamList();
     teamList.value = followStore.getTeamList();
+    followStore.getFollowList(memberId.value);
+    getMemberInfo();
     console.log("히히 전체 팀 발사 -> ", followStore.getFollowList())
 })
 // 전체 팀 리스트 관찰
@@ -123,6 +127,11 @@ watch(() => followStore.followList, (newFollowList) => {
     followList.value = newFollowList
     console.log("onMounted된 후 팔로우 리스트! -> ",followList.value);
 },{immediate:true})
+
+watch(() => followStore.teamList, (newTeamList) => {
+    teamList.value = newTeamList
+},{immediate:true})
+
 
 
 const memberInfo = ref({
@@ -251,7 +260,7 @@ function showFollowModal() {
 // 실제로 유저 정보를 받아올 때 onMounted를 통해 업데이트 되도록 한다 현재는 더미값
 // const followingClubNum = computed(() => {
 //     return followList.value.length
-// }); // 이거 쓰면 followList 불러오기 전에 이게 평가되어서 에러 뜬다 ㅅㅂ
+// }); ==>  // 이거 쓰면 followList 불러오기 전에 이게 평가되어서 에러 뜬다 ㅅㅂ
 const followingClubNum = computed(() => {
     return followList.value ? followList.value.length : 0;
 });

@@ -62,11 +62,12 @@ export const useFollowStore = defineStore("follow", () => {
             data,
             (res) => {
                 console.log(res)
-                if(res.status === httpStatusCode.Create) {
+                if(res.status === httpStatusCode.CREATE) {
                     alert("팔로우 완료!")
                 }
             },
             (error) => {
+                console.log(error)
                 if(error.status === httpStatusCode.NOTFOUND) {
                     console.log("비상!!!!")
                     console.log(err);
@@ -82,8 +83,9 @@ export const useFollowStore = defineStore("follow", () => {
             teamId,
             (res) => {
                 console.log(res)
-                if(res.status === httpStatus.OK) {
+                if(res.status === httpStatusCode.OK) {
                     alert("팔로우 취소 완료")
+                    
                 }
             },
             (error) => {

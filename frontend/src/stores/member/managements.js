@@ -5,7 +5,10 @@ import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
 
 import {memberConfirm} from "@/api/member"
+import { requestTempPassword } from '@/api/authentication'
 import {httpStatusCode} from "@/util/http-status"
+const {VITE_REST_API} = import.meta.env;
+
 
 export const useManagementStore = defineStore("management",() => {
     const router = useRouter();
@@ -62,9 +65,29 @@ export const useManagementStore = defineStore("management",() => {
         
     }
 
+    const tempPassword = (data) => {
+        requestTempPassword(
+            data,
+            (res) => {
+                if (res.status === httpStatusCode.OK) {
+                    console.log("히히 비밀번호 재발급 발사");
+                    alert("임시 비밀번호가 생성되었습니다. ")
+                    return true;
+                }
+            },
+            (error) => {
+                console.log(error)
+                if (error.status === 400) {
+                    alert("임시 비밀번호 생성에 실패했습니다!")
+                }
+            }
+            
+        )
+    }
+
     const logout = () => {
         axios.delete(
-            "http://localhost:9090/members/logout",{
+            `${VITE_REST_API}/members/logout`,{
             headers : {
                 "Authorization" : localStorage.getItem("accessToken")
             }
@@ -114,6 +137,7 @@ export const useManagementStore = defineStore("management",() => {
         memberInfo,
         isValidToken,
         login,
+        tempPassword,
         getMemberInfo,
         logout,
 

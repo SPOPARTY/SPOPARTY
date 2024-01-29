@@ -44,6 +44,9 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useManagementStore } from '@/stores/member/managements';
+
+const store = useManagementStore();
 
 const modalVisible = ref(true); // 메인 모달 보이게 할지말지
 const loginId = ref('');
@@ -53,9 +56,12 @@ const emit = defineEmits(['close']);
 
 function submitForm() {
   console.log(`임시 비밀번호 발급 요청: 아이디=${loginId.value}, 이메일=${email.value}`);
-  // 임시 비밀번호 발급 로직 -> 추가 예정
-  // 로직 완료 후 메시지 모달 표시
-  isMessageModalVisible.value = true;
+  const data = {
+      loginId : loginId.value,
+      email : email.value
+  }
+  const result = store.tempPassword(data);
+  if (result) isMessageModalVisible.value = true;
 }
 
 function closeModal() {
