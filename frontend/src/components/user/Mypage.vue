@@ -89,25 +89,40 @@
 
 <script setup>
 import {useRouter} from 'vue-router'
-import { ref, computed, onBeforeMount } from 'vue';
+import { ref, computed, onBeforeMount,onMounted } from 'vue';
 
 import { httpStatusCode } from '@/util/http-status';
-import {getMember, updateMember, deleteMember} from '@/api/members'
+import {getMember, updateMember, deleteMember} from '@/api/member'
+
+import {useFollowStore} from '@/stores/member/follows'
 
 import SetNewPwd from '@/components/user/SetNewPwd.vue';
 import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
 import FollowList from '@/components/user/FollowList.vue';
 
+
 const router = useRouter();
 const memberId = ref("");
 
+const followStore = useFollowStore();
+const followList = ref("");
+
 onBeforeMount(async() => {
-    console.log("memberInfo =>", memberInfo.value)
+    console.log("************마운트 되기 전************")
+    console.log("followList -> ", followList.value, "당연히 없다")
+    console.log("memberInfo =>", memberInfo.value, "당연히 없다")
     await router.isReady()
     memberId.value = sessionStorage.getItem("id");
-    console.log("id -> ",memberId.value)
     getMemberInfo();
+    console.log("memberId -->",memberId.value)
+    followStore.getFollowList(memberId.value);
+})
+
+onMounted(() => {
+    console.log("************마운트 되어버림************")
+    followList.value = useFollowStore.followList
+    console.log(followList.value)
 })
 
 const memberInfo = ref({
@@ -127,7 +142,6 @@ const emailId = ref(memberInfo.value.email.split("@")[0]);
 const emailDomain = ref(memberInfo.value.email.split("@")[1]);
 
 const getMemberInfo = () => {
-    console.log("이거 이용해서 바꿀꺼다 ->", memberId.value)
     getMember(
         memberId.value,
         ({data}) => {
