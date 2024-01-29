@@ -23,7 +23,7 @@ public class ClubMemberResponseDto {
 		return ClubMemberResponseDto.builder()
 			.clubMemberId(entity.getId())
 			.clubId(entity.getClub().getId())
-			.memberId(entity.getMember().getMemberId())
+			.memberId(entity.getMember().getId())
 			.role(entity.getRole().name())
 			.build();
 	}
