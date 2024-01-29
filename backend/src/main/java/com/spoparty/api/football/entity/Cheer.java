@@ -1,8 +1,7 @@
 package com.spoparty.api.football.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.spoparty.api.common.entity.FootballBaseEntity;
+import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.member.entity.Member;
 
 import jakarta.persistence.Column;
@@ -23,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Cheer extends FootballBaseEntity {
+public class Cheer extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cheer_id")
