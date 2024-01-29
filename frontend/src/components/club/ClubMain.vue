@@ -8,7 +8,7 @@
                 <ClubMembersFunc/>
             </v-col>
         </v-row>
-    <BoardPreview style="margin-top:100px;"/>
+    <BoardPreview/>
     </v-container>
 </template>
 

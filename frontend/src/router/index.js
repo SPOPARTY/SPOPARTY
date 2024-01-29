@@ -6,13 +6,13 @@ import Signup from "@/components/user/Signup.vue";
 import Login from "@/components/user/Login.vue";
 import MyPage from "@/components/user/Mypage.vue";
 
-import ClubMain from "@/components/club/ClubMain.vue";
+// import ClubMain from "@/components/club/ClubMain.vue";
 
-import ArchieveList from "@/components/archieve/ArchieveList.vue"
+// import ArchieveList from "@/components/archieve/ArchieveList.vue"
 
-import BoardList from "@/components/board/BoardList.vue"
-import WriteBoard from "@/components/board/WriteBoard.vue"
-import EditBoard from "@/components/board/EditBoard.vue"
+// import BoardList from "@/components/board/BoardList.vue"
+// import WriteBoard from "@/components/board/WriteBoard.vue"
+// import EditBoard from "@/components/board/EditBoard.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -67,27 +67,32 @@ const router = createRouter({
         {
           path : "",
           name : "ClubMain",
-          component : ClubMain,
+          component : () => import("@/components/club/ClubMain.vue")
         },
         {
           path : "archieve",
           name : "ArchieveList",
-          component : ArchieveList
+          component : () => import("@/components/archieve/ArchieveList.vue")
         },
         {
           path : "board",
           name : "BoardList",
-          component : BoardList
+          component : () => import("@/components/board/BoardList.vue")
         },
         {
           path : "board/write",
           name : "WriteBoard",
-          component : WriteBoard
+          component : () => import("@/components/board/WriteBoard.vue")
         },
         {
           path : "board/edit",
           name : "EditBoard",
-          component : EditBoard
+          component : () => import("@/components/board/EditBoard.vue")
+        },
+        {
+          path : "party/:partyId",
+          name : "PartyView",
+          component : () => import("@/views/PartyView.vue")
         }
       ]
     }
