@@ -138,7 +138,6 @@ function getMatchStatus(startTime) {
 .list-title {
     color: white;
     font-size: 2rem;
-    
 }
 
 
