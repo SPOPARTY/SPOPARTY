@@ -10,6 +10,8 @@ import lombok.ToString;
 @ToString
 @Getter
 public class SeasonLeagueTeamStandingDTO {
+	private long seasonLeagueTeamId;
+
 	private long teamId;
 
 	private String nameKr;
@@ -32,7 +34,8 @@ public class SeasonLeagueTeamStandingDTO {
 		StandingDTO standing = StandingDTO.toDTO(entity.getStanding());
 
 		return SeasonLeagueTeamStandingDTO.builder()
-			.teamId(entity.getId())
+			.seasonLeagueTeamId(entity.getId())
+			.teamId(entity.getTeam().getId())
 			.nameKr(entity.getTeam().getNameKr())
 			.nameEng(entity.getTeam().getNameEng())
 			.logo(entity.getTeam().getLogo())

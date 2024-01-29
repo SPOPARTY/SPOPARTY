@@ -12,19 +12,23 @@ import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.football.response.SeasonLeagueDTO;
 import com.spoparty.api.football.response.SeasonLeagueTeamStandingDTO;
+import com.spoparty.api.member.repository.projection.FollowingTeamProjection;
+import com.spoparty.api.member.service.MemberService;
 import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class LeagueServiceImpl {
+public class LeagueServiceImpl implements LeagueService {
 
 	private final SeasonLeagueRepository seasonLeagueRepository;
 
 	private final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
 
 	private final CommonService commonService;
+
+	private final MemberService memberService;
 
 	public ResponseDTO findAllLeague() {
 		List<SeasonLeague> seasonLeagues = seasonLeagueRepository.findAllLeague();
@@ -45,10 +49,23 @@ public class LeagueServiceImpl {
 			return ResponseDTO.toDTO(null, "구단 순위 정보 없음");
 		}
 
-
 		List<SeasonLeagueTeamStandingDTO> seasonLeagueTeamStandingDTOs = entityToDTOTeamStanding(seasonLeagueTeams);
 
+
+		// 로그인 중이라면
 		if (principalDetails != null){
+			long memberId = principalDetails.getMember().getId();
+
+			// 팔로우중인 팀 표시하기
+			for (FollowingTeamProjection followingTeam : memberService.getFollowList((long)memberId)) {
+				for (SeasonLeagueTeamStandingDTO teamDTO : seasonLeagueTeamStandingDTOs) {
+
+					if (followingTeam.getTeam_id() == teamDTO.getTeamId()) {
+						teamDTO.switchFollowing();
+						break;
+					}
+				}
+			}
 
 		}
 		return ResponseDTO.toDTO(seasonLeagueTeamStandingDTOs, "구단 순위 조회 성공");

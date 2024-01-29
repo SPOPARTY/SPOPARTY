@@ -18,7 +18,7 @@ import com.spoparty.security.model.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/football/leagues")
+@RequestMapping("/api/football/leagues")
 @RequiredArgsConstructor
 public class LeagueController {
 
@@ -51,6 +51,8 @@ public class LeagueController {
 
 	}
 
+
+
 	private HttpStatusCode getStatusByContent(ResponseDTO responseDTO) {
 		if (responseDTO.getData() == null) {
 			return HttpStatusCode.valueOf(404);
@@ -58,4 +60,6 @@ public class LeagueController {
 			return HttpStatusCode.valueOf(200);
 		}
 	}
+
+
 }
