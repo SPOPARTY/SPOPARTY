@@ -49,7 +49,8 @@ public class ClubServiceImpl implements ClubService {
 
 	@Transactional
 	public ClubResponseDto createClub(ClubRequestDto clubRequestDto) {
-		Member member = memberRepository.findByMemberId(clubRequestDto.getMemberId());
+		Member member = memberRepository.findById(clubRequestDto.getMemberId()).orElseThrow(() -> new IllegalArgumentException(
+			USER_NOT_FOUND.getMessage()));
 		Club club = Club.createClub(clubRequestDto.getName(), member);
 		clubRepository.save(club);
 
@@ -91,8 +92,8 @@ public class ClubServiceImpl implements ClubService {
 	@Transactional
 	public ClubMemberResponseDto createGroupMember(InviteRequestDto inviteRequestDto) {
 		Club club = validateInviteUrl(inviteRequestDto.getInviteUrl());
-		Member member = memberRepository.findByMemberId(inviteRequestDto.getMemberId());
-
+		Member member = memberRepository.findById(inviteRequestDto.getMemberId()).orElseThrow(() -> new IllegalArgumentException(
+			USER_NOT_FOUND.getMessage()));
 		validateNewClubMember(club, member); // 이미 존재하는 멤버인지 확인
 		ClubMember clubMember = ClubMember.createClubMember(member, club, RoleType.guest);
 		clubMemberRepository.save(clubMember);
@@ -112,7 +113,8 @@ public class ClubServiceImpl implements ClubService {
 	public ClubMemberResponseDto assignHost(Member hostMember, Long clubId, ClubHostRequestDto clubHostRequestDto) {
 		Club club = findClubById(clubId);
 		validateHost(club, hostMember); //호스트 권한 체크
-		Member nextHostMember = memberRepository.findByMemberId(clubHostRequestDto.getNextHostId());
+		Member nextHostMember = memberRepository.findById(clubHostRequestDto.getNextHostId()).orElseThrow(() -> new IllegalArgumentException(
+			USER_NOT_FOUND.getMessage()));
 
 		// 그룹원 확인
 		ClubMember currentHost = findClubMember(club, hostMember);
@@ -144,7 +146,7 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	private void validateHost(Club club, Member member) {
-		if (!member.getMemberId().equals(club.getHostMember().getMemberId())) {
+		if (!member.getId().equals(club.getHostMember().getId())) {
 			throw new IllegalArgumentException(FORBIDDEN_USER.getMessage());
 		}
 	}
