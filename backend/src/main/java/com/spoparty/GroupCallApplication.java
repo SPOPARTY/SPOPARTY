@@ -10,9 +10,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@EnableWebMvc
 @EnableJpaAuditing
 @SpringBootApplication
 public class GroupCallApplication {
