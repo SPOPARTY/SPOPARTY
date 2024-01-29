@@ -81,6 +81,7 @@ const doLogin = () => {
 
   if (loginRequest.value.loginPwd === '') {
     alert("비밀번호를 입력해주세요!")
+    return;
   }
 
   let loginMember = loginRequest.value;
