@@ -23,7 +23,7 @@
 
         <v-btn block color="blue" style="margin-top:30px;" @click="showInvite">그룹으로 초대</v-btn>
 
-        <v-btn block color="red" dark class="mt-4" style="height:100px;">
+        <v-btn @click="goToPartyPage" block color="red" dark class="mt-4" style="height:100px;">
             파티를 열어보세요!
         </v-btn>
     </v-card>
@@ -68,9 +68,11 @@
 
 <script setup>
 import {ref} from 'vue'
+import { useRouter } from 'vue-router';
 import ClubLeader from '@/components/club/ClubLeader.vue';
 import ClubMember from '@/components/club/ClubMember.vue';
 
+const router = useRouter();
 
 const clubMembers = ref([
     {memberId : 1, name : "실버스타", role : "그룹원"},
@@ -121,6 +123,27 @@ const showClubMemberFunc = () => {
 
 function closeClubMemberFunc() {
     isClubMemberFuncVisible.value = false
+}
+
+const isPartyMade = ref(false)
+
+const goToPartyPage = () => {
+    const partyId = getPartyId();
+    const url = router.resolve({ name: 'PartyView', params: { partyId } }).href;
+    window.open(url, '_blank');
+}
+
+const getPartyId = () => {
+    let partyId;
+    if (isPartyMade.value) {
+        // 이미 존재하는 파티 아이디 받아옴
+        partyId = 2; // 실제 파티 ID를 여기에 할당해야 합니다.
+    } else {
+        // 새로운 파티 아이디 생성
+        partyId = 1; // 새 파티 ID 생성 로직을 여기에 추가해야 합니다.
+        isPartyMade.value = true; // 파티가 생성되었음을 상태로 저장
+    }
+    return partyId;
 }
 
 </script>

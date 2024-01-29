@@ -43,7 +43,7 @@
 
     <!-- 로고 이미지 영역 -->
     <div class="logo-container" @click="goHome" style="cursor: pointer; flex: none; width: 240px;">
-      <v-img src="src/assets/new-logo-2.png" contain></v-img>
+      <v-img src="/src/assets/new-logo-2.png" contain></v-img>
     </div>
 
     <!-- 로고와 나머지 요소들 사이에 v-spacer 배치 -->
@@ -66,7 +66,7 @@
 <script setup>
 import { ref,computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useMemberStore} from '@/stores/members'
+import { useMemberStore } from '@/stores/members'
 
 const memberStore = useMemberStore()
 
