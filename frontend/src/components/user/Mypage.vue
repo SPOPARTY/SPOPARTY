@@ -113,8 +113,6 @@ const followList = ref(null);
 
 onMounted(() => {
     memberId.value = sessionStorage.getItem("id");
-    followStore.getFollowList(memberId.value);
-    followStore.getTeamList();
     teamList.value = followStore.getTeamList();
     followStore.getFollowList(memberId.value);
     getMemberInfo();
