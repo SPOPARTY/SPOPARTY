@@ -14,7 +14,7 @@ import com.spoparty.security.model.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/football/teams")
+@RequestMapping("/football/teams")
 @RequiredArgsConstructor
 
 public class TeamController {

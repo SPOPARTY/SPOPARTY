@@ -15,7 +15,7 @@ import com.spoparty.api.football.service.FixtureServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/football/fixtures")
+@RequestMapping("/football/fixtures")
 @RequiredArgsConstructor
 public class FixtureController {
 
