@@ -17,6 +17,7 @@ public class ClubMemberResponseDto {
 	private Long clubMemberId;
 	private Long clubId;
 	private Long memberId;
+	private String memberNickName;
 	private String role;
 
 	public static ClubMemberResponseDto entityToDto(ClubMember entity) {
@@ -24,6 +25,7 @@ public class ClubMemberResponseDto {
 			.clubMemberId(entity.getId())
 			.clubId(entity.getClub().getId())
 			.memberId(entity.getMember().getId())
+			.memberNickName(entity.getMember().getNickname())
 			.role(entity.getRole().name())
 			.build();
 	}
