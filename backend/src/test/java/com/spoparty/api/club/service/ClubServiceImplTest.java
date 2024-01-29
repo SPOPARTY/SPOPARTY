@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,8 +78,8 @@ class ClubServiceImplTest {
 		String name = "전략은 이강인 개인기다";
 
 		ClubRequestDto clubRequestDto = new ClubRequestDto(memberId, name);
-		Member member = memberRepository.findByMemberId(memberId);
-		ClubResponseDto response = clubService.updateClubName(member, clubId, clubRequestDto);
+		Optional<Member> member = memberRepository.findById(memberId);
+		ClubResponseDto response = clubService.updateClubName(member.get(), clubId, clubRequestDto);
 
 		assertThat(response.getName()).isEqualTo(name);
 	}
@@ -90,9 +91,8 @@ class ClubServiceImplTest {
 		String name = "들으와아아라";
 
 		ClubRequestDto clubRequestDto = new ClubRequestDto(memberId, name);
-		Member member = memberRepository.findByMemberId(memberId);
 
-		assertThatThrownBy(() -> clubService.updateClubName(member, clubId, clubRequestDto))
+		assertThatThrownBy(() -> clubService.updateClubName(memberRepository.findById(memberId).get(), clubId, clubRequestDto))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining(FORBIDDEN_USER.getMessage());
 	}
@@ -102,8 +102,7 @@ class ClubServiceImplTest {
 		long memberId = 2;
 		long clubId = 20;
 
-		Member member = memberRepository.findByMemberId(memberId);
-		Long response = clubService.deleteClub(member, clubId);
+		Long response = clubService.deleteClub(memberRepository.findById(memberId).get(), clubId);
 	}
 
 	@Test
@@ -111,9 +110,7 @@ class ClubServiceImplTest {
 		long memberId = 2;
 		long clubId = 16;
 
-		Member member = memberRepository.findByMemberId(memberId);
-
-		assertThatThrownBy(() -> clubService.deleteClub(member, clubId))
+		assertThatThrownBy(() -> clubService.deleteClub(memberRepository.findById(memberId).get(), clubId))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining(NO_GROUP_ID.getMessage());
 	}
@@ -123,9 +120,7 @@ class ClubServiceImplTest {
 		long memberId = 12;
 		long clubId = 18;
 
-		Member member = memberRepository.findByMemberId(memberId);
-
-		assertThatThrownBy(() -> clubService.deleteClub(member, clubId))
+		assertThatThrownBy(() -> clubService.deleteClub(memberRepository.findById(memberId).get(), clubId))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining(FORBIDDEN_USER.getMessage());
 	}
@@ -183,7 +178,7 @@ class ClubServiceImplTest {
 		long clubId = 20;
 		long nextHostId = 1;
 		ClubHostRequestDto request = new ClubHostRequestDto(hostId, nextHostId);
-		Member host = memberRepository.findByMemberId(hostId);
+		Member host = memberRepository.findById(hostId).get();
 
 		ClubMemberResponseDto response = clubService.assignHost(host, clubId, request);
 
@@ -196,7 +191,7 @@ class ClubServiceImplTest {
 		long hostId = 1;
 		long clubId = 20;
 		long nextHostId = 2;
-		Member host = memberRepository.findByMemberId(hostId);
+		Member host = memberRepository.findById(hostId).get();
 		ClubHostRequestDto request = new ClubHostRequestDto(hostId, nextHostId);
 
 		assertThatThrownBy(() -> clubService.assignHost(host, clubId, request))
@@ -208,8 +203,8 @@ class ClubServiceImplTest {
 	void 그룹장_수정_실패_존재하지_않은_회원() {
 		long hostId = 2;
 		long clubId = 20;
-		long nextHostId = 15;
-		Member host = memberRepository.findByMemberId(hostId);
+		long nextHostId = 14;
+		Member host = memberRepository.findById(hostId).get();
 		ClubHostRequestDto request = new ClubHostRequestDto(hostId, nextHostId);
 
 		assertThatThrownBy(() -> clubService.assignHost(host, clubId, request))
@@ -222,8 +217,7 @@ class ClubServiceImplTest {
 		long memberId = 8;
 		long clubId = 18;
 
-		Member member = memberRepository.findByMemberId(memberId);
-		Long response = clubService.deleteGroupMember(member, clubId);
+		Long response = clubService.deleteGroupMember(memberRepository.findById(memberId).get(), clubId);
 	}
 
 	@Test
@@ -231,9 +225,7 @@ class ClubServiceImplTest {
 		long memberId = 3;
 		long clubId = 18;
 
-		Member member = memberRepository.findByMemberId(memberId);
-
-		assertThatThrownBy(() -> clubService.deleteGroupMember(member, clubId))
+		assertThatThrownBy(() -> clubService.deleteGroupMember(memberRepository.findById(memberId).get(), clubId))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining(HOST_CANNOT_LEAVE_GROUP.getMessage());
 	}
@@ -241,7 +233,7 @@ class ClubServiceImplTest {
 	@Test
 	void 최근_활동_그룹_목록_조회() {
 		long memberId = 3;
-		Member member = memberRepository.findByMemberId(memberId);
+		Member member = memberRepository.findById(memberId).get();
 		List<ClubResponseDto> response = clubService.findRecentClubs(member);
 		response.forEach(System.out::println);
 

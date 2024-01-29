@@ -37,7 +37,7 @@ public class ClubResponseDto {
 			.currentParticipants(entity.getCurrentParticipants())
 			.createdTime(entity.getCreatedTime())
 			.updatedTime(entity.getUpdatedTime())
-			.hostId(entity.getHostMember().getMemberId());
+			.hostId(entity.getHostMember().getId());
 
 		if (entity.getParty() != null) {
 			dto.partyId(entity.getParty().getId());
