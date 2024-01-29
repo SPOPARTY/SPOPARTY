@@ -55,190 +55,182 @@
       <div
         id="main-video"
         class="col-md-6">
-        <user-video :stream-manager="mainStreamManager" />
+        <UserVideo :stream-manager="mainStreamManager" />
       </div>
       <div
         id="video-container"
         class="col-md-6">
-        <user-video
+        <UserVideo
           :stream-manager="publisher"
           @click.native="updateMainVideoStreamManager(publisher)" />
-        <user-video
+        <UserVideo
           v-for="sub in subscribers"
           :key="sub.stream.connection.connectionId"
           :stream-manager="sub"
           @click.native="updateMainVideoStreamManager(sub)" />
       </div>
+      <button @click="sendMessage">asdasdasdadsdas</button>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import axios from 'axios'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../components/openvidu/UserVideo.vue'
-
+import { ref, reactive } from 'vue'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === 'production' ? '' : 'https://i10a802.p.ssafy.io/'
+// Move the OpenVidu initialization outside of the component
 
-export default {
-  name: 'App',
+const OV = ref(undefined)
+const session = ref(undefined)
+const mainStreamManager = ref(undefined)
+const publisher = ref(undefined)
+const subscribers = ref([])
 
-  components: {
-    UserVideo,
-  },
+let mySessionId = 'SessionA'
+let myUserName = 'Participant' + Math.floor(Math.random() * 100)
 
-  data() {
-    return {
-      // OpenVidu objects
-      OV: undefined,
-      session: undefined,
-      mainStreamManager: undefined,
-      publisher: undefined,
-      subscribers: [],
-
-      // Join form
-      mySessionId: 'SessionA',
-      myUserName: 'Participant' + Math.floor(Math.random() * 100),
-    }
-  },
-
-  methods: {
-    joinSession() {
-      // --- 1) Get an OpenVidu object ---
-      this.OV = new OpenVidu()
-
-      // --- 2) Init a session ---
-      this.session = this.OV.initSession()
-
-      // --- 3) Specify the actions when events take place in the session ---
-
-      // On every new Stream received...
-      this.session.on('streamCreated', ({ stream }) => {
-        const subscriber = this.session.subscribe(stream)
-        this.subscribers.push(subscriber)
-      })
-
-      // On every Stream destroyed...
-      this.session.on('streamDestroyed', ({ stream }) => {
-        const index = this.subscribers.indexOf(stream.streamManager, 0)
-        if (index >= 0) {
-          this.subscribers.splice(index, 1)
-        }
-      })
-
-      // On every asynchronous exception...
-      this.session.on('exception', ({ exception }) => {
-        console.warn(exception)
-      })
-
-      // --- 4) Connect to the session with a valid user token ---
-
-      // Get a token from the OpenVidu deployment
-      this.getToken(this.mySessionId).then((token) => {
-        // First param is the token. Second param can be retrieved by every user on event
-        // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
-        this.session
-          .connect(token, { clientData: this.myUserName })
-          .then(() => {
-            // --- 5) Get your own camera stream with the desired properties ---
-
-            // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
-            // element: we will manage it on our own) and with the desired properties
-            let publisher = this.OV.initPublisher(undefined, {
-              audioSource: undefined, // The source of audio. If undefined default microphone
-              videoSource: undefined, // The source of video. If undefined default webcam
-              publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-              publishVideo: true, // Whether you want to start publishing with your video enabled or not
-              resolution: '640x480', // The resolution of your video
-              frameRate: 30, // The frame rate of your video
-              insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-              mirror: false, // Whether to mirror your local video or not
-            })
-
-            // Set the main video in the page to display our webcam and store our Publisher
-            this.mainStreamManager = publisher
-            this.publisher = publisher
-
-            // --- 6) Publish your stream ---
-
-            this.session.publish(this.publisher)
-          })
-          .catch((error) => {
-            console.log(
-              'There was an error connecting to the session:',
-              error.code,
-              error.message,
-            )
-          })
-      })
-
-      window.addEventListener('beforeunload', this.leaveSession)
-    },
-
-    leaveSession() {
-      // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
-      if (this.session) this.session.disconnect()
-
-      // Empty all properties...
-      this.session = undefined
-      this.mainStreamManager = undefined
-      this.publisher = undefined
-      this.subscribers = []
-      this.OV = undefined
-
-      // Remove beforeunload listener
-      window.removeEventListener('beforeunload', this.leaveSession)
-    },
-
-    updateMainVideoStreamManager(stream) {
-      if (this.mainStreamManager === stream) return
-      this.mainStreamManager = stream
-    },
-
-    /**
-     * --------------------------------------------
-     * GETTING A TOKEN FROM YOUR APPLICATION SERVER
-     * --------------------------------------------
-     * The methods below request the creation of a Session and a Token to
-     * your application server. This keeps your OpenVidu deployment secure.
-     *
-     * In this sample code, there is no user control at all. Anybody could
-     * access your application server endpoints! In a real production
-     * environment, your application server must identify the user to allow
-     * access to the endpoints.
-     *
-     * Visit https://docs.openvidu.io/en/stable/application-server to learn
-     * more about the integration of OpenVidu in your application server.
-     */
-    async getToken(mySessionId) {
-      const sessionId = await this.createSession(mySessionId)
-      return await this.createToken(sessionId)
-    },
-
-    async createSession(sessionId) {
-      const response = await axios.post(
-        APPLICATION_SERVER_URL + 'api/sessions',
-        { customSessionId: sessionId },
-        {
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
-      return response.data // The sessionId
-    },
-
-    async createToken(sessionId) {
-      const response = await axios.post(
-        APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections',
-        {},
-        {
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
-      return response.data // The token
-    },
-  },
+const sendMessage = () => {
+  session.value
+    .signal({
+      data: '채팅 전송하기', // Any string (optional)
+      to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+      type: 'chat', // The type of message (optional)
+    })
+    .then(() => {
+      console.log('Message successfully sent')
+    })
+    .catch((error) => {
+      console.error(error)
+    })
 }
+
+const joinSession = () => {
+  OV.value = new OpenVidu()
+  // --- 2) Init a session ---
+  session.value = OV.value.initSession()
+
+  // --- 3) Specify the actions when events take place in the session ---
+
+  // On every new Stream received...
+  session.value.on('streamCreated', ({ stream }) => {
+    const subscriber = session.value.subscribe(stream)
+    subscribers.value.push(subscriber)
+  })
+
+  // On every Stream destroyed...
+  session.value.on('streamDestroyed', ({ stream }) => {
+    const index = subscribers.value.indexOf(stream.streamManager, 0)
+    if (index >= 0) {
+      subscribers.value.splice(index, 1)
+    }
+  })
+
+  // On every asynchronous exception...
+  session.value.on('exception', ({ exception }) => {
+    console.warn(exception)
+  })
+
+  session.value.on('signal', (event) => {
+    console.log(event.data) // Message
+    console.log(event.from) // Connection object of the sender
+    console.log(event.type) // The type of message
+  })
+
+  // --- 4) Connect to the session with a valid user token ---
+
+  // Get a token from the OpenVidu deployment
+  getToken(mySessionId).then((token) => {
+    // First param is the token. Second param can be retrieved by every user on event
+    // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
+    session.value
+      .connect(token, { clientData: myUserName })
+      .then(() => {
+        // --- 5) Get your own camera stream with the desired properties ---
+
+        // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
+        // element: we will manage it on our own) and with the desired properties
+        let initPublisher = OV.value.initPublisher(undefined, {
+          audioSource: undefined, // The source of audio. If undefined default microphone
+          videoSource: 'screen', // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
+          publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+          publishVideo: true, // Whether you want to start publishing with your video enabled or not
+          resolution: '640x480', // The resolution of your video
+          frameRate: 30, // The frame rate of your video
+          insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+          mirror: false, // Whether to mirror your local video or not
+        })
+
+        // Set the main video in the page to display our webcam and store our Publisher
+        mainStreamManager.value = initPublisher
+        publisher.value = initPublisher
+
+        // --- 6) Publish your stream ---
+
+        session.value.publish(publisher.value)
+      })
+      .catch((error) => {
+        console.log(
+          'There was an error connecting to the session:',
+          error.code,
+          error.message,
+        )
+      })
+  })
+
+  window.addEventListener('beforeunload', leaveSession)
+}
+
+const leaveSession = () => {
+  // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
+  if (session.value) session.value.disconnect()
+
+  // Empty all properties...
+  session.value = undefined
+  mainStreamManager.value = undefined
+  publisher.value = undefined
+  subscribers.value = []
+  OV.value = undefined
+
+  // Remove beforeunload listener
+  window.removeEventListener('beforeunload', leaveSession)
+}
+
+const updateMainVideoStreamManager = (stream) => {
+  if (mainStreamManager.value === stream) return
+  mainStreamManager.value = stream
+}
+
+const getToken = async (mySessionId) => {
+  const sessionId = await createSession(mySessionId)
+  return await createToken(sessionId)
+}
+
+const createSession = async (sessionId) => {
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + 'api/sessions',
+    { customSessionId: sessionId },
+    {
+      headers: { 'Content-Type': 'application/json' },
+    },
+  )
+  return response.data // The sessionId
+}
+
+const createToken = async (sessionId) => {
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections',
+    {},
+    {
+      headers: { 'Content-Type': 'application/json' },
+    },
+  )
+  return response.data // The token
+}
+
+// Rest of the code remains unchanged...
 </script>
