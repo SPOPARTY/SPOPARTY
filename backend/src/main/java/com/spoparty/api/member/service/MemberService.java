@@ -163,4 +163,8 @@ public class MemberService {
 		return false;
 	}
 
+	public List<Team> getTeamList() {
+		return teamRepository.findAll();
+	}
+
 }
