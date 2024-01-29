@@ -6,12 +6,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.common.util.JwtTokenUtil;
-import com.spoparty.security.model.PrincipalDetails;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -48,6 +48,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				member.getLoginPwd());
 			Authentication authentication = authenticationManager.authenticate(token);
 			log.info(authentication.getPrincipal().toString());
+			SecurityContextHolder.getContext().setAuthentication(authentication);
 			return authentication;
 		} catch (IOException e) {
 			log.error(e.getMessage());
@@ -60,15 +61,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 		Authentication authentication) throws IOException, ServletException {
 		log.info("JwtAuthenticationFilter.successfulAuthentication() 실행");
-		PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
-		Member member = principalDetails.getMember();
-		String accessToken = jwtTokenUtil.createAccessToken(member.getMemberId() + "");
-		String refreshToken = jwtTokenUtil.createRefreshToken();
-		response.addHeader("accessToken", accessToken);
-		response.addHeader("refreshToken", refreshToken);
-		log.info("accessToken: " + accessToken);
-		log.info("refreshToken: " + refreshToken);
-		log.info("토큰발급완료");
+		request.getRequestDispatcher("/authentication/token").forward(request, response);
 	}
 
 }

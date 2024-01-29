@@ -14,14 +14,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class League extends FootballBaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="league_id")
 	private long id;
 
@@ -46,11 +49,23 @@ public class League extends FootballBaseEntity {
 	private String countryLogo;
 
 	@Enumerated(EnumType.STRING)
-	@Size(min=0, max=10)
 	@Column(length=10, nullable=false)
 	private LeagueType type;
 
 	@OneToMany(mappedBy="league")
 	List<SeasonLeague> seasonLeagues = new ArrayList<>();
 
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	@Builder
+	public League(long id, String nameKr, String nameEng, String logo, String country, String countryLogo, LeagueType type) {
+		this.id = id;
+		this.nameKr = nameKr;
+		this.nameEng = nameEng;
+		this.logo = logo;
+		this.country = country;
+		this.countryLogo = countryLogo;
+		this.type = type;
+	}
 }

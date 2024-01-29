@@ -41,7 +41,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		log.info("JwtAuthenticationProvider.supports()");
+		log.info("JwtAuthenticationProvider.supports({})", authentication);
 		return authentication.equals(UsernamePasswordAuthenticationToken.class);
 	}
 }
