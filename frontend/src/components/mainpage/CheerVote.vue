@@ -1,34 +1,32 @@
 <template>
-  <v-container fluid class="pa-2 fill-height">
+  <v-container fluid class="pa-2 fill-height part-section">
     <v-row justify="center">
-      <v-col cols="12">
-        <v-card color="grey lighten-1" class="d-flex flex-column align-center justify-center" height="450px">
-          <v-carousel class='carousel' cycle interval="7000" height="450px">
-            <v-carousel-item v-for="(vote, index) in votes" :key="index">
-              <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
-                <!-- 투표 상태 메시지 -->
-                <div class="vote-message">
-                  <h1>{{ vote.voted ? '이미 투표하셨습니다' : '팀을 선택해주세요!' }}</h1>
+      <v-col cols="12" class="d-flex flex-column align-center justify-center">
+        <v-carousel class='carousel' cycle interval="7000" height="450px">
+          <v-carousel-item v-for="(vote, index) in votes" :key="index">
+            <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
+              <!-- 투표 상태 메시지 -->
+              <div class="vote-message">
+                <h1>{{ vote.voted ? '이미 투표하셨습니다' : '팀을 선택해주세요!' }}</h1>
+              </div>
+              <!-- 투표 버튼 및 득표율 -->
+              <div class="d-flex justify-center align-center">
+                <div class="vote-container">
+                  <v-btn :disabled="vote.voted" class="team-name" @click="() => voteForTeam(index, 1)">
+                    <span :style="{ color: vote.voted1 ? 'red' : 'black' }">{{ vote.team1 }}</span>
+                  </v-btn>
+                  <div class="vote-percentage">{{ votePercentage(vote, 1) }}</div>
                 </div>
-                <!-- 투표 버튼 및 득표율 -->
-                <div class="d-flex justify-center align-center">
-                  <div class="vote-container">
-                    <v-btn :disabled="vote.voted" class="team-name" @click="() => voteForTeam(index, 1)">
-                      <span :style="{ color: vote.voted1 ? 'red' : 'black' }">{{ vote.team1 }}</span>
-                    </v-btn>
-                    <div class="vote-percentage">{{ votePercentage(vote, 1) }}</div>
-                  </div>
-                  <div class="vote-container">
-                    <v-btn :disabled="vote.voted" class="team-name" @click="() => voteForTeam(index, 2)">
-                      <span :style="{ color: vote.voted2 ? 'red' : 'black' }">{{ vote.team2 }}</span>
-                    </v-btn>
-                    <div class="vote-percentage">{{ votePercentage(vote, 2) }}</div>
-                  </div>
+                <div class="vote-container">
+                  <v-btn :disabled="vote.voted" class="team-name" @click="() => voteForTeam(index, 2)">
+                    <span :style="{ color: vote.voted2 ? 'red' : 'black' }">{{ vote.team2 }}</span>
+                  </v-btn>
+                  <div class="vote-percentage">{{ votePercentage(vote, 2) }}</div>
                 </div>
               </div>
-            </v-carousel-item>
-          </v-carousel>
-        </v-card>
+            </div>
+          </v-carousel-item>
+        </v-carousel>
       </v-col>
     </v-row>
   </v-container>
@@ -68,9 +66,7 @@ const votePercentage = (vote, team) => {
 </script>
 
 <style scoped>
-.carousel {
-
-}
+.carousel {}
 
 .vote-container {
   display: flex;

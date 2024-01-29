@@ -33,7 +33,7 @@ const vuetify = createVuetify({
     }
   })
 
-window.Kakao.init("d23378ff6b70109a54449af376d2c66c");
+// window.Kakao.init("d23378ff6b70109a54449af376d2c66c");
 
 app.use(router);
 app.use(pinia);
