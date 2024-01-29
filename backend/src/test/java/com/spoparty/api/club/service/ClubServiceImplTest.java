@@ -93,7 +93,7 @@ class ClubServiceImplTest {
 
 	@Test
 	void 그룹_생성_성공() throws Exception {
-		long memberId = 1;
+		long memberId = 12;
 		String name = "아시안컵 16강 볼사람 모여";
 
 		ClubRequestDto request = new ClubRequestDto(memberId, name);
