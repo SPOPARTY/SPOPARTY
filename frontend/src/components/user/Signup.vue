@@ -354,7 +354,7 @@
       return;
     }
 
-    if (!emailVerified) {
+    if (!emailVerified.value) {
       alert("이메일 인증 검사를 하지 않으셨습니다!");
       return;
     }
