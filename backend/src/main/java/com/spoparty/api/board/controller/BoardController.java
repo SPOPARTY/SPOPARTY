@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spoparty.api.board.entity.Board;
+import com.spoparty.api.board.repository.projection.BoardProjection;
 import com.spoparty.api.board.service.BoardService;
+import com.spoparty.api.club.repository.ClubRepository;
 import com.spoparty.api.member.service.FileService;
 import com.spoparty.api.member.service.MemberService;
 
@@ -30,17 +32,17 @@ public class BoardController {
 	private final BoardService boardService;
 	private final FileService fileService;
 	private final MemberService memberService;
-	// private final ClubService clubService;
+	private final ClubRepository clubRepository;
 
 	@GetMapping("/clubs/{clubId}")
 	public ResponseEntity<?> getBoardList(@PathVariable("clubId") Long clubId) {
-		List<Board> list = boardService.findByClubId(clubId);
+		List<BoardProjection> list = boardService.findByClubId(clubId);
 		return ResponseEntity.status(200).body(list);
 	}
 
 	@GetMapping("/{boardId}")
 	public ResponseEntity<?> getBoard(@PathVariable("boardId") Long id) {
-		Board board = boardService.findById(id);
+		BoardProjection board = boardService.findById(id);
 		if (board == null)
 			return ResponseEntity.status(404).body(null);
 		else
@@ -55,7 +57,7 @@ public class BoardController {
 		board.setTitle(title);
 		board.setContent(content);
 		board.setMember(memberService.findById(memberId));
-		// board.setClub(clubService.findById(clubId));
+		board.setClub(clubRepository.findById(clubId).orElse(null));
 		if (file != null) {
 			try {
 				board.setFile(fileService.uploadFile(file));
@@ -66,8 +68,8 @@ public class BoardController {
 		board = boardService.registerBoard(board);
 		if (board == null)
 			return ResponseEntity.status(400).body(null);
-		else
-			return ResponseEntity.status(201).body(board);
+		BoardProjection b = boardService.findById(board.getId());
+		return ResponseEntity.status(201).body(b);
 	}
 
 	@PutMapping
@@ -87,7 +89,7 @@ public class BoardController {
 		if (board == null)
 			return ResponseEntity.status(400).body(null);
 		else
-			return ResponseEntity.status(201).body(board);
+			return ResponseEntity.status(200).body(board);
 	}
 
 	@DeleteMapping("/{boardId}")

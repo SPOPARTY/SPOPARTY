@@ -1,4 +1,4 @@
-package com.spoparty.api.board.entity;
+package com.spoparty.api.archive.entity;
 
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
@@ -24,11 +24,11 @@ import lombok.ToString;
 @Setter
 @Getter
 @Entity
-public class Board extends BaseEntity {
+public class Archive extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "board_id")
+	@Column(name = "archive_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -40,10 +40,10 @@ public class Board extends BaseEntity {
 	private Club club;
 
 	@Column(nullable = false, length = 50)
-	private String title = "";
+	private String partyTitle = "";
 
-	@Column(nullable = false, length = 255)
-	private String content = "";
+	@Column(nullable = false, length = 50)
+	private String fixtureTitle = "";
 
 	@OneToOne
 	@JoinColumn(name = "file_id", referencedColumnName = "file_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
