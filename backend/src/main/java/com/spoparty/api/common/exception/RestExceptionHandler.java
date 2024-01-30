@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,7 +26,7 @@ public class RestExceptionHandler {
 	// Custom Bad Request Error
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(BadRequestException.class)
-	protected ApiResponse<Object> handleBadRequestException(BadRequestException exception, HttpServletRequest request) {
+	protected ResponseEntity<?> handleBadRequestException(BadRequestException exception, HttpServletRequest request) {
 		logInfo(request, exception.getCode().getStatus(), exception.getCode().getMessage());
 		return ApiResponse.error(exception.getCode());
 	}
@@ -33,7 +34,7 @@ public class RestExceptionHandler {
 	// Custom Unauthorized Error
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	@ExceptionHandler(UnauthorizedException.class)
-	protected ApiResponse<Object> handleUnauthorizedException(UnauthorizedException exception,
+	protected ResponseEntity<?> handleUnauthorizedException(UnauthorizedException exception,
 		HttpServletRequest request) {
 		logInfo(request, exception.getCode().getStatus(), exception.getCode().getMessage());
 		return ApiResponse.error(exception.getCode());
@@ -42,7 +43,7 @@ public class RestExceptionHandler {
 	// Custom Internal Server Error
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(InternalServerErrorException.class)
-	protected ApiResponse<Object> handleInternalServerErrorException(InternalServerErrorException exception,
+	protected ResponseEntity<?> handleInternalServerErrorException(InternalServerErrorException exception,
 		HttpServletRequest request) {
 		logInfo(request, exception.getCode().getStatus(), exception.getCode().getMessage());
 		return ApiResponse.error(exception.getCode());
@@ -51,7 +52,7 @@ public class RestExceptionHandler {
 	// @RequestBody valid 에러
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	protected ApiResponse<Object> handleMethodArgNotValidException(MethodArgumentNotValidException exception,
+	protected ResponseEntity<?> handleMethodArgNotValidException(MethodArgumentNotValidException exception,
 		HttpServletRequest request) {
 		String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 		logInfo(request, HttpStatus.BAD_REQUEST, message);
@@ -61,7 +62,7 @@ public class RestExceptionHandler {
 	// @ModelAttribute valid 에러
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(BindException.class)
-	protected ApiResponse<Object> handleMethodArgNotValidException(BindException exception,
+	protected ResponseEntity<?> handleMethodArgNotValidException(BindException exception,
 		HttpServletRequest request) {
 		String message = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 		logInfo(request, HttpStatus.BAD_REQUEST, message);
@@ -70,7 +71,7 @@ public class RestExceptionHandler {
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(BadCredentialsException.class)
-	protected ApiResponse<Object> handleBadCredentialsException(BadCredentialsException exception,
+	protected ResponseEntity<?> handleBadCredentialsException(BadCredentialsException exception,
 		HttpServletRequest request) {
 		logInfo(request, HttpStatus.NOT_FOUND, exception.getMessage());
 		return ApiResponse.error(ErrorCode.USER_NOT_FOUND);
@@ -78,28 +79,28 @@ public class RestExceptionHandler {
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(NotFoundException.class)
-	public ApiResponse<Object> handleNotFoundException(NotFoundException exception, HttpServletRequest request) {
+	public ResponseEntity<?> handleNotFoundException(NotFoundException exception, HttpServletRequest request) {
 		logInfo(request, exception.getCode().getStatus(), exception.getMessage());
 		return ApiResponse.error(exception.getCode());
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(DuplicateException.class)
-	public ApiResponse<Object> handleDuplicationException(DuplicateException exception, HttpServletRequest request) {
+	public ResponseEntity<?> handleDuplicationException(DuplicateException exception, HttpServletRequest request) {
 		logInfo(request, exception.getCode().getStatus(), exception.getMessage());
 		return ApiResponse.error(exception.getCode());
 	}
 
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	@ExceptionHandler(ForbiddenException.class)
-	public ApiResponse<Object> handlerForbiddenException(ForbiddenException exception, HttpServletRequest request) {
+	public ResponseEntity<?> handlerForbiddenException(ForbiddenException exception, HttpServletRequest request) {
 		logInfo(request, exception.getCode().getStatus(), exception.getMessage());
 		return ApiResponse.error(exception.getCode());
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
-	public ApiResponse<Object> unhandledExceptionHandler(Exception exception, HttpServletRequest request) {
+	public ResponseEntity<?> unhandledExceptionHandler(Exception exception, HttpServletRequest request) {
 		logWarn(request, exception);
 		return ApiResponse.error(ErrorCode.SERVER_ERROR);
 	}
