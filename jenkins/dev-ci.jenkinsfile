@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         nodejs "nodejs"
-        gradle "gradle7.4"
     }
 
     stages {
@@ -59,7 +58,10 @@ pipeline {
                     steps {
                         echo 'BE - Build start'
                         dir ('backend/backend') {
-                            sh 'gradle clean bootjar'
+                            sh'''
+                                chmod +x gradlew
+                                ./gradlew clean build
+                            '''
                         }
                     }
                     post{
