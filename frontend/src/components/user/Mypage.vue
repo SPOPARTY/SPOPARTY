@@ -112,11 +112,11 @@ const teamList = ref(null);
 const followList = ref(null);
 
 onMounted(() => {
+    const id = sessionStorage.getItem("id")
     memberId.value = sessionStorage.getItem("id");
     teamList.value = followStore.getTeamList();
     followStore.getFollowList(memberId.value);
     getMemberInfo();
-    console.log("히히 전체 팀 발사 -> ", followStore.getFollowList())
 })
 // 전체 팀 리스트 관찰
 
