@@ -36,7 +36,7 @@
                 </v-col>
               </v-row>
 
-              <FindPwd v-if="isPwdModalVisible" @close="isPwdModalVisible = false" />
+              <TempPwd v-if="isPwdModalVisible" @close="isPwdModalVisible = false" />
 
             </v-form>
           </v-card-text>
@@ -48,7 +48,6 @@
               >
               카카오로 로그인하기
             </v-btn>
-            <KakaoLogin v-if="isKakaoLoginModalVisible" @kakao-login-close="isKakaoLoginModalVisible = false"/>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -60,6 +59,7 @@
 import {ref} from 'vue';
 import {useRouter} from 'vue-router'
 import { useManagementStore } from '@/stores/member/managements';
+import TempPwd from "@/components/user/TempPwd.vue";
 
 const router = useRouter();
 
