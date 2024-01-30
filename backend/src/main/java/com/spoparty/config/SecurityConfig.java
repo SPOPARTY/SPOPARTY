@@ -112,11 +112,12 @@ public class SecurityConfig {
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-//		config.addAllowedOrigin("*");
-		config.addAllowedOriginPattern("*");
+		config.addAllowedOrigin("*");
 		config.addAllowedMethod("*");
 		config.addAllowedHeader("*");
 		config.addExposedHeader("Authorization");
+		config.addExposedHeader("AccessToken");
+		config.addExposedHeader("RefreshToken");
 		config.setAllowCredentials(false);
 		config.setMaxAge(3600L);
 		source.registerCorsConfiguration("/**", config);

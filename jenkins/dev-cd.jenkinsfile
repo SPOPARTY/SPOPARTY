@@ -19,7 +19,16 @@ pipeline {
                 }
             }
         }
-        stage ('2. Build') {
+        stage('2. Download private file') {
+            steps {
+                echo 'BE Download private file start!'
+                sh 'pwd'
+                withCredentials([file(credentialsId: 'application-private', variable: 'privateConfigFile')]) {
+                    sh 'cp -f ${privateConfigFile}  backend/src/main/resources/application-private.yml'
+                }
+            }
+        }
+        stage ('3. Build') {
             parallel {
                 stage ('BE') {
                     steps {
@@ -48,7 +57,7 @@ pipeline {
             }
 
         }
-        stage ('3. Test') {
+        stage ('4. Test') {
             parallel {
                 stage ('BE Test') {
                     steps {
@@ -70,7 +79,7 @@ pipeline {
                 }
             }
         }
-        stage('4. Docker Publish') {
+        stage('5. Docker Publish') {
             steps {
                 echo 'BE Publish Docker Hub!'
                 dir('backend') {
@@ -84,7 +93,7 @@ pipeline {
                 }
             }
         }
-        stage (' 5. FE Publish') {
+        stage ('6. FE Publish') {
             steps {
                  sshagent(credentials: ['ubuntu-a802']) {
                 sh '''
@@ -94,7 +103,7 @@ pipeline {
                 }
             }
         }
-        stage ('6. Service Stop') {
+        stage ('7. Service Stop') {
             steps {
                 sshagent(credentials: ['ubuntu-a802']) {
                 sh '''
@@ -109,6 +118,7 @@ pipeline {
                 sshagent(credentials: ['ubuntu-a802']) {
                 sh '''
                 ssh -o StrictHostKeyChecking=no $releaseServerAccount@$releaseServerUri 
+                docker-compose pull
                 docker-compose up -d --remove-orphans
                 '''
                 }

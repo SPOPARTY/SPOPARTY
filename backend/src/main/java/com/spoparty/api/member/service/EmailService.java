@@ -33,12 +33,16 @@ public class EmailService {
 		log.info("EmailService 생성");
 	}
 
-	public void sendEmail(String to) throws MailSendException, InterruptedException {
+	public void sendEmailCode(String to) throws MailSendException, InterruptedException {
+		int code = setCode(to);
+		sendEmail(to, SUBJECT, PREFIX + code + SUFFIX);
+	}
+
+	public void sendEmail(String to, String subject, String msg) throws MailSendException, InterruptedException {
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
 		mailMessage.setTo(to);
-		mailMessage.setSubject(SUBJECT);
-		int code = setCode(to);
-		mailMessage.setText(PREFIX + code + SUFFIX);
+		mailMessage.setSubject(subject);
+		mailMessage.setText(msg);
 		log.info("EmailService.sendEmail() : " + mailMessage);
 		javaMailSender.send(mailMessage);
 	}

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.member.entity.FollowingTeam;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.repository.projection.FollowingTeamProjection;
@@ -103,5 +104,15 @@ public class MemberController {
 	public ResponseEntity<?> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		memberService.deleteToken(principalDetails.getMember().getId());
 		return ResponseEntity.status(200).body(null);
+	}
+
+	@GetMapping("/teams")
+	public ResponseEntity<?> getTeamList() {
+		List<Team> list = memberService.getTeamList();
+		if (list.isEmpty())
+			return ResponseEntity.status(404).body(null);
+		else
+			return ResponseEntity.status(200).body(list);
+
 	}
 }

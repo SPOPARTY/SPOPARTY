@@ -11,6 +11,7 @@ pipeline {
                     steps {
                         echo 'BE - Clone start'
                         dir ('backend') {
+                            sh 'pwd'
                             git branch: 'backend', credentialsId: 'gitlab-eunbyeol', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A802'
                         }
                     }
@@ -27,6 +28,7 @@ pipeline {
                     steps {
                         echo 'FE - Clone start'
                         dir ('frontend') {
+                            sh 'pwd'
                             git branch: 'frontend', credentialsId: 'gitlab-eunbyeol', url: 'https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A802'
                         }
                     }
@@ -38,6 +40,15 @@ pipeline {
                             error "FE - Fail Cloned Repository"
                         }
                     }
+                }
+            }
+        }
+        stage('[Download private file]') {
+            steps {
+                echo 'BE - Download private file start'
+                sh 'pwd'
+                withCredentials([file(credentialsId: 'application-private', variable: 'privateConfigFile')]) {
+                    sh 'cp -f ${privateConfigFile}  backend/backend/src/main/resources/application-private.yml'
                 }
             }
         }
@@ -65,7 +76,7 @@ pipeline {
                 stage ('FE Build') {
                     steps {
                         echo 'FE - Build start'
-                        dir('frontend/frontend'){
+                        dir ('frontend/frontend'){
                             sh'''
                                 npm cache clean --force
                                 rm -rf node_modules package-lock.json

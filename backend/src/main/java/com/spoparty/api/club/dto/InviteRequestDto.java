@@ -1,6 +1,6 @@
 package com.spoparty.api.club.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +11,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class InviteRequestDto {
-	@NotBlank(message = "memberId가 없습니다.")
+	@NotNull(message = "memberId가 없습니다.")
 	private Long memberId;
-	@NotBlank(message = "초대 URL이 없습니다.")
+	@NotNull(message = "초대 URL이 없습니다.")
 	private String inviteUrl;
 }
