@@ -9,10 +9,10 @@
 
     <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
     <v-list dense class="club-list">
-      <v-list-item v-for="(club, index) in clubs" :key="index" class="mb-1">
+      <v-list-item v-for="(club, index) in clubs" v-if="clubs" :key="index" class="mb-1">
         <div @click="openClubInNewTab(club.id)" class="d-flex justify-start align-center club-item"
           style="text-transform: none; padding: 16px; cursor: pointer;">
-          <v-list-item-title class="align-start">{{ club.name }}<br>{{ 'ID: ' + club.id }}</v-list-item-title>
+          <v-list-item-title class="align-start">{{ club.name }}<br>{{ 'ID: ' + club.clubId }}</v-list-item-title>
         </div>
       </v-list-item>
 
@@ -64,19 +64,28 @@
 </template>
 
 <script setup>
-import { ref,computed, onMounted } from 'vue';
+import { ref,computed, watch,onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useManagementStore} from "@/stores/member/managements"
 
-const managemetStore = useManagementStore()
+import { useManagementStore} from "@/stores/member/managements"
+import { useClubStore} from "@/stores/club/clubs"
+
+
+onMounted(async () => {
+  console.log("로그인 됨?? -> " ,localStorage.getItem("accessToken") !== null)
+  console.log("여기는 HeaderNave의 onMounted")
+  if (localStorage.getItem("accessToken") != null) {
+    await clubStore.requestClub();
+    clubs.value = clubStore.myClubs
+  }
+})
+
+
+const managemetStore = useManagementStore();
+const clubStore = useClubStore();
 
 // 로그인 여부 감지
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
-
-onMounted(() => {
-  console.log("로그인 됨?? -> " ,localStorage.getItem("accessToken") !== null)
-})
-
 
 // 로그아웃
 const logout = () => {
@@ -91,20 +100,12 @@ function goHome() {
 }
 
 // 예시 클럽 데이터
-const clubs = ref([
-  { id: 1, name: '클럽 A' },
-  { id: 2, name: '클럽 B' },
-  { id: 3, name: '클럽 C' },
-  { id: 4, name: '클럽 D' },
-  { id: 5, name: '클럽 AA' },
-  { id: 6, name: '클럽 BB' },
-  { id: 7, name: '클럽 CC' },
-  { id: 8, name: '클럽 DD' },
-  { id: 9, name: '클럽 E' },
-  { id: 10, name: '클럽 F' },
-  { id: 11, name: '클럽 G' },
-  { id: 12, name: '클럽 H' },
-]);
+const clubs = ref([]);
+watch(() => clubStore.myClubs,(newClubs) => {
+  clubs.value = newClubs;
+},{immediate:true})
+// 클럽 리스트 관리
+
 
 // 클럽 페이지를 새 탭에서 열기
 function openClubInNewTab(clubId) {
@@ -117,6 +118,8 @@ function openClubInNewTab(clubId) {
 function goToNewClubPage() {
   router.push('/new-club'); // '새 클럽' 페이지로 라우팅하는 경로를 적절히 조정하세요.
 }
+
+
 
 </script>
 
