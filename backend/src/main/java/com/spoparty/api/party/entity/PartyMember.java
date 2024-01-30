@@ -2,7 +2,6 @@ package com.spoparty.api.party.entity;
 
 import org.hibernate.annotations.Where;
 
-import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.common.entity.RoleType;
 import com.spoparty.api.member.entity.Member;
@@ -33,11 +32,11 @@ public class PartyMember extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "party_member_id")
-	private long id;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "party_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Club club;
+	private Party party;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -47,9 +46,9 @@ public class PartyMember extends BaseEntity {
 	@Column(nullable = false)
 	private RoleType role;
 
-	public static PartyMember createPartyMember(Club club, Member member, RoleType role) {
+	public static PartyMember createPartyMember(Party party, Member member, RoleType role) {
 		PartyMember partyMember = new PartyMember();
-		partyMember.club = club;
+		partyMember.party = party;
 		partyMember.member = member;
 		partyMember.role = role;
 		return partyMember;

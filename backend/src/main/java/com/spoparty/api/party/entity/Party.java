@@ -38,7 +38,10 @@ public class Party extends BaseEntity {
 	@Column(name = "party_id")
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, name = "session_id") // openVidu sessionId
+	private String sessionId;
+
+	@Column(nullable = false, length = 30)
 	private String title;
 
 	@Column(nullable = false)
@@ -49,7 +52,7 @@ public class Party extends BaseEntity {
 	@ColumnDefault("1")
 	private Integer currentParticipants;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 2048)
 	private String fixtureUrl;
 
 	@ManyToOne(fetch = FetchType.LAZY)
