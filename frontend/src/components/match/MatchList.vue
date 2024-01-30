@@ -72,9 +72,9 @@ const matches = ref([
     {
         id: 1,
         teamA: 'FC 바르셀로나',
-        teamALogo: 'src/assets/spo-icon.png',
+        teamALogo: '/spo-icon.png',
         teamB: '레알 마드리드',
-        teamBLogo: 'src/assets/spo-icon.png',
+        teamBLogo: '/spo-icon.png',
         // 현재 날짜에 시간을 설정
         startTime: format(set(now, { hours: 12, minutes: 0 }), 'yyyy-MM-dd HH:mm'),
         league: '라 리가',
@@ -85,9 +85,9 @@ const matches = ref([
     {
         id: 2,
         teamA: 'AC 밀란',
-        teamALogo: 'src/assets/spo-icon.png',
+        teamALogo: '/spo-icon.png',
         teamB: '인터 밀란',
-        teamBLogo: 'src/assets/spo-icon.png',
+        teamBLogo: '/spo-icon.png',
         // 현재 날짜에 시간을 설정
         startTime: format(set(now, { hours: 20, minutes: 0 }), 'yyyy-MM-dd HH:mm'),
         league: '세리에 A',

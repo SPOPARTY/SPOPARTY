@@ -4,7 +4,7 @@
           <v-row class="party-section mb-1">
                <v-col class="match-section">
                     <v-row class="match-video">
-                         <v-img src="/src/assets/soccer-screen.png" aspect-ratio="16/9"></v-img>
+                         <v-img src="/soccer-screen.png" aspect-ratio="16/9"></v-img>
                     </v-row>
                     <v-row>
                          <v-col cols="7" class="party pa-1 px-4">

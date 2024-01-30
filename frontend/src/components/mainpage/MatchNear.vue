@@ -49,19 +49,19 @@ const matches = ref(
       "league": {
         "leagueId": "1",
         "nameKr": "프리미어 리그",
-        "logo": "/src/assets/Premier_League.png"
+        "logo": "/Premier_League.png"
       },
       "homeTeam": {
         "seasonLeagueTeamId": "1",
         "teamId": "1",
         "nameKr": "맨유",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       },
       "awayTeam": {
         "seasonaLeagueTeamId": "1",
         "teamId": "2",
         "nameKr": "토트넘",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       }
     },
     {
@@ -74,19 +74,19 @@ const matches = ref(
       "league": {
         "leagueId": "1",
         "nameKr": "프리미어 리그",
-        "logo": "/src/assets/Premier_League.png"
+        "logo": "/Premier_League.png"
       },
       "homeTeam": {
         "seasonLeagueTeamId": "1",
         "teamId": "1",
         "nameKr": "맨유",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       },
       "awayTeam": {
         "seasonaLeagueTeamId": "1",
         "teamId": "2",
         "nameKr": "토트넘",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       }
     },
     {
@@ -99,19 +99,19 @@ const matches = ref(
       "league": {
         "leagueId": "1",
         "nameKr": "프리미어 리그",
-        "logo": "/src/assets/Premier_League.png"
+        "logo": "/Premier_League.png"
       },
       "homeTeam": {
         "seasonLeagueTeamId": "1",
         "teamId": "1",
         "nameKr": "맨유",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       },
       "awayTeam": {
         "seasonaLeagueTeamId": "1",
         "teamId": "2",
         "nameKr": "토트넘",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       }
     },
     {
@@ -124,19 +124,19 @@ const matches = ref(
       "league": {
         "leagueId": "1",
         "nameKr": "프리미어 리그",
-        "logo": "/src/assets/Premier_League.png"
+        "logo": "/Premier_League.png"
       },
       "homeTeam": {
         "seasonLeagueTeamId": "1",
         "teamId": "1",
         "nameKr": "맨유",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       },
       "awayTeam": {
         "seasonaLeagueTeamId": "1",
         "teamId": "2",
         "nameKr": "토트넘",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       }
     },
     {
@@ -149,19 +149,19 @@ const matches = ref(
       "league": {
         "leagueId": "1",
         "nameKr": "프리미어 리그",
-        "logo": "/src/assets/Premier_League.png"
+        "logo": "/Premier_League.png"
       },
       "homeTeam": {
         "seasonLeagueTeamId": "1",
         "teamId": "1",
         "nameKr": "맨유",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       },
       "awayTeam": {
         "seasonaLeagueTeamId": "1",
         "teamId": "2",
         "nameKr": "토트넘",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       }
     },
     {
@@ -174,19 +174,19 @@ const matches = ref(
       "league": {
         "leagueId": "1",
         "nameKr": "프리미어 리그",
-        "logo": "/src/assets/Premier_League.png"
+        "logo": "/Premier_League.png"
       },
       "homeTeam": {
         "seasonLeagueTeamId": "1",
         "teamId": "1",
         "nameKr": "맨유",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       },
       "awayTeam": {
         "seasonaLeagueTeamId": "1",
         "teamId": "2",
         "nameKr": "토트넘",
-        "logo": "/src/assets/spo-icon.png"
+        "logo": "/spo-icon.png"
       }
     },
   ]
