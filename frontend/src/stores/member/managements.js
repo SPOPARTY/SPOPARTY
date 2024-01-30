@@ -20,12 +20,14 @@ export const useManagementStore = defineStore("management",() => {
     const isValidToken = ref(false);
     const memberId = ref(null)
 
+
     const login = async(loginMember) => {
         await memberConfirm(
             loginMember,
             (response) => {
-                console.log("여기까지 잘 왔나")
                 if(response.status === httpStatusCode.OK) {
+                    console.log("여기까지 잘 왔나")
+                    console.log(response)
                     let data = response;
                     let accessToken = data["headers"]["accesstoken"];
                     let refreshToken = data["headers"]["refreshtoken"];
@@ -61,6 +63,7 @@ export const useManagementStore = defineStore("management",() => {
         )
     }
 
+
     const getMemberInfo = () => {
         
     }
@@ -77,7 +80,7 @@ export const useManagementStore = defineStore("management",() => {
             },
             (error) => {
                 console.log(error)
-                if (error.status === 400) {
+                if (error.response.status === 400) {
                     alert("임시 비밀번호 생성에 실패했습니다!")
                 }
             }

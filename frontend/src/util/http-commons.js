@@ -31,7 +31,7 @@ function localAxios() {
 
     // response를 받은 직후 실행되는 interceptor
     // accessToken이 옳게 되지 않은 경우
-    // refreshToken을 이용하여 재발급
+    // refreshToken을 이용하여 
     instance.interceptors.response.use(
         (response) => {
             return response;
