@@ -20,8 +20,9 @@ export const useFollowStore = defineStore("follow", () => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     console.log("히히 모든 팀 가져오기 발사")
-                    console.log(res.data)
                     teamList.value = res.data
+                    console.log(teamList.value)
+                    return teamList.value;
                 }
             },
             (error) => {
@@ -42,8 +43,8 @@ export const useFollowStore = defineStore("follow", () => {
             console.log(res)
             if(res.status === httpStatusCode.OK) {
                 console.log("히히 팔로우 리스트 발사")
-                console.log(res.data)
                 followList.value = res.data;
+                console.log(followList.value)
             }
         }),
         (error) => {
@@ -61,11 +62,12 @@ export const useFollowStore = defineStore("follow", () => {
             data,
             (res) => {
                 console.log(res)
-                if(res.status === httpStatusCode.Create) {
+                if(res.status === httpStatusCode.CREATE) {
                     alert("팔로우 완료!")
                 }
             },
             (error) => {
+                console.log(error)
                 if(error.status === httpStatusCode.NOTFOUND) {
                     console.log("비상!!!!")
                     console.log(err);
@@ -81,8 +83,9 @@ export const useFollowStore = defineStore("follow", () => {
             teamId,
             (res) => {
                 console.log(res)
-                if(res.status === httpStatus.OK) {
+                if(res.status === httpStatusCode.OK) {
                     alert("팔로우 취소 완료")
+                    
                 }
             },
             (error) => {

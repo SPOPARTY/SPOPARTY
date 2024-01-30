@@ -272,7 +272,6 @@
   // 이메일 인증 코드 적합성 검사
   const verifyCode = ref('')
   const validEmail = ref(false); 
-  const inValidEmail = ref(false);
   const emailVerified = ref(false)
 
   function checkVerifyCode () {
@@ -376,7 +375,7 @@
           console.log("히히 회원가입 성공")
           console.log(res);
           alert("히히 회원가입 성공")
-          window.location.reload("/")
+          window.location.replace("/")
         } 
         else if (res.status === httpStatusCode.CONFLICT) {
           console.log("이미 등록된 아이디 ㅠㅠ")

@@ -53,18 +53,18 @@
                   <v-row>
                     <v-col cols="3">
                       <v-list-item-avatar>
-                        <img :src="item.src" :alt="item.name" style="width:64px; height:64px;">
+                        <img :src="item.logo" :alt="item.nameKr" style="width:64px; height:64px;">
                       </v-list-item-avatar>
                     </v-col>
                     <v-col cols="6">
                       <v-list-item-content class="grow">
-                        <v-list-item-title>{{ item.name }}</v-list-item-title>
-                        <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
+                        <v-list-item-title>{{ item.nameKr }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ item.nameEng }}</v-list-item-subtitle>
                       </v-list-item-content>
                     </v-col>
                     <v-col cols="3">
                       <v-list-item-action>
-                        <v-btn icon v-if="clubData.following.includes(item)" @click="unfollowClub(item)">
+                        <v-btn icon v-if="clubData.following.includes(item)" @click="unfollowClub(item.id)">
                             <v-icon color="red">mdi-delete</v-icon>
                         </v-btn>
       
@@ -86,8 +86,18 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue';
+import {useFollowStore} from "@/stores/member/follows"
 
 const isModalVisible = ref(true);
+
+const followStore = useFollowStore();
+
+const props = defineProps({
+    teamList : Object,
+    followList : Object,
+    memberId : String,
+
+})
 
 const emit = defineEmits([
     'FollowListClose',
@@ -95,34 +105,25 @@ const emit = defineEmits([
     'UnfollowClub'
 ])
 
+const memberId = props.memberId;
+
 
 // 검색어 찾기
 const search = ref('');
 
 // 전체 구단 목록 더미 데이터
-const allClubs = [
-    { name: '맨체스터 유나이티드', src: '/src/assets/manutd.png', subtitle:'프리미어리그' },
-    { name: '첼시', src: '/src/assets/chelsea.png', subtitle:'프리미어리그' },
-    { name: '토트넘 홋스퍼', src: '/src/assets/tottenham.png', subtitle:'프리미어리그' },
-    { name: '토리노FC', src: '/src/assets/torinoFC.png', subtitle:'세리에A' },
-    { name: '토론토FC', src: '/src/assets/torontoFC.png', subtitle:'MLS' },
-    { name: '맨체스터 시티', src: '/src/assets/mancity.png', subtitle:'프리미어리그' },
-    { name: '아스날', src: '/src/assets/arsenal.png', subtitle:'프리미어리그' },
-    { name: '바이에른 뮌헨', src: '/src/assets/bayernMunich.png', subtitle:'분데스리가' },
-];
+const allClubs = props.teamList;
 
 // 팔로우 중인 구단 목록 더미 데이터
-const follwingClubs = [
-    { name: '바이에른 뮌헨', src: '/src/assets/bayernMunich.png', subtitle:'분데스리가' },
-    { name: '토리노FC', src: '/src/assets/torinoFC.png', subtitle:'세리에A' },
-    { name: '아스날', src: '/src/assets/arsenal.png', subtitle:'프리미어리그' },
-    { name: '토트넘 홋스퍼', src: '/src/assets/tottenham.png', subtitle:'프리미어리그' },
-]
+const followingClubs = computed(() => {
+    const followedTeamIds = props.followList.map(follow => follow.teamId); // map을 통해 객체 배열을 teamId 배열로 변환
+    return allClubs.filter(team => followedTeamIds.includes(team.id));
+})
 
 const clubData = reactive({
     current : allClubs, // 모달창이 띄워지면 보여지는 값
     all: allClubs, // 전체 구단 목록
-    following: follwingClubs // 팔로우하고 있는 구단목록
+    following: followingClubs.value // 팔로우하고 있는 구단목록
 })
 
 const showAllClubs = () => {
@@ -140,14 +141,20 @@ const filterFollowClub = computed(() => {
     if (!search.value) {
         return clubData.current
     }
-    return clubData.current.filter((club) => club.name.includes(search.value))
+    return clubData.current.filter((club) => club.nameKr.includes(search.value))
 })
 
 // 구단을 팔로우
 const followClub = (club) => {
+    console.log("******구단 팔로우******")
+    console.log("memberId -> ",memberId)
     // 이미 팔로우 중인지 확인
-    if(!clubData.following.includes(club)) {
-      clubData.following.push(club);
+    if(!clubData.following.includes(club) && confirm("해당 구단을 팔로우 하시겠습니까?") === true) {
+      const data = {
+          memberId  : memberId,
+          teamId : club.id,
+      }
+        followStore.doFollow(data);
     }
     // 현재 보여지고 있는 목록이 팔로잉 목록일 경우 업데이트
     if (clubData.current === clubData.following){
@@ -157,16 +164,21 @@ const followClub = (club) => {
 }
 
 // 구단을 언팔로우
-const unfollowClub = (club) => {
-  const index = clubData.current.indexOf(club);
-  if (index > -1) {
-    clubData.following.splice(index, 1);
-    // 현재 보여지고 있는 목록이 팔로잉 목록일 경우 업데이트
-    if (clubData.current === clubData.following) {
-      clubData.current = [...clubData.following];
+const unfollowClub = (id) => {
+    console.log("********여기는 구단 언팔로우********")
+    console.log("teamid가 무엇이냐? -> ",id)
+    // teamId를 가지고 followTeamId만들기
+    const followTeamId = props.followList
+        .filter((club) => club.teamId === id)
+        .map((club) => club.id)[0]
+    console.log("이게 옳게 된 followTeamId지",followTeamId)
+    if(confirm("해당 구단을 팔로우 취소하시겠습니까?") === true) {
+        followStore.doUnFollow(followTeamId);
+        followStore.getFollowList(memberId);
     }
+
     emit('UnfollowClub',followingCount)
-  }
+  
 };
 
 // 팔로우 중인 구단 수 
