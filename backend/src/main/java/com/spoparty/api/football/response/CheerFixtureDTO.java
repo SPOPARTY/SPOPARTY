@@ -14,6 +14,7 @@ public class CheerFixtureDTO {
 	private boolean alreadyCheer = false;
 	private Long homeCount;
 	private Long awayCount;
+	private Long cheerTeamId = null;
 	private FixtureDTO fixture;
 
 	public void switchAlreadyCheer() {
@@ -23,6 +24,10 @@ public class CheerFixtureDTO {
 	public void setCountAsNull() {
 		homeCount = null;
 		awayCount = null;
+	}
+
+	public void setCheerTeamId(long id) {
+		cheerTeamId = id;
 	}
 
 	public static CheerFixtureDTO toDTO(CheerFixture entity) {

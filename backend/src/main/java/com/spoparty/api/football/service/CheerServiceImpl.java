@@ -69,12 +69,15 @@ public class CheerServiceImpl implements CheerService {
 				for (Cheer cheer : cheers) {
 					if (cheerFixtureDTO.getCheerFixtureId() == cheer.getCheerFixture().getId()) {
 						cheerFixtureDTO.switchAlreadyCheer();
+						cheerFixtureDTO.setCheerTeamId(cheer.getSeasonLeagueTeam().getId());
 						break;
 					}
 				}
 				if (!cheerFixtureDTO.isAlreadyCheer()) {
 					cheerFixtureDTO.setCountAsNull();
 				}
+
+
 			}
 		} else {
 			for (CheerFixtureDTO cheerFixtureDTO : cheerFixtureDTOs) {
@@ -88,7 +91,7 @@ public class CheerServiceImpl implements CheerService {
 
 
 	@Override
-	public void makeCheer(int memberId, int cheerFixtureId, int teamId) {
+	public void makeCheer(int memberId,  int teamId, int cheerFixtureId) {
 		// return cheerRepository.makeCheer(memberId, cheerFixtureId, teamId);
 		Member member = memberRepository.findById((long)memberId).orElse(null);
 		CheerFixture cheerFixture = cheerFixtureRepository.findById((long)cheerFixtureId).orElse(null);
