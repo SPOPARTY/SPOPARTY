@@ -61,6 +61,7 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
+    org.hibernate.type.descriptor.sql: trace
     root: INFO
     com:
       samsung:
@@ -86,4 +87,3 @@ management:
       enabled: true
     diskspace:
       enabled: true
-
