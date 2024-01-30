@@ -1,5 +1,8 @@
 package com.spoparty.api.member.controller;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+import static com.spoparty.api.common.constants.SuccessCode.*;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.spoparty.api.common.dto.ApiResponse;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.Notification;
 import com.spoparty.api.member.repository.projection.NotificationProjection;
@@ -37,9 +41,9 @@ public class NotificationController {
 	public ResponseEntity<?> getNotificationList(@PathVariable("memberId") Long memberId) {
 		List<NotificationProjection> list = notificationService.getNotificationList(memberId);
 		if (list.isEmpty())
-			return ResponseEntity.status(404).body(null);
+			return ApiResponse.error(DATA_NOT_FOUND);
 		else
-			return ResponseEntity.status(200).body(list);
+			return ApiResponse.success(GET_SUCCESS, list);
 	}
 
 	@PostMapping
@@ -47,27 +51,27 @@ public class NotificationController {
 		log.info(notification.toString());
 		NotificationProjection data = notificationService.registerNotification(notification);
 		if (data == null)
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 		else
-			return ResponseEntity.status(201).body(data);
+			return ApiResponse.success(CREATE_SUCCESS, data);
 	}
 
 	@PutMapping("/{notificationId}")
 	public ResponseEntity<?> readNotification(@PathVariable("notificationId") Long notificationId) {
 		NotificationProjection data = notificationService.updateNotificationState(notificationId, 1);
 		if (data == null)
-			return ResponseEntity.status(404).body(null);
+			return ApiResponse.error(DATA_NOT_FOUND);
 		else
-			return ResponseEntity.status(200).body(data);
+			return ApiResponse.success(UPDATE_SUCCESS, data);
 	}
 
 	@DeleteMapping("/{notificationId}")
 	public ResponseEntity<?> deleteNotification(@PathVariable("notificationId") Long notificationId) {
 		NotificationProjection data = notificationService.updateNotificationState(notificationId, 2);
 		if (data == null)
-			return ResponseEntity.status(404).body(null);
+			return ApiResponse.success(DELETE_SUCCESS, null);
 		else
-			return ResponseEntity.status(200).body(data);
+			return ApiResponse.error(EXAMPLE_ERROR);
 	}
 
 	@GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

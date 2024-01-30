@@ -1,5 +1,9 @@
 package com.spoparty.api.member.controller;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+import static com.spoparty.api.common.constants.SuccessCode.*;
+
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spoparty.api.common.dto.ApiResponse;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.service.EmailService;
 import com.spoparty.api.member.service.MemberService;
@@ -33,10 +38,10 @@ public class AuthenticationController {
 	public ResponseEntity<?> emailCheck(@PathVariable("email") String email) throws InterruptedException {
 		Member member = memberService.findByEmail(email);
 		if (member != null)
-			return ResponseEntity.status(409).body(null);
+			return ApiResponse.error(CONFLICT_DATA);
 
 		emailService.sendEmailCode(email);
-		return ResponseEntity.status(200).body(null);
+		return ApiResponse.success(GET_SUCCESS, null);
 	}
 
 	@PostMapping("/email-check")
@@ -45,18 +50,18 @@ public class AuthenticationController {
 		String code = data.get("code");
 		log.debug(data.toString());
 		if (emailService.checkCode(email, Integer.parseInt(code)))
-			return ResponseEntity.status(200).body(null);
+			return ApiResponse.success(GET_SUCCESS, null);
 		else
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 	}
 
 	@GetMapping("/id-check/{loginId}")
 	public ResponseEntity<?> idCheck(@PathVariable("loginId") String loginId) {
 		Member member = memberService.findByLoginId(loginId);
 		if (member == null)
-			return ResponseEntity.status(200).body(null);
+			return ApiResponse.success(GET_SUCCESS, null);
 		else
-			return ResponseEntity.status(409).body(null);
+			return ApiResponse.error(CONFLICT_DATA);
 	}
 
 	@RequestMapping("/token")
@@ -67,11 +72,10 @@ public class AuthenticationController {
 		log.info("AuthenticationController.generateToken(): ");
 		log.info("accessToken : {}", accessToken);
 		log.info("refreshToken : {}", refreshToken);
-		return ResponseEntity
-			.status(200)
-			.header("accessToken", accessToken)
-			.header("refreshToken", refreshToken)
-			.body(null);
+		Map<String, String> header = new HashMap<>();
+		header.put("accessToken", accessToken);
+		header.put("refreshToken", refreshToken);
+		return ApiResponse.success(GET_SUCCESS, null, header);
 	}
 
 	@PostMapping("/regenerate")
@@ -80,22 +84,23 @@ public class AuthenticationController {
 		String refreshToken = map.get("refreshToken");
 		log.info("accessToken : {}", accessToken);
 		log.info("refreshToken : {}", refreshToken);
-		String token = memberService.regenerateToken(accessToken, refreshToken);
-		if (token == null)
+		accessToken = memberService.regenerateToken(accessToken, refreshToken);
+		if (accessToken == null)
 			return ResponseEntity.status(400).body(null);
-		else
-			return ResponseEntity.status(200)
-				.header("accessToken", accessToken)
-				.body(null);
+		else {
+			Map<String, String> header = new HashMap<>();
+			header.put("accessToken", accessToken);
+			return ApiResponse.success(GET_SUCCESS, null, header);
+		}
 	}
 
 	@PostMapping("/password")
 	public ResponseEntity<?> tempPwd(@RequestBody Member member) throws InterruptedException {
 		boolean isSuccess = memberService.tempPwd(member);
 		if (isSuccess)
-			return ResponseEntity.status(200).body(null);
+			return ApiResponse.success(GET_SUCCESS, null);
 		else
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 	}
 
 }

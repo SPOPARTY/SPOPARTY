@@ -4,6 +4,7 @@ import static com.spoparty.api.common.constants.SuccessCode.*;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class ClubController {
 	private final ClubServiceImpl clubService;
 
 	@GetMapping("/recent")
-	public ApiResponse<List<ClubResponseDto>> getRecentClubs(
+	public ResponseEntity<?> getRecentClubs(
 		@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		log.debug("최근 활동 그룹 목록 조회 API 시작");
 		log.debug("member 정보 - {}", principalDetails.getMember());
@@ -45,7 +46,7 @@ public class ClubController {
 	}
 
 	@PostMapping
-	public ApiResponse<ClubResponseDto> create(@RequestBody @Valid ClubRequestDto clubRequestDto) {
+	public ResponseEntity<?> create(@RequestBody @Valid ClubRequestDto clubRequestDto) {
 		log.debug("그룹 생성 API 시작");
 		log.debug("ClubRequestDto 정보 - {}", clubRequestDto);
 		ClubResponseDto response = clubService.createClub(clubRequestDto);
@@ -53,14 +54,14 @@ public class ClubController {
 	}
 
 	@GetMapping("/{clubId}")
-	public ApiResponse<ClubResponseDto> getClub(@PathVariable Long clubId) {
+	public ResponseEntity<?> getClub(@PathVariable Long clubId) {
 		log.debug("그룹 조회 API 시작");
 		ClubResponseDto response = clubService.findClub(clubId);
 		return ApiResponse.success(CLUB_READ_SUCCESS, response);
 	}
 
 	@PutMapping("/{clubId}")
-	public ApiResponse<ClubResponseDto> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
+	public ResponseEntity<?> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
 		@PathVariable Long clubId, @RequestBody @Valid ClubRequestDto clubRequestDto) {
 		log.debug("그룹명 수정 API 시작");
 		ClubResponseDto response = clubService.updateClubName(principalDetails.getMember(), clubId, clubRequestDto);
@@ -68,7 +69,7 @@ public class ClubController {
 	}
 
 	@DeleteMapping("/{clubId}")
-	public ApiResponse<Long> delete(@AuthenticationPrincipal PrincipalDetails principalDetails,
+	public ResponseEntity<?> delete(@AuthenticationPrincipal PrincipalDetails principalDetails,
 		@PathVariable Long clubId) {
 		log.debug("그룹 삭제 API 시작");
 		Long response = clubService.deleteClub(principalDetails.getMember(), clubId);
@@ -76,28 +77,28 @@ public class ClubController {
 	}
 
 	@GetMapping("/invite/{clubId}")
-	public ApiResponse<InviteResponseDto> getInviteUrl(@PathVariable Long clubId) {
+	public ResponseEntity<?> getInviteUrl(@PathVariable Long clubId) {
 		log.debug("초대 링크 반환 API 시작");
 		InviteResponseDto response = clubService.getInviteUrl(clubId);
 		return ApiResponse.success(INVITE_URL_GET_SUCCESS, response);
 	}
 
 	@PostMapping("/invite")
-	public ApiResponse<ClubMemberResponseDto> joinGroup(@RequestBody @Valid InviteRequestDto inviteRequestDto) {
+	public ResponseEntity<?> joinGroup(@RequestBody @Valid InviteRequestDto inviteRequestDto) {
 		log.debug("그룹원 추가 API 시작");
 		ClubMemberResponseDto response = clubService.createGroupMember(inviteRequestDto);
 		return ApiResponse.success(CLUB_MEMBER_CREATE_SUCCESS, response);
 	}
 
 	@GetMapping("/{clubId}/participants")
-	public ApiResponse<List<ClubMemberResponseDto>> getAllGroupMembers(@PathVariable Long clubId) {
+	public ResponseEntity<?> getAllGroupMembers(@PathVariable Long clubId) {
 		log.debug("그룹원 조회 API 시작");
 		List<ClubMemberResponseDto> response = clubService.getGroupMembers(clubId);
 		return ApiResponse.success(CLUB_MEMBERS_READ_SUCCESS, response);
 	}
 
 	@PutMapping("/{clubId}/host")
-	public ApiResponse<ClubMemberResponseDto> assignHost(@AuthenticationPrincipal PrincipalDetails principalDetails,
+	public ResponseEntity<?> assignHost(@AuthenticationPrincipal PrincipalDetails principalDetails,
 		@PathVariable Long clubId, @RequestBody @Valid ClubHostRequestDto clubHostRequestDto) {
 		log.debug("그룹장 수정 API 시작");
 		log.debug("member - {}", principalDetails.getMember());
@@ -107,7 +108,7 @@ public class ClubController {
 	}
 
 	@DeleteMapping("/{clubId}/participants")
-	public ApiResponse<Long> leaveGroup(@AuthenticationPrincipal PrincipalDetails principalDetails,
+	public ResponseEntity<?> leaveGroup(@AuthenticationPrincipal PrincipalDetails principalDetails,
 		@PathVariable Long clubId) {
 		log.debug("그룹원 삭제 API 시작");
 		Long response = clubService.deleteGroupMember(principalDetails.getMember(), clubId);

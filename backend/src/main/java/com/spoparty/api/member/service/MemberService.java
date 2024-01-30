@@ -59,11 +59,11 @@ public class MemberService {
 		Member data = memberRepository.findById(member.getId(), Member.class).orElse(null);
 		if (data == null)
 			return null;
-		if (!member.getLoginPwd().isEmpty())
+		if (member.getLoginPwd() != null)
 			data.setLoginPwd(bCryptPasswordEncoder.encode(member.getLoginPwd()));
-		if (!member.getEmail().isEmpty())
+		if (member.getEmail() != null)
 			data.setEmail(member.getEmail());
-		if (!member.getNickname().isEmpty())
+		if (member.getNickname() != null)
 			data.setNickname(member.getNickname());
 		return data;
 	}
@@ -90,13 +90,14 @@ public class MemberService {
 		// Follow를 이미 했으면 null을 반환
 		List<FollowingTeamProjection> isExist = followingTeamRepository.findByMember_idAndTeam_id(memberId, teamId,
 			FollowingTeamProjection.class);
-		log.info("@@@@@@@@@@@@@@@@" + isExist.size());
 		if (!isExist.isEmpty())
 			return null;
 
 		// FollowingTeam객체를 만들어 Member와 Team을 주입
 		Member member = memberRepository.findById(memberId, Member.class).orElse(null);
 		Team team = teamRepository.findById(teamId, Team.class).orElse(null);
+		if (member == null || team == null)
+			return null;
 		FollowingTeam followingTeam = new FollowingTeam();
 		followingTeam.setMember(member);
 		followingTeam.setTeam(team);
