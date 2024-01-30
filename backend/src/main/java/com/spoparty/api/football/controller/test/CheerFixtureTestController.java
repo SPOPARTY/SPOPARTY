@@ -14,10 +14,12 @@ import com.spoparty.api.football.repository.CheerFixtureRepository;
 import com.spoparty.api.football.repository.FixtureRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/football/test/cheerFixture")
 @RequiredArgsConstructor
+@Slf4j
 public class CheerFixtureTestController {
 
 	private final CheerFixtureRepository cheerFixtureRepository;
@@ -33,8 +35,8 @@ public class CheerFixtureTestController {
 			.build();
 
 		CheerFixture cheerFixture2 = cheerFixtureRepository.save(cheerFixture);
-		System.out.println(cheerFixture.getId());
-		System.out.println(cheerFixture2.getId());
+		// log.info(cheerFixture.getId());
+		// log.info(cheerFixture2.getId());
 
 		return new ResponseEntity<CheerFixture>(cheerFixture2, HttpStatusCode.valueOf(200));
 	}

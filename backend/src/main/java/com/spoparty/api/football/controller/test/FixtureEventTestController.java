@@ -20,10 +20,12 @@ import com.spoparty.api.football.repository.SeasonLeagueTeamPlayerRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/football/test/fixtureEvent")
 @RequiredArgsConstructor
+@Slf4j
 public class FixtureEventTestController {
 
 	private final FixtureEventRepository fixtureEventRepository;
@@ -48,8 +50,8 @@ public class FixtureEventTestController {
 			.build();
 
 		FixtureEvent fixtureEvent2 = fixtureEventRepository.save(fixtureEvent);
-		System.out.println(fixtureEvent.getId());
-		System.out.println(fixtureEvent2.getId());
+		// log.info(fixtureEvent.getId());
+		// log.info(fixtureEvent2.getId());
 
 		return new ResponseEntity<FixtureEvent>(fixtureEvent2, HttpStatusCode.valueOf(200));
 	}

@@ -42,8 +42,8 @@ public class StandingsTestController {
 			.build();
 
 		Standings standings2 = standingsRepository.save(standings);
-		System.out.println(standings.getId());
-		System.out.println(standings2.getId());
+		// log.info(standings.getId());
+		// log.info(standings2.getId());
 
 		return new ResponseEntity<Standings>(standings2, HttpStatusCode.valueOf(200));
 	}

@@ -45,8 +45,8 @@ public class SeasonLeagueTeamTestController {
 
 
 		SeasonLeagueTeam seasonLeagueTeam2 = seasonLeagueTeamRepository.save(seasonLeagueTeam);
-		System.out.println(seasonLeagueTeam.getId());
-		System.out.println(seasonLeagueTeam2.getId());
+		// log.info(seasonLeagueTeam.getId());
+		// log.info(seasonLeagueTeam2.getId());
 
 		return new ResponseEntity<SeasonLeagueTeam>(seasonLeagueTeam2, HttpStatusCode.valueOf(200));
 	}

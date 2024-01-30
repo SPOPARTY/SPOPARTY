@@ -19,10 +19,12 @@ import com.spoparty.api.football.repository.SeasonLeagueRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/football/test/fixture")
 @RequiredArgsConstructor
+@Slf4j
 public class FixtureTestController {
 
 	private final FixtureRepository fixtureRepository;
@@ -35,9 +37,9 @@ public class FixtureTestController {
 		SeasonLeagueTeam awayTeam = seasonLeagueTeamRepository.findById((long)3).orElse(null);
 		SeasonLeague seasonLeague = seasonLeagueRepository.findById((long)5).orElse(null);
 
-		System.out.println(homeTeam.getSeasonLeague().getId());
-		System.out.println(awayTeam.getSeasonLeague().getId());
-		System.out.println(seasonLeague.getId());
+		// log.info(homeTeam.getSeasonLeague().getId());
+		// log.info(awayTeam.getSeasonLeague().getId());
+		// log.info(seasonLeague.getId());
 
 		Fixture fixture = Fixture.builder()
 			.awayTeamGoal(1)
@@ -52,8 +54,8 @@ public class FixtureTestController {
 			.build();
 
 		Fixture fixture2 = fixtureRepository.save(fixture);
-		System.out.println(fixture.getId());
-		System.out.println(fixture2.getId());
+		// log.info(fixture.getId());
+		// log.info(fixture2.getId());
 
 		return new ResponseEntity<Fixture>(fixture2, HttpStatusCode.valueOf(200));
 	}

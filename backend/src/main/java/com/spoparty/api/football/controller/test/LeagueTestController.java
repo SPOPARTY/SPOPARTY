@@ -17,10 +17,12 @@ import com.spoparty.api.football.repository.LeagueRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/football/test/league")
 @RequiredArgsConstructor
+@Slf4j
 public class LeagueTestController {
 
 	private final LeagueRepository leagueRepository;
@@ -38,8 +40,8 @@ public class LeagueTestController {
 			.build();
 
 		League league2 = leagueRepository.save(league);
-		System.out.println(league.getId());
-		System.out.println(league2.getId());
+		// log.info(league.getId());
+		// log.info(league2.getId());
 		return new ResponseEntity<League>(league2, HttpStatusCode.valueOf(200));
 	}
 

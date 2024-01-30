@@ -26,8 +26,8 @@ public class SeasonTestController {
 		Season season = new Season();
 		season.setValue(value);
 		Season season2 = seasonRepository.save(season);
-		System.out.println(season.getId());
-		System.out.println(season2.getId());
+		// log.info(season.getId());
+		// log.info(season2.getId());
 
 		return new ResponseEntity<Season>(season2, HttpStatusCode.valueOf(200));
 	}

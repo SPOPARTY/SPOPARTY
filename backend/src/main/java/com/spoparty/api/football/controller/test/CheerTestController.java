@@ -18,10 +18,12 @@ import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 import com.spoparty.api.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/football/test/cheer")
 @RequiredArgsConstructor
+@Slf4j
 public class CheerTestController {
 
 	private final CheerRepository cheerRepository;
@@ -42,8 +44,8 @@ public class CheerTestController {
 			.build();
 
 		Cheer cheer2 = cheerRepository.save(cheer);
-		System.out.println(cheer.getId());
-		System.out.println(cheer2.getId());
+		// log.info(cheer.getId());
+		// log.info(cheer2.getId());
 
 		return new ResponseEntity<Cheer>(cheer2, HttpStatusCode.valueOf(200));
 	}

@@ -21,9 +21,11 @@ import com.spoparty.api.member.repository.MemberRepository;
 import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CheerServiceImpl implements CheerService {
 
 	private final CheerFixtureRepository cheerFixtureRepository;
@@ -115,20 +117,20 @@ public class CheerServiceImpl implements CheerService {
 
 	private boolean emptyCheckCheerFixture(List<CheerFixture> cheerFixtures) {
 		if (cheerFixtures.isEmpty()) {
-			System.out.println("조회된 경기 응원이 없습니다.");
+			log.info("조회된 경기 응원이 없습니다.");
 			return false;
 		} else {
-			System.out.println("조회된 경기 응원이 있습니다.");
+			log.info("조회된 경기 응원이 있습니다.");
 			return true;
 		}
 	}
 
 	private boolean emptyCheckCheer(Cheer cheer) {
 		if (cheer == null) {
-			System.out.println("응원 저장이 제대로 되지 않았습니다.");
+			log.info("응원 저장이 제대로 되지 않았습니다.");
 			return false;
 		} else {
-			System.out.println("응원이 제대로 저장 되었습니다.");
+			log.info("응원이 제대로 저장 되었습니다.");
 			return true;
 		}
 	}

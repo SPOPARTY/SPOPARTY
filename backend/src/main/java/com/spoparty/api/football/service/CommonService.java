@@ -7,16 +7,19 @@ import org.springframework.stereotype.Component;
 import com.spoparty.api.football.entity.SeasonLeague;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class CommonService {
 
 	protected boolean emptyCheckLeague(List<SeasonLeague> seasonLeagues) {
 
 		if (seasonLeagues.isEmpty()) {
-			System.out.println("조회된 리그가 없습니다.");
+			log.info("조회된 리그가 없습니다.");
 			return false;
 		} else {
-			System.out.println("조회된 리그가 있습니다.");
+			log.info("조회된 리그가 있습니다.");
 			return true;
 		}
 	}
@@ -24,10 +27,10 @@ public class CommonService {
 	protected boolean emptyCheckTeam(List<SeasonLeagueTeam> seasonLeagueTeams) {
 
 		if (seasonLeagueTeams.isEmpty()) {
-			System.out.println("조회된 팀이 없습니다.");
+			log.info("조회된 팀이 없습니다.");
 			return false;
 		} else {
-			System.out.println("조회된 팀이 있습니다.");
+			log.info("조회된 팀이 있습니다.");
 			return true;
 		}
 	}
