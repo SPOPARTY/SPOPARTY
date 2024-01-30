@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.spoparty.api.common.constants.SuccessCode.*;
 import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.football.service.CheerServiceImpl;
 import com.spoparty.security.model.PrincipalDetails;
@@ -38,22 +39,14 @@ public class CheerController {
 	@PostMapping
 	public ResponseEntity makeCheer(@AuthenticationPrincipal PrincipalDetails principalDetails, int memberId,
 		int teamId, int cheerFixtureId) {
-		long result = cheerServiceImpl.makeCheer(memberId, teamId, cheerFixtureId);
+		cheerServiceImpl.makeCheer(memberId, teamId, cheerFixtureId);
 
 		cheerServiceImpl.deleteEndCheerFixture();
 
 		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails);
 
-		HttpStatusCode code;
 
-		if (result == 0) {
-			code = HttpStatusCode.valueOf(422);
-			responseDTO.changeMessage("응원 생성에 실패하였습니다.");
-		} else {
-			code = HttpStatusCode.valueOf(201);
-			responseDTO.changeMessage("응원 생성에 성공하였습니다.");
-		}
 
-		return new ResponseEntity<>(responseDTO, code);
+		return new ResponseEntity<>(responseDTO, CHEER_CREATE_SUCCESS.getStatus());
 	}
 }

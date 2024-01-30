@@ -6,12 +6,18 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spoparty.api.common.constants.ErrorCode;
 import com.spoparty.api.football.entity.Cheer;
 import com.spoparty.api.football.entity.CheerFixture;
+import com.spoparty.api.football.entity.SeasonLeagueTeam;
 import com.spoparty.api.football.repository.CheerFixtureRepository;
 import com.spoparty.api.football.repository.CheerRepository;
+import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
+import com.spoparty.api.football.repository.TeamRepository;
 import com.spoparty.api.football.response.CheerFixtureDTO;
 import com.spoparty.api.football.response.ResponseDTO;
+import com.spoparty.api.member.entity.Member;
+import com.spoparty.api.member.repository.MemberRepository;
 import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +28,8 @@ public class CheerServiceImpl implements CheerService {
 
 	private final CheerFixtureRepository cheerFixtureRepository;
 	private final CheerRepository cheerRepository;
+	private final MemberRepository memberRepository;
+	private final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
 
 	@Transactional
 	@Override
@@ -68,15 +76,38 @@ public class CheerServiceImpl implements CheerService {
 					cheerFixtureDTO.setCountAsNull();
 				}
 			}
+		} else {
+			for (CheerFixtureDTO cheerFixtureDTO : cheerFixtureDTOs) {
+				cheerFixtureDTO.setCountAsNull();
+			}
 		}
 
 		return ResponseDTO.toDTO(cheerFixtureDTOs, "응원 진행 경기 조회 성공");
 	}
 
-	@Override
-	public long makeCheer(int memberId, int cheerFixtureId, int teamId) {
-		return cheerRepository.makeCheer(memberId, cheerFixtureId, teamId);
 
+
+	@Override
+	public void makeCheer(int memberId, int cheerFixtureId, int teamId) {
+		// return cheerRepository.makeCheer(memberId, cheerFixtureId, teamId);
+		Member member = memberRepository.findById((long)memberId).orElse(null);
+		CheerFixture cheerFixture = cheerFixtureRepository.findById((long)cheerFixtureId).orElse(null);
+		SeasonLeagueTeam seasonLeagueTeam = seasonLeagueTeamRepository.findById((long)teamId).orElse(null);
+
+		Cheer newCheer = Cheer.builder()
+			.member(member)
+			.seasonLeagueTeam(seasonLeagueTeam)
+			.cheerFixture(cheerFixture)
+			.build();
+
+		Cheer cheer = cheerRepository.save(newCheer);
+
+		if(!emptyCheckCheer(cheer)) {
+			throw new IllegalArgumentException(ErrorCode.CANNOT_CREATE_CHEER.getMessage());
+		};
+
+
+		return;
 	}
 
 	private boolean emptyCheckCheerFixture(List<CheerFixture> cheerFixtures) {
@@ -89,8 +120,8 @@ public class CheerServiceImpl implements CheerService {
 		}
 	}
 
-	private boolean emptyCheckCheer(long length) {
-		if (length == 0) {
+	private boolean emptyCheckCheer(Cheer cheer) {
+		if (cheer == null) {
 			System.out.println("응원 저장이 제대로 되지 않았습니다.");
 			return false;
 		} else {

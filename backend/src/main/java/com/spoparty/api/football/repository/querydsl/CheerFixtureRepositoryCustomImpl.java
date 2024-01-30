@@ -53,7 +53,8 @@ public class CheerFixtureRepositoryCustomImpl implements CheerFixtureRepositoryC
 			.fetchJoin()
 			.join(awaySeasonLeagueTeam.team, awayTeam)
 			.fetchJoin()
-			.where(fixture.status.eq("done"))
+			.where(fixture.status.eq("done").and(cheerFixture.isDeleted.eq(false)))
+
 			.fetch();
 	}
 
