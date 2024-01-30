@@ -12,7 +12,7 @@
                   <v-icon>mdi-circle-small</v-icon>
                   {{ match.fixture.league.nameKr }}
                   <v-icon>mdi-circle-small</v-icon>
-                  <v-img src="/src/assets/Premier_League.png" class="league-logo"></v-img>
+                  <v-img src="/premier_league.png" class="league-logo"></v-img>
                 </p>
               </div>
               <!-- 투표 상태 메시지 -->
@@ -82,19 +82,19 @@ const cheer = ref(
         "league": {
           "leagueId": "1",
           "nameKr": "프리미어 리그",
-          "logo": "/src/assets/Premier_League.png"
+          "logo": "/premier_league.png"
         },
         "homeTeam": {
           "seasonLeagueTeamId": "1",
           "teamId": "1",
           "nameKr": "맨유",
-          "logo": "/src/assets/spo-icon.png",
+          "logo": "/spo-icon.png",
         },
         "awayTeam": {
           "seasonaLeagueTeamId": "1",
           "teamId": "2",
           "nameKr": "토트넘",
-          "logo": "/src/assets/spo-icon.png",
+          "logo": "/spo-icon.png",
         }
       }
     },
@@ -110,19 +110,19 @@ const cheer = ref(
         "league": {
           "leagueId": "1",
           "nameKr": "프리미어 리그",
-          "logo": "/src/assets/Premier_League.png"
+          "logo": "/premier_league.png"
         },
         "homeTeam": {
           "teamId": 1,
           "nameKr": "맨체스터 유나이티드",
           "nameEng": "manchester united",
-          "logo": "/src/assets/spo-icon.png",
+          "logo": "/spo-icon.png",
         },
         "awayTeam": {
           "teamId": 4,
           "nameKr": "맨체스터 시티",
           "nameEng": "manchester city",
-          "logo": "/src/assets/spo-icon.png",
+          "logo": "/spo-icon.png",
         }
       }
     }

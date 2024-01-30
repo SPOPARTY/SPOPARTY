@@ -61,8 +61,8 @@ const teamId = route.params.teamId; // URL에서 leagueId 값을 얻습니다.
 
 // 예시 팀 데이터 // 비로그인시 팔로우 불가능
 const teams = ref([
-    { teamId: 1, leagueId: 1, logo: 'arsenal.png', rank: 1, name: '아스날 FC', points: 30, wins: 9, losses: 3, draws: 3, goalsFor: 25, goalsAgainst: 10, goalDifference: 15, recentForm: 'W-W-D-L-W', followed: true },
-    { teamId: 2, leagueId: 2, logo: 'teamB.png', rank: 2, name: '팀 B', points: 28, wins: 8, losses: 4, draws: 4, goalsFor: 22, goalsAgainst: 12, goalDifference: 10, recentForm: 'L-W-W-W-D', followed: false },
+    { teamId: 1, leagueId: 1, logo: 'spo-icon.png', rank: 1, name: '아스날 FC', points: 30, wins: 9, losses: 3, draws: 3, goalsFor: 25, goalsAgainst: 10, goalDifference: 15, recentForm: 'W-W-D-L-W', followed: true },
+    { teamId: 2, leagueId: 2, logo: 'spo-icon.png', rank: 2, name: '팀 B', points: 28, wins: 8, losses: 4, draws: 4, goalsFor: 22, goalsAgainst: 12, goalDifference: 10, recentForm: 'L-W-W-W-D', followed: false },
     // 추가 팀 데이터...
 ]);
 
@@ -73,7 +73,7 @@ const team = computed(() => {
 
 // 예시 로고 주소
 const teamLogoPath = computed(() => {
-    return `/src/assets/${team.value.logo}`;
+    return `/${team.value.logo}`;
 });
 
 const league = computed(() => {
@@ -95,17 +95,17 @@ const leagues = ref([
     {
         id: 1,
         name: '프리미어 리그',
-        logo: '/src/assets/premier_league.png'
+        logo: '/premier_league.png'
     },
     {
         id: 2,
         name: '라 리가',
-        logo: '/src/assets/la_liga.svg',
+        logo: '/la_liga.svg',
     },
     {
         id: 3,
         name: '분데스리가',
-        logo: '/src/assets/bundesliga.svg',
+        logo: '/bundesliga.svg',
     }
 ])
 

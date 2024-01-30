@@ -109,7 +109,7 @@ const league = computed(() => {
     return foundLeague || { name: 'Unknown League', logo: '' };
 });
 
-const logoPath = computed(() => `/src/assets/${league.value.logo}`);
+const logoPath = computed(() => `/${league.value.logo}`);
 // const logoPath = '/public/premier_league.png';
 
 </script>

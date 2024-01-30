@@ -42,17 +42,17 @@ const leagues = ref([
     {
         id: 1,
         name: '프리미어 리그',
-        logo: 'src/assets/premier_league.png'
+        logo: '/premier_league.png'
     },
     {
         id: 2,
         name: '라 리가',
-        logo: 'src/assets/la_liga.svg',
+        logo: '/la_liga.svg',
     },
     {
         id: 3,
         name: '분데스리가',
-        logo: 'src/assets/bundesliga.svg',
+        logo: '/bundesliga.svg',
     }
 ])
 
