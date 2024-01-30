@@ -21,6 +21,6 @@ public interface MemberProjection {
 	@JsonProperty("teamId")
 	Long getTeam_id();
 
-	int getStatus();
+	int getState();
 
 }
