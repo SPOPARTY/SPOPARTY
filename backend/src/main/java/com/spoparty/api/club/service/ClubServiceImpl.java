@@ -49,8 +49,11 @@ public class ClubServiceImpl implements ClubService {
 
 	@Transactional
 	public ClubResponseDto createClub(ClubRequestDto clubRequestDto) {
+
 		Member member = memberRepository.findById(clubRequestDto.getMemberId()).orElseThrow(() -> new IllegalArgumentException(
 			USER_NOT_FOUND.getMessage()));
+
+
 		Club club = Club.createClub(clubRequestDto.getName(), member);
 		clubRepository.save(club);
 
@@ -130,8 +133,11 @@ public class ClubServiceImpl implements ClubService {
 
 	@Transactional
 	public Long deleteGroupMember(Member member, Long clubId) {
+		log.debug("member - {} ", member);
 		Club club = findClubById(clubId);
+		log.debug("club - {} ", club);
 		ClubMember clubMember = findClubMember(club, member);
+		log.debug("clubMember - {} ", clubMember);
 
 		clubMember.deleteClubMember(club);
 		return clubMember.getId();
@@ -139,6 +145,7 @@ public class ClubServiceImpl implements ClubService {
 
 	private Club findClubById(Long clubId) {
 		Optional<Club> club = clubRepository.findById(clubId);
+		log.debug("club - {}", club);
 		if (club.isEmpty()) {
 			throw new IllegalArgumentException(NO_GROUP_ID.getMessage());
 		}
@@ -155,9 +162,9 @@ public class ClubServiceImpl implements ClubService {
 		try {
 			String[] tokens = inviteUrl.split("/|_");
 			log.debug("urlInfo - {}", Arrays.toString(tokens));
-			if (tokens.length == 5) {
-				Long clubId = Long.parseLong(tokens[3]);
-				LocalDateTime expirationTime = LocalDateTime.parse(tokens[4]);
+			if (tokens.length == 6) {
+				Long clubId = Long.parseLong(tokens[4]);
+				LocalDateTime expirationTime = LocalDateTime.parse(tokens[5]);
 				log.debug("currentTime - {}", LocalDateTime.now());
 				log.debug("expirationTime - {}", expirationTime);
 				if (LocalDateTime.now().isBefore(expirationTime)) { // 만료시간 이내인 경우만 유효함

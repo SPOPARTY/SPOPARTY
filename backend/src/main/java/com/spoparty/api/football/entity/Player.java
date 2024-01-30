@@ -81,4 +81,6 @@ public class Player extends FootballBaseEntity {
 		this.position = position;
 		this.captain = captain;
 	}
+
+
 }

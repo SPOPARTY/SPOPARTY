@@ -35,7 +35,7 @@ public class AuthenticationController {
 		if (member != null)
 			return ResponseEntity.status(409).body(null);
 
-		emailService.sendEmail(email);
+		emailService.sendEmailCode(email);
 		return ResponseEntity.status(200).body(null);
 	}
 
@@ -87,6 +87,15 @@ public class AuthenticationController {
 			return ResponseEntity.status(200)
 				.header("accessToken", accessToken)
 				.body(null);
+	}
+
+	@PostMapping("/password")
+	public ResponseEntity<?> tempPwd(@RequestBody Member member) throws InterruptedException {
+		boolean isSuccess = memberService.tempPwd(member);
+		if (isSuccess)
+			return ResponseEntity.status(200).body(null);
+		else
+			return ResponseEntity.status(400).body(null);
 	}
 
 }

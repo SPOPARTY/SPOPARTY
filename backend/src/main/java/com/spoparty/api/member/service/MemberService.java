@@ -2,6 +2,7 @@ package com.spoparty.api.member.service;
 
 import java.util.List;
 
+import org.springframework.mail.MailSendException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ public class MemberService {
 	private final FollowingTeamRepository followingTeamRepository;
 	private final JwtTokenUtil jwtTokenUtil;
 	private final MemberTokenRepository memberTokenRepository;
+	private final EmailService emailService;
 
 	// Member 기능
 
@@ -146,6 +148,23 @@ public class MemberService {
 	@Transactional
 	public void deleteToken(Long id) {
 		memberTokenRepository.deleteByMember_id(id);
+	}
+
+	@Transactional
+	public boolean tempPwd(Member member) throws MailSendException, InterruptedException {
+		Member data = memberRepository.findByLoginIdAndEmail(member.getLoginId(), member.getEmail(), Member.class)
+			.orElse(null);
+		if (data != null) {
+			int code = (int)(Math.random() * 100000000);
+			emailService.sendEmail(data.getEmail(), "SPOPARTY 비밀번호 찾기", "임시 비밀번호 : [" + code + "]");
+			data.setLoginPwd(bCryptPasswordEncoder.encode(code + ""));
+			return true;
+		}
+		return false;
+	}
+
+	public List<Team> getTeamList() {
+		return teamRepository.findAll();
 	}
 
 }

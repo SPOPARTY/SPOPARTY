@@ -45,4 +45,9 @@ public class FileService {
 	public List<File> findByType(String type) {
 		return fileRepository.findByType(type, File.class);
 	}
+
+	public File findById(Long id) {
+		return fileRepository.findById(id, File.class).orElse(null);
+	}
+
 }
