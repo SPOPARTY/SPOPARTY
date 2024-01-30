@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.football.repository.FixtureRepository;
 import com.spoparty.api.football.response.FixtureEventDTO;
 import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.football.service.FixtureServiceImpl;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class FixtureController {
 	private final Common common;
 	private final FixtureServiceImpl fixtureServiceImpl;
+	private final FixtureRepository fixtureRepository;
 
 	// 메인에 띄우는 다가올 가장 이른 경기 6개
 	@GetMapping(params = {"next"})
@@ -107,4 +109,5 @@ public class FixtureController {
 		return ResponseEntity.status(FIXTURE_EVENTS_READ_SUCCESS.getStatus().value())
 			.body(ApiResponse.success(FIXTURE_EVENTS_READ_SUCCESS, fixtureEvents));
 	}
+
 }
