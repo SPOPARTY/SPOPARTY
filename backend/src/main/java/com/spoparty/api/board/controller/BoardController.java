@@ -1,5 +1,8 @@
 package com.spoparty.api.board.controller;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+import static com.spoparty.api.common.constants.SuccessCode.*;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -17,6 +20,7 @@ import com.spoparty.api.board.entity.Board;
 import com.spoparty.api.board.repository.projection.BoardProjection;
 import com.spoparty.api.board.service.BoardService;
 import com.spoparty.api.club.repository.ClubRepository;
+import com.spoparty.api.common.dto.ApiResponse;
 import com.spoparty.api.member.service.FileService;
 import com.spoparty.api.member.service.MemberService;
 
@@ -37,16 +41,19 @@ public class BoardController {
 	@GetMapping("/clubs/{clubId}")
 	public ResponseEntity<?> getBoardList(@PathVariable("clubId") Long clubId) {
 		List<BoardProjection> list = boardService.findByClubId(clubId);
-		return ResponseEntity.status(200).body(list);
+		if (list.isEmpty())
+			return ApiResponse.error(DATA_NOT_FOUND);
+		else
+			return ApiResponse.success(GET_SUCCESS, list);
 	}
 
 	@GetMapping("/{boardId}")
 	public ResponseEntity<?> getBoard(@PathVariable("boardId") Long id) {
 		BoardProjection board = boardService.findById(id);
 		if (board == null)
-			return ResponseEntity.status(404).body(null);
+			return ApiResponse.error(DATA_NOT_FOUND);
 		else
-			return ResponseEntity.status(200).body(board);
+			return ApiResponse.success(GET_SUCCESS, board);
 	}
 
 	// new FormData() 로 파라미터와 파일을 같이 날렸을 경우로 가정
@@ -62,14 +69,14 @@ public class BoardController {
 			try {
 				board.setFile(fileService.uploadFile(file));
 			} catch (IOException e) {
-				return ResponseEntity.status(400).body(null);
+				return ApiResponse.error(EXAMPLE_ERROR);
 			}
 		}
 		board = boardService.registerBoard(board);
 		if (board == null)
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 		BoardProjection b = boardService.findById(board.getId());
-		return ResponseEntity.status(201).body(b);
+		return ApiResponse.success(CREATE_SUCCESS, b);
 	}
 
 	@PutMapping
@@ -82,23 +89,24 @@ public class BoardController {
 			try {
 				board.setFile(fileService.uploadFile(file));
 			} catch (IOException e) {
-				return ResponseEntity.status(400).body(null);
+				return ApiResponse.error(EXAMPLE_ERROR);
 			}
 		}
 		board = boardService.updateBoard(board);
 		if (board == null)
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 		else
-			return ResponseEntity.status(200).body(board);
+			return ApiResponse.success(UPDATE_SUCCESS, board);
 	}
 
 	@DeleteMapping("/{boardId}")
 	public ResponseEntity<?> deleteBoard(@PathVariable("boardId") Long id) {
 		Board board = boardService.deleteBoard(id);
 		if (board == null)
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(DATA_NOT_FOUND);
 		else
-			return ResponseEntity.status(200).body(null);
+			return ApiResponse.success(DELETE_SUCCESS, null);
+
 	}
 
 }

@@ -1,5 +1,8 @@
 package com.spoparty.api.member.controller;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+import static com.spoparty.api.common.constants.SuccessCode.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spoparty.api.common.dto.ApiResponse;
 import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.member.entity.FollowingTeam;
 import com.spoparty.api.member.entity.Member;
@@ -37,9 +41,9 @@ public class MemberController {
 	public ResponseEntity<?> getMember(@PathVariable("memberId") Long memberId) {
 		Member member = memberService.findById(memberId);
 		if (member == null)
-			return ResponseEntity.status(404).body(null);
-
-		return ResponseEntity.status(200).body(member);
+			return ApiResponse.error(EXAMPLE_ERROR);
+		else
+			return ApiResponse.success(GET_SUCCESS, member);
 	}
 
 	@PostMapping("/register")
@@ -47,27 +51,28 @@ public class MemberController {
 		log.info("MemberController.register{}: ", member);
 		Member loginMember = memberService.findByLoginId(member.getLoginId());
 		if (loginMember != null)
-			return ResponseEntity.status(409).body(null);
+			return ApiResponse.error(CONFLICT_DATA);
 
 		member = memberService.registerMember(member);
-		return ResponseEntity.status(201).body(member);
+		return ApiResponse.success(CREATE_SUCCESS, member);
 	}
 
 	@PutMapping
 	public ResponseEntity<?> modifyMember(@RequestBody Member member) {
 		member = memberService.updateMember(member);
 		if (member == null)
-			return ResponseEntity.status(404).body(null);
-		return ResponseEntity.status(200).body(member);
+			return ApiResponse.error(DATA_NOT_FOUND);
+		else
+			return ApiResponse.success(UPDATE_SUCCESS, member);
 	}
 
 	@DeleteMapping("/{memberId}")
 	public ResponseEntity<?> deleteMember(@PathVariable("memberId") Long memberId) {
 		Member member = memberService.deleteMember(memberId);
 		if (member == null)
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 		else
-			return ResponseEntity.status(200).body(null);
+			return ApiResponse.success(DELETE_SUCCESS, null);
 	}
 
 	// Follow 기능
@@ -75,9 +80,9 @@ public class MemberController {
 	public ResponseEntity<?> getFollowList(@PathVariable("memberId") Long memberId) {
 		List<FollowingTeamProjection> list = memberService.getFollowList(memberId);
 		if (list.isEmpty())
-			return ResponseEntity.status(404).body(null);
+			return ApiResponse.error(DATA_NOT_FOUND);
 		else
-			return ResponseEntity.status(200).body(list);
+			return ApiResponse.success(GET_SUCCESS, list);
 	}
 
 	@PostMapping("/follows")
@@ -86,33 +91,33 @@ public class MemberController {
 		Long teamId = data.get("teamId");
 		FollowingTeamProjection followingTeam = memberService.registerFollow(memberId, teamId);
 		if (followingTeam == null)
-			return ResponseEntity.status(404).body(null);
+			return ApiResponse.error(DATA_NOT_FOUND);
 		else
-			return ResponseEntity.status(201).body(followingTeam);
+			return ApiResponse.success(CREATE_SUCCESS, followingTeam);
 	}
 
 	@DeleteMapping("/follows/{followTeamId}")
 	public ResponseEntity<?> deleteFollow(@PathVariable("followTeamId") Long followTeamId) {
 		FollowingTeam followingTeam = memberService.deleteFollow(followTeamId);
 		if (followingTeam == null)
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 		else
-			return ResponseEntity.status(200).body(null);
+			return ApiResponse.success(DELETE_SUCCESS, null);
 	}
 
 	@DeleteMapping("/logout")
 	public ResponseEntity<?> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		memberService.deleteToken(principalDetails.getMember().getId());
-		return ResponseEntity.status(200).body(null);
+		return ApiResponse.success(DELETE_SUCCESS, null);
 	}
 
 	@GetMapping("/teams")
 	public ResponseEntity<?> getTeamList() {
 		List<Team> list = memberService.getTeamList();
 		if (list.isEmpty())
-			return ResponseEntity.status(404).body(null);
+			return ApiResponse.error(DATA_NOT_FOUND);
 		else
-			return ResponseEntity.status(200).body(list);
+			return ApiResponse.success(GET_SUCCESS, list);
 
 	}
 }
