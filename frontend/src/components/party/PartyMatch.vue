@@ -54,6 +54,7 @@ const refreshData = () => {
 
 .v-tab {
     /* 개별 탭 스타일 */
+    width: 20%;
     text-transform: none;
     font-size: 1.1em;
 }

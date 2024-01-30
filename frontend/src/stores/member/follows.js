@@ -48,7 +48,8 @@ export const useFollowStore = defineStore("follow", () => {
             }
         }),
         (error) => {
-            if(error.status === httpStatusCode.NOTFOUND) {
+            console.log("팔로우 리스트 가져오는데 에러")
+            if(error.response.status === httpStatusCode.NOTFOUND) {
                 console.log("***********비상***********")
                 console.err(err);
                 alert("팔로우 리스트 가져오기 실패!")
