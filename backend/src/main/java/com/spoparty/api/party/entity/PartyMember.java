@@ -1,5 +1,7 @@
 package com.spoparty.api.party.entity;
 
+import org.hibernate.annotations.Where;
+
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.common.entity.RoleType;
@@ -20,13 +22,13 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter @Setter
+@Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "is_deleted = 0")
 public class PartyMember extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,4 +46,12 @@ public class PartyMember extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private RoleType role;
+
+	public static PartyMember createPartyMember(Club club, Member member, RoleType role) {
+		PartyMember partyMember = new PartyMember();
+		partyMember.club = club;
+		partyMember.member = member;
+		partyMember.role = role;
+		return partyMember;
+	}
 }
