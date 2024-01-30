@@ -97,14 +97,14 @@ function closeModal() {
 
 const search = ref('');
 const emblems = ref([
-  { name: '맨체스터 유나이티드', src: '/src/assets/manutd.png' },
-  { name: '첼시', src: '/src/assets/chelsea.png' },
-  { name: '토트넘 홋스퍼', src: '/src/assets/tottenham.png' },
-  { name: '토리노FC', src: '/src/assets/torinoFC.png' },
-  { name: '토론토FC', src: '/src/assets/torontoFC.png' },
-  { name: '맨체스터 시티', src: '/src/assets/mancity.png' },
-  { name: '아스날', src: '/src/assets/arsenal.png' },
-  { name: '바이에른 뮌헨', src: '/src/assets/bayernMunich.png' },
+  { name: '맨체스터 유나이티드', src: '/manutd.png' },
+  { name: '첼시', src: '/chelsea.png' },
+  { name: '토트넘 홋스퍼', src: '/tottenham.png' },
+  { name: '토리노FC', src: '/torinoFC.png' },
+  { name: '토론토FC', src: '/torontoFC.png' },
+  { name: '맨체스터 시티', src: '/mancity.png' },
+  { name: '아스날', src: '/arsenal.png' },
+  { name: '바이에른 뮌헨', src: '/bayernMunich.png' },
 ]);
 
 // 검색어에 따라 엠블럼을 필터링합니다.
