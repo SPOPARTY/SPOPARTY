@@ -1,6 +1,10 @@
 package com.spoparty.api.common.dto;
 
+import java.util.Map;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.spoparty.api.common.constants.ErrorCode;
 import com.spoparty.api.common.constants.SuccessCode;
@@ -24,15 +28,24 @@ public class ApiResponse<T> {
 		this.message = message;
 	}
 
-	public static <T> ApiResponse<T> success(SuccessCode code, T data) {
-		return new ApiResponse<>(code.getStatus().value(), code.getMessage(), data);
+	public static <T> ResponseEntity<?> success(SuccessCode code, T data) {
+		return ResponseEntity.status(code.getStatus().value())
+			.body(new ApiResponse<>(code.getStatus().value(), code.getMessage(), data));
 	}
 
-	public static <T> ApiResponse<T> error(ErrorCode code) {
-		return new ApiResponse<>(code.getStatus().value(), code.getMessage());
+	public static <T> ResponseEntity<?> success(SuccessCode code, T data, Map<String, String> header) {
+		HttpHeaders headers = new HttpHeaders();
+		header.forEach(headers::add);
+		return new ResponseEntity<>(new ApiResponse<>(code.getStatus().value(), code.getMessage(), data), headers,
+			code.getStatus());
 	}
 
-	public static <T> ApiResponse<T> error(HttpStatus status, String message) {
-		return new ApiResponse<>(status.value(), message);
+	public static ResponseEntity<?> error(ErrorCode code) {
+		return ResponseEntity.status(code.getStatus().value())
+			.body(new ApiResponse<>(code.getStatus().value(), code.getMessage()));
+	}
+
+	public static ResponseEntity<?> error(HttpStatus status, String message) {
+		return ResponseEntity.status(status.value()).body(new ApiResponse<>(status.value(), message));
 	}
 }

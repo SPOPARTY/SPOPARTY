@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.football.entity.SeasonLeague;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
+import com.spoparty.api.football.repository.FixtureEventRepository;
 import com.spoparty.api.football.repository.FixtureRepository;
 import com.spoparty.api.football.repository.SeasonLeagueRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 import com.spoparty.api.football.response.FixtureDTO;
+import com.spoparty.api.football.response.FixtureEventDTO;
 import com.spoparty.api.football.response.KeywordSeasonLeagueDTO;
 import com.spoparty.api.football.response.KeywordSeasonLeagueTeamDTO;
 import com.spoparty.api.football.response.ResponseDTO;
@@ -24,14 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FixtureServiceImpl implements FixtureService{
+public class FixtureServiceImpl implements FixtureService {
 
 	private final FixtureRepository fixtureRepository;
-
 	private final SeasonLeagueTeamRepository seasonLeagueteamRepository;
-
 	private final SeasonLeagueRepository seasonLeagueRespository;
-
+	private final FixtureEventRepository fixtureEventRepository;
 	private final CommonService commonService;
 
 	// 현재 시간부터 시작하는 경기 6개를 가져오기
@@ -127,6 +127,16 @@ public class FixtureServiceImpl implements FixtureService{
 		return ResponseDTO.toDTO(keywordSeasonLeagueDTOs, "리그 조회 성공");
 	}
 
+	public List<FixtureEventDTO> findFixtureEvent(int fixtureId) {
+		List<FixtureEventDTO> fixtureEvents = fixtureEventRepository.getFixtureEvent(fixtureId);
+
+		if (!emptyCheckFixtureEvent(fixtureEvents)) {
+			return null;
+		}
+
+		return fixtureEvents;
+
+	}
 
 	// 특정 날짜 조회시, between으로 조회하기 위해
 	// 오늘 하루의 시작 시간 얻기
@@ -150,6 +160,16 @@ public class FixtureServiceImpl implements FixtureService{
 			return false;
 		} else {
 			log.info("조회된 경기가 있습니다.");
+			return true;
+		}
+	}
+
+	private boolean emptyCheckFixtureEvent(List<FixtureEventDTO> fixtureEvents) {
+		if (fixtureEvents.isEmpty()) {
+			log.info("조회된 경기 이벤트가 없습니다.");
+			return false;
+		} else {
+			log.info("조회된 경기 이벤트가 있습니다.");
 			return true;
 		}
 	}
@@ -184,5 +204,15 @@ public class FixtureServiceImpl implements FixtureService{
 
 		return KeywordSeaonLeagueTeamDTOs;
 	}
+
+	// private List<FixtureEventDTO> EntityToDTOFixtureEvent(List<FixtureEvent> fixtureEvents) {
+	// 	List<FixtureEventDTO> fixtureEventDTOs = new ArrayList<>();
+	//
+	// 	for (FixtureEvent f : fixtureEvents) {
+	// 		fixtureEventDTOs.add(FixtureEventDTO.toDTO(f));
+	// 	}
+	//
+	// 	return fixtureEventDTOs;
+	// }
 
 }

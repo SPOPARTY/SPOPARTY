@@ -17,7 +17,7 @@ public enum ErrorCode {
 	ALREADY_DELETED(BAD_REQUEST, "이미 삭제된 값입니다"),
 	BAD_PARAMETER(BAD_REQUEST, "요청 파라미터가 잘못되었습니다."),
 	BAD_PARAMETER_TYPE(BAD_REQUEST, "지원하지 않는 파라미터 형식입니다."),
-
+	CONFLICT_DATA(CONFLICT, "중복되었습니다"),
 	// 그룹
 	NOT_ENOUGH_GROUP_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 없습니다."),
 	ENOUGH_GROUP_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 꽉 찼습니다."),
@@ -27,7 +27,6 @@ public enum ErrorCode {
 	INVALID_INVITE_URL(BAD_REQUEST, "유효하지 않은 초대 링크입니다."),
 	NO_GROUP_ID(BAD_REQUEST, "존재하지 않거나 삭제된 그룹입니다."),
 	HOST_CANNOT_LEAVE_GROUP(BAD_REQUEST, "그룹장은 그룹을 나갈 수 없습니다. 그룹장을 넘기세요."),
-
 
 	/* 400 BadRequest: 클라이언트에서 보낸 정보가 잘못됨 */
 	CANNOT_CREATE_CHEER(BAD_REQUEST, "응원 생성에 실패하였습니다."),
@@ -49,7 +48,6 @@ public enum ErrorCode {
 	DECRYPT_FAIL(INTERNAL_SERVER_ERROR, "복호화에 실패했습니다."),
 	FILE_UPLOAD_FAIL(INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
 	SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
-
 
 	private final HttpStatus status;
 	private final String message;

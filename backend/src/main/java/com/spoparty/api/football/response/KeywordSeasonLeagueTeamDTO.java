@@ -1,5 +1,6 @@
 package com.spoparty.api.football.response;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
 
 import lombok.Builder;
@@ -13,13 +14,19 @@ public class KeywordSeasonLeagueTeamDTO {
 
 	private long teamId;
 
-	private String nameKr;
+	private String name;
+
+	@QueryProjection
+	public KeywordSeasonLeagueTeamDTO(long teamId, String nameKr) {
+		this.teamId = teamId;
+		this.name = nameKr;
+	}
 
 	public static KeywordSeasonLeagueTeamDTO toDTO(SeasonLeagueTeam entity) {
 
 		return KeywordSeasonLeagueTeamDTO.builder()
 			.teamId(entity.getId())
-			.nameKr(entity.getTeam().getNameKr())
+			.name(entity.getTeam().getNameKr())
 			.build();
 
 	}

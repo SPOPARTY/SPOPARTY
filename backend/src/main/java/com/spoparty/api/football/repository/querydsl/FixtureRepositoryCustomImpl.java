@@ -12,6 +12,9 @@ import com.spoparty.api.football.entity.QLeague;
 import com.spoparty.api.football.entity.QSeasonLeague;
 import com.spoparty.api.football.entity.QSeasonLeagueTeam;
 import com.spoparty.api.football.entity.QTeam;
+import com.spoparty.api.football.response.PartyFixtureDTO;
+import com.spoparty.api.football.response.QKeywordSeasonLeagueTeamDTO;
+import com.spoparty.api.football.response.QPartyFixtureDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -78,24 +81,6 @@ public class FixtureRepositoryCustomImpl implements FixtureRepositoryCustom {
 	// 리그 이름으로 검색하기
 	public List<Fixture> findFixtureByLeague(String keyword) {
 
-		// return jpaQueryFactory.select(fixture)
-		// 	.from(fixture)
-		// 	.join(fixture.seasonLeague, seasonLeague)
-		// 	.fetchJoin()
-		// 	.join(seasonLeague.league, league)
-		// 	.fetchJoin()
-		// 	.join(fixture.homeTeam, homeSeasonLeagueTeam)
-		// 	.fetchJoin()
-		// 	.join(homeSeasonLeagueTeam.team, homeTeam)
-		// 	.fetchJoin()
-		// 	.join(fixture.awayTeam, awaySeasonLeagueTeam)
-		// 	.fetchJoin()
-		// 	.join(awaySeasonLeagueTeam.team, awayTeam)
-		// 	.fetchJoin()
-		// 	.where(league.nameKr.contains(keyword))
-		// 	.orderBy(fixture.startTime.asc())
-		// 	.fetch();
-
 		return jpaQueryFactory.select(fixture)
 			.from(fixture)
 			.join(fixture.seasonLeague, seasonLeague)
@@ -135,6 +120,24 @@ public class FixtureRepositoryCustomImpl implements FixtureRepositoryCustom {
 			.where(homeTeam.nameKr.contains(keyword).or(awayTeam.nameKr.contains(keyword)))
 			.orderBy(fixture.startTime.asc())
 			.fetch();
+	}
+
+	@Override
+	public PartyFixtureDTO findPartyFixture(long fixtureId) {
+		return jpaQueryFactory.select(new QPartyFixtureDTO(
+				league.nameKr, fixture.roundKr, fixture.startTime,
+				new QKeywordSeasonLeagueTeamDTO(homeSeasonLeagueTeam.id, homeTeam.nameKr),
+				new QKeywordSeasonLeagueTeamDTO(awaySeasonLeagueTeam.id, awayTeam.nameKr)
+			))
+			.from(fixture)
+			.join(fixture.seasonLeague, seasonLeague)
+			.join(seasonLeague.league, league)
+			.join(fixture.homeTeam, homeSeasonLeagueTeam)
+			.join(homeSeasonLeagueTeam.team, homeTeam)
+			.join(fixture.awayTeam, awaySeasonLeagueTeam)
+			.join(awaySeasonLeagueTeam.team, awayTeam)
+			.where(fixture.id.eq(fixtureId))
+			.fetchOne();
 	}
 
 }

@@ -13,6 +13,9 @@ public enum SuccessCode {
 	// 일반
 	EXAMPLE_SUCCESS(OK, "예시 성공"),
 	GET_SUCCESS(OK, "조회 성공"),
+	CREATE_SUCCESS(CREATED, "생성 성공"),
+	UPDATE_SUCCESS(OK, "수정 성공"),
+	DELETE_SUCCESS(OK, "삭제 성공"),
 
 	// 그룹
 	CLUB_CREATE_SUCCESS(OK, "그룹 생성 성공"),
@@ -26,7 +29,8 @@ public enum SuccessCode {
 	CLUB_MEMBER_DELETE_SUCCESS(OK, "그룹원 삭제 성공"),
 
 	// 축구
-	CHEER_CREATE_SUCCESS(CREATED,"응원 정보 생성 성공");
+	CHEER_CREATE_SUCCESS(CREATED, "응원 정보 생성 성공"),
+	FIXTURE_EVENTS_READ_SUCCESS(OK, "경기 이벤트 조회 성공");
 
 	private final HttpStatus status;
 	private final String message;

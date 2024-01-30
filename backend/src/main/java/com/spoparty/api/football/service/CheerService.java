@@ -7,7 +7,8 @@ public interface CheerService {
 
 	public void deleteEndCheerFixture();
 
-	public ResponseDTO findCheerFixture(PrincipalDetails principalDetails);
+	public ResponseDTO findCheerFixture(PrincipalDetails principalDetails, Long fixtureId);
 
 	public void makeCheer(int memberId, int cheerFixtureId, int teamId);
+
 }

@@ -1,6 +1,9 @@
 package com.spoparty.api.football.controller;
 
+import static com.spoparty.api.common.constants.SuccessCode.*;
+
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.football.repository.FixtureRepository;
+import com.spoparty.api.football.response.FixtureEventDTO;
 import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.football.service.FixtureServiceImpl;
 
@@ -19,13 +25,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FixtureController {
 	private final Common common;
-	private final FixtureServiceImpl footballService;
+	private final FixtureServiceImpl fixtureServiceImpl;
+	private final FixtureRepository fixtureRepository;
 
 	// 메인에 띄우는 다가올 가장 이른 경기 6개
 	@GetMapping(params = {"next"})
 	ResponseEntity<ResponseDTO> findFixtureByNext(@RequestParam(value = "next") int next) {
 
-		ResponseDTO responseDTO = footballService.findFixtureByNext(next);
+		ResponseDTO responseDTO = fixtureServiceImpl.findFixtureByNext(next);
 
 		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
@@ -36,7 +43,7 @@ public class FixtureController {
 	@GetMapping(params = {"date"})
 	ResponseEntity<ResponseDTO> findFixtureByDate(@RequestParam(value = "date") String date) {
 
-		ResponseDTO responseDTO = footballService.findFixtureByDate(date);
+		ResponseDTO responseDTO = fixtureServiceImpl.findFixtureByDate(date);
 
 		// HttpStatusCode code = isContentExist(responseDTO);
 		HttpStatusCode code = common.getStatusByContent(responseDTO);
@@ -50,7 +57,7 @@ public class FixtureController {
 		@RequestParam(value = "keyword") String keyword) throws
 		UnsupportedEncodingException {
 
-		ResponseDTO responseDTO = footballService.findFixtureByKeyWord(type, keyword);
+		ResponseDTO responseDTO = fixtureServiceImpl.findFixtureByKeyWord(type, keyword);
 
 		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
@@ -62,7 +69,7 @@ public class FixtureController {
 	ResponseEntity<ResponseDTO> findFixtureByStartEndDate(@RequestParam(value = "startDate") String startDate,
 		@RequestParam(value = "endDate") String endDate) {
 
-		ResponseDTO responseDTO = footballService.findFixtureByStartEndDate(startDate, endDate);
+		ResponseDTO responseDTO = fixtureServiceImpl.findFixtureByStartEndDate(startDate, endDate);
 
 		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
@@ -77,9 +84,9 @@ public class FixtureController {
 		ResponseDTO responseDTO = null;
 
 		if (type.equals("팀")) {
-			responseDTO = footballService.findTeamByKeyword(keyword);
+			responseDTO = fixtureServiceImpl.findTeamByKeyword(keyword);
 		} else if (type.equals("리그")) {
-			responseDTO = footballService.findLeagueByKeyword(keyword);
+			responseDTO = fixtureServiceImpl.findLeagueByKeyword(keyword);
 		} else {
 			responseDTO = ResponseDTO.toDTO(null, "타입 입력이 잘못 되었습니다.");
 			return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(400));
@@ -92,6 +99,15 @@ public class FixtureController {
 		// }
 
 		return new ResponseEntity<>(responseDTO, code);
+	}
+
+	@GetMapping("/events")
+	ResponseEntity findFixtureEvent(int fixtureId) {
+
+		List<FixtureEventDTO> fixtureEvents = fixtureServiceImpl.findFixtureEvent(fixtureId);
+
+		return ResponseEntity.status(FIXTURE_EVENTS_READ_SUCCESS.getStatus().value())
+			.body(ApiResponse.success(FIXTURE_EVENTS_READ_SUCCESS, fixtureEvents));
 	}
 
 }

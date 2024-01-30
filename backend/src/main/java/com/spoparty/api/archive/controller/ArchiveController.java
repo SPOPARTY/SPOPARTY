@@ -1,5 +1,8 @@
 package com.spoparty.api.archive.controller;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+import static com.spoparty.api.common.constants.SuccessCode.*;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -17,6 +20,7 @@ import com.spoparty.api.archive.entity.Archive;
 import com.spoparty.api.archive.repository.projection.ArchiveProjection;
 import com.spoparty.api.archive.service.ArchiveService;
 import com.spoparty.api.club.repository.ClubRepository;
+import com.spoparty.api.common.dto.ApiResponse;
 import com.spoparty.api.member.service.FileService;
 import com.spoparty.api.member.service.MemberService;
 
@@ -37,16 +41,16 @@ public class ArchiveController {
 	@GetMapping("/clubs/{clubId}")
 	public ResponseEntity<?> getArchiveList(@PathVariable("clubId") Long clubId) {
 		List<ArchiveProjection> list = archiveService.getArchiveList(clubId);
-		return ResponseEntity.status(200).body(list);
+		return ApiResponse.success(GET_SUCCESS, list);
 	}
 
 	@GetMapping("/{archiveId}")
 	public ResponseEntity<?> getArchive(@PathVariable("archiveId") Long archiveId) {
 		ArchiveProjection archive = archiveService.getArchive(archiveId);
 		if (archive == null)
-			return ResponseEntity.status(404).body(null);
+			return ApiResponse.error(DATA_NOT_FOUND);
 		else
-			return ResponseEntity.status(200).body(archive);
+			return ApiResponse.success(GET_SUCCESS, archive);
 	}
 
 	@PostMapping
@@ -60,10 +64,10 @@ public class ArchiveController {
 		try {
 			archive.setFile(fileService.uploadFile(file));
 		} catch (IOException e) {
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 		}
 		ArchiveProjection data = archiveService.registerArchive(archive);
-		return ResponseEntity.status(201).body(data);
+		return ApiResponse.success(CREATE_SUCCESS, data);
 	}
 
 	@PutMapping
@@ -73,24 +77,26 @@ public class ArchiveController {
 		archive.setPartyTitle(partyTitle);
 		archive.setFixtureTitle(fixtureTitle);
 		try {
-			archive.setFile(fileService.uploadFile(file));
+			if (file != null) {
+				archive.setFile(fileService.uploadFile(file));
+			}
 		} catch (IOException e) {
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 		}
 		ArchiveProjection data = archiveService.updateArchive(archive);
 		if (data == null)
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 		else
-			return ResponseEntity.status(200).body(data);
+			return ApiResponse.success(UPDATE_SUCCESS, data);
 	}
 
 	@DeleteMapping("/{archiveId}")
 	public ResponseEntity<?> deleteArchive(@PathVariable("archiveId") Long archiveId) {
 		ArchiveProjection archive = archiveService.deleteArchive(archiveId);
 		if (archive == null)
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.success(DELETE_SUCCESS, null);
 		else
-			return ResponseEntity.status(200).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 	}
 
 }

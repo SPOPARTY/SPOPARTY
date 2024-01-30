@@ -1,12 +1,10 @@
 package com.spoparty.api.football.repository.querydsl;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.spoparty.api.football.entity.Fixture;
-import com.spoparty.api.football.entity.SeasonLeague;
-import com.spoparty.api.football.entity.SeasonLeagueTeam;
+import com.spoparty.api.football.response.PartyFixtureDTO;
 
 public interface FixtureRepositoryCustom {
 
@@ -18,7 +16,6 @@ public interface FixtureRepositoryCustom {
 
 	public List<Fixture> findFixtureByTeam(String keyword);
 
-
-
+	public PartyFixtureDTO findPartyFixture(long fixtureId);
 
 }

@@ -1,5 +1,8 @@
 package com.spoparty.api.member.controller;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+import static com.spoparty.api.common.constants.SuccessCode.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spoparty.api.common.dto.ApiResponse;
 import com.spoparty.api.member.entity.File;
 import com.spoparty.api.member.service.FileService;
 
@@ -34,16 +38,16 @@ public class FileController {
 			for (MultipartFile file : files) {
 				list.add(fileService.uploadFile(file));
 			}
-			return ResponseEntity.status(201).body(list);
+			return ApiResponse.success(CREATE_SUCCESS, list);
 		} catch (IOException e) {
-			return ResponseEntity.status(400).body(null);
+			return ApiResponse.error(EXAMPLE_ERROR);
 		}
 	}
 
 	@GetMapping("/{type}")
 	public ResponseEntity<?> findFileByType(@PathVariable("type") String type) {
 		List<File> list = fileService.findByType(type);
-		return ResponseEntity.status(200).body(list);
+		return ApiResponse.success(GET_SUCCESS, list);
 	}
 
 }
