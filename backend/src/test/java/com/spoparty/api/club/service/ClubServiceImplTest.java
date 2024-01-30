@@ -261,16 +261,16 @@ class ClubServiceImplTest {
 
 	@Test
 	void 그룹원_삭제_성공() {
-		long memberId = 2;
-		long clubId = 29;
+		long memberId = 3;
+		long clubId = 23;
 
 		Long response = clubService.deleteGroupMember(memberRepository.findById(memberId).get(), clubId);
 	}
 
 	@Test
 	void 그룹원_삭제_실패_그룹장을_넘기지_않은_경우() {
-		long memberId = 12;
-		long clubId = 29;
+		long memberId = 1;
+		long clubId = 23;
 
 		assertThatThrownBy(() -> clubService.deleteGroupMember(memberRepository.findById(memberId).get(), clubId))
 			.isInstanceOf(IllegalArgumentException.class)
