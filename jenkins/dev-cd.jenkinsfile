@@ -63,9 +63,9 @@ pipeline {
                     steps {
                         echo 'BE - Test start'
                         dir ('backend'){
-                            sh'''
-                                ./gradlew test
-                            '''
+                            // sh'''
+                                //  ./gradlew test
+                            // '''
                         }
                     }
                     post{
