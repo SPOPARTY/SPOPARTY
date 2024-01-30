@@ -1,5 +1,7 @@
 package com.spoparty.api.member.entity;
 
+import org.hibernate.annotations.Where;
+
 import com.spoparty.api.common.entity.FootballBaseEntity;
 import com.spoparty.api.football.entity.Team;
 
@@ -20,6 +22,7 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
+@Where(clause = "is_deleted = 0")
 @Entity
 public class Member extends FootballBaseEntity {
 
