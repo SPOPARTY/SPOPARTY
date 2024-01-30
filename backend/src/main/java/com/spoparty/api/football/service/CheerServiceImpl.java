@@ -13,7 +13,6 @@ import com.spoparty.api.football.entity.SeasonLeagueTeam;
 import com.spoparty.api.football.repository.CheerFixtureRepository;
 import com.spoparty.api.football.repository.CheerRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
-import com.spoparty.api.football.repository.TeamRepository;
 import com.spoparty.api.football.response.CheerFixtureDTO;
 import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.member.entity.Member;
@@ -55,11 +54,10 @@ public class CheerServiceImpl implements CheerService {
 
 		List<CheerFixture> cheerFixtures = null;
 
-
 		// 메인의 경기 응원이면
 		if (fixtureId == null) {
 			cheerFixtures = cheerFixtureRepository.findCheerFixture();
-		// 파티의 경기 응원이면
+			// 파티의 경기 응원이면
 		} else {
 			cheerFixtures = cheerFixtureRepository.findCheerFixtureById(fixtureId);
 		}
@@ -68,7 +66,6 @@ public class CheerServiceImpl implements CheerService {
 		if (!emptyCheckCheerFixture(cheerFixtures)) {
 			return ResponseDTO.toDTO(null, "조회된 경기 응원이 없습니다.");
 		}
-
 
 		List<CheerFixtureDTO> cheerFixtureDTOs = EntityToDTOCheerFixture(cheerFixtures);
 
@@ -90,7 +87,6 @@ public class CheerServiceImpl implements CheerService {
 					cheerFixtureDTO.setCountAsNull();
 				}
 
-
 			}
 		} else {
 			for (CheerFixtureDTO cheerFixtureDTO : cheerFixtureDTOs) {
@@ -101,10 +97,8 @@ public class CheerServiceImpl implements CheerService {
 		return ResponseDTO.toDTO(cheerFixtureDTOs, "응원 진행 경기 조회 성공");
 	}
 
-
-
 	@Override
-	public void makeCheer(int memberId,  int teamId, int cheerFixtureId) {
+	public void makeCheer(int memberId, int teamId, int cheerFixtureId) {
 		// return cheerRepository.makeCheer(memberId, cheerFixtureId, teamId);
 		Member member = memberRepository.findById((long)memberId).orElse(null);
 		CheerFixture cheerFixture = cheerFixtureRepository.findById((long)cheerFixtureId).orElse(null);
@@ -118,10 +112,10 @@ public class CheerServiceImpl implements CheerService {
 
 		Cheer cheer = cheerRepository.save(newCheer);
 
-		if(!emptyCheckCheer(cheer)) {
+		if (!emptyCheckCheer(cheer)) {
 			throw new IllegalArgumentException(ErrorCode.CANNOT_CREATE_CHEER.getMessage());
-		};
-
+		}
+		;
 
 		return;
 	}

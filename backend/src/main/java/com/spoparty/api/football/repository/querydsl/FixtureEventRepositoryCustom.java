@@ -2,8 +2,8 @@ package com.spoparty.api.football.repository.querydsl;
 
 import java.util.List;
 
-import com.spoparty.api.football.entity.FixtureEvent;
+import com.spoparty.api.football.response.FixtureEventDTO;
 
 public interface FixtureEventRepositoryCustom {
-	List<FixtureEvent> getFixtureEvent(Long fixtureId);
+	List<FixtureEventDTO> getFixtureEvent(int fixtureId);
 }

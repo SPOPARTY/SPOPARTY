@@ -26,7 +26,8 @@ public enum SuccessCode {
 	CLUB_MEMBER_DELETE_SUCCESS(OK, "그룹원 삭제 성공"),
 
 	// 축구
-	CHEER_CREATE_SUCCESS(CREATED,"응원 정보 생성 성공");
+	CHEER_CREATE_SUCCESS(CREATED, "응원 정보 생성 성공"),
+	FIXTURE_EVENTS_READ_SUCCESS(OK, "경기 이벤트 조회 성공");
 
 	private final HttpStatus status;
 	private final String message;

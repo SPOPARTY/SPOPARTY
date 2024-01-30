@@ -1,7 +1,6 @@
 package com.spoparty.api.football.response;
 
-import com.spoparty.api.football.entity.SeasonLeagueTeam;
-import com.spoparty.api.football.entity.Team;
+import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -15,11 +14,18 @@ public class FixtureEventTeamDTO {
 	private String nameEng;
 	private String logo;
 
-	public static FixtureEventTeamDTO toDTO(Team entity){
-		return FixtureEventTeamDTO.builder()
-			.nameKr(entity.getNameKr())
-			.nameEng(entity.getNameEng())
-			.logo(entity.getLogo())
-			.build();
+	@QueryProjection
+	public FixtureEventTeamDTO(String nameKr, String nameEng, String logo) {
+		this.nameKr = nameKr;
+		this.nameEng = nameEng;
+		this.logo = logo;
 	}
+
+	// public static FixtureEventTeamDTO toDTO(Team entity){
+	// 	return FixtureEventTeamDTO.builder()
+	// 		.nameKr(entity.getNameKr())
+	// 		.nameEng(entity.getNameEng())
+	// 		.logo(entity.getLogo())
+	// 		.build();
+	// }
 }
