@@ -40,8 +40,8 @@ public class SeasonLeagueTeamPlayerTestController {
 			.build();
 
 		SeasonLeagueTeamPlayer seasonLeagueTeamPlayer2 = seasonLeagueTeamPlayerRepository.save(seasonLeagueTeamPlayer);
-		System.out.println(seasonLeagueTeamPlayer.getId());
-		System.out.println(seasonLeagueTeamPlayer2.getId());
+		// log.info(seasonLeagueTeamPlayer.getId());
+		// log.info(seasonLeagueTeamPlayer2.getId());
 
 		return new ResponseEntity<SeasonLeagueTeamPlayer>(seasonLeagueTeamPlayer2, HttpStatusCode.valueOf(200));
 	}

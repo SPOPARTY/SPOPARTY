@@ -19,9 +19,11 @@ import com.spoparty.api.football.response.KeywordSeasonLeagueTeamDTO;
 import com.spoparty.api.football.response.ResponseDTO;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FixtureServiceImpl implements FixtureService{
 
 	private final FixtureRepository fixtureRepository;
@@ -70,7 +72,7 @@ public class FixtureServiceImpl implements FixtureService{
 		} else if (type.equals("팀")) {
 			fixtures = fixtureRepository.findFixtureByTeam(keyword);
 		} else {
-			System.out.println("타입이 잘못 입력되었습니다");
+			log.info("타입이 잘못 입력되었습니다");
 		}
 
 		if (!emptyCheckFixture(fixtures)) {
@@ -144,10 +146,10 @@ public class FixtureServiceImpl implements FixtureService{
 	// 레포지토리에서 조회한 데이터가 있는지 체크
 	private boolean emptyCheckFixture(List<Fixture> fixtures) {
 		if (fixtures.isEmpty()) {
-			System.out.println("조회된 경기 일정이 없습니다.");
+			log.info("조회된 경기 일정이 없습니다.");
 			return false;
 		} else {
-			System.out.println("조회된 경기가 있습니다.");
+			log.info("조회된 경기가 있습니다.");
 			return true;
 		}
 	}

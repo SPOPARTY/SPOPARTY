@@ -17,10 +17,12 @@ import com.spoparty.api.football.repository.SeasonLeagueTeamPlayerRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/football/test/lineupPlayer")
 @RequiredArgsConstructor
+@Slf4j
 public class LineupPlayerTestController {
 
 	private final LineupPlayerRepository lineupPlayerRepository;
@@ -44,8 +46,8 @@ public class LineupPlayerTestController {
 			.build();
 
 		LineupPlayer lineupPlayer2 = lineupPlayerRepository.save(lineupPlayer);
-		System.out.println(lineupPlayer.getId());
-		System.out.println(lineupPlayer2.getId());
+		// log.info(lineupPlayer.getId());
+		// log.info(lineupPlayer2.getId());
 
 		return new ResponseEntity<LineupPlayer>(lineupPlayer2, HttpStatusCode.valueOf(200));
 	}

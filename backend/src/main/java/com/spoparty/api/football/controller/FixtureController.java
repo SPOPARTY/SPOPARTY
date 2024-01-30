@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/football/fixtures")
 @RequiredArgsConstructor
 public class FixtureController {
-
+	private final Common common;
 	private final FixtureServiceImpl footballService;
 
 	// 메인에 띄우는 다가올 가장 이른 경기 6개
@@ -27,7 +27,7 @@ public class FixtureController {
 
 		ResponseDTO responseDTO = footballService.findFixtureByNext(next);
 
-		HttpStatusCode code = getStatusByContent(responseDTO);
+		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		return new ResponseEntity<>(responseDTO, code);
 	}
@@ -39,7 +39,7 @@ public class FixtureController {
 		ResponseDTO responseDTO = footballService.findFixtureByDate(date);
 
 		// HttpStatusCode code = isContentExist(responseDTO);
-		HttpStatusCode code = getStatusByContent(responseDTO);
+		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		return new ResponseEntity<>(responseDTO, code);
 	}
@@ -52,7 +52,7 @@ public class FixtureController {
 
 		ResponseDTO responseDTO = footballService.findFixtureByKeyWord(type, keyword);
 
-		HttpStatusCode code = getStatusByContent(responseDTO);
+		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
@@ -64,7 +64,7 @@ public class FixtureController {
 
 		ResponseDTO responseDTO = footballService.findFixtureByStartEndDate(startDate, endDate);
 
-		HttpStatusCode code = getStatusByContent(responseDTO);
+		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		return new ResponseEntity<>(responseDTO, code);
 
@@ -85,21 +85,13 @@ public class FixtureController {
 			return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(400));
 		}
 
-		HttpStatusCode code = getStatusByContent(responseDTO);
+		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		// if (responseDTO.getData() == null) {
 		// 	return new ResponseEntity<>(responseDTO, HttpStatusCode.vlaueOf(404))
 		// }
 
 		return new ResponseEntity<>(responseDTO, code);
-	}
-
-	private HttpStatusCode getStatusByContent(ResponseDTO responseDTO) {
-		if (responseDTO.getData() == null) {
-			return HttpStatusCode.valueOf(404);
-		} else {
-			return HttpStatusCode.valueOf(200);
-		}
 	}
 
 }

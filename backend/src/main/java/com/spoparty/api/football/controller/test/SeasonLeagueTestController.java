@@ -36,8 +36,8 @@ public class SeasonLeagueTestController {
 			.build();
 
 		SeasonLeague seasonLeague2 = seasonLeagueRepository.save(seasonLeague);
-		System.out.println(seasonLeague.getId());
-		System.out.println(seasonLeague2.getId());
+		// log.info(seasonLeague.getId());
+		// log.info(seasonLeague2.getId());
 
 		return new ResponseEntity<SeasonLeague>(seasonLeague2, HttpStatusCode.valueOf(200));
 	}

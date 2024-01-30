@@ -19,24 +19,17 @@ import lombok.RequiredArgsConstructor;
 
 public class TeamController {
 	private final TeamServiceImpl teamServiceImpl;
+	private final Common common;
 
 	@GetMapping
-	ResponseEntity getTeamAllInfo(int teamId,  @AuthenticationPrincipal
+	ResponseEntity getTeamAllInfo(int teamId, @AuthenticationPrincipal
 	PrincipalDetails principalDetails) {
 		ResponseDTO responseDTO = teamServiceImpl.getTeamAllInfo(teamId, principalDetails);
 
-		HttpStatusCode code = getStatusByContent(responseDTO);
+		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		return new ResponseEntity<>(responseDTO, code);
 
-	}
-
-	private HttpStatusCode getStatusByContent(ResponseDTO responseDTO) {
-		if (responseDTO.getData() == null) {
-			return HttpStatusCode.valueOf(404);
-		} else {
-			return HttpStatusCode.valueOf(200);
-		}
 	}
 
 }

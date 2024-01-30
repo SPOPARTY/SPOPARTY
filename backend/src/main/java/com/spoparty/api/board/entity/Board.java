@@ -1,5 +1,7 @@
 package com.spoparty.api.board.entity;
 
+import org.hibernate.annotations.Where;
+
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.member.entity.File;
@@ -23,6 +25,7 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
+@Where(clause = "is_deleted = 0")
 @Entity
 public class Board extends BaseEntity {
 

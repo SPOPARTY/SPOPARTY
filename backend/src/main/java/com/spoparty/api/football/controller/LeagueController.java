@@ -21,19 +21,21 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/football/leagues")
 @RequiredArgsConstructor
 public class LeagueController {
-
+	private final Common common;
 	private final LeagueServiceImpl leagueService;
 
 	@GetMapping
 	ResponseEntity findAllLeague() {
 		ResponseDTO responseDTO = leagueService.findAllLeague();
 
+		HttpStatusCode code = common.getStatusByContent(responseDTO);
+
 		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
 
 	@GetMapping("/rank/{leagueId}")
 	ResponseEntity showLeagueByTeamRank(@PathVariable Optional<Integer> leagueId, @AuthenticationPrincipal
-		PrincipalDetails principalDetails) {
+	PrincipalDetails principalDetails) {
 
 		ResponseDTO responseDTO = null;
 		try {
@@ -45,21 +47,10 @@ public class LeagueController {
 				HttpStatusCode.valueOf(400));
 		}
 
-		HttpStatusCode code = getStatusByContent(responseDTO);
+		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		return new ResponseEntity<>(responseDTO, code);
 
 	}
-
-
-
-	private HttpStatusCode getStatusByContent(ResponseDTO responseDTO) {
-		if (responseDTO.getData() == null) {
-			return HttpStatusCode.valueOf(404);
-		} else {
-			return HttpStatusCode.valueOf(200);
-		}
-	}
-
 
 }

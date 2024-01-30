@@ -1,5 +1,7 @@
 package com.spoparty.api.member.entity;
 
+import org.hibernate.annotations.Where;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -16,6 +18,7 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
+@Where(clause = "is_deleted = 0")
 @Entity
 public class MemberToken {
 

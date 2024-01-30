@@ -17,9 +17,11 @@ import com.spoparty.api.member.service.MemberService;
 import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LeagueServiceImpl implements LeagueService {
 
 	private final SeasonLeagueRepository seasonLeagueRepository;

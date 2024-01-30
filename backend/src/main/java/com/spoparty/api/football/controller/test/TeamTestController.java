@@ -33,8 +33,8 @@ public class TeamTestController {
 			.build();
 
 		Team team2 = teamRepository.save(team);
-		System.out.println(team.getId());
-		System.out.println(team2.getId());
+		// log.info(team.getId());
+		// log.info(team2.getId());
 
 		return new ResponseEntity<Team>(team2, HttpStatusCode.valueOf(200));
 	}
