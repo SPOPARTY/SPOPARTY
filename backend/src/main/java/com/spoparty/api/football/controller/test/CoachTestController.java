@@ -13,10 +13,12 @@ import com.spoparty.api.football.entity.Coach;
 import com.spoparty.api.football.repository.CoachRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/football/test/coach")
 @RequiredArgsConstructor
+@Slf4j
 public class CoachTestController {
 
 	private final CoachRepository coachRepository;
@@ -33,8 +35,8 @@ public class CoachTestController {
 			.build();
 
 		Coach coach2 = coachRepository.save(coach);
-		System.out.println(coach.getId());
-		System.out.println(coach2.getId());
+		// log.info(coach.getId());
+		// log.info(coach2.getId());
 
 		return new ResponseEntity<Coach>(coach2, HttpStatusCode.valueOf(200));
 	}

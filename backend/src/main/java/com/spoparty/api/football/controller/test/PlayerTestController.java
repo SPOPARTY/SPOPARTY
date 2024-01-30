@@ -15,10 +15,12 @@ import com.spoparty.api.football.repository.PlayerRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/football/test/player")
 @RequiredArgsConstructor
+@Slf4j
 public class PlayerTestController {
 
 	private final PlayerRepository playerRepository;
@@ -52,8 +54,8 @@ public class PlayerTestController {
 			.build();
 		Player player2 = playerRepository.save(player);
 		playerRepository.save(player3);
-		System.out.println(player.getId());
-		System.out.println(player2.getId());
+		// log.info(player.getId());
+		// log.info(player2.getId());
 
 		return new ResponseEntity<Player>(player2, HttpStatusCode.valueOf(200));
 	}

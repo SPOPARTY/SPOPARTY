@@ -39,18 +39,16 @@ public class CheerFixture extends BaseEntity {
 
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="fixture_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "fixture_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Fixture fixture;
 
 	@OneToMany(mappedBy = "cheerFixture")
 	private List<Cheer> cheers = new ArrayList<>();
 
-
 	@Builder
-
-	public CheerFixture(long homeCount, long awayCount, Fixture fixture) {
+	public CheerFixture(long homeCount, long awayCount) {
 		this.homeCount = homeCount;
 		this.awayCount = awayCount;
-		this.fixture = fixture;
+		// this.fixture = fixture;
 	}
 }

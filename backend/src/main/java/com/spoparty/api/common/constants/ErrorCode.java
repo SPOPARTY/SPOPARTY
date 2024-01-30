@@ -28,6 +28,10 @@ public enum ErrorCode {
 	NO_GROUP_ID(BAD_REQUEST, "존재하지 않거나 삭제된 그룹입니다."),
 	HOST_CANNOT_LEAVE_GROUP(BAD_REQUEST, "그룹장은 그룹을 나갈 수 없습니다. 그룹장을 넘기세요."),
 
+
+	/* 400 BadRequest: 클라이언트에서 보낸 정보가 잘못됨 */
+	CANNOT_CREATE_CHEER(BAD_REQUEST, "응원 생성에 실패하였습니다."),
+
 	/* 401 UNAUTHORIZED: 인증 실패 */
 	UNAUTHORIZED_USER(UNAUTHORIZED, "만료되었거나 잘못된 토큰입니다. 토큰을 확인해주세요."),
 
@@ -45,6 +49,7 @@ public enum ErrorCode {
 	DECRYPT_FAIL(INTERNAL_SERVER_ERROR, "복호화에 실패했습니다."),
 	FILE_UPLOAD_FAIL(INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
 	SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 내부 오류로 인해 응답을 제공할 수 없습니다.");
+
 
 	private final HttpStatus status;
 	private final String message;

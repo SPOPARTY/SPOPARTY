@@ -16,9 +16,11 @@ import com.spoparty.api.member.service.MemberService;
 import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TeamServiceImpl implements TeamService{
 
 	private final CommonService common;
@@ -53,10 +55,10 @@ public class TeamServiceImpl implements TeamService{
 
 	private boolean emptyCheckTeam(SeasonLeagueTeam seasonLeagueTeam) {
 		if (seasonLeagueTeam == null){
-			System.out.println("조회된 팀이 없습니다.");
+			log.info("조회된 팀이 없습니다.");
 			return false;
 		} else {
-			System.out.println("조회된 팀이 있습니다.");
+			log.info("조회된 팀이 있습니다.");
 			return true;
 		}
 	}

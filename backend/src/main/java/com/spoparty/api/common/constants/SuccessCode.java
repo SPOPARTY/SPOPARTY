@@ -23,7 +23,10 @@ public enum SuccessCode {
 	CLUB_MEMBERS_READ_SUCCESS(OK, "그룹원 목록 조회 성공"),
 	CLUB_MEMBER_CREATE_SUCCESS(OK, "그룹원 생성 성공"),
 	CLUB_HOST_UPDATE_SUCCESS(OK, "그룹장 수정 성공"),
-	CLUB_MEMBER_DELETE_SUCCESS(OK, "그룹원 삭제 성공");
+	CLUB_MEMBER_DELETE_SUCCESS(OK, "그룹원 삭제 성공"),
+
+	// 축구
+	CHEER_CREATE_SUCCESS(CREATED,"응원 정보 생성 성공");
 
 	private final HttpStatus status;
 	private final String message;
