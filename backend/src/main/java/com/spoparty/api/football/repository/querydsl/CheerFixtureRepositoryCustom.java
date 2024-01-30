@@ -10,4 +10,6 @@ public interface CheerFixtureRepositoryCustom {
 
 	List<CheerFixture> findCheerFixture();
 
+	List<CheerFixture> findCheerFixtureById(Long fixtureId);
+
 }

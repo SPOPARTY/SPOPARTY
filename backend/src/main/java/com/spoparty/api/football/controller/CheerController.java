@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.spoparty.api.common.constants.SuccessCode.*;
@@ -25,11 +26,21 @@ public class CheerController {
 	private final Common common;
 
 	@GetMapping
-	@Transactional
 	public ResponseEntity findCheerFixture(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		cheerServiceImpl.deleteEndCheerFixture();
 
-		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails);
+		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails, null);
+
+		HttpStatusCode code = common.getStatusByContent(responseDTO);
+
+		return new ResponseEntity<>(responseDTO, code);
+	}
+
+	@GetMapping(params = {"fixtureId"})
+	public ResponseEntity findCheerFixture(@AuthenticationPrincipal PrincipalDetails principalDetails,
+		@RequestParam(value="fixtureId") Long fixtureId) {
+
+		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails, fixtureId);
 
 		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
@@ -38,15 +49,18 @@ public class CheerController {
 
 	@PostMapping
 	public ResponseEntity makeCheer(@AuthenticationPrincipal PrincipalDetails principalDetails, int memberId,
-		int teamId, int cheerFixtureId) {
+		int teamId, int cheerFixtureId, Long fixtureId) {
 		cheerServiceImpl.makeCheer(memberId, teamId, cheerFixtureId);
 
 		cheerServiceImpl.deleteEndCheerFixture();
 
-		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails);
 
+		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails, fixtureId);
 
+		responseDTO.changeMessage("응원 정보 생성 성공");
 
 		return new ResponseEntity<>(responseDTO, CHEER_CREATE_SUCCESS.getStatus());
 	}
+
+
 }

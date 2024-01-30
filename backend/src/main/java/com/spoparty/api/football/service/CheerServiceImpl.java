@@ -51,13 +51,24 @@ public class CheerServiceImpl implements CheerService {
 	}
 
 	@Override
-	public ResponseDTO findCheerFixture(PrincipalDetails principalDetails) {
+	public ResponseDTO findCheerFixture(PrincipalDetails principalDetails, Long fixtureId) {
 
-		List<CheerFixture> cheerFixtures = cheerFixtureRepository.findCheerFixture();
+		List<CheerFixture> cheerFixtures = null;
 
+
+		// 메인의 경기 응원이면
+		if (fixtureId == null) {
+			cheerFixtures = cheerFixtureRepository.findCheerFixture();
+		// 파티의 경기 응원이면
+		} else {
+			cheerFixtures = cheerFixtureRepository.findCheerFixtureById(fixtureId);
+		}
+
+		// 엔티티가 비어있으면 리턴. 나중에 예외 처리
 		if (!emptyCheckCheerFixture(cheerFixtures)) {
 			return ResponseDTO.toDTO(null, "조회된 경기 응원이 없습니다.");
 		}
+
 
 		List<CheerFixtureDTO> cheerFixtureDTOs = EntityToDTOCheerFixture(cheerFixtures);
 
