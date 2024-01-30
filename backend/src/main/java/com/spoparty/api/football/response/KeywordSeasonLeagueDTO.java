@@ -13,12 +13,12 @@ public class KeywordSeasonLeagueDTO {
 
 	private long leagueId;
 
-	private String nameKr;
+	private String name;
 
 	public static KeywordSeasonLeagueDTO toDTO(SeasonLeague entity) {
 		return KeywordSeasonLeagueDTO.builder()
 			.leagueId(entity.getId())
-			.nameKr(entity.getLeague().getNameKr())
+			.name(entity.getLeague().getNameKr())
 			.build();
 
 	}

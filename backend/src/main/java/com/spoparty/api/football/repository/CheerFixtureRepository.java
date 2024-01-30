@@ -8,4 +8,6 @@ import com.spoparty.api.football.repository.querydsl.CheerFixtureRepositoryCusto
 
 @Repository
 public interface CheerFixtureRepository extends JpaRepository<CheerFixture, Long>, CheerFixtureRepositoryCustom {
+
+
 }

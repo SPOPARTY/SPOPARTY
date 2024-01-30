@@ -81,4 +81,26 @@ public class CheerFixtureRepositoryCustomImpl implements CheerFixtureRepositoryC
 			.fetch();
 
 	}
+
+
+	public List<CheerFixture> findCheerFixtureById(Long fixtureId){
+		return jpaQueryFactory.select(cheerFixture)
+			.from(cheerFixture)
+			.join(cheerFixture.fixture, fixture)
+			.fetchJoin()
+			.join(fixture.seasonLeague, seasonLeague)
+			.fetchJoin()
+			.join(seasonLeague.league, league)
+			.fetchJoin()
+			.join(fixture.homeTeam, homeSeasonLeagueTeam)
+			.fetchJoin()
+			.join(homeSeasonLeagueTeam.team, homeTeam)
+			.fetchJoin()
+			.join(fixture.awayTeam, awaySeasonLeagueTeam)
+			.fetchJoin()
+			.join(awaySeasonLeagueTeam.team, awayTeam)
+			.fetchJoin()
+			.where(cheerFixture.fixture.id.eq(fixtureId))
+			.fetch();
+	}
 }
