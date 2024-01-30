@@ -61,9 +61,6 @@ import {ref} from 'vue';
 import {useRouter} from 'vue-router'
 import { useManagementStore } from '@/stores/member/managements';
 
-import FindPwd from '@/components/user/FindPwd.vue';
-import KakaoLogin from '@/components/user/KakaoLogin.vue';
-
 const router = useRouter();
 
 const managementStore = useManagementStore();
