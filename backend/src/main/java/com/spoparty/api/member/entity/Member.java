@@ -22,7 +22,7 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
-@Where(clause = "is_deleted = 0")
+@Where(clause = "state in (0, 1)")
 @Entity
 public class Member extends FootballBaseEntity {
 
