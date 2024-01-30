@@ -18,15 +18,15 @@
                 </div>
             </div>
             <div class="feature-container" @click.native="showChangeClubName">
-                <v-img class="img" src="/src/assets/change_club_name.png" alt="그룹명 바꾸기"/>
+                <v-img class="img" src="/change_club_name.png" alt="그룹명 바꾸기"/>
                 <v-card-text class="feature-text">그룹명 바꾸기</v-card-text>
             </div>
             <div class="feature-container" @click="showQuitClub">
-                <v-img class="img" src="/src/assets/exit_club.png" alt="그룹 나가기"/>
+                <v-img class="img" src="/exit_club.png" alt="그룹 나가기"/>
                 <v-card-text class="feature-text">그룹 나가기</v-card-text>
             </div>
             <div class="feature-container" @click="showBanClubMember">
-                <v-img class="img" src="/src/assets/ban_club_member.png" alt="그룹원 강퇴"/>
+                <v-img class="img" src="/ban_club_member.png" alt="그룹원 강퇴"/>
                 <v-card-text class="feature-text">그룹원 강퇴</v-card-text>
             </div>
         </v-card>

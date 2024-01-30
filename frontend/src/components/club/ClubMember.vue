@@ -19,7 +19,7 @@
             </div>
 
             <div class="feature-container" @click="showQuitClub">
-                <v-img class="img" src="/src/assets/exit_club.png" alt="그룹 나가기"/>
+                <v-img class="img" src="/exit_club.png" alt="그룹 나가기"/>
                 <v-card-text class="feature-text">그룹 나가기</v-card-text>
             </div>
             <QuitClub
