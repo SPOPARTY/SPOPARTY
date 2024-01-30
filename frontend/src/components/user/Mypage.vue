@@ -70,7 +70,7 @@
                     >팔로우 중인 구단 수 : {{followingClubNum}}</v-btn>
                 </v-col>
             </v-row>
-            <FollowList
+            <!-- <FollowList
                 v-if="isFollowModalVisible"
                 :team-list="teamList"
                 :follow-list="followList"
@@ -78,7 +78,7 @@
                 @follow-list-close = "isFollowModalVisible = false"
                 @follow-club="setFollowClubNumber($event)"
                 @unfollow-club="setFollowClubNumber($event)"
-            />
+            /> -->
 
             <v-card-actions class="text-center">
                 <v-spacer></v-spacer>
@@ -102,7 +102,7 @@ import {useFollowStore} from '@/stores/member/follows'
 import SetNewPwd from '@/components/user/SetNewPwd.vue';
 import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
-import FollowList from '@/components/user/FollowList.vue';
+// import FollowList from '@/components/user/FollowList.vue';
 
 
 const router = useRouter();
