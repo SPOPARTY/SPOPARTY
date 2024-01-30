@@ -66,11 +66,10 @@ public class BoardController {
 			}
 		}
 		board = boardService.registerBoard(board);
-		BoardProjection b = boardService.findById(board.getId());
 		if (board == null)
 			return ResponseEntity.status(400).body(null);
-		else
-			return ResponseEntity.status(201).body(b);
+		BoardProjection b = boardService.findById(board.getId());
+		return ResponseEntity.status(201).body(b);
 	}
 
 	@PutMapping

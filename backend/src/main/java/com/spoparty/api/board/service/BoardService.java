@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.spoparty.api.board.entity.Board;
 import com.spoparty.api.board.repository.BoardRepository;
 import com.spoparty.api.board.repository.projection.BoardProjection;
-import com.spoparty.api.member.repository.FileRepository;
+import com.spoparty.api.member.service.FileService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardService {
 
 	private final BoardRepository boardRepository;
-	private final FileRepository fileRepository;
+	private final FileService fileService;
 
 	public List<BoardProjection> findByClubId(Long clubId) {
 		return boardRepository.findByClub_id(clubId, BoardProjection.class);
@@ -36,6 +36,10 @@ public class BoardService {
 	@Transactional
 	public Board updateBoard(Board board) {
 		Board data = boardRepository.findById(board.getId()).orElse(null);
+		if (data == null)
+			return null;
+		if (data.getFile() != null)
+			fileService.findById(data.getFile().getId()).softDelete();
 		if (!board.getTitle().equals(""))
 			data.setTitle(board.getTitle());
 		if (!board.getContent().equals(""))
