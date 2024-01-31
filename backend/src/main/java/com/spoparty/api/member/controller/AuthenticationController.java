@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.common.exception.UnauthorizedException;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.MemberProjection;
 import com.spoparty.api.member.service.EmailService;
@@ -67,6 +68,8 @@ public class AuthenticationController {
 
 	@RequestMapping("/token")
 	public ResponseEntity<?> generateToken(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+		if (principalDetails == null)
+			throw new UnauthorizedException(UNAUTHORIZED_USER);
 		Long id = principalDetails.getMember().getId();
 		String accessToken = memberService.generateAccessToken(id);
 		String refreshToken = memberService.generateRefreshToken(id);

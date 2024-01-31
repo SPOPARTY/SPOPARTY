@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.common.exception.UnauthorizedException;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.Notification;
 import com.spoparty.api.member.entity.NotificationProjection;
@@ -76,6 +77,8 @@ public class NotificationController {
 
 	@GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public ResponseEntity<SseEmitter> connect(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+		if (principalDetails == null)
+			throw new UnauthorizedException(UNAUTHORIZED_USER);
 		Member member = principalDetails.getMember();
 		SseEmitter emitter = new SseEmitter(10 * 60 * 1000L);
 		notificationService.add(member.getId(), emitter);

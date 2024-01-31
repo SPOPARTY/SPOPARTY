@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.common.exception.UnauthorizedException;
 import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.member.entity.FollowingTeam;
 import com.spoparty.api.member.entity.FollowingTeamProjection;
@@ -108,6 +109,8 @@ public class MemberController {
 
 	@DeleteMapping("/logout")
 	public ResponseEntity<?> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+		if (principalDetails == null)
+			throw new UnauthorizedException(UNAUTHORIZED_USER);
 		memberService.deleteToken(principalDetails.getMember().getId());
 		return ApiResponse.success(DELETE_SUCCESS, null);
 	}
