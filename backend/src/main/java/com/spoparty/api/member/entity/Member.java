@@ -14,7 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -49,7 +49,7 @@ public class Member extends FootballBaseEntity {
 	@Column(nullable = false, length = 25)
 	private String roleName = "ROLE_USER";
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "team_id", referencedColumnName = "team_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Team team;
 

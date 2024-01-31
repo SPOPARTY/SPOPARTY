@@ -25,6 +25,7 @@ import com.spoparty.common.util.JwtTokenUtil;
 import com.spoparty.security.jwt.JwtAuthenticationFilter;
 import com.spoparty.security.jwt.JwtAuthenticationProvider;
 import com.spoparty.security.jwt.JwtAuthorizationFilter;
+import com.spoparty.security.model.PrincipalDetails;
 import com.spoparty.security.service.OAuth2UserService;
 import com.spoparty.security.service.PrincipalDetailService;
 
@@ -69,8 +70,10 @@ public class SecurityConfig {
 
 			.oauth2Login(oauth2Login -> oauth2Login
 				.loginPage("/login")
-				.successHandler((request, response, authentication) ->
-					request.getRequestDispatcher("/authentication/token").forward(request, response))
+				.successHandler((request, response, authentication) -> {
+					String longinId = ((PrincipalDetails)authentication.getPrincipal()).getMember().getLoginId();
+					response.sendRedirect("https://i10a802.p.ssafy.io/kakao?path=" + longinId);
+				})
 				.userInfoEndpoint().userService(oAuth2UserService)
 			)
 

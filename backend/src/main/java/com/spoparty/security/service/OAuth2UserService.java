@@ -30,7 +30,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 		log.info("oAuth2User: {}", oAuth2User);
 
 		// kakao에서 넘어온 데이터 파싱
-		String provider = userRequest.getClientRegistration().getClientId();
+		String provider = userRequest.getClientRegistration().getRegistrationId();
 		String id = oAuth2User.getAttributes().get("id") + "";
 		Map<String, Object> userInfo = (Map<String, Object>)oAuth2User.getAttribute("kakao_account");
 		String email = (String)userInfo.get("email");
