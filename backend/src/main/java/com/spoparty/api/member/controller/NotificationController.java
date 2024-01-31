@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import com.spoparty.api.common.dto.ApiResponse;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.Notification;
-import com.spoparty.api.member.repository.projection.NotificationProjection;
+import com.spoparty.api.member.entity.NotificationProjection;
 import com.spoparty.api.member.service.NotificationService;
 import com.spoparty.security.model.PrincipalDetails;
 

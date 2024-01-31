@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
 import com.spoparty.api.member.entity.Member;
+import com.spoparty.api.member.entity.MemberProjection;
 import com.spoparty.api.member.service.EmailService;
 import com.spoparty.api.member.service.MemberService;
 import com.spoparty.security.model.PrincipalDetails;
@@ -57,7 +58,7 @@ public class AuthenticationController {
 
 	@GetMapping("/id-check/{loginId}")
 	public ResponseEntity<?> idCheck(@PathVariable("loginId") String loginId) {
-		Member member = memberService.findByLoginId(loginId);
+		MemberProjection member = memberService.findByLoginIdProjection(loginId);
 		if (member == null)
 			return ApiResponse.success(GET_SUCCESS, null);
 		else

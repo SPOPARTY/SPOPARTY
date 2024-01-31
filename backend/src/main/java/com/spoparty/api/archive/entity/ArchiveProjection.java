@@ -1,15 +1,15 @@
-package com.spoparty.api.archive.repository.projection;
+package com.spoparty.api.archive.entity;
 
 import java.time.LocalDateTime;
 
 import com.spoparty.api.member.entity.File;
-import com.spoparty.api.member.entity.Member;
+import com.spoparty.api.member.entity.MemberProjection;
 
 public interface ArchiveProjection {
 
 	Long getId();
 
-	Member getMember();
+	MemberProjection getMember();
 
 	Long getClub_id();
 
