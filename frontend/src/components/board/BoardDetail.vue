@@ -8,18 +8,18 @@
     >
         <v-card class="board-detail" >
             <v-card-title class="text-center">{{ props.post.title }}</v-card-title>
-            <v-card-subtitle class="text-right">{{ props.post.nickname }}</v-card-subtitle>
-            <v-card-item>
-                <v-img :src="props.post.img" class="img" cover width="100%"></v-img>
+            <v-card-subtitle class="text-right">{{ props.post.member.nickname }}</v-card-subtitle>
+            <v-card-text v-if="post.file">{{ formatDateTime(post.file.updatedTime) }}</v-card-text>
+            <v-card-item v-if="props.post.file">
+                <v-img :src="props.post.file.url" class="img" cover width="100%"></v-img>
             </v-card-item>
             <v-card-text>
                 {{ props.post.content }}
             </v-card-text>
             <v-card-actions>
                 <v-spacer/>
-                <v-btn v-if="currentUserId == 1" color="success" @click="showEditModal">수정하기</v-btn>
-                <v-btn v-if="currentUserId == 1" color="error" @click="confirmDelete">삭제하기</v-btn>
-                <v-btn v-else color="#121212" @click="closeModal">히히 버튼 발사</v-btn>
+                <v-btn v-if="currentUserId == props.post.member.id" color="success" @click="showEditModal">수정하기</v-btn>
+                <v-btn v-if="currentUserId == props.post.member.id" color="error" @click="confirmDelete">삭제하기</v-btn>
                 <v-btn color="red" @click="closeModal">닫기</v-btn>
             </v-card-actions>
             
@@ -45,8 +45,10 @@
 <script setup>
 import  {ref, onMounted} from 'vue';
 import EditBoard from '@/components/board/EditBoard.vue';
+import {formatDateTime} from "@/util/tools.js"
 
-const currentUserId = ref(1); // 작성자 id
+
+const currentUserId = sessionStorage.getItem("id"); // 로그인 된 id
 
 const modalVisible = ref(true); // BoardDetail on/off 관장
 
@@ -103,8 +105,8 @@ onMounted(() => {
 .img{
     border:solid;
     border-radius: 20px;
-    width:50%;
-    height:50%;
+    width:100%;
+    height:100%;
 }
 
 </style>

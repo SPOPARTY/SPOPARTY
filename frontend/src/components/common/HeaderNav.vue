@@ -10,7 +10,7 @@
     <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
     <v-list dense class="club-list">
       <v-list-item v-for="(club, index) in clubs" v-if="clubs" :key="index" class="mb-1">
-        <div @click="openClubInNewTab(club.id)" class="d-flex justify-start align-center club-item"
+        <div @click="openClubInNewTab(club.clubId)" class="d-flex justify-start align-center club-item"
           style="text-transform: none; padding: 16px; cursor: pointer;">
           <v-list-item-title class="align-start">{{ club.name }}<br>{{ 'ID: ' + club.clubId }}</v-list-item-title>
         </div>
@@ -55,7 +55,7 @@
     <v-divider vertical class="mx-2"></v-divider>
     <v-btn text to="/league" class="mx-2 btn-text">리그 목록</v-btn>
     <v-divider vertical class="mx-2"></v-divider>
-    <v-btn v-if="isLogined" text to="mypage" class="mx-2 btn-text">마이페이지</v-btn>
+    <v-btn v-if="isLogined" text to="/mypage" class="mx-2 btn-text">마이페이지</v-btn>
     <v-btn v-else text to="/signup" class="mx-2 btn-text">회원가입</v-btn>
     <v-divider vertical class="mx-2"></v-divider>
     <v-btn v-if="isLogined" text class="mx-2 btn-text" @click="logout">로그아웃</v-btn>
@@ -69,20 +69,23 @@ import { useRouter } from 'vue-router';
 
 import { useManagementStore} from "@/stores/member/managements"
 import { useClubStore} from "@/stores/club/clubs"
+const {myClubs} = useClubStore();
 
 
 onMounted(async () => {
-  console.log("로그인 됨?? -> " ,localStorage.getItem("accessToken") !== null)
-  console.log("여기는 HeaderNave의 onMounted")
   if (localStorage.getItem("accessToken") != null) {
     await clubStore.requestClub();
-    clubs.value = clubStore.myClubs
   }
 })
 
-
 const managemetStore = useManagementStore();
 const clubStore = useClubStore();
+
+const clubs = ref([]);
+watch(() => clubStore.myClubs,(newClubs) => {
+  clubs.value = newClubs;
+},{immediate:true})
+
 
 // 로그인 여부 감지
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
@@ -100,11 +103,6 @@ function goHome() {
 }
 
 // 예시 클럽 데이터
-const clubs = ref([]);
-watch(() => clubStore.myClubs,(newClubs) => {
-  clubs.value = newClubs;
-},{immediate:true})
-// 클럽 리스트 관리
 
 
 // 클럽 페이지를 새 탭에서 열기

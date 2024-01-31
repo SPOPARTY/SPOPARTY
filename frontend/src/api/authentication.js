@@ -21,7 +21,7 @@ function verifyCodeCheck(data,success,error) {
 }
 
 async function tokenRegeneration(refreshToken, success,fail) {
-    await local.post(`${API_URL}/token`,refreshToken).then(success).catch(fail);
+    await local.post(`${API_URL}/regenerate`,refreshToken).then(success).catch(fail);
 }
 
 export {

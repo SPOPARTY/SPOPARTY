@@ -4,7 +4,7 @@ import { httpStatusCode } from '@/util/http-status'
 const {VITE_REST_API} = import.meta.env;
 
 function localAxios() {
-    console.log("히히 API_URL 발사 -> ", VITE_REST_API)
+    // console.log("히히 API_URL 발사 -> ", VITE_REST_API)
     // AccessToken 자동 발급해주고 싶어
     const instance = axios.create({
         baseURL:`${VITE_REST_API}`,
@@ -45,6 +45,7 @@ function localAxios() {
             // 페이지가 새로고침되어 저장된 accessToken이 없어진 경우
             // or 토큰 자체가 만료
             if (status == httpStatusCode.UNAUTHORIZED) {
+                alert("accessToken이 없어짐!!!!!!")
                 const originalRequest = config;
 
                 // Token을 재발급하는 동안 다른 요청은 대기
@@ -54,12 +55,30 @@ function localAxios() {
 
                     // 에러가 발생했던 컴포넌트의 axios로 이동하고 싶으면 
                     // 반드시 return 붙여라
-                    return await instance.post("/authentication/regenerate")
+                    return await instance.post(
+                        "/authentication/regenerate", // 주소
+                        {refreshToken : sessionStorage.getItem("refreshToken")}, // body
+                        {Authorization : localStorage.getItem("accessToken")} // header
+                        )
                         .then((response) => {
-                            const newAccessToken = response.data.Authorization;
+                            alert("accessToken 재발급!!!")
+                            let data = response;
+                            let accessToken = data["headers"]["accesstoken"];
+                            let refreshToken = data["headers"]["refreshtoken"];
+                            console.log("히히 새로운 access-token 발사 -> ", accessToken);
+                            console.log("히히 새로운 refresh-token 발사 -> ", refreshToken)
+                            isLogin.value = true;
+                            isLoginError.value = false;
+                            isValidToken.value = true;
+                            let decodedToken = jwtDecode(accessToken);
+                            console.log("히히 decoded-token 발사 -> ",decodedToken);
+                            localStorage.setItem('accessToken',accessToken);
+                            sessionStorage.setItem('refreshToken',refreshToken);
+                            sessionStorage.setItem("id",decodedToken.id);
+                            memberId.value = sessionStorage.getItem("id");
 
-                            instance.defaults.headers.common["Authorization"] = newAccessToken;
-                            originalRequest.headers.Authorization = newAccessToken;
+                            // instance.defaults.headers.common["Authorization"] = newAccessToken;
+                            // originalRequest.headers.Authorization = newAccessToken;
 
                             isTokenRefreshing = false;
 
