@@ -80,7 +80,6 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-validation')
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE")
-    implementation('org.springframework.boot:spring-boot-starter-data-redis')
     // smtp
     implementation("org.springframework.boot:spring-boot-starter-mail")
     // oauth2
