@@ -25,11 +25,15 @@
             <v-card class="thumbnail" @click="showBoardDetail(post)">
                 <v-card-title class="text-center">{{ post.title }}</v-card-title>
                 <v-card-subtitle class=text-right>{{ post.member.nickname }}</v-card-subtitle>
-                <v-card-text class="text-right">{{formatDateTime(post.file.updatedTime)}}</v-card-text>
-                <v-card-item>
+                <v-card-text class="text-right">{{formatDateTime(post.updatedTime)}}</v-card-text>
+                <v-card-item v-if="post.file">
                     <v-img :src="post.file.url" class="thumb_img"/>
                 </v-card-item>
-                <v-card-text>{{ post.content }}</v-card-text>
+                <v-card-text>
+                    <div>
+                        <div v-html="post.content"></div>
+                    </div>
+                </v-card-text>
             </v-card>
         </v-col>
     </v-row>
