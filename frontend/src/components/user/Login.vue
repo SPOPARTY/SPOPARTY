@@ -61,6 +61,7 @@ import {useRouter} from 'vue-router'
 import { useManagementStore } from '@/stores/member/managements';
 import TempPwd from "@/components/user/TempPwd.vue";
 
+
 const router = useRouter();
 
 const managementStore = useManagementStore();
@@ -109,6 +110,7 @@ function showFindPwdModal() {
 const isKakaoLoginModalVisible = ref(false)
 function showKakaoLoginModal() {
   isKakaoLoginModalVisible.value = true;
+  window.open("https://i10a802.p.ssafy.io/api/oauth2/authorization/kakao");
 }
 </script>
 

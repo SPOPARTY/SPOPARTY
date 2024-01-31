@@ -19,14 +19,17 @@
                     v-if="isDetailVisible && currentPost.id === post.id" 
                     :post="currentPost"
                     @detail-close="isDetailVisible = false"
-                    @delete-post="deletePost"
                 />
                 <v-card @click="showBoardDetail(post)" >
                     <v-card-title>{{ post.title }}</v-card-title>
                     <v-card-subtitle>{{ post.member.nickname }}</v-card-subtitle>
-                    <v-card-text v-if="post.file">{{ formatDateTime(post.file.updatedTime) }}</v-card-text>
-                    <v-card-text>{{ post.content }}</v-card-text>
+                    <v-card-text >{{ formatDateTime(post.updatedTime) }}</v-card-text>
                     <v-card-item v-if="post.file"> <img class="thumbnail" :src="post.file.url" :alt="post.title"></v-card-item>
+                    <v-card-text>
+                        <div>
+                            <div v-html="post.content"></div>
+                        </div>
+                    </v-card-text>
                 </v-card>
             </v-col>
         </v-row>
@@ -82,7 +85,6 @@ const showBoardDetail = (post) => {
     currentPost.value = post 
     isDetailVisible.value  = true;
 }
-
 
 
 
