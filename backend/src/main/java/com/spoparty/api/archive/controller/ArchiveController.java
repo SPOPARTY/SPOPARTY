@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spoparty.api.archive.entity.Archive;
-import com.spoparty.api.archive.repository.projection.ArchiveProjection;
+import com.spoparty.api.archive.entity.ArchiveProjection;
 import com.spoparty.api.archive.service.ArchiveService;
 import com.spoparty.api.club.repository.ClubRepository;
 import com.spoparty.api.common.dto.ApiResponse;

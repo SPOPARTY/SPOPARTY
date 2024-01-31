@@ -1,16 +1,14 @@
-package com.spoparty.api.member.repository.projection;
+package com.spoparty.api.member.entity;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.spoparty.api.football.entity.Team;
 
 public interface MemberProjection {
 
 	Long getId();
 
 	String getLoginId();
-
-	String getLoginPwd();
 
 	String getNickname();
 
@@ -20,8 +18,7 @@ public interface MemberProjection {
 
 	String getRoleName();
 
-	@JsonProperty("teamId")
-	Long getTeam_id();
+	Team getTeam();
 
 	int getState();
 

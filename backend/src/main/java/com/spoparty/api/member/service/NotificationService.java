@@ -11,9 +11,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.Notification;
+import com.spoparty.api.member.entity.NotificationProjection;
 import com.spoparty.api.member.repository.MemberRepository;
 import com.spoparty.api.member.repository.NotificationRepository;
-import com.spoparty.api.member.repository.projection.NotificationProjection;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

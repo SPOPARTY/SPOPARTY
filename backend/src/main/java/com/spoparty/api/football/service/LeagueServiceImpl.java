@@ -12,7 +12,7 @@ import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.football.response.SeasonLeagueDTO;
 import com.spoparty.api.football.response.SeasonLeagueTeamStandingDTO;
-import com.spoparty.api.member.repository.projection.FollowingTeamProjection;
+import com.spoparty.api.member.entity.FollowingTeamProjection;
 import com.spoparty.api.member.service.MemberService;
 import com.spoparty.security.model.PrincipalDetails;
 
@@ -53,9 +53,8 @@ public class LeagueServiceImpl implements LeagueService {
 
 		List<SeasonLeagueTeamStandingDTO> seasonLeagueTeamStandingDTOs = entityToDTOTeamStanding(seasonLeagueTeams);
 
-
 		// 로그인 중이라면
-		if (principalDetails != null){
+		if (principalDetails != null) {
 			long memberId = principalDetails.getMember().getId();
 
 			// 팔로우중인 팀 표시하기

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spoparty.api.archive.entity.Archive;
+import com.spoparty.api.archive.entity.ArchiveProjection;
 import com.spoparty.api.archive.repository.ArchiveRepository;
-import com.spoparty.api.archive.repository.projection.ArchiveProjection;
 import com.spoparty.api.member.service.FileService;
 
 import lombok.RequiredArgsConstructor;

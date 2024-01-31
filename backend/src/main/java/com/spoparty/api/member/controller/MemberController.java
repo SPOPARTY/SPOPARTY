@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.common.exception.UnauthorizedException;
 import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.member.entity.FollowingTeam;
+import com.spoparty.api.member.entity.FollowingTeamProjection;
 import com.spoparty.api.member.entity.Member;
-import com.spoparty.api.member.repository.projection.FollowingTeamProjection;
+import com.spoparty.api.member.entity.MemberProjection;
 import com.spoparty.api.member.service.MemberService;
 import com.spoparty.security.model.PrincipalDetails;
 
@@ -39,7 +41,7 @@ public class MemberController {
 	// Member 기능
 	@GetMapping("/{memberId}")
 	public ResponseEntity<?> getMember(@PathVariable("memberId") Long memberId) {
-		Member member = memberService.findById(memberId);
+		MemberProjection member = memberService.findByIdProjection(memberId);
 		if (member == null)
 			return ApiResponse.error(EXAMPLE_ERROR);
 		else
@@ -49,7 +51,7 @@ public class MemberController {
 	@PostMapping("/register")
 	public ResponseEntity<?> registerMember(@RequestBody Member member) {
 		log.info("MemberController.register{}: ", member);
-		Member loginMember = memberService.findByLoginId(member.getLoginId());
+		MemberProjection loginMember = memberService.findByLoginIdProjection(member.getLoginId());
 		if (loginMember != null)
 			return ApiResponse.error(CONFLICT_DATA);
 
@@ -59,11 +61,11 @@ public class MemberController {
 
 	@PutMapping
 	public ResponseEntity<?> modifyMember(@RequestBody Member member) {
-		member = memberService.updateMember(member);
-		if (member == null)
+		MemberProjection data = memberService.updateMember(member);
+		if (data == null)
 			return ApiResponse.error(DATA_NOT_FOUND);
 		else
-			return ApiResponse.success(UPDATE_SUCCESS, member);
+			return ApiResponse.success(UPDATE_SUCCESS, data);
 	}
 
 	@DeleteMapping("/{memberId}")
@@ -107,6 +109,8 @@ public class MemberController {
 
 	@DeleteMapping("/logout")
 	public ResponseEntity<?> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+		if (principalDetails == null)
+			throw new UnauthorizedException(UNAUTHORIZED_USER);
 		memberService.deleteToken(principalDetails.getMember().getId());
 		return ApiResponse.success(DELETE_SUCCESS, null);
 	}

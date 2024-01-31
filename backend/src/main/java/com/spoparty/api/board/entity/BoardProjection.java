@@ -1,15 +1,15 @@
-package com.spoparty.api.board.repository.projection;
+package com.spoparty.api.board.entity;
 
 import java.time.LocalDateTime;
 
 import com.spoparty.api.member.entity.File;
-import com.spoparty.api.member.entity.Member;
+import com.spoparty.api.member.entity.MemberProjection;
 
 public interface BoardProjection {
 
 	Long getId();
 
-	Member getMember();
+	MemberProjection getMember();
 
 	Long getClub_id();
 
