@@ -109,6 +109,10 @@ pipeline {
                 sh '''
                 ssh -o StrictHostKeyChecking=no $releaseServerAccount@$releaseServerUri 
                 docker-compose down
+                docker stop backend
+                docker stop frontend
+                docker rm backend
+                docker rm frontend
                 '''
                 }
             }
