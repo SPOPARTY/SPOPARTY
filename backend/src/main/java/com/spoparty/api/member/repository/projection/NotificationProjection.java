@@ -1,5 +1,7 @@
 package com.spoparty.api.member.repository.projection;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public interface NotificationProjection {
@@ -14,4 +16,8 @@ public interface NotificationProjection {
 	String getContent();
 
 	int getState();
+
+	LocalDateTime getCreatedTime();
+
+	LocalDateTime getUpdatedTime();
 }
