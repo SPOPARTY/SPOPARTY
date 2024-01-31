@@ -63,7 +63,6 @@ onMounted(() => {
 const posts = ref([]);
 watch(() => boardStore.boardList,(newBoardList) => {
     posts.value = newBoardList;
-    boardStore.getBoardList(clubId);
 })
 
 
