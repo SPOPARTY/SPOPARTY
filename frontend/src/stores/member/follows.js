@@ -16,17 +16,17 @@ export const useFollowStore = defineStore("follow", () => {
 
     const getTeamList = () => {
         requestAllTeamList(
-            (res) => {
-                console.log(res)
-                if(res.status === httpStatusCode.OK) {
-                    console.log("히히 모든 팀 가져오기 발사")
-                    teamList.value = res.data
+            ({data,status}) => {
+                console.log("히히 모든 팀 가져오기 발사")
+                // console.log(data.data)
+                if(status === httpStatusCode.OK) {
+                    teamList.value = data.data
                     console.log(teamList.value)
                     return teamList.value;
                 }
             },
             (error) => {
-                console.log(error)
+                console.error(error)
                 if(error.status === httpStatusCode.NOTFOUND) {
                     console.log(error)
 
@@ -39,11 +39,11 @@ export const useFollowStore = defineStore("follow", () => {
     const getFollowList = (memberId) => {
         requestFollowList(
         memberId,
-        (res) => {
-            console.log(res)
-            if(res.status === httpStatusCode.OK) {
+        ({data,status}) => {
+            console.log(data)
+            if(status === httpStatusCode.OK) {
                 console.log("히히 팔로우 리스트 발사")
-                followList.value = res.data;
+                followList.value = data.data;
                 console.log(followList.value)
             }
         }),

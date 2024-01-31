@@ -151,16 +151,18 @@ const emailDomain = ref(memberInfo.value.email.split("@")[1]);
 const getMemberInfo = () => {
     getMember(
         memberId.value,
-        ({data}) => {
-        console.log(data);
-        memberInfo.value.id = data.id;
-        memberInfo.value.loginId = data.loginId;
-        memberInfo.value.loginPwd = data.loginPwd;
-        memberInfo.value.nickname = data.nickname;
-        memberInfo.value.email = data.email;
-        memberInfo.value.team.id = data.team.id;
-        memberInfo.value.team.logo = data.team.logo;
-        memberInfo.value.team.status = data.status;
+        ({data,status}) => {
+        // console.log("data ==> ",data);
+        // console.log("message ==> ",data.message);
+        // console.log("status ==> ",status);
+        memberInfo.value.id = data.data.id;
+        memberInfo.value.loginId = data.data.loginId;
+        memberInfo.value.loginPwd = data.data.loginPwd;
+        memberInfo.value.nickname = data.data.nickname;
+        memberInfo.value.email = data.data.email;
+        memberInfo.value.team.id = data.data.team.id;
+        memberInfo.value.team.logo = data.data.team.logo;
+        memberInfo.value.team.status = data.data.status;
         },
         (error) => {
         console.log("살려줘")
@@ -240,7 +242,7 @@ function showEmblemModal() {
     isEmblemModalVisible.value = true;
 }
 
-const emblemIcon = ref('/src/assets/mancity.png');
+const emblemIcon = ref('/spo-icon.png');
 const emblemName = ref('맨체스터 시티');
 
 function setEmblem(newEmblem) {

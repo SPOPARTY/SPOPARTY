@@ -10,7 +10,7 @@
             <v-card>
                 <v-card-text class="mention">
                     <br>
-                    <h1>잠깐!</h1> <br>
+                    <h1 >잠깐!</h1> <br>
                     당신은 <b><u>그룹장</u></b> 아닙니까?<br>
                     어떻게 그룹을 <b><i>헌신짝</i></b><br>처럼
                     내칠 수가 있습니까?<br>
@@ -200,6 +200,9 @@ onMounted(() => {
 
 
 <style scoped lang="scss">
+h1{
+    color:black;
+}
 .v-container {
     padding:0px;
 }

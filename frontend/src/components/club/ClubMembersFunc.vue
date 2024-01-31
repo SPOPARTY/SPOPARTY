@@ -2,18 +2,17 @@
     <v-card class= "ma-5" outlined>
         <v-row class="pa-4" align="center" justify="start" no-gutters style="background-color: #E0E0E0;">
             <v-col cols="10">
-                <div class="headline">그룹 이름</div>
-                <div>정원 - {{clubMembers.length}}/6</div>
+                <div class="headline">{{ clubInfo.name }}</div>
+                <div>정원 - {{clubMemberList.length}}/{{ clubInfo.maxParticipants }}</div>
             </v-col>
             <v-col cols="2">
                 <v-icon large @click="showClubMemberFunc">mdi-cog</v-icon>
                 <ClubLeader 
-                    v-if="isClubMemberFuncVisible && loginUser.role === '그룹장'"
-                    :role="loginUser.role"
+                    v-if="isClubMemberFuncVisible && clubInfo.hostId == memberId"
                     @club-leader-close="closeClubMemberFunc"
                     />
                 <ClubMember 
-                    v-if="isClubMemberFuncVisible && loginUser.role === '그룹원'"
+                    v-if="isClubMemberFuncVisible && clubInfo.hostId != memberId"
                     @club-member-close="closeClubMemberFunc"
                     />
             </v-col>
@@ -36,13 +35,14 @@
         >
         <v-card class="member-list">
             <v-card-title>그룹원 목록</v-card-title>
-            <div v-for="(member, index) in clubMembers" :key="index" class="member">
+            <div v-for="(member, index) in clubMemberList" :key="index" class="member">
                 <v-card-text>
-                    {{ member.name}}
-                    <v-icon v-if="member.role === '그룹장'" class="star">mdi-star</v-icon>
+                    {{ member.memberNickName}}
+                    <v-icon v-if="member.role == 'host'" class="star">mdi-star</v-icon>
                 </v-card-text>
             </div>
         </v-card>
+        
     </v-dialog>
 
     <!-- 그룹으로 초대 -->
@@ -67,12 +67,26 @@
   </template>
 
 <script setup>
-import {ref} from 'vue'
-import { useRouter } from 'vue-router';
+import {ref,onMounted,computed} from 'vue'
+import { useRoute, useRouter } from 'vue-router';
+
+import {useClubStore} from '@/stores/club/clubs';
+
 import ClubLeader from '@/components/club/ClubLeader.vue';
 import ClubMember from '@/components/club/ClubMember.vue';
 
-const router = useRouter();
+const props = defineProps({
+    clubInfo:Object,
+    clubMemberList:Object
+})
+
+const clubInfo = computed(()=> {
+    return props.clubInfo
+})
+
+const clubMemberList = computed(() => {
+    return props.clubMemberList
+})
 
 const clubMembers = ref([
     {memberId : 1, name : "실버스타", role : "그룹원"},
@@ -83,7 +97,7 @@ const clubMembers = ref([
     {memberId : 6, name : "글로리맨유", role : "그룹원"},
 ])
 
-const loginUser = clubMembers.value[1];
+const memberId = sessionStorage.getItem("id");
 
 // 그룹원 보기 on/off
 const isClubMemberVisible = ref(false)
