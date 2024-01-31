@@ -44,4 +44,13 @@ public class PartyMember extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private RoleType role;
+
+	public static PartyMember createPartyMember(Party party, Member member, RoleType role) {
+		PartyMember partyMember = new PartyMember();
+		partyMember.party = party;
+		partyMember.member = member;
+		partyMember.role = role;
+		party.increaseParticipants();
+		return partyMember;
+	}
 }
