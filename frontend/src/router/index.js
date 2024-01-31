@@ -45,19 +45,23 @@ const router = createRouter({
     {
       path: "/signup",
       name: "Signup",
-      component: Signup
+      component: () => import("@/components/user/Signup.vue")
     },
     {
       path: "/login",
       name: "Login",
-      component: Login
+      component: () => import("@/components/user/Login.vue")
     },
     {
       path:"/mypage",
       name:"Mypage",
-      component: MyPage,
+      component: () => import("@/components/user/Mypage.vue")
     },
-
+    // {
+    //   path:"/kakao",
+    //   name:"kakao",
+    //   component: () => import("@/views/Kakao.vue")
+    // },
     {
       path: "/club/:clubId",
       name: "ClubView",

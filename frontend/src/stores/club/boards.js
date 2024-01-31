@@ -21,7 +21,6 @@ export const useBoardStore = defineStore("board",() => {
                     boardList.value = res.data.data;
                     console.log("******* 게시판에 있는 게시물 전체 조회*******")
                     console.log(boardList.value)
-                    // alert("게시글 리스트 잘 불러옴!!",res.data.status)
                 }
             },
             (error) => {
@@ -55,12 +54,14 @@ export const useBoardStore = defineStore("board",() => {
             (res) => {
                 console.log("히히 게시글 작성 발사")
                 console.log(res)
-                if(res.status === httpStatusCode.OK) {
+                if(res.data.status === httpStatusCode.CREATE) {
                     console.log("*******게시글이 잘 작성 됨*******")
-                    alert("게시글 작성 완료!")
-                    const clubId = data.clubId
+                    console.log(res.data.data)
+                    console.log(res.data.data["updated_time"])
+                    const clubId = res.data.data["club_id"] // dataForm이므로 data.get()을 써야
                     getBoardList(clubId);
-                    window.location.replace(`/club/${clubId}.board`)
+                    alert("게시글 작성 완료")
+                    window.location.replace(`/club/${clubId}/board`)
                 }
             },
             (error) => {
@@ -75,26 +76,33 @@ export const useBoardStore = defineStore("board",() => {
             (res) => {
                 console.log("히히 게시글 수정 발사")
                 console.log(res)
-                if(res.status === httpStatusCode.OK) {
+                if(res.data.status === httpStatusCode.CREATE) {
                     console.log("*******게시글이 잘 수정 됨*******")
-                    alert(res.data.status)
+                    console.log(res.data.data)
+                    const clubId = res.data.data["club_id"];
+                    console.log(res.data.data["updated_time"])
+                    getBoardList(clubId);
+                    alert("게시글 수정 완료")
+                    window.location.replace(`/club/${clubId}/board`)
                 }
             },
             (error) => {
                 console.log(error);
+                alert("게시글 수정 실패!")
             }
         )
     }
 
-    const deleteBoard = (data) => {
+    const deleteBoard = (boardId,clubId) => {
         requestDeleteBoard(
-            data,
+            boardId,
             (res) => {
                 console.log("히히 게시글 삭제 발사")
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     console.log("*******게시글이 잘 삭제 됨*******")
-                    alert(res.data.status)
+                    alert("게시글 삭제 완료")
+                    getBoardList(clubId);
                 }
             },
             (error) => {

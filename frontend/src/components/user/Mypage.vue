@@ -104,10 +104,10 @@ import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
 import FollowList from '@/components/user/FollowList.vue';
 
+const followStore = useFollowStore();
 
 const router = useRouter();
 const memberId = ref("");
- const followStore = useFollowStore();
 const teamList = ref(null);
 const followList = ref(null);
 
@@ -129,6 +129,7 @@ watch(() => followStore.followList, (newFollowList) => {
 watch(() => followStore.teamList, (newTeamList) => {
     teamList.value = newTeamList
 },{immediate:true})
+
 
 
 

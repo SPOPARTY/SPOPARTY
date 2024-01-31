@@ -45,7 +45,7 @@ const memberId = sessionStorage.getItem("id");
 const clubId = route.params.clubId;
 const title = ref('');
 const content = ref('');
-const file = ref([]);
+const file = ref([]); // 업로드 데이터는 배열에 담음
 
 const titleRules = [
     v => !!v || '제목을 필수입니다!',
@@ -55,15 +55,16 @@ const titleRules = [
 
 
 const writeBoard = () => {
-    const data = {
-        memberId : memberId,
-        clubId : clubId,
-        title : title.value,
-        content : content.value,
-        file : file.value,
-    }
+    // 사진을 비롯한 미디어 파일들은 form형식으로 보내줘야한다.
+    const formdata = new FormData(); 
+    formdata.append("memberId",memberId);
+    formdata.append("clubId",clubId);
+    formdata.append("title",title.value);
+    formdata.append("content",content.value);
+    formdata.append("file",file.value[0])
+
     if (confirm("게시글을 작성하시겠습니까??") === true) {
-        boardStore.createBoard(data);
+        boardStore.createBoard(formdata);
     }
 }
 

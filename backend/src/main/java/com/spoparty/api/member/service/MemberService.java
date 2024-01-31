@@ -10,12 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.football.repository.TeamRepository;
 import com.spoparty.api.member.entity.FollowingTeam;
+import com.spoparty.api.member.entity.FollowingTeamProjection;
 import com.spoparty.api.member.entity.Member;
+import com.spoparty.api.member.entity.MemberProjection;
 import com.spoparty.api.member.entity.MemberToken;
 import com.spoparty.api.member.repository.FollowingTeamRepository;
 import com.spoparty.api.member.repository.MemberRepository;
 import com.spoparty.api.member.repository.MemberTokenRepository;
-import com.spoparty.api.member.repository.projection.FollowingTeamProjection;
 import com.spoparty.common.util.JwtTokenUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,16 @@ public class MemberService {
 		return memberRepository.findById(id, Member.class).orElse(null);
 	}
 
+	public MemberProjection findByIdProjection(Long id) {
+		return memberRepository.findById(id, MemberProjection.class).orElse(null);
+	}
+
 	public Member findByLoginId(String loginId) {
 		return memberRepository.findByLoginId(loginId, Member.class).orElse(null);
+	}
+
+	public MemberProjection findByLoginIdProjection(String loginId) {
+		return memberRepository.findByLoginId(loginId, MemberProjection.class).orElse(null);
 	}
 
 	public Member registerMember(Member member) {
@@ -55,7 +64,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public Member updateMember(Member member) {
+	public MemberProjection updateMember(Member member) {
 		Member data = memberRepository.findById(member.getId(), Member.class).orElse(null);
 		if (data == null)
 			return null;
@@ -65,7 +74,7 @@ public class MemberService {
 			data.setEmail(member.getEmail());
 		if (member.getNickname() != null)
 			data.setNickname(member.getNickname());
-		return data;
+		return memberRepository.findById(member.getId(), MemberProjection.class).orElse(null);
 	}
 
 	@Transactional

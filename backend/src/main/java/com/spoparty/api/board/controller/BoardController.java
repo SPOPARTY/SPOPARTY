@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spoparty.api.board.entity.Board;
-import com.spoparty.api.board.repository.projection.BoardProjection;
+import com.spoparty.api.board.entity.BoardProjection;
 import com.spoparty.api.board.service.BoardService;
 import com.spoparty.api.club.repository.ClubRepository;
 import com.spoparty.api.common.dto.ApiResponse;
