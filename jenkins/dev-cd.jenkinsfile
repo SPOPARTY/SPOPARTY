@@ -98,7 +98,7 @@ pipeline {
                  sshagent(credentials: ['ubuntu-a802']) {
                 sh '''
                 scp -i I10A802T.pem -r /var/jenkins_home/workspace/spoparty-publish/frontend/dist/. $releaseServerAccount@$releaseServerUri:/usr/share/nginx/html
-                 scp -i I10A802T.pem -r /var/jenkins_home/workspace/spoparty-publish/docker-compose.yml $releaseServerAccount@$releaseServerUri:/home/ubuntu
+                scp -i I10A802T.pem -r /var/jenkins_home/workspace/spoparty-publish/docker-compose.yml $releaseServerAccount@$releaseServerUri:/home/ubuntu
                 '''
                 }
             }
@@ -109,10 +109,14 @@ pipeline {
                 sh '''
                 ssh -o StrictHostKeyChecking=no $releaseServerAccount@$releaseServerUri 
                 docker-compose down
-                docker stop backend
-                docker stop frontend
-                docker rm backend
-                docker rm frontend
+
+                if [ docker ps backend ]; then
+                    docker stop backend && docker rm -f backend
+                fi
+
+                if [ docker ps frontend ]; then
+                    docker stop frontend && docker rm -f frontend
+                fi
                 '''
                 }
             }
