@@ -3,6 +3,8 @@ package com.spoparty.api.party.entity;
 import static com.spoparty.api.common.constants.ErrorCode.*;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Where;
 
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
@@ -30,14 +32,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter @Setter
-@ToString
+@Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = "club")
+@Where(clause = "is_deleted = 0")
 public class Party extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "party_id")
-	private long id;
+	private Long id;
 
 	@Column(nullable = false, name = "session_id") // openVidu sessionId
 	private String openviduSessionId;
@@ -46,6 +50,7 @@ public class Party extends BaseEntity {
 	@Column(nullable = false, length = 30)
 	private String title;
 
+	@Column(nullable = false)
 	@ColumnDefault("6")
 	private Integer maxParticipants = 6;
 
@@ -59,6 +64,10 @@ public class Party extends BaseEntity {
 	private String fixtureUrl;
 
 	@Setter
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fixture_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Fixture fixture;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member host;
