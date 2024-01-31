@@ -45,7 +45,7 @@ const memberId = sessionStorage.getItem("id");
 const clubId = route.params.clubId;
 const title = ref('');
 const content = ref('');
-const file = ref([]);
+const file = ref([]); // 업로드 데이터는 배열에 담음
 
 const titleRules = [
     v => !!v || '제목을 필수입니다!',
@@ -61,15 +61,7 @@ const writeBoard = () => {
     formdata.append("clubId",clubId);
     formdata.append("title",title.value);
     formdata.append("content",content.value);
-
-    // for문을 돌려서 이미지 배열을 1개씩 append로 추가 -> 우리는 1개만 넣을거지만... 혹시 모르니 만들어주자
-    if(file.value.length > -1) {
-        for (let i = 0; i < file.value.length; i++) {
-            const imgForm = file.value[i]
-
-            formdata.append(`file[${i}]`,imgForm)
-        }
-    }
+    formdata.append("file",file.value[0])
 
     if (confirm("게시글을 작성하시겠습니까??") === true) {
         boardStore.createBoard(formdata);

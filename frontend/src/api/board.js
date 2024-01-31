@@ -16,12 +16,13 @@ function requestSearchBoard(boardId, success, fail) {
 
 // 게시글 작성
 function requestCreateBoard(data,success,fail) {
-    local.defaults.headers["Content-type"] = "multipart/form-data"
+    local.defaults.headers["Content-Type"] = "multipart/form-data"
     local.post("/boards",data).then(success).catch(fail);
 }
 
 // 게시글 수정
 function requestUpdateBoard(data,success,fail) {
+    local.defaults.headers["Content-Type"] = "multipart/form-data"
     local.put("/boards",data).then(success).catch(fail);
 }
 

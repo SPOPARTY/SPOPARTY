@@ -104,10 +104,10 @@ import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
 import FollowList from '@/components/user/FollowList.vue';
 
+const followStore = useFollowStore();
 
 const router = useRouter();
 const memberId = ref("");
- const followStore = useFollowStore();
 const teamList = ref(null);
 const followList = ref(null);
 
@@ -124,11 +124,13 @@ onMounted(() => {
 watch(() => followStore.followList, (newFollowList) => {
     followList.value = newFollowList
     console.log("onMounted된 후 팔로우 리스트! -> ",followList.value);
+    followStore.getFollowList(memberId.value);
 },{immediate:true})
 
 watch(() => followStore.teamList, (newTeamList) => {
     teamList.value = newTeamList
 },{immediate:true})
+
 
 
 
