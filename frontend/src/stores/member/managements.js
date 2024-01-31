@@ -18,7 +18,7 @@ export const useManagementStore = defineStore("management",() => {
     const memberInfo = ref(null);
     const isLoginError = ref(false);
     const isValidToken = ref(false);
-    const memberId = ref(null)
+    const memberId = ref(null);
 
 
     const login = async(loginMember) => {

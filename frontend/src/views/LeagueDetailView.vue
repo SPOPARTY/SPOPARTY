@@ -8,6 +8,7 @@
                 <LeagueTable :league-id="leagueId"/>
             </v-col>
         </v-row>
+        <br>
 </v-container>
 </template>
 
@@ -31,7 +32,7 @@ h1 {
      /* background-color: #E0E0E0; */
      /* 타이틀 부분의 백그라운드 컬러 */
      white-space: nowrap;
-     min-width: 800px;
+     min-width: 1100px;
 }
 
 </style>

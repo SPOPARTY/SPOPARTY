@@ -3,13 +3,13 @@
         <v-row class="pb-1 table-section">
             <v-card flat class="card-ranking">
                 <v-card-title>
-                    <v-row align="center" justify="center" style="min-width: 800px;">
+                    <v-row class="my-1" align="center" justify="center" style="min-width: 800px;">
                         <v-col cols="3"></v-col>
                         <v-col cols="3" align="center">
                             <v-img :src="logoPath" class="league-logo mr-2" contain></v-img>
                         </v-col>
                         <v-col cols="3" :style="{ fontSize: '1.5rem' }">
-                            {{ league.name }} Ranking
+                            {{ league.nameKr }} Ranking
                         </v-col>
                         <v-col cols="3"></v-col>
                     </v-row>
@@ -20,24 +20,31 @@
                                 style="width: 600px;" align="center"></v-text-field>
                         </v-col>
                     </v-row>
+                    <br>
                 </v-card-title>
 
                 <v-data-table :headers="headers" :items="teams" :search="search" :items-per-page="-1" class="elevation-1"
                     hide-default-footer>
-                    <!-- 팀 상세 페이지로 보내기 (밑줄 none)-->
-                    <template v-slot:item.name="{ item }">
-                        <router-link :to="`/team/${item.teamId}`" style="text-decoration: none;">{{ item.name }}</router-link>
+                    <template v-slot:item.logo="{ item }">
+                        <v-img :src="item.logo" class="mr-2" style="width: 50px; height: 50px;" contain></v-img>
                     </template>
-                    <template v-slot:item.followed="{ item }">
-                        <v-icon v-if="item.followed" color="pink" @click="item.followed = !item.followed">mdi-heart</v-icon>
-                        <v-icon v-else color="grey" @click="item.followed = !item.followed">mdi-heart-outline</v-icon>
+                    <!-- 팀 상세 페이지로 보내기 (밑줄 none)-->
+                    <template v-slot:item.nameKr="{ item }">
+                        <router-link :to="`/team/${item.teamId}`" style="text-decoration: none;">{{ item.nameKr }}</router-link>
+                    </template>
+                    <template v-slot:item.standing.form="{ item }">
+                        {{ inputDash(item.standing.form) }}
+                    </template>
+                    <template v-slot:item.following="{ item }">
+                        <v-icon v-if="checkFollowing(item)" color="pink" @click="changeFollowing(item)">mdi-heart</v-icon>
+                        <v-icon v-else color="grey" @click="changeFollowing(item)">mdi-heart-outline</v-icon>
                     </template>
                     <template v-slot:no-results>
                         <v-alert :value="true" color="error" icon="mdi-alert">
                             Your search for "{{ search }}" found no results.
                         </v-alert>
                     </template>
-                    <template #bottom></template>
+                    <template #bottom><hr><br></template>
                 </v-data-table>
             </v-card>
         </v-row>
@@ -45,88 +52,162 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-// Props 정의
-const props = defineProps({
-    leagueId: {
-        type: Number,
-        required: true,
-    },
+import { useFootballStore } from '@/stores/football/football';
+import { useFollowStore } from '@/stores/member/follows';
+
+const { getFollowList, followList, doFollow, doUnFollow } = useFollowStore();
+
+// 로그인 여부 감지
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
+
+// 로그인한 사용자의 팔로우 목록 가져오기
+if (isLogined.value) {
+    // 사용자 id 가져오기
+    const memberId = sessionStorage.getItem("id");
+
+    // 사용자가 팔로우한 팀 목록 가져오기
+    getFollowList(memberId);
+    const followTeams = ref([]);
+    watch(() => followList.value, (newValue) => {
+        followTeams.value = newValue;
+    });
+}
+
+// // Props 정의
+// const props = defineProps({
+//     leagueId: {
+//         type: Number,
+//         required: true,
+//     },
+// });
+const router = useRouter();
+const leagueId = router.currentRoute.value.params.leagueId;
+
+// 리그, 구단 정보 가져오기
+const footballStore = useFootballStore();
+
+const { getLeagueRanking, getLeagueList } = footballStore;
+
+getLeagueRanking(leagueId);
+
+const teams = ref([]);
+
+watch(() => footballStore.leagueRanking, (newValue) => {
+    teams.value = newValue;
+});
+
+getLeagueList();
+
+const leagues = ref([]);
+
+watch(() => footballStore.leagueList, (newValue) => {
+    leagues.value = newValue;
 });
 
 // 검색어 저장
 const search = ref('');
 
-// 예시 헤더
 // 테이블 헤더
 const headers = ref([
-    { title: '순위', value: 'rank', sortable: true },
-    { title: '팀 이름', value: 'name', sortable: true },
-    { title: '승점', value: 'points', sortable: true },
-    { title: '승', value: 'wins', sortable: true },
-    { title: '패', value: 'losses', sortable: true },
-    { title: '무', value: 'draws', sortable: true },
-    { title: '득점', value: 'goalsFor', sortable: true },
-    { title: '실점', value: 'goalsAgainst', sortable: true },
-    { title: '득실차', value: 'goalDifference', sortable: true },
-    { title: '최근 전적', value: 'recentForm' },
-    { title: '팔로우', value: 'followed', sortable: true },
+    { title: '순위', value: 'standing.rank', sortable: true },
+    { title: '로고', value: 'logo'},
+    { title: '팀 이름', value: 'nameKr', sortable: true },
+    { title: '승점', value: 'standing.points', sortable: true },
+    { title: '승', value: 'standing.win', sortable: true },
+    { title: '패', value: 'standing.lose', sortable: true },
+    { title: '무', value: 'standing.draw', sortable: true },
+    { title: '득점', value: 'standing.goalsFor', sortable: true },
+    { title: '실점', value: 'standing.goalsAgainst', sortable: true },
+    { title: '득실차', value: 'standing.goalDiff', sortable: true },
+    { title: '최근 전적', value: 'standing.form' },
+    { title: '팔로우', value: 'following', sortable: true },
 ]);
 
 // 예시 데이터 // 비로그인시 팔로우 불가능
-const teams = ref([
-    { teamId: 1, rank: 1, name: '팀 A', points: 30, wins: 9, losses: 3, draws: 3, goalsFor: 25, goalsAgainst: 10, goalDifference: 15, recentForm: 'W-W-D-L-W', followed: true },
-    { teamId: 2, rank: 2, name: '팀 B', points: 28, wins: 8, losses: 4, draws: 4, goalsFor: 22, goalsAgainst: 12, goalDifference: 10, recentForm: 'L-W-W-W-D', followed: false },
-    // 추가 팀 데이터...
-]);
-
-// 리그 예시 // id 값에 따옴표 붙여야함
-const leagues = ref([
-    {
-        id: '1',
-        name: '프리미어 리그',
-        logo: 'premier_league.png',
-    },
-    {
-        id: '2',
-        name: '라 리가',
-        logo: 'la_liga.svg',
-    },
-    {
-        id: '3',
-        name: '분데스리가',
-        logo: 'bundesliga.svg',
-    }
-]);
+// teams
+// {
+//     "seasonLeagueTeamId": 1,
+//     "teamId": 1,
+//     "nameKr": "마루쉐",
+//     "nameEng": "maroche",
+//     "logo": "https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg",
+//     "following": false,
+//     "standing": {
+//         "rank": 1,
+//         "points": 10,
+//         "goalDiff": 10,
+//         "form": "WWLDD",
+//         "played": 10,
+//         "win": 3,
+//         "draw": 3,
+//         "lose": 3,
+//         "goalsFor": 1,
+//         "goalsAgainst": 4
+//     }
+// }
 
 // 수정된 computed 속성
 const league = computed(() => {
-    // props.leagueId와 일치하는 리그 객체 찾기
-    const foundLeague = leagues.value.find(league => league.id === props.leagueId);
+    // leagueId와 일치하는 리그 객체 찾기
+    const foundLeague = leagues.value.find(league => league.leagueId == leagueId);
     // 리그 객체가 존재하지 않는 경우를 대비하여 기본값 설정
-    return foundLeague || { name: 'Unknown League', logo: '' };
+    return foundLeague || { nameKr: 'Unknown League', logo: '' };
 });
 
-const logoPath = computed(() => `/${league.value.logo}`);
+const logoPath = computed(() => league.value.logo);
 // const logoPath = '/public/premier_league.png';
+
+const inputDash = (form) => {
+    let result = form[0];
+    for (let i = 1; i < form.length; i++) {
+        result += ' - ' + form[i];
+    }
+    return result;
+};
+
+// 미완성 로직 (팔로우 기능) 차후 수정 필요
+const checkFollowing = (item) => {
+    if (!isLogined.value) {
+        return false;
+    }
+    return followTeams.value.some(team => team.teamId === item.teamId);
+};
+
+const changeFollowing = (item) => {
+    if (!isLogined.value) {
+        alert('로그인이 필요한 서비스입니다.');
+        return;
+    }
+    const oldVal = item.following;
+    if (item.following) {
+        doUnFollow(memberId, item.teamId);
+    } else {
+        doFollow(memberId, item.teamId);
+    }
+    item.following = !oldVal;
+};
 
 </script>
 
 <style>
 .league-logo {
-    width: 150px;
-    height: 150px;
-    min-width: 150px;
+    width: 125px;
+    height: 125px;
+    min-width: 125px;
 }
 
 .table-section {
     white-space: nowrap;
+    /* min-width: 1100px */
+
 }
 
 .card-ranking {
     width: 100%;
+    min-width: 1000px;
 }
 
 .team-name-link {
@@ -134,5 +215,10 @@ const logoPath = computed(() => `/${league.value.logo}`);
     color: #1976D2;
     /* Vuetify 기본 색상 */
     /* text-decoration: underline; */
+}
+
+hr {
+    border: 1px solid #E0E0E0;
+    /* 밑줄 색상 */
 }
 </style>
