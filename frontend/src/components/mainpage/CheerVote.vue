@@ -2,7 +2,7 @@
   <v-container fluid class="pa-2 fill-height part-section">
     <v-row justify="center">
       <v-col cols="12" class="d-flex flex-column align-center justify-center">
-        <v-carousel class='carousel' cycle interval="7000" height="450px" hide-delimiter-background color="red">
+        <v-carousel class='carousel' cycle interval="6000" height="450px" hide-delimiter-background color="red">
           <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
             <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
               <!-- 경기 기본 정보 -->
@@ -52,7 +52,22 @@
 
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, watch, onMounted, watchEffect } from 'vue';
+import { useFootballStore } from '@/stores/football/football';
+
+const footballStore = useFootballStore();
+
+const { getCheersData } = footballStore;
+
+// 비동기 함수 호출
+getCheersData();
+
+// cheersData가 업데이트 되면 cheer를 업데이트합니다.
+const cheer = ref(null);
+watch(() => footballStore.cheersData, (newVal) => {
+  cheer.value = newVal;
+}, { immediate: true });
+
 
 function convertToBoolean(str) {
   return str === "true";
@@ -64,70 +79,41 @@ function formatDate(dateStr) {
 }
 
 // 예시 응원 데이터
-const cheer = ref(
-  [
-    {
-      "cheerFixtureId": 1,
-      "already_cheer": "true",
-      "homeTeamCount": 123,
-      "awayTeamCount": 133,
-      "fixture": {
-        "fixtureId": "1",
-        "startTime": "YYYY-MM-DD hh:mm:ss.000000",
-        "round": "32강",
-        "status": "경기 시작 상태",
-        "homeTeamGoal": 1,
-        "awayTeamGoal": 1,
-        "chosenTeam": "home",
-        "league": {
-          "leagueId": "1",
-          "nameKr": "프리미어 리그",
-          "logo": "/premier_league.png"
-        },
-        "homeTeam": {
-          "seasonLeagueTeamId": "1",
-          "teamId": "1",
-          "nameKr": "맨유",
-          "logo": "/spo-icon.png",
-        },
-        "awayTeam": {
-          "seasonaLeagueTeamId": "1",
-          "teamId": "2",
-          "nameKr": "토트넘",
-          "logo": "/spo-icon.png",
-        }
-      }
-    },
-    {
-      "cheerFixtureId": 2,
-      "already_cheer": "false",
-      "homeTeamCount": 280,
-      "awayTeamCount": 72,
-      "fixture": {
-        "fixtureId": 3,
-        "startTime": "2023-01-17 15:00",
-        "chosenTeam": "null",
-        "league": {
-          "leagueId": "1",
-          "nameKr": "프리미어 리그",
-          "logo": "/premier_league.png"
-        },
-        "homeTeam": {
-          "teamId": 1,
-          "nameKr": "맨체스터 유나이티드",
-          "nameEng": "manchester united",
-          "logo": "/spo-icon.png",
-        },
-        "awayTeam": {
-          "teamId": 4,
-          "nameKr": "맨체스터 시티",
-          "nameEng": "manchester city",
-          "logo": "/spo-icon.png",
-        }
-      }
-    }
-  ]
-)
+// cheer
+// {
+//     "cheerFixtureId": 3,
+//     "alreadyCheer": false,
+//     "homeCount": null,
+//     "awayCount": null,
+//     "cheerTeamId": null,
+//     "fixture": {
+//         "fixtureId": 2,
+//         "startTime": "2024-01-26T12:00:00",
+//         "round": "5차전",
+//         "status": "not start",
+//         "homeTeamGoal": 0,
+//         "awayTeamGoal": 0,
+//         "league": {
+//             "leagueId": 1,
+//             "nameKr": "챔피언십",
+//             "logo": "https://media.api-sports.io/football/leagues/40.png"
+//         },
+//         "homeTeam": {
+//             "seasonLeagueTeamId": 1,
+//             "teamId": 1,
+//             "nameKr": "마루쉐",
+//             "nameEng": "maroche",
+//             "logo": "https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg"
+//         },
+//         "awayTeam": {
+//             "seasonLeagueTeamId": 4,
+//             "teamId": 4,
+//             "nameKr": "멍뭉",
+//             "nameEng": "cccc",
+//             "logo": "https://source.unsplash.com/random/300x300?emblem"
+//         }
+//     }
+// }
 
 function voteForTeam(matchIndex, team) {
   const match = cheer.value[matchIndex];

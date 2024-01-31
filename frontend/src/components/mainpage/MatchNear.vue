@@ -9,7 +9,10 @@
       <v-col cols="12" md="6" v-for="match in matches" :key="match.fixtureId" class="mb-4">
         <v-card class="pa-3 match-card" outlined tile>
           <div class="text-center">
+            <!-- 경기 시작 시간 -->
             <p class="mb-2">{{ formatDate(match.startTime) }}</p>
+            <!-- 남은 시간 표시 -->
+            <p class="mb-2">{{ calculateTimeLeft(match.startTime) }}</p>
             <div class="league-round-details">
               <v-img :src="match.league.logo" class="league-logo"></v-img>
               <span>{{ match.round }}</span>
@@ -29,168 +32,82 @@
 </template>
   
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+
+import { useFootballStore } from '@/stores/football/football'
+
+const footballStore = useFootballStore()
+
+const { getNextMatches } = footballStore
 
 function formatDate(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleString();
 }
 
+getNextMatches();
+
+const matches = ref(null);
+
+watch(() => footballStore.nextMatches, (newVal) => {
+  matches.value = newVal;
+  console.warn(matches.value)
+}, { immediate: true }
+);
+
+// 남은 시간 계산
+function calculateTimeLeft(startTimeStr) {
+  const startTime = new Date(startTimeStr).getTime();
+  const now = Date.now();
+  const timeDiff = startTime - now;
+
+  // 시간 차이가 없거나 과거인 경우
+  if (timeDiff <= 0) {
+    return "경기 시작됨";
+  }
+
+  // 남은 시간을 일, 시, 분으로 계산
+  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+  // const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+  const res1 = days > 0 ? `${days}일` : "";
+  const res2 = hours + days > 0 ? `${hours}시간` : "";
+  const res3 = minutes + hours + days > 0 ? `${minutes}분 남음!` : "곧 시작!";
+
+  return `${res1} ${res2} ${res3}`;
+}
+
 // 예정 경기 예시 데이터
-const matches = ref(
-  [
-    {
-      "fixtureId": "1",
-      "startTime": "YYYY-MM-DD hh:mm:ss.000000",
-      "round": "32강",
-      "status": "경기 시작 상태",
-      "homeTeamGoal": 1,
-      "awayTeamGoal": 1,
-      "league": {
-        "leagueId": "1",
-        "nameKr": "프리미어 리그",
-        "logo": "/Premier_League.png"
-      },
-      "homeTeam": {
-        "seasonLeagueTeamId": "1",
-        "teamId": "1",
-        "nameKr": "맨유",
-        "logo": "/spo-icon.png"
-      },
-      "awayTeam": {
-        "seasonaLeagueTeamId": "1",
-        "teamId": "2",
-        "nameKr": "토트넘",
-        "logo": "/spo-icon.png"
-      }
-    },
-    {
-      "fixtureId": "2",
-      "startTime": "YYYY-MM-DD hh:mm:ss.000000",
-      "round": "32강",
-      "status": "경기 시작 상태",
-      "homeTeamGoal": 1,
-      "awayTeamGoal": 1,
-      "league": {
-        "leagueId": "1",
-        "nameKr": "프리미어 리그",
-        "logo": "/Premier_League.png"
-      },
-      "homeTeam": {
-        "seasonLeagueTeamId": "1",
-        "teamId": "1",
-        "nameKr": "맨유",
-        "logo": "/spo-icon.png"
-      },
-      "awayTeam": {
-        "seasonaLeagueTeamId": "1",
-        "teamId": "2",
-        "nameKr": "토트넘",
-        "logo": "/spo-icon.png"
-      }
-    },
-    {
-      "fixtureId": "3",
-      "startTime": "YYYY-MM-DD hh:mm:ss.000000",
-      "round": "32강",
-      "status": "경기 시작 상태",
-      "homeTeamGoal": 1,
-      "awayTeamGoal": 1,
-      "league": {
-        "leagueId": "1",
-        "nameKr": "프리미어 리그",
-        "logo": "/Premier_League.png"
-      },
-      "homeTeam": {
-        "seasonLeagueTeamId": "1",
-        "teamId": "1",
-        "nameKr": "맨유",
-        "logo": "/spo-icon.png"
-      },
-      "awayTeam": {
-        "seasonaLeagueTeamId": "1",
-        "teamId": "2",
-        "nameKr": "토트넘",
-        "logo": "/spo-icon.png"
-      }
-    },
-    {
-      "fixtureId": "4",
-      "startTime": "YYYY-MM-DD hh:mm:ss.000000",
-      "round": "32강",
-      "status": "경기 시작 상태",
-      "homeTeamGoal": 1,
-      "awayTeamGoal": 1,
-      "league": {
-        "leagueId": "1",
-        "nameKr": "프리미어 리그",
-        "logo": "/Premier_League.png"
-      },
-      "homeTeam": {
-        "seasonLeagueTeamId": "1",
-        "teamId": "1",
-        "nameKr": "맨유",
-        "logo": "/spo-icon.png"
-      },
-      "awayTeam": {
-        "seasonaLeagueTeamId": "1",
-        "teamId": "2",
-        "nameKr": "토트넘",
-        "logo": "/spo-icon.png"
-      }
-    },
-    {
-      "fixtureId": "5",
-      "startTime": "YYYY-MM-DD hh:mm:ss.000000",
-      "round": "32강",
-      "status": "경기 시작 상태",
-      "homeTeamGoal": 1,
-      "awayTeamGoal": 1,
-      "league": {
-        "leagueId": "1",
-        "nameKr": "프리미어 리그",
-        "logo": "/Premier_League.png"
-      },
-      "homeTeam": {
-        "seasonLeagueTeamId": "1",
-        "teamId": "1",
-        "nameKr": "맨유",
-        "logo": "/spo-icon.png"
-      },
-      "awayTeam": {
-        "seasonaLeagueTeamId": "1",
-        "teamId": "2",
-        "nameKr": "토트넘",
-        "logo": "/spo-icon.png"
-      }
-    },
-    {
-      "fixtureId": "6",
-      "startTime": "YYYY-MM-DD hh:mm:ss.000000",
-      "round": "32강",
-      "status": "경기 시작 상태",
-      "homeTeamGoal": 1,
-      "awayTeamGoal": 1,
-      "league": {
-        "leagueId": "1",
-        "nameKr": "프리미어 리그",
-        "logo": "/Premier_League.png"
-      },
-      "homeTeam": {
-        "seasonLeagueTeamId": "1",
-        "teamId": "1",
-        "nameKr": "맨유",
-        "logo": "/spo-icon.png"
-      },
-      "awayTeam": {
-        "seasonaLeagueTeamId": "1",
-        "teamId": "2",
-        "nameKr": "토트넘",
-        "logo": "/spo-icon.png"
-      }
-    },
-  ]
-)
+// matches
+// {
+//     "fixtureId": 13,
+//     "startTime": "2024-01-31T18:00:00",
+//     "round": "6차전",
+//     "status": "not start",
+//     "homeTeamGoal": 0,
+//     "awayTeamGoal": 0,
+//     "league": {
+//         "leagueId": 1,
+//         "nameKr": "챔피언십",
+//         "logo": "https://media.api-sports.io/football/leagues/40.png"
+//     },
+//     "homeTeam": {
+//         "seasonLeagueTeamId": 4,
+//         "teamId": 4,
+//         "nameKr": "멍뭉",
+//         "nameEng": "cccc",
+//         "logo": "https://source.unsplash.com/random/300x300?emblem"
+//     },
+//     "awayTeam": {
+//         "seasonLeagueTeamId": 1,
+//         "teamId": 1,
+//         "nameKr": "마루쉐",
+//         "nameEng": "maroche",
+//         "logo": "https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg"
+//     }
+// }
 
 </script>
   
