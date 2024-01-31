@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.spoparty.api.common.entity.RoleType;
 import com.spoparty.api.party.dto.PartyCreateRequestDto;
+import com.spoparty.api.party.dto.PartyMemberRequestDto;
 import com.spoparty.api.party.dto.PartyUpdateRequestDto;
 import com.spoparty.api.party.repository.projection.PartyMemberProjection;
 import com.spoparty.api.party.repository.projection.PartyProjection;
@@ -25,7 +26,7 @@ public interface PartyService {
 
 	List<PartyMemberProjection> findAllPartyMembers(Long partyId);
 
-	PartyMemberProjection createPartyMember(Long partyId, Long memberId, RoleType role) ;
+	String createPartyMember(Long partyId, PartyMemberRequestDto partyMemberRequestDto, RoleType role) ;
 
 	<T> T findPartyMember(Long partyMemberId, Class<T> type);
 

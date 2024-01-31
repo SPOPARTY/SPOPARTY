@@ -32,6 +32,6 @@ public class PartyCreateRequestDto {
 	@NotNull(message = "fixtureId가 없습니다.")
 	private Long fixtureId;
 
-	@NotNull(message = "openViduInfo가 없습니다.")
-	private Map<String, Object> openViduInfo;
+	@NotNull(message = "openViduSessionInfo가 없습니다.")
+	private Map<String, Object> openViduSessionInfo;
 }

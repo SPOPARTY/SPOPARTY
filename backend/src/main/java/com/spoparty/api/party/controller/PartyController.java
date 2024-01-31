@@ -79,8 +79,7 @@ public class PartyController {
 	public ResponseEntity<?> createParticipant(@PathVariable Long partyId,
 		@RequestBody PartyMemberRequestDto partyMemberRequestDto) {
 		log.debug("파티원 추가 API 시작");
-		Long memberId = partyMemberRequestDto.getMemberId();
-		PartyMemberProjection response = partyService.createPartyMember(partyId, memberId, RoleType.guest); // guest 추가
+		String response = partyService.createPartyMember(partyId, partyMemberRequestDto, RoleType.guest); // guest 추가
 		return ApiResponse.success(PARTY_MEMBER_CREATE_SUCCESS, response);
 	}
 

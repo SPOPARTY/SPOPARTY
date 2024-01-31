@@ -72,6 +72,7 @@ public class Party extends BaseEntity {
 	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member host;
 
+	@Setter
 	@OneToOne(mappedBy = "party", fetch = FetchType.LAZY)
 	@JoinColumn(name = "club_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Club club;
@@ -84,6 +85,7 @@ public class Party extends BaseEntity {
 		party.host = host;
 		party.club = club;
 		party.openviduSessionId = openviduSessionId;
+		club.setParty(party);
 		return party;
 	}
 
@@ -100,5 +102,10 @@ public class Party extends BaseEntity {
 			throw new BadRequestException(CANNOT_CREATE_PARTY_MEMBER);
 		}
 		currentParticipants--;
+	}
+
+	public void deleteParty() {
+		club.setParty(null); // null로 초기화
+		softDelete();
 	}
 }

@@ -62,15 +62,11 @@ public class Club extends BaseEntity {
 	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member hostMember;
 
+	@Setter
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "party_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Party party;
 
-	// 연관관계 매핑
-	public void setParty(Party party) {
-		this.party = party;
-		party.setClub(this);
-	}
 
 	// 생성 메서드
 	public static Club createClub(String name, Member member) {

@@ -16,6 +16,7 @@ import com.spoparty.api.football.service.FixtureServiceImpl;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.service.MemberService;
 import com.spoparty.api.party.dto.PartyCreateRequestDto;
+import com.spoparty.api.party.dto.PartyMemberRequestDto;
 import com.spoparty.api.party.dto.PartyUpdateRequestDto;
 import com.spoparty.api.party.entity.Party;
 import com.spoparty.api.party.entity.PartyMember;
@@ -49,11 +50,12 @@ public class PartyServiceImpl implements PartyService {
 		Club club = clubService.findClubById(createDto.getClubId());
 		Member member = memberService.findById(createDto.getMemberId());
 		Fixture fixture = fixtureService.findFixtureById(createDto.getFixtureId());
-		String openviduSessionId = openViduService.initializeSession(createDto.getOpenViduInfo()); // openvidu 세션 생성
+		String openviduSessionId = openViduService.initializeSession(createDto.getOpenViduSessionInfo()); // openvidu 세션 생성
 
 		Party party = Party.createParty(createDto.getTitle(), createDto.getFixtureUrl(), fixture, member, club, openviduSessionId);
 		partyRepository.save(party);
-		createPartyMember(party.getId(), member.getId(), RoleType.host); // 호스트 추가
+
+		// createPartyMember(party.getId(), member.getId(), RoleType.host); // 호스트 추가
 
 		return findParty(party.getId(), PartyProjection.class);
 	}
@@ -79,7 +81,7 @@ public class PartyServiceImpl implements PartyService {
 	@Transactional
 	public Long deleteParty(Long partyId) {
 		Party party = findParty(partyId, Party.class);
-		party.softDelete();
+		party.deleteParty();
 		return party.getId();
 	}
 
@@ -90,13 +92,15 @@ public class PartyServiceImpl implements PartyService {
 
 	@Override
 	@Transactional
-	public PartyMemberProjection createPartyMember(Long partyId, Long memberId, RoleType role) {
+	public String createPartyMember(Long partyId, PartyMemberRequestDto requestDto, RoleType role) {
 		Party party = findParty(partyId, Party.class);
-		Member member = memberService.findById(memberId);
+		Member member = memberService.findById(requestDto.getMemberId());
 
 		PartyMember partyMember = PartyMember.createPartyMember(party, member, role);
+		String openViduConnectionToken = openViduService.createConnection(party.getOpenviduSessionId(), requestDto.setOpenViduConnectionInfo());
+
 		partyMemberRepository.save(partyMember);
-		return findPartyMember(partyMember.getId(), PartyMemberProjection.class);
+		return openViduConnectionToken;
 	}
 
 	@Override

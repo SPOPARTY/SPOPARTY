@@ -6,9 +6,6 @@ public interface PartyMemberProjection {
 	@JsonProperty("participantId")
 	Long getId();
 
-	// @JsonProperty("memberId")
-	// Long getMember_id();
-
 	@JsonProperty("memberNickname")
 	Long getMember_nickname();
 
