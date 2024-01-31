@@ -1,11 +1,13 @@
 <template>
     <v-dialog  
+        class="edit-dialog"
         v-model="modalVisible"
         width = "1000px"
         height = "1000px"
         persistent
     >   
     <v-card class="dialog-card">
+        <h1>게시글 수정</h1>
         <v-card-text>
             <v-text-field
             v-model = "editedTitle"
@@ -17,25 +19,36 @@
         <v-card-text>
             <TextEditor v-model = "editedContent"/>
         </v-card-text>
+        <v-card-text class="file-input-container">
+            <v-file-input
+                accept="image/*"
+                label="파일을 첨부해주세요"
+                v-model="editedImg"
+                class="file-input"
+            >
+            </v-file-input>
+        </v-card-text>
+
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="confirmEdit">수정완료</v-btn>
-            <v-btn @click="closeModal">취소</v-btn>
+            <v-btn color="#D3AC2B" @click="confirmEdit">수정완료</v-btn>
+            <v-btn color="#D3AC2B" @click="closeModal">취소</v-btn>
         </v-card-actions>
+
         <v-dialog
             v-model="editConfirmVisible"
             persistent
             max-width="500px"
         >
-            <v-card>
-                <v-card-title>게시글 수정</v-card-title>
-                <v-card-text>이 게시글을 수정하시겠습니까?</v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" text @click="editPost">예</v-btn>
-                    <v-btn color="blue darken-1" text @click="editConfirmVisible = false">아니오</v-btn>
-                </v-card-actions>
-            </v-card>
+        <v-card>
+            <v-card-title>게시글 수정</v-card-title>
+            <v-card-text>이 게시글을 수정하시겠습니까?</v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="editPost">예</v-btn>
+                <v-btn color="blue darken-1" text @click="editConfirmVisible = false">아니오</v-btn>
+            </v-card-actions>
+        </v-card>
 
         </v-dialog>
     </v-card>
@@ -66,7 +79,7 @@ const titleRules = [
 
 const editedTitle = ref(props.detail.title);
 const editedContent = ref(props.detail.content);
-const editedImg = ref(props.detail.img)
+const editedImg = ref([props.detail.file.url])
 
 
 const editConfirmVisible = ref(false);
@@ -103,25 +116,36 @@ const closeModal = () => {
 </script>
 
 <style lang="scss" scoped>
+.dialog-card {
+    margin-top: 70px; 
+    background-color: #292646;
+}
+
+h1 {
+    text-align: center;
+    margin-top:10px;
+    margin-bottom:10px;
+    color : #D3AC2B;
+}
+
 .title {
-    border: 1px solid black;
     border-radius: 10px;
     padding: 6px;
-    background-color: white;
+    background-color: #CBD0D8;;
 
-    &:hover{
-        border-color:black; // hovering시에도 기본 테두리 색상 유지
-        background-color:transparent; // 배경색 안 변함
-    }
+}
 
-    &.v-focused{
-        background-color:white;
-    }
+.file-input-container {
+    display: flex;
+    align-items: center;
+    background-color: #CBD0D8;
+    margin:25px;
+    border-radius: 10px;
+}
 
-    &.v-focused:not(.v-error)::before{
-        border-color:black;
-    }
-
+.file-input {
+    max-width: 300px; /* 파일 입력 크기 조정 */
+    margin-right: 20px; /* 라벨과의 간격 */
 }
 
 .left-arrow{
@@ -130,7 +154,5 @@ const closeModal = () => {
     bottom:50%;
 }
 
-.dialog-card {
-    margin-top: 70px; 
-}
+
 </style>

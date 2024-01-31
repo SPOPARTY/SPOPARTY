@@ -8,8 +8,8 @@ import {requestBoardList, requestSearchBoard, requestCreateBoard, requestUpdateB
 
 export const useBoardStore = defineStore("board",() => {
 
-    const boardList = ref(null);
-    const boardDetail = ref(null);
+    const boardList = ref([]);
+    const boardDetail = ref({});
 
     const getBoardList = (clubId) => {
         requestBoardList(
@@ -21,7 +21,7 @@ export const useBoardStore = defineStore("board",() => {
                     boardList.value = res.data.data;
                     console.log("******* 게시판에 있는 게시물 전체 조회*******")
                     console.log(boardList.value)
-                    alert(res.data.status)
+                    // alert("게시글 리스트 잘 불러옴!!",res.data.status)
                 }
             },
             (error) => {
@@ -57,7 +57,10 @@ export const useBoardStore = defineStore("board",() => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     console.log("*******게시글이 잘 작성 됨*******")
-                    alert(res.data.status)
+                    alert("게시글 작성 완료!")
+                    const clubId = data.clubId
+                    getBoardList(clubId);
+                    window.location.replace(`/club/${clubId}.board`)
                 }
             },
             (error) => {

@@ -10,23 +10,23 @@ import {requestRecentClubs, requestCreateClubs, requestClubInfo, requestUpdateCl
 
 export const useClubStore = defineStore("club",() => {
 
-    const myClubs = ref(null);
+    const myClubs = ref({});
     const createdClub = ref(null);
-    const clubInfo = ref(null);
+    const clubInfo = ref({});
     const clubInviteLink = ref(null);
-    const clubMemberList = ref(null);
+    const clubMemberList = ref([]);
 
     // 최근 활동 그룹 목록 조회
     const requestClub = () => {
         requestRecentClubs(
             (res) => {
-                console.log("히히 최근 활동 그룹 발사")
-                console.log(res)
+                // console.log("히히 최근 활동 그룹 발사")
+                // console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     myClubs.value = res.data.data;
-                    console.log("*******최근 활동이 있는클럽 목록*******")
-                    console.log(myClubs.value)
-                    alert(res.data.status)
+                    // console.log("*******최근 활동이 있는클럽 목록*******")
+                    // console.log(myClubs.value)
+                    console.log(myClubs.value);
                 }
             },
             (error) => {
@@ -46,7 +46,6 @@ export const useClubStore = defineStore("club",() => {
                     createdClub.value = res.data.data;
                     console.log("내가 만든 클럽~")
                     console.log(createdClub.value)
-                    alert(res.data.status)
                     // 그룹이 생성되면 바로 이동할 수 있게 리다이렉트??
                 }
             },
@@ -67,7 +66,6 @@ export const useClubStore = defineStore("club",() => {
                     clubInfo.value = res.data.data;
                     console.log("지금 내가 있는 클럽~~")
                     console.log(clubInfo.value)
-                    alert(res.data.status)
                 }
             },
             (error) => {
@@ -84,7 +82,6 @@ export const useClubStore = defineStore("club",() => {
                 console.log(res)
                 if (res.data.status === httpStatusCode.OK) {
                     console.log("******히히 그룹 정보 수정~*********")
-                    alert(res.data.status)
                     window.location.reload("/");
                 }
             },
@@ -103,7 +100,6 @@ export const useClubStore = defineStore("club",() => {
                 console.log(res)
                 if (res.data.status === httpStatusCode.OK) {
                     console.log("******히히 그룹 삭제*********")
-                    alert(res.data.status)
                     window.location.replace("/"); // 삭제되면 메인으로 이동
                 }
             },
@@ -123,7 +119,6 @@ export const useClubStore = defineStore("club",() => {
                 if (res.data.status === httpStatusCode.OK) {
                     console.log("******히히 그룹 초대 링크 생성*********")
                     clubInviteLink.value = res.data.data
-                    alert(res.data.status)
                 }
             },
             (error) => {
@@ -141,8 +136,8 @@ export const useClubStore = defineStore("club",() => {
                 console.log(res)
                 if (res.data.status === httpStatusCode.OK) {
                     console.log("******히히 그룹원 목록 조회*********")
-                    clubInviteLink.value = res.data.data
-                    alert(res.data.status)
+                    clubMemberList.value = res.data.data
+                    console.log(clubMemberList.value)
                 }
             },
             (error) => {
@@ -160,7 +155,6 @@ export const useClubStore = defineStore("club",() => {
                 console.log(res)
                 if (res.data.status === httpStatusCode.OK) {
                     console.log("******히히 그룹원 초대 후 생성*********")
-                    alert(res.data.status)
                 }
             },
             (error) => {
