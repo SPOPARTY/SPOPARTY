@@ -16,6 +16,7 @@ function requestSearchBoard(boardId, success, fail) {
 
 // 게시글 작성
 function requestCreateBoard(data,success,fail) {
+    local.defaults.headers["Content-type"] = "multipart/form-data"
     local.post("/boards",data).then(success).catch(fail);
 }
 

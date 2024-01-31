@@ -60,6 +60,12 @@ import {ref} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import TextEditor from '@/components/board/TextEditor.vue'
 
+import {useBoardStore} from "@/store/club/boards"
+
+const memberId = sessionStorage.getItem("id");
+
+const boardStore = useBoardStore();
+
 const modalVisible = ref(true)
 
 const props = defineProps({
@@ -100,6 +106,24 @@ const editPost = () => {
         content: editedContent.value,
         img: editedImg.value,
     };
+
+    const formdata = new FormData(); 
+    formdata.append("memberId",memberId);
+    formdata.append("clubId",props.detail.id);
+    formdata.append("title",title.value);
+    formdata.append("content",content.value);
+
+    // for문을 돌려서 이미지 배열을 1개씩 append로 추가 -> 우리는 1개만 넣을거지만... 혹시 모르니 만들어주자
+    if(file.value.length > -1) {
+        for (let i = 0; i < file.value.length; i++) {
+            const imgForm = file.value[i]
+
+            formdata.append(`file[${i}]`,imgForm)
+        }
+    }
+
+
+    
     emits('edit-close',editedPost) // 실제로는 데이터를 emit하지 않음
     editConfirmVisible.value = false; // 수정 확인 모달 off
     modalVisible.value = false; // EditBoard 모달도 off

@@ -55,15 +55,24 @@ const titleRules = [
 
 
 const writeBoard = () => {
-    const data = {
-        memberId : memberId,
-        clubId : clubId,
-        title : title.value,
-        content : content.value,
-        file : file.value,
+    // 사진을 비롯한 미디어 파일들은 form형식으로 보내줘야한다.
+    const formdata = new FormData(); 
+    formdata.append("memberId",memberId);
+    formdata.append("clubId",clubId);
+    formdata.append("title",title.value);
+    formdata.append("content",content.value);
+
+    // for문을 돌려서 이미지 배열을 1개씩 append로 추가 -> 우리는 1개만 넣을거지만... 혹시 모르니 만들어주자
+    if(file.value.length > -1) {
+        for (let i = 0; i < file.value.length; i++) {
+            const imgForm = file.value[i]
+
+            formdata.append(`file[${i}]`,imgForm)
+        }
     }
+
     if (confirm("게시글을 작성하시겠습니까??") === true) {
-        boardStore.createBoard(data);
+        boardStore.createBoard(formdata);
     }
 }
 
