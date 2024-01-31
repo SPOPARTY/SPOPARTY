@@ -156,7 +156,7 @@ const joinSession = () => {
         // element: we will manage it on our own) and with the desired properties
         let initPublisher = OV.value.initPublisher(undefined, {
           audioSource: undefined, // The source of audio. If undefined default microphone
-          videoSource: 'screen', // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
+          videoSource: undefined, // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
           publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
           publishVideo: true, // Whether you want to start publishing with your video enabled or not
           resolution: '640x480', // The resolution of your video
@@ -212,24 +212,25 @@ const getToken = async (mySessionId) => {
 
 const createSession = async (sessionId) => {
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'api/sessions',
+    APPLICATION_SERVER_URL + 'api/openvidu/sessions',
     { customSessionId: sessionId },
     {
       headers: { 'Content-Type': 'application/json' },
     },
   )
-  return response.data // The sessionId
+  return response.data.data // The sessionId
 }
 
 const createToken = async (sessionId) => {
+  console.log(sessionId)
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections',
+    APPLICATION_SERVER_URL + 'api/openvidu/sessions/' + sessionId + '/connections',
     {},
     {
       headers: { 'Content-Type': 'application/json' },
     },
   )
-  return response.data // The token
+  return response.data.data // The token
 }
 
 // Rest of the code remains unchanged...
