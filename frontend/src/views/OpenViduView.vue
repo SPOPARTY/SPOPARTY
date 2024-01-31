@@ -32,7 +32,7 @@
           <p class="text-center">
             <button
               class="btn btn-lg btn-success"
-              @click="joinSession()">
+              @click="joinSession">
               Join!
             </button>
           </p>
@@ -79,6 +79,9 @@ import axios from 'axios'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../components/openvidu/UserVideo.vue'
 import { ref, reactive } from 'vue'
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
+
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 const APPLICATION_SERVER_URL =
@@ -94,20 +97,57 @@ const subscribers = ref([])
 let mySessionId = 'SessionA'
 let myUserName = 'Participant' + Math.floor(Math.random() * 100)
 
-const sendMessage = () => {
-  session.value
-    .signal({
-      data: '채팅 전송하기', // Any string (optional)
-      to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-      type: 'chat', // The type of message (optional)
-    })
-    .then(() => {
-      console.log('Message successfully sent')
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-}
+let stompClient = undefined;
+let connected = false;
+let message = "asdsadasdasd";
+let userName = ""
+
+
+const sendMessage =  (e) => {
+      if(e.keyCode === 13 && userName !== '' && message !== ''){
+        send()
+        message = ''
+      }
+    }
+    const send = () => {
+      console.log("Send message:" + message);
+      if (stompClient &&stompClient.connected) {
+        const msg = { 
+          userName: userName,
+          content: message 
+        };
+        stompClient.send("/chat/send", {},JSON.stringify(msg))
+      }
+    } 
+    const connect = () => {
+      const serverURL = "http://localhost:9090/api/ws-stomp"
+      let socket = new SockJS(serverURL);
+      stompClient = Stomp.over(socket);
+      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`)
+      stompClient.connect(
+        {},
+        frame => {
+          // 소켓 연결 성공
+          connected = true;
+          console.log('소켓 연결 성공', frame);
+          stompClient.send("/chat/enter", {},"enter!")
+          // 서버의 메시지 전송 endpoint를 구독합니다.
+          // 이런형태를 pub sub 구조라고 합니다.
+          stompClient.subscribe("/sub", res => {
+            console.log('구독으로 받은 메시지 입니다.', res.body);
+
+            // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+            // recvList.push(JSON.parse(res.body))
+          });
+        },
+        error => {
+          // 소켓 연결 실패
+          console.log('소켓 연결 실패', error);
+          connected = false;
+        }
+      );        
+    }
+  
 
 const joinSession = () => {
   OV.value = new OpenVidu()
@@ -156,7 +196,7 @@ const joinSession = () => {
         // element: we will manage it on our own) and with the desired properties
         let initPublisher = OV.value.initPublisher(undefined, {
           audioSource: undefined, // The source of audio. If undefined default microphone
-          videoSource: 'screen', // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
+          videoSource: undefined, // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
           publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
           publishVideo: true, // Whether you want to start publishing with your video enabled or not
           resolution: '640x480', // The resolution of your video
@@ -212,25 +252,28 @@ const getToken = async (mySessionId) => {
 
 const createSession = async (sessionId) => {
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'api/sessions',
+    APPLICATION_SERVER_URL + 'api/openvidu/sessions',
     { customSessionId: sessionId },
     {
       headers: { 'Content-Type': 'application/json' },
     },
   )
-  return response.data // The sessionId
+  return response.data.data // The sessionId
 }
 
 const createToken = async (sessionId) => {
+  console.log(sessionId)
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections',
+    APPLICATION_SERVER_URL + 'api/openvidu/sessions/' + sessionId + '/connections',
     {},
     {
       headers: { 'Content-Type': 'application/json' },
     },
   )
-  return response.data // The token
+  return response.data.data // The token
 }
 
 // Rest of the code remains unchanged...
+// connect();
+// send();
 </script>
