@@ -124,7 +124,6 @@ onMounted(() => {
 watch(() => followStore.followList, (newFollowList) => {
     followList.value = newFollowList
     console.log("onMounted된 후 팔로우 리스트! -> ",followList.value);
-    followStore.getFollowList(memberId.value);
 },{immediate:true})
 
 watch(() => followStore.teamList, (newTeamList) => {
