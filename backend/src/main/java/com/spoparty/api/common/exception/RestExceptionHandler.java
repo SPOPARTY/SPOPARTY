@@ -98,11 +98,10 @@ public class RestExceptionHandler {
 		return ApiResponse.error(exception.getCode());
 	}
 
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> unhandledExceptionHandler(Exception exception, HttpServletRequest request) {
-		logWarn(request, exception);
-		return ApiResponse.error(ErrorCode.SERVER_ERROR);
+		log.error(exception.toString());
+		return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, exception.toString());
 	}
 
 	private void logInfo(HttpServletRequest request, HttpStatus status, String message) {

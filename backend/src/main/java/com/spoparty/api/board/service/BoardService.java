@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spoparty.api.board.entity.Board;
+import com.spoparty.api.board.entity.BoardProjection;
 import com.spoparty.api.board.repository.BoardRepository;
-import com.spoparty.api.board.repository.projection.BoardProjection;
 import com.spoparty.api.member.service.FileService;
 
 import lombok.RequiredArgsConstructor;

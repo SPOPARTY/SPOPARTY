@@ -1,4 +1,4 @@
-package com.spoparty.api.member.repository.projection;
+package com.spoparty.api.member.entity;
 
 import java.time.LocalDateTime;
 
