@@ -63,7 +63,7 @@ const { getCheersData, postCheersData } = footballStore;
 getCheersData();
 
 // post 메서드 함수 관련
-const isLogined = ref(localStorage.getItem("accessToken") !== null);
+const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
 const memberId = ref(sessionStorage.getItem("id"));
 
 const postCheers = (matchIndex, team) => {
