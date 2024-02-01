@@ -12,18 +12,32 @@
             <!-- 경기 시작 시간 -->
             <p class="mb-2">{{ formatDate(match.startTime) }}</p>
             <!-- 남은 시간 표시 -->
-            <p class="mb-2">{{ calculateTimeLeft(match.startTime) }}</p>
-            <div class="league-round-details">
+            <p id="timeLeft" class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
+            <v-row class="league-round-details">
+              <v-col cols="2" align="center" class="pa-1">
               <v-img :src="match.league.logo" class="league-logo"></v-img>
+            </v-col>
+            <v-col cols="2">
               <span>{{ match.round }}</span>
-            </div>
-            <div class="team-vs-team">
+            </v-col>
+            </v-row>
+            <v-row class="team-vs-team">
+              <v-col cols="2">
               <h3>{{ match.homeTeam.nameKr }}</h3>
+            </v-col>
+              <v-col cols="2" align="center">
               <v-img :src="match.homeTeam.logo" class="team-logo"></v-img>
+            </v-col>
+              <v-col cols="1" class="pa-0">
               <span class="vs">VS</span>
+            </v-col>
+              <v-col cols="2" align="center">
               <v-img :src="match.awayTeam.logo" class="team-logo"></v-img>
+            </v-col>
+              <v-col cols="2">
               <h3>{{ match.awayTeam.nameKr }}</h3>
-            </div>
+            </v-col>
+            </v-row>
           </div>
         </v-card>
       </v-col>
@@ -47,7 +61,7 @@ function formatDate(dateStr) {
 
 getNextMatches();
 
-const matches = ref(null);
+const matches = ref([]);
 
 watch(() => footballStore.nextMatches, (newVal) => {
   matches.value = newVal;
@@ -55,46 +69,30 @@ watch(() => footballStore.nextMatches, (newVal) => {
 }, { immediate: true }
 );
 
+// watch(() => footballStore.nextMatches, (newVal) => {
+//   matches.value = newVal.map(match => ({
+//     ...match,
+//     timeLeft: calculateTimeLeft(match.startTime)
+//   }));
+//   updateTimeInterval();
+// }, { immediate: true });
+
 // let intervalId = null;
-// onMounted(() => {
+
+// function updateTimeInterval() {
+//   // intervalId = null;
+//   if (intervalId) clearInterval(intervalId);
 //   intervalId = setInterval(() => {
-//     console.log("인터벌 확인");
-//   }, 1000);
-// });
+//     matches.value.forEach(match => {
+//       match.timeLeft = calculateTimeLeft(match.startTime);
+//     });
+//   }, 3000); // Update every minute
+// }
 
 // onUnmounted(() => {
 //   clearInterval(intervalId);
 // });
 
-// // 남은 시간을 실시간으로 업데이트하기 위한 커스텀 훅
-// function useCountdown(targetDate) {
-//   const timeLeft = ref(calculateTimeLeft(targetDate));
-
-//   function updateCountdown() {
-//     console.log("updateCountdown")
-//     timeLeft.value = calculateTimeLeft(targetDate);
-//   }
-
-//   // 실시간 업데이트를 위해 setInterval 사용
-//   // let intervalId = null;
-//   // onMounted(() => {
-//   //   intervalId = setInterval(updateCountdown, 1000); // 매 분마다 업데이트
-//   // });
-//   let intervalId = null;
-//   onMounted(() => {
-//   intervalId = setInterval(() => {
-//     console.log("인터벌 확인")
-//     updateCountdown();
-//     }, 1000);
-//   });
-
-//   // 컴포넌트가 해제될 때 setInterval 정지
-//   onUnmounted(() => {
-//     clearInterval(intervalId);
-//   });
-
-//   return timeLeft;
-// }
 
 
 // 남은 시간 계산
@@ -117,6 +115,7 @@ function calculateTimeLeft(startTimeStr) {
   const res1 = days > 0 ? `${days}일` : "";
   const res2 = hours + days > 0 ? `${hours}시간` : "";
   const res3 = minutes + hours + days > 0 ? `${minutes}분 남음!` : "곧 시작!";
+  // const res4 = seconds + minutes + hours + days > 0 ? `${seconds}초` : "";
 
   return `${res1} ${res2} ${res3}`;
 }
@@ -169,8 +168,8 @@ function calculateTimeLeft(startTimeStr) {
 }
 
 .league-logo {
-  width: 50px;
-  height: 50px;
+  width: 75px;
+  height: 75px;
 }
 
 .team-logo {

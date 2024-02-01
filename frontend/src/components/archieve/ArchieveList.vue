@@ -29,6 +29,7 @@
                         <v-col cols="2">
                             <v-checkbox
                                 v-model="detail.selected"
+                                @click.native.stop
                             />
                         </v-col>
                     </v-row>

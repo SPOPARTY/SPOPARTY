@@ -157,16 +157,10 @@
 
   // 구단을 팔로우
   const followClub = (club) => {
-      console.log("******구단 팔로우******")
-      console.log("memberId -> ",memberId)
       // 이미 팔로우 중인지 확인
       if(!clubData.following.includes(club)) {
         if(confirm("해당 구단을 팔로우 하시겠습니까?") === true) {
-          const data = {
-              memberId  : memberId,
-              teamId : club.id,
-          }
-          followStore.doFollow(data);
+          followStore.doFollow(club.id); // club.id가 곧 teamId
           clubData.following.push(club);
           if (clubData.current === clubData.following){
             clubData.current = [...clubData.following];
@@ -179,18 +173,10 @@
 
     // 구단을 언팔로우
   const unfollowClub = (id) => {
-    console.log("********여기는 구단 언팔로우********")
     console.log("teamid가 무엇이냐? -> ", id)
-    // teamId를 가지고 followTeamId 만들기
-    const followTeamId = props.followList
-        .filter((club) => club.teamId === id)
-        .map((club) => club.id)[0]
-    console.log("이게 옳게 된 followTeamId지", followTeamId)
-
     if (confirm("해당 구단을 팔로우 취소하시겠습니까?") === true) {
-        followStore.doUnFollow(followTeamId);
+        followStore.doUnFollow(id);
 
-        // Remove from both following and current list immediately
         const indexInFollowing = clubData.following.findIndex(club => club.id === id);
         if (indexInFollowing !== -1) {
             clubData.following.splice(indexInFollowing, 1);

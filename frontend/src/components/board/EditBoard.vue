@@ -111,8 +111,16 @@ const editPost = () => {
     }
 
     boardStore.updateBoard(formdata)
+
+    const editedPost = {
+        id : boardId,
+        clubId : clubId,
+        title : editedTitle.value,
+        content : editedContent.value,
+        file : editedFile.value[0]
+    }
     
-    emits('edit-close') 
+    emits('edit-close',editedPost) 
     editConfirmVisible.value = false; // 수정 확인 모달 off
     modalVisible.value = false; // EditBoard 모달도 off
 }

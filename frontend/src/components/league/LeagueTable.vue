@@ -60,35 +60,12 @@ import { useRouter } from 'vue-router';
 import { useFootballStore } from '@/stores/football/football';
 import { useFollowStore } from '@/stores/member/follows';
 
-const { getFollowList, followList, doFollow, doUnFollow } = useFollowStore();
-
-const followTeams = ref([]);
+const { doFollow, doUnFollow } = useFollowStore();
 
 // 로그인 여부 감지
 const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
 
-// 로그인한 사용자의 팔로우 목록 가져오기
-// if (isLogined.value) {
-//     // 사용자 id 가져오기
-//     const memberId = sessionStorage.getItem("id");
-
-//     // 사용자가 팔로우한 팀 목록 가져오기
-//     getFollowList(memberId);
-    
-//     watch(() => followList.value, (newValue) => {
-//         followTeams.value = newValue;
-//     });
-// }
-
-console.log(followList.value);
-
-// // Props 정의
-// const props = defineProps({
-//     leagueId: {
-//         type: Number,
-//         required: true,
-//     },
-// });
+// 라우터로부터 리그 아이디 가져오기
 const router = useRouter();
 const leagueId = router.currentRoute.value.params.leagueId;
 
@@ -178,25 +155,20 @@ const toTDP = (id) => {
     router.push(`/team/${id}`);
 };
 
-// 미완성 로직 (팔로우 기능) 차후 수정 필요
-// const checkFollowing = (item) => {
-//     if (!isLogined.value) {
-//         return false;
-//     }
-//     return followTeams.value.some(team => team.teamId === item.teamId);
-// };
-
 const changeFollowing = (item) => {
     if (!isLogined.value) {
         alert('로그인이 필요한 서비스입니다.');
         return;
     }
+    // 팔로우 상태 변경 표시를 위해 값 저장
     const oldVal = item.following;
-    const memberId = sessionStorage.getItem("id");
+
     if (item.following) {
-        doUnFollow(memberId, item.teamId);
+        console.log("언팔로우")
+        doUnFollow(item.teamId);
     } else {
-        doFollow(memberId, item.teamId);
+        console.log("팔로우")
+        doFollow(item.teamId);
     }
     item.following = !oldVal;
 };

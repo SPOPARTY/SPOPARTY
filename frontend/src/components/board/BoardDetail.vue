@@ -41,7 +41,7 @@
     <EditBoard 
         v-if="isEditModalVisible" 
         :detail="post" 
-        @edit-close="editClose"/>
+        @edit-close="editClose($event)"/>
 </template>
 
 <script setup>
@@ -71,9 +71,13 @@ function showEditModal() {
 }
 
 // EditBoard모달 off
-function editClose() {
+function editClose(editedPost) {
+    if(editedPost) {
+        props.post = editedPost
+    }
     isEditModalVisible.value = false // EditBoard off
     modalVisible.value = true// BoardDetail on
+    closeModal()
 }
 
 // 삭제 확인 모달
