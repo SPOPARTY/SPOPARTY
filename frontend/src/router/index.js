@@ -57,11 +57,11 @@ const router = createRouter({
       name:"Mypage",
       component: () => import("@/components/user/Mypage.vue")
     },
-    // {
-    //   path:"/kakao",
-    //   name:"kakao",
-    //   component: () => import("@/views/Kakao.vue")
-    // },
+    {
+      path:"/kakao",
+      name:"kakao",
+      component: () => import("@/components/user/Kakao.vue")
+    },  
     {
       path: "/club/:clubId",
       name: "ClubView",
