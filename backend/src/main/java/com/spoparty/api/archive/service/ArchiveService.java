@@ -44,7 +44,7 @@ public class ArchiveService {
 		Archive data = archiveRepository.findById(archive.getId(), Archive.class)
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		if (data.getFile() != null && archive.getFile() != null) {
-			fileService.findById(data.getFile().getId()).softDelete();
+			fileService.deleteFile(data.getFile().getId());
 		}
 		if (!archive.getFixtureTitle().isEmpty()) {
 			data.setFixtureTitle(archive.getFixtureTitle());
@@ -63,6 +63,9 @@ public class ArchiveService {
 	public void deleteArchive(Long archiveId) {
 		Archive archive = archiveRepository.findById(archiveId, Archive.class)
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		if (archive.getFile() != null) {
+			fileService.deleteFile(archive.getFile().getId());
+		}
 		archive.softDelete();
 	}
 

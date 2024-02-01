@@ -1,15 +1,16 @@
 package com.spoparty.api.member.service;
 
-import java.io.IOException;
+import static com.spoparty.api.common.constants.ErrorCode.*;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.spoparty.api.common.constants.ErrorCode;
 import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.entity.File;
 import com.spoparty.api.member.repository.FileRepository;
@@ -38,14 +39,29 @@ public class FileService {
 			metadata.setContentType(file.getContentType());
 			metadata.setContentLength(file.getSize());
 			amazonS3.putObject(bucket, fileName, file.getInputStream(), metadata);
-		} catch (IOException e) {
-			throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL);
+		} catch (Exception e) {
+			throw new CustomException(FILE_UPLOAD_FAIL);
 		}
 
 		File saveFile = new File();
 		saveFile.setType("image");
 		saveFile.setUrl("https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName);
 		return fileRepository.save(saveFile);
+	}
+
+	@Transactional
+	public void deleteFile(Long id) {
+		File file = fileRepository.findById(id, File.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		try {
+			String fileName = file.getUrl().split("/")[3];
+			log.info("delete file: {}", fileName);
+			amazonS3.deleteObject(bucket, fileName);
+		} catch (Exception e) {
+			throw new CustomException(BAD_CLIENT_REQUEST);
+		}
+		file.setUrl("deleted");
+		file.softDelete();
 	}
 
 	public List<File> findByType(String type) {

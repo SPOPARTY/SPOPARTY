@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ public class FileController {
 
 	private final FileService fileService;
 
-	@PostMapping("/upload")
+	@PostMapping
 	public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files) {
 		List<File> list = new ArrayList<>();
 		for (MultipartFile file : files) {
@@ -42,6 +43,12 @@ public class FileController {
 	public ResponseEntity<?> findFileByType(@PathVariable("type") String type) {
 		List<File> list = fileService.findByType(type);
 		return ApiResponse.success(GET_SUCCESS, list);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteFile(@PathVariable("id") Long id) {
+		fileService.deleteFile(id);
+		return ApiResponse.success(DELETE_SUCCESS);
 	}
 
 }
