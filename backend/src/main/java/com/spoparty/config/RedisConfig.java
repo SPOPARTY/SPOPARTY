@@ -1,5 +1,6 @@
 package com.spoparty.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -11,14 +12,21 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.spoparty.api.party.dto.ChatRequestDto;
 import com.spoparty.redis.RedisSubscriber;
 
 @Configuration
 public class RedisConfig {
 
+	@Value("${spring.data.redis.host}")
+	private String host;
+
+	@Value("${spring.data.redis.port}")
+	private int port;
+
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
-		final LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory();
+		final LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(host, port);
 		return lettuceConnectionFactory;
 	}
 
@@ -40,17 +48,17 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisTemplate<String, Object> redisTemplate
+	public RedisTemplate<String, ChatRequestDto> redisTemplate
 		(RedisConnectionFactory connectionFactory) { // (3)
-		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+		RedisTemplate<String, ChatRequestDto> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(connectionFactory);
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatRequestDto.class));
 		return redisTemplate;
 	}
 
 	@Bean
 	public ChannelTopic channelTopic() { // (4)
-		return new ChannelTopic("chatroom");
+		return new ChannelTopic("chat");
 	}
 }

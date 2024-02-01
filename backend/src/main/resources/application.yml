@@ -47,6 +47,10 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
+    redis:
+      host: i10a802.p.ssafy.io
+      port: 6379
+
   #  multiPartFile
   servlet:
     multipart:
