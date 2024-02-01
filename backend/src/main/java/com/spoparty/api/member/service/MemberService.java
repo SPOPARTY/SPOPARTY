@@ -143,6 +143,8 @@ public class MemberService {
 	public String regenerateToken(String accessToken, String refreshToken) {
 		MemberToken memberToken = memberTokenRepository.findByRefreshToken(refreshToken, MemberToken.class)
 			.orElseThrow(() -> new CustomException(UNAUTHORIZED_USER));
+		if (!jwtTokenUtil.checkRefreshToken(refreshToken))
+			throw new CustomException(UNAUTHORIZED_USER);
 		return jwtTokenUtil.createAccessToken(memberToken.getMember().getId() + "");
 	}
 
