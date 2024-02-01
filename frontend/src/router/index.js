@@ -61,7 +61,7 @@ const router = createRouter({
       path:"/kakao",
       name:"kakao",
       component: () => import("@/components/user/Kakao.vue")
-    },  
+    },
     {
       path: "/club/:clubId",
       name: "ClubView",

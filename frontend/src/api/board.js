@@ -22,6 +22,8 @@ function requestCreateBoard(data,success,fail) {
 
 // 게시글 수정
 function requestUpdateBoard(data,success,fail) {
+    console.log("게시글 수정!!!")
+    console.log(data)
     local.defaults.headers["Content-Type"] = "multipart/form-data"
     local.put("/boards",data).then(success).catch(fail);
 }

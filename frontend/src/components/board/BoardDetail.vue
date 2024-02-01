@@ -84,7 +84,7 @@ const confirmDelete = () => {
 
 // 진짜 삭제
 function deletePost() {
-    boardStore.deleteBoard(props.post.id,props.post.clubId);
+    boardStore.deleteBoard(props.post.id,props.post.club_id);
     emits('delete-post',props.post.id)
     closeModal()
     deleteConfirmVisible.value = false;

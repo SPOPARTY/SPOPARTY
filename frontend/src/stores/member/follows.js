@@ -10,7 +10,7 @@ export const useFollowStore = defineStore("follow", () => {
     const router = useRouter();
     const route = useRoute();
 
-
+    const memberId = sessionStorage.getItem("id") // 나중에 입력받은 memberId로 바꿔야함
     const teamList = ref(null);
     const followList = ref(null);
 
@@ -64,6 +64,7 @@ export const useFollowStore = defineStore("follow", () => {
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.CREATE) {
+                    getFollowList(memberId);
                     alert("팔로우 완료!")
                 }
             },
@@ -85,6 +86,7 @@ export const useFollowStore = defineStore("follow", () => {
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
+                    getFollowList(memberId);
                     alert("팔로우 취소 완료")
                     
                 }
