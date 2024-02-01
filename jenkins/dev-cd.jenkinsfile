@@ -110,11 +110,11 @@ pipeline {
                 ssh -o StrictHostKeyChecking=no $releaseServerAccount@$releaseServerUri 
                 docker-compose down
 
-                if docker ps -q -f name=backend; then
+                if docker ps -f name=backend; then
                     docker stop backend && docker rm -f backend
                 fi
 
-                if docker ps -q -f name=frontend; then
+                if docker ps -f name=frontend; then
                     docker stop frontend && docker rm -f frontend
                 fi
                 '''
