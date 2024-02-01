@@ -31,7 +31,7 @@ async function findById(memberId, success, fail) {
 
 
 function memberLogout(success, fail) {
-    // local.defaults.headers['Authorization'] = localStorage.getItem("accessToken")
+    // local.defaults.headers['Authorization'] = sessionStorage.getItem("accessToken")
     local.delete(`/members/logout`).then(success).catch(fail);
 }
 

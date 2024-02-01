@@ -3,8 +3,9 @@ import {useRouter, useRoute} from 'vue-router'
 import {defineStore} from 'pinia'
 import axios from 'axios'
 
-import { requestGetCheersData, requestGetNextMatches, requestGetDateMatches, requestGetLeagueList, 
-requestGetLeagueRanking } from "@/api/football"
+import { requestGetCheersData, requestPostCheersData, requestGetNextMatches, 
+    requestGetDateMatches, requestGetLeagueList, requestGetLeagueRanking, 
+    requestGetTeamDetail } from "@/api/football"
 
 import {httpStatusCode} from "@/util/http-status"
 
@@ -17,6 +18,7 @@ export const useFootballStore = defineStore("football",() => {
     const dateMatches = ref([]);
     const leagueList = ref([]);
     const leagueRanking = ref([]);
+    const teamDetail = ref([]);
 
     const getCheersData = () => {
         requestGetCheersData(
@@ -34,6 +36,28 @@ export const useFootballStore = defineStore("football",() => {
                     console.log("***********비상***********")
                     console.error(error)
                     alert("응원 정보 가져오기 실패!")
+                }
+            }
+        )
+    }
+
+    const postCheersData = (data) => {
+        requestPostCheersData(
+            data,
+            (res) => {
+                console.log(res)
+                if(res.status === httpStatusCode.OK) {
+                    console.log("히히 응원 정보 등록하기 발사")
+                    console.log(res.data.data)
+                    cheersData.value = res.data.data;
+                }
+            },
+            (error) => {
+                console.log("응원 정보 등록하는데 에러")
+                if(error.response.status === httpStatusCode.NOTFOUND) {
+                    console.log("***********비상***********")
+                    console.error(error)
+                    alert("응원 정보 등록하기 실패!")
                 }
             }
         )
@@ -124,17 +148,42 @@ export const useFootballStore = defineStore("football",() => {
             }
         )
     }
+
+    const getTeamDetail = (teamId) => {
+        requestGetTeamDetail(
+            teamId,
+            (res) => {
+                console.log(res)
+                if(res.status === httpStatusCode.OK) {
+                    console.log("히히 팀 상세 정보 가져오기 발사")
+                    teamDetail.value = res.data.data;
+                    console.log(teamDetail.value)
+                }
+            },
+            (error) => {
+                console.log("팀 상세 정보 가져오는데 에러")
+                if(error.response.status === httpStatusCode.NOTFOUND) {
+                    console.log("***********비상***********")
+                    console.error(error)
+                    alert("팀 상세 정보 가져오기 실패!")
+                }
+            }
+        )
+    }
     
     return {
         getCheersData,
+        postCheersData,
         getNextMatches,
         getDateMatches,
         getLeagueList,
         getLeagueRanking,
+        getTeamDetail,
         cheersData,
         nextMatches,
         dateMatches,
         leagueList,
         leagueRanking,
+        teamDetail,
     }
 })
