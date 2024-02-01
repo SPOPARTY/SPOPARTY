@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
-import com.spoparty.api.common.exception.UnauthorizedException;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.MemberProjection;
 import com.spoparty.api.member.service.EmailService;
@@ -40,28 +40,27 @@ public class AuthenticationController {
 	public ResponseEntity<?> emailCheck(@PathVariable("email") String email) throws InterruptedException {
 		Member member = memberService.findByEmail(email);
 		if (member != null)
-			return ApiResponse.error(CONFLICT_DATA);
-
+			throw new CustomException(CONFLICT_DATA);
 		emailService.sendEmailCode(email);
-		return ApiResponse.success(GET_SUCCESS, null);
+		return ApiResponse.success(GET_SUCCESS);
 	}
 
 	@PostMapping("/email-check")
-	public ResponseEntity<?> emailCheck(@RequestBody Map<String, String> data) throws InterruptedException {
+	public ResponseEntity<?> emailCheck(@RequestBody Map<String, String> data) {
 		String email = data.get("email");
 		String code = data.get("code");
 		log.debug(data.toString());
 		if (emailService.checkCode(email, Integer.parseInt(code)))
-			return ApiResponse.success(GET_SUCCESS, null);
+			return ApiResponse.success(GET_SUCCESS);
 		else
-			return ApiResponse.error(EXAMPLE_ERROR);
+			return ApiResponse.error(BAD_CLIENT_REQUEST);
 	}
 
 	@GetMapping("/id-check/{loginId}")
 	public ResponseEntity<?> idCheck(@PathVariable("loginId") String loginId) {
 		MemberProjection member = memberService.findByLoginIdProjection(loginId);
 		if (member == null)
-			return ApiResponse.success(GET_SUCCESS, null);
+			return ApiResponse.success(GET_SUCCESS);
 		else
 			return ApiResponse.error(CONFLICT_DATA);
 	}
@@ -69,7 +68,7 @@ public class AuthenticationController {
 	@RequestMapping("/token")
 	public ResponseEntity<?> generateToken(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		if (principalDetails == null)
-			throw new UnauthorizedException(UNAUTHORIZED_USER);
+			throw new CustomException(UNAUTHORIZED_USER);
 		Long id = principalDetails.getMember().getId();
 		String accessToken = memberService.generateAccessToken(id);
 		String refreshToken = memberService.generateRefreshToken(id);
@@ -89,22 +88,16 @@ public class AuthenticationController {
 		log.info("accessToken : {}", accessToken);
 		log.info("refreshToken : {}", refreshToken);
 		accessToken = memberService.regenerateToken(accessToken, refreshToken);
-		if (accessToken == null)
-			return ResponseEntity.status(400).body(null);
-		else {
-			Map<String, String> header = new HashMap<>();
-			header.put("accessToken", accessToken);
-			return ApiResponse.success(GET_SUCCESS, null, header);
-		}
+		Map<String, String> header = new HashMap<>();
+		header.put("accessToken", accessToken);
+		return ApiResponse.success(GET_SUCCESS, null, header);
+
 	}
 
 	@PostMapping("/password")
 	public ResponseEntity<?> tempPwd(@RequestBody Member member) throws InterruptedException {
-		boolean isSuccess = memberService.tempPwd(member);
-		if (isSuccess)
-			return ApiResponse.success(GET_SUCCESS, null);
-		else
-			return ApiResponse.error(EXAMPLE_ERROR);
+		memberService.tempPwd(member);
+		return ApiResponse.success(GET_SUCCESS, null);
 	}
 
 }

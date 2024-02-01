@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.spoparty.api.common.constants.ErrorCode;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.entity.File;
 import com.spoparty.api.member.repository.FileRepository;
 
@@ -29,12 +31,16 @@ public class FileService {
 	@Value("${cloud.aws.region.static}")
 	private String region;
 
-	public File uploadFile(MultipartFile file) throws IOException {
+	public File uploadFile(MultipartFile file) {
 		String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-		ObjectMetadata metadata = new ObjectMetadata();
-		metadata.setContentType(file.getContentType());
-		metadata.setContentLength(file.getSize());
-		amazonS3.putObject(bucket, fileName, file.getInputStream(), metadata);
+		try {
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setContentType(file.getContentType());
+			metadata.setContentLength(file.getSize());
+			amazonS3.putObject(bucket, fileName, file.getInputStream(), metadata);
+		} catch (IOException e) {
+			throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL);
+		}
 
 		File saveFile = new File();
 		saveFile.setType("image");

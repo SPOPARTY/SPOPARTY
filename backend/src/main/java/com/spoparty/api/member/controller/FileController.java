@@ -1,9 +1,7 @@
 package com.spoparty.api.member.controller;
 
-import static com.spoparty.api.common.constants.ErrorCode.*;
 import static com.spoparty.api.common.constants.SuccessCode.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,14 +32,10 @@ public class FileController {
 	@PostMapping("/upload")
 	public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files) {
 		List<File> list = new ArrayList<>();
-		try {
-			for (MultipartFile file : files) {
-				list.add(fileService.uploadFile(file));
-			}
-			return ApiResponse.success(CREATE_SUCCESS, list);
-		} catch (IOException e) {
-			return ApiResponse.error(EXAMPLE_ERROR);
+		for (MultipartFile file : files) {
+			list.add(fileService.uploadFile(file));
 		}
+		return ApiResponse.success(CREATE_SUCCESS, list);
 	}
 
 	@GetMapping("/{type}")
