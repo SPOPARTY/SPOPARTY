@@ -17,13 +17,13 @@ public class PartyUpdateRequestDto {
 	@NotNull(message = "memberId가 없습니다.")
 	private Long memberId;
 
-	@NotNull(message = "파티명이 없습니다.")
-	@Size(min = 1, max = 30, message = "파티명은 1 ~ 30자 이여야 합니다.")
+	// @NotNull(message = "파티명이 없습니다.")
+	@Size(max = 30, message = "파티명은 1 ~ 30자 이여야 합니다.")
 	private String title;
 
-	@NotNull(message = "경기 URL이 없습니다.")
+	// @NotNull(message = "경기 URL이 없습니다.")
 	private String fixtureUrl;
 
-	@NotNull(message = "fixtureId가 없습니다.")
+	// @NotNull(message = "fixtureId가 없습니다.")
 	private Long fixtureId;
 }
