@@ -22,7 +22,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
@@ -43,11 +42,11 @@ public class Party extends BaseEntity {
 	@Column(name = "party_id")
 	private Long id;
 
-	@Column(nullable = false, name = "session_id") // openVidu sessionId
+	@Column(nullable = false) // openVidu sessionId
 	private String openviduSessionId;
 
 	@Setter
-	@Column(nullable = false, length = 30)
+	@Column(length = 30)
 	private String title;
 
 	@Column(nullable = false)
@@ -60,30 +59,21 @@ public class Party extends BaseEntity {
 	private Integer currentParticipants = 0;
 
 	@Setter
-	@Column(nullable = false, length = 2048)
+	// @Max(2048)
 	private String fixtureUrl;
 
 	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fixture_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "fixture_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Fixture fixture;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member host;
 
-	@Setter
-	@OneToOne(mappedBy = "party", fetch = FetchType.LAZY)
-	@JoinColumn(name = "club_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Club club;
-
-	public static Party createParty(String title, String fixtureUrl, Fixture fixture, Member host, Club club, String openviduSessionId) {
+	public static Party createParty(Member host, Club club, String openviduSessionId) {
 		Party party = new Party();
-		party.title = title;
-		party.fixtureUrl = fixtureUrl;
-		party.fixture = fixture;
 		party.host = host;
-		party.club = club;
 		party.openviduSessionId = openviduSessionId;
 		club.setParty(party);
 		return party;
@@ -104,8 +94,8 @@ public class Party extends BaseEntity {
 		currentParticipants--;
 	}
 
-	public void deleteParty() {
-		club.setParty(null); // null로 초기화
-		softDelete();
-	}
+	// public void deleteParty() {
+	// 	club.setParty(null); // null로 초기화
+	// 	softDelete();
+	// }
 }

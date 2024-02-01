@@ -7,8 +7,11 @@ public interface PartyMemberProjection {
 	Long getId();
 
 	@JsonProperty("memberNickname")
-	Long getMember_nickname();
+	String getMember_nickname();
 
 	@JsonProperty("role")
-	String getRoleType_name();
+	String getRole();
+
+	String getOpenviduToken();
+
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public interface PartyProjection {
 	Long getId();
 
-	String getSessionId();
+	String getOpenviduSessionId();
 
 	String getTitle();
 

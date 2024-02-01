@@ -46,12 +46,23 @@ public class PartyMember extends BaseEntity {
 	@Column(nullable = false)
 	private RoleType role;
 
-	public static PartyMember createPartyMember(Party party, Member member, RoleType role) {
+	@Column(name = "openvidu_token", nullable = false)
+	private String openviduToken;
+
+	public static PartyMember createPartyMember(Party party, Member member, String openviduToken) {
 		PartyMember partyMember = new PartyMember();
 		partyMember.party = party;
 		partyMember.member = member;
-		partyMember.role = role;
+		partyMember.openviduToken = openviduToken;
+		partyMember.role = checkRole(party);
 		party.increaseParticipants();
 		return partyMember;
+	}
+
+	private static RoleType checkRole(Party party) {
+		if (party.getCurrentParticipants() == 0) {
+			return RoleType.host;
+		}
+		return RoleType.guest;
 	}
 }
