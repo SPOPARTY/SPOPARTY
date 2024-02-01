@@ -28,7 +28,7 @@ public class LeagueController {
 	ResponseEntity findAllLeague() {
 		ResponseDTO responseDTO = leagueService.findAllLeague();
 
-		HttpStatusCode code = common.getStatusByContent(responseDTO);
+		// HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
@@ -47,9 +47,9 @@ public class LeagueController {
 				HttpStatusCode.valueOf(400));
 		}
 
-		HttpStatusCode code = common.getStatusByContent(responseDTO);
+		// HttpStatusCode code = common.getStatusByContent(responseDTO);
 
-		return new ResponseEntity<>(responseDTO, code);
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 
 	}
 
