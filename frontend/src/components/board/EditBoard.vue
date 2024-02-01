@@ -83,6 +83,8 @@ const titleRules = [
     v => (v && v.length <= 40) || '제목은 40자 이하로 작성해주세요'
 ];
 
+const boardId = props.detail.id
+const clubId = props.detail.clubId
 const editedTitle = ref(props.detail.title);
 const editedContent = ref(props.detail.content);
 const editedFile = ref(props.detail.file && props.detail.file.url ? [props.detail.file.url] : []);
@@ -98,7 +100,7 @@ function confirmEdit(){
 // 진짜 수정
 const editPost = () => {
     const formdata = new FormData(); 
-    formdata.append("id",memberId);
+    formdata.append("id",boardId);
     formdata.append("title",editedTitle.value);
     formdata.append("content",editedContent.value);
     formdata.append("file",editedFile.value[0])
@@ -108,7 +110,7 @@ const editPost = () => {
         console.log(key, value);
     }
 
-    boardStore.updateBoard(editedFile)
+    boardStore.updateBoard(formdata)
     
     emits('edit-close') 
     editConfirmVisible.value = false; // 수정 확인 모달 off

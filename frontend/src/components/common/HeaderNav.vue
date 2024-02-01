@@ -8,8 +8,8 @@
     </v-list-item>
 
     <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
-    <v-list dense class="club-list">
-      <v-list-item v-for="(club, index) in clubs" v-if="clubs" :key="index" class="mb-1">
+    <v-list dense class="club-list" v-if="clubs"> 
+      <v-list-item v-for="(club, index) in clubs"  :key="index" class="mb-1">
         <div @click="openClubInNewTab(club.clubId)" class="d-flex justify-start align-center club-item"
           style="text-transform: none; padding: 16px; cursor: pointer;">
           <v-list-item-title class="align-start">{{ club.name }}<br>{{ 'ID: ' + club.clubId }}</v-list-item-title>
@@ -112,9 +112,11 @@ function openClubInNewTab(clubId) {
 }
 
 
-// 새 클럽 만들기 페이지
+// 새 클럽 만들기 모달
+
+
 function goToNewClubPage() {
-  router.push('/new-club'); // '새 클럽' 페이지로 라우팅하는 경로를 적절히 조정하세요.
+  router.push('/new-club'); // 모달 띄움
 }
 
 

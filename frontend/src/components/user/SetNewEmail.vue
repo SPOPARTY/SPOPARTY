@@ -192,6 +192,11 @@ function checkVerifyCode () {
 }
 
 function confirmChange() {
+    if(!verifyDone.value) {
+        alert("인증 과정을 진행주세요!")
+        return;
+    }
+
     if (emailVerifiedConfirm) {
         verifyDone.value = true;
         emit('update-email',newEmail)

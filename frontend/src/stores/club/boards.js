@@ -76,18 +76,19 @@ export const useBoardStore = defineStore("board",() => {
             (res) => {
                 console.log("히히 게시글 수정 발사")
                 console.log(res)
-                if(res.data.status === httpStatusCode.CREATE) {
+                console.log(res.status)
+                if(res.status === httpStatusCode.OK) {
                     console.log("*******게시글이 잘 수정 됨*******")
-                    console.log(res.data.data)
                     const clubId = res.data.data["club_id"];
-                    console.log(res.data.data["updated_time"])
+                    console.log("clubId가 잘 뜨나??? ->", clubId)
                     getBoardList(clubId);
                     alert("게시글 수정 완료")
-                    window.location.replace(`/club/${clubId}/board`)
+                    window.location.reload(`/club/${clubId}/board`)
                 }
             },
             (error) => {
                 console.log(error);
+                console.log(error.data)
                 alert("게시글 수정 실패!")
             }
         )
