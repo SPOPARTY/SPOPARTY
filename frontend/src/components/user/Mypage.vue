@@ -18,7 +18,7 @@
             
             <v-row>
                 <v-col cols="12">
-                    <v-text-field label="닉네임" :value="memberInfo.nickname" outlined dense></v-text-field>
+                    <v-text-field label="닉네임" v-model="memberInfo.nickname" outlined dense></v-text-field>
                 </v-col>
             </v-row>
             
@@ -131,12 +131,12 @@ watch(() => followStore.teamList, (newTeamList) => {
 },{immediate:true})
 
 
-
+const updatedPwd = ref("");
 
 const memberInfo = ref({
     id : "",
     loginId : "",
-    loginPwd : "",
+    loginPwd : updatedPwd.value,
     nickname : "",
     email : "",
     team : {
@@ -216,7 +216,8 @@ function showChangePwdModal() {
 function changePwd(newPwds){
     isPwdModalVisible.value = false;
     console.log(newPwds)
-    memberInfo.value.loginPwd = newPwds.password;
+    updatedPwd.value = newPwds.password;
+    memberInfo.value.loginPwd = updatedPwd.value;
     console.log("새로 바뀐 비밀번호!")
     console.log(memberInfo.value.loginPwd)
     
