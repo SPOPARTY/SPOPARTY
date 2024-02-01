@@ -94,14 +94,8 @@ function deletePost() {
 function closeModal() {
     modalVisible.value = false; // 1. modalVisible off
     emits('detail-close') // 2. emit
-    console.log("BoardDetail닫음")
-    console.log("modalVisible --> ",modalVisible.value)
 }
 
-
-onMounted(() => {
-    console.log("히히 boardDetail 발사")
-})
 
 </script>
 

@@ -79,6 +79,7 @@ export const useBoardStore = defineStore("board",() => {
                 console.log(res.status)
                 if(res.status === httpStatusCode.OK) {
                     console.log("*******게시글이 잘 수정 됨*******")
+                    console.log(res.data);
                     const clubId = res.data.data["club_id"];
                     console.log("clubId가 잘 뜨나??? ->", clubId)
                     getBoardList(clubId);

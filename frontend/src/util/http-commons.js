@@ -18,7 +18,7 @@ function localAxios() {
     // 토큰이 있다면 헤더에 토큰을 넣어준다
     instance.interceptors.request.use(
         (request) => {
-            let token = localStorage.getItem("accessToken")
+            let token = sessionStorage.getItem("accessToken")
             if (token) request.headers.Authorization = token;
             return request;
         }, 
@@ -47,7 +47,6 @@ function localAxios() {
             // or 토큰 자체가 만료
             if (status == httpStatusCode.UNAUTHORIZED) {
                 const originalRequest = config;
-
                 // Token을 재발급하는 동안 다른 요청은 대기
                 // Why? -> 다른 요청이 들어오면 새로 받은 Access Token이 유효X
                 if (!isTokenRefreshing) {
@@ -58,7 +57,7 @@ function localAxios() {
                     return await instance.post(
                         "/authentication/regenerate", // 주소
                         {refreshToken : sessionStorage.getItem("refreshToken")}, // body
-                        {headers: { Authorization: localStorage.getItem("accessToken") }} // header
+                        {Authorization : sessionStorage.getItem("accessToken")} // header
                         )
                         .then((response) => {
                             alert("accessToken 재발급!!!")
@@ -71,7 +70,7 @@ function localAxios() {
                             console.log("히히 decoded-token 발사 -> ",decodedToken);
 
                             // 스토리지에 각종 토큰 저장
-                            localStorage.setItem('accessToken',accessToken);
+                            sessionStorage.setItem('accessToken',accessToken);
                             if(refreshToken !== null) {
                                 sessionStorage.setItem('refreshToken',refreshToken);
                             }

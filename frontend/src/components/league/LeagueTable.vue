@@ -61,7 +61,7 @@ import { useFollowStore } from '@/stores/member/follows';
 const { getFollowList, followList, doFollow, doUnFollow } = useFollowStore();
 
 // 로그인 여부 감지
-const isLogined = ref(localStorage.getItem("accessToken") !== null);
+const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
 
 // 로그인한 사용자의 팔로우 목록 가져오기
 if (isLogined.value) {
