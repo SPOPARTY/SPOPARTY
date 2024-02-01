@@ -1,5 +1,7 @@
 package com.spoparty.api.member.service;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+
 import java.util.List;
 
 import org.springframework.mail.MailSendException;
@@ -7,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.football.repository.TeamRepository;
 import com.spoparty.api.member.entity.FollowingTeam;
@@ -65,25 +68,23 @@ public class MemberService {
 
 	@Transactional
 	public MemberProjection updateMember(Member member) {
-		Member data = memberRepository.findById(member.getId(), Member.class).orElse(null);
-		if (data == null)
-			return null;
-		if (member.getLoginPwd() != null)
+		Member data = memberRepository.findById(member.getId(), Member.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		if (member.getLoginPwd() != null && member.getLoginPwd().isEmpty())
 			data.setLoginPwd(bCryptPasswordEncoder.encode(member.getLoginPwd()));
-		if (member.getEmail() != null)
+		if (member.getEmail() != null && member.getEmail().isEmpty())
 			data.setEmail(member.getEmail());
 		if (member.getNickname() != null)
 			data.setNickname(member.getNickname());
-		return memberRepository.findById(member.getId(), MemberProjection.class).orElse(null);
+		return memberRepository.findById(member.getId(), MemberProjection.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 	}
 
 	@Transactional
-	public Member deleteMember(Long id) {
-		Member member = memberRepository.findById(id, Member.class).orElse(null);
-		if (member == null || member.getState() == 2)
-			return null;
+	public void deleteMember(Long id) {
+		Member member = memberRepository.findById(id, Member.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		member.setState(2);
-		return member;
 	}
 
 	public Member findByEmail(String email) {
@@ -100,30 +101,27 @@ public class MemberService {
 		List<FollowingTeamProjection> isExist = followingTeamRepository.findByMember_idAndTeam_id(memberId, teamId,
 			FollowingTeamProjection.class);
 		if (!isExist.isEmpty())
-			return null;
+			throw new CustomException(CONFLICT_DATA);
 
 		// FollowingTeam객체를 만들어 Member와 Team을 주입
-		Member member = memberRepository.findById(memberId, Member.class).orElse(null);
-		Team team = teamRepository.findById(teamId, Team.class).orElse(null);
-		if (member == null || team == null)
-			return null;
+		Member member = memberRepository.findById(memberId, Member.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		Team team = teamRepository.findById(teamId, Team.class).orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		FollowingTeam followingTeam = new FollowingTeam();
 		followingTeam.setMember(member);
 		followingTeam.setTeam(team);
 
 		// save하고 저장된 id값을 Projection형태로 얻어옴
 		FollowingTeam tmp = followingTeamRepository.save(followingTeam);
-		return followingTeamRepository.findById(tmp.getId(), FollowingTeamProjection.class).orElse(null);
+		return followingTeamRepository.findById(tmp.getId(), FollowingTeamProjection.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 	}
 
 	@Transactional
-	public FollowingTeam deleteFollow(Long followTeamId) {
-		FollowingTeam followingTeam = followingTeamRepository.findById(followTeamId, FollowingTeam.class).orElse(null);
-		if (followingTeam == null || followingTeam.isDeleted())
-			return null;
-
+	public void deleteFollow(Long followTeamId) {
+		FollowingTeam followingTeam = followingTeamRepository.findById(followTeamId, FollowingTeam.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		followingTeam.softDelete();
-		return followingTeam;
 	}
 
 	public String generateAccessToken(Long id) {
@@ -144,9 +142,7 @@ public class MemberService {
 
 	public String regenerateToken(String accessToken, String refreshToken) {
 		MemberToken memberToken = memberTokenRepository.findByRefreshToken(refreshToken, MemberToken.class)
-			.orElse(null);
-		if (accessToken == null || memberToken == null)
-			return null;
+			.orElseThrow(() -> new CustomException(UNAUTHORIZED_USER));
 		return jwtTokenUtil.createAccessToken(memberToken.getMember().getId() + "");
 	}
 
@@ -161,16 +157,12 @@ public class MemberService {
 	}
 
 	@Transactional
-	public boolean tempPwd(Member member) throws MailSendException, InterruptedException {
+	public void tempPwd(Member member) throws MailSendException, InterruptedException {
 		Member data = memberRepository.findByLoginIdAndEmail(member.getLoginId(), member.getEmail(), Member.class)
-			.orElse(null);
-		if (data != null) {
-			int code = (int)(Math.random() * 100000000);
-			emailService.sendEmail(data.getEmail(), "SPOPARTY 비밀번호 찾기", "임시 비밀번호 : [" + code + "]");
-			data.setLoginPwd(bCryptPasswordEncoder.encode(code + ""));
-			return true;
-		}
-		return false;
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		int code = (int)(Math.random() * 100000000);
+		emailService.sendEmail(data.getEmail(), "SPOPARTY 비밀번호 찾기", "임시 비밀번호 : [" + code + "]");
+		data.setLoginPwd(bCryptPasswordEncoder.encode(code + ""));
 	}
 
 	public List<Team> getTeamList() {
