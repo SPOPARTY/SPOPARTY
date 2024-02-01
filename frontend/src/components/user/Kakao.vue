@@ -7,7 +7,7 @@
 <script setup>
 import {ref, onMounted} from 'vue';
 import {useRouter, useRoute} from 'vue-router';
-import {useManagementStore} from '@/stores/member/managerments'
+import {useManagementStore} from '@/stores/member/managements'
 
 const login = useManagementStore.login();
 
