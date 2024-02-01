@@ -41,7 +41,7 @@ public class BoardService {
 	public BoardProjection updateBoard(Board board) {
 		Board data = boardRepository.findById(board.getId()).orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		if (data.getFile() != null && board.getFile() != null)
-			fileService.findById(data.getFile().getId()).softDelete();
+			fileService.deleteFile(data.getFile().getId());
 		if (!board.getTitle().isEmpty())
 			data.setTitle(board.getTitle());
 		if (!board.getContent().isEmpty())
@@ -55,6 +55,9 @@ public class BoardService {
 	@Transactional
 	public void deleteBoard(Long id) {
 		Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		if (board.getFile() != null) {
+			fileService.deleteFile(board.getFile().getId());
+		}
 		board.softDelete();
 	}
 
