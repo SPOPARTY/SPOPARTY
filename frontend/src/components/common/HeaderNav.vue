@@ -61,6 +61,7 @@
     <v-btn v-if="isLogined" text class="mx-2 btn-text" @click="logout">로그아웃</v-btn>
     <v-btn v-else text to="/login" class="mx-2 btn-text">로그인</v-btn>
   </v-app-bar>
+  <NewClub v-if="isNewClubModalVisible" @close-new-club="isNewClubModalVisible = false"/>
 </template>
 
 <script setup>
@@ -69,11 +70,14 @@ import { useRouter } from 'vue-router';
 
 import { useManagementStore} from "@/stores/member/managements"
 import { useClubStore} from "@/stores/club/clubs"
+
+import NewClub from '@/components/club/NewClub.vue';
+
 const {myClubs} = useClubStore();
 
 
 onMounted(async () => {
-  if (localStorage.getItem("accessToken") != null) {
+  if (sessionStorage.getItem("accessToken") != null) {
     await clubStore.requestClub();
   }
 })
@@ -88,7 +92,7 @@ watch(() => clubStore.myClubs,(newClubs) => {
 
 
 // 로그인 여부 감지
-const isLogined = ref(localStorage.getItem("accessToken") !== null);
+const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
 
 // 로그아웃
 const logout = () => {
@@ -113,10 +117,18 @@ function openClubInNewTab(clubId) {
 
 
 // 새 클럽 만들기 모달
-
+const isNewClubModalVisible = ref(false)
 
 function goToNewClubPage() {
-  router.push('/new-club'); // 모달 띄움
+  if (sessionStorage.getItem("accessToken")== null) {
+    console.log()
+    if(confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?") === true) {
+      window.location.replace("/login")
+      return;
+    }
+  }
+  isNewClubModalVisible.value = true;
+
 }
 
 

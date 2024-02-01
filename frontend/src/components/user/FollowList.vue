@@ -5,13 +5,18 @@
         @click:outside="closeModal"
         persistent      >
         <v-card>
+          <v-row>
+              <v-col cols="10" >
+                  <v-card-title>팔로우 리스트</v-card-title>
+              </v-col>
+              <v-col cols="2" style="margin-top:5px;">
+                  <v-btn :ripple="false" @click="closeModal" class="no-background-hover">
+                      <v-icon>mdi-close</v-icon>
+                  </v-btn>
+              </v-col>
+          </v-row>  
           
-          <v-card-title class="justify-space-between">
-            <span>팔로우 중인 구단 목록</span>
-            <v-btn icon @click="closeModal">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
+
           <v-row>
               <v-col cols="6">
                   <v-btn 
@@ -213,6 +218,13 @@
   }
   </script>
 
-  <style scoped>
+  <style scoped lang="scss">
+  .no-background-hover {
+  box-shadow: none !important;
+
+    &:hover {
+      background-color: transparent !important;
+    }
+  }
 
   </style>

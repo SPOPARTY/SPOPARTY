@@ -9,7 +9,7 @@ import {ref, onMounted} from 'vue';
 import {useRouter, useRoute} from 'vue-router';
 import {useManagementStore} from '@/stores/member/managements'
 
-const login = useManagementStore.login();
+const {login} = useManagementStore();
 
 onMounted(() => {
     alert("카카오 로그인!!!!!!")
@@ -17,7 +17,7 @@ onMounted(() => {
     const loginId = path;
     const loginPwd = path.split("_")[1];
 
-    data = JSON.stringify({
+    const data = JSON.stringify({
         "loginId" : loginId,
         "loginPwd" : loginPwd
     })

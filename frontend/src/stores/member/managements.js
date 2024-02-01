@@ -38,7 +38,7 @@ export const useManagementStore = defineStore("management",() => {
                     isValidToken.value = true;
                     let decodedToken = jwtDecode(accessToken);
                     console.log("히히 decoded-token 발사 -> ",decodedToken);
-                    localStorage.setItem('accessToken',accessToken);
+                    sessionStorage.setItem('accessToken',accessToken);
                     sessionStorage.setItem('refreshToken',refreshToken);
                     sessionStorage.setItem("id",decodedToken.id);
                     memberId.value = sessionStorage.getItem("id");
@@ -92,8 +92,10 @@ export const useManagementStore = defineStore("management",() => {
         console.log("히히 logout발사")
         await memberLogout(
             (response) => {
+                console.log("로그아웃 성공!")
+                console.log(response)
                 if(response.status === httpStatusCode.OK) {
-                    localStorage.removeItem("accessToken");
+                    sessionStorage.removeItem("accessToken");
                     sessionStorage.removeItem("refreshToken");
                     sessionStorage.removeItem("id")
                     isLogin.value = false;

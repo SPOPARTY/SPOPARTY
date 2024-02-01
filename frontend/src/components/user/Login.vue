@@ -110,7 +110,7 @@ function showFindPwdModal() {
 const isKakaoLoginModalVisible = ref(false)
 function showKakaoLoginModal() {
   isKakaoLoginModalVisible.value = true;
-  window.open("https://i10a802.p.ssafy.io/api/oauth2/authorization/kakao");
+  window.location.replace("https://i10a802.p.ssafy.io/api/oauth2/authorization/kakao");
 }
 </script>
 
