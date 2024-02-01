@@ -42,6 +42,7 @@ public class PartyController {
 		log.debug("파티 생성 API 시작");
 		log.debug("요청 - {}", partyRequestDto);
 		PartyResponseDto response = partyService.createParty(partyRequestDto);
+		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_CREATE_SUCCESS, response);
 	}
 
@@ -49,14 +50,18 @@ public class PartyController {
 	public ResponseEntity<?> getParty(@PathVariable Long partyId, @PathVariable String clubId) {
 		log.debug("파티 조회 API 시작");
 		PartyResponseDto response = partyService.findParty(partyId);
+		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_READ_SUCCESS, response);
 	}
 
 	@PutMapping("/{partyId}")
-	public ResponseEntity<?> updateParty(@PathVariable Long partyId, @RequestBody @Valid PartyUpdateRequestDto partyUpdateRequestDto,
+	public ResponseEntity<?> updateParty(@PathVariable Long partyId,
+		@RequestBody @Valid PartyUpdateRequestDto partyUpdateRequestDto,
 		@PathVariable String clubId) {
 		log.debug("파티 수정 API 시작");
+		log.debug("요청 - {}", partyUpdateRequestDto);
 		PartyResponseDto response = partyService.updateParty(partyId, partyUpdateRequestDto);
+		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_UPDATE_SUCCESS, response);
 	}
 
@@ -64,6 +69,7 @@ public class PartyController {
 	public ResponseEntity<?> delete(@PathVariable Long partyId, @PathVariable Long clubId) {
 		log.debug("파티 삭제 API 시작");
 		Long response = partyService.deleteParty(partyId, clubId);
+		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_DELETE_SUCCESS, response);
 	}
 
@@ -71,6 +77,7 @@ public class PartyController {
 	public ResponseEntity<?> getAllParticipants(@PathVariable Long partyId, @PathVariable String clubId) {
 		log.debug("파티원 목록 조회 API 시작");
 		List<PartyMemberProjection> response = partyService.findAllPartyMembers(partyId);
+		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_MEMBERS_READ_SUCCESS, response);
 	}
 
@@ -80,7 +87,9 @@ public class PartyController {
 		OpenViduJavaClientException,
 		OpenViduHttpException {
 		log.debug("파티원 추가 API 시작");
+		log.debug("요청 - {}", partyMemberRequestDto);
 		PartyMemberProjection response = partyService.createPartyMember(partyId, partyMemberRequestDto);
+		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_MEMBER_CREATE_SUCCESS, response);
 	}
 
@@ -89,6 +98,7 @@ public class PartyController {
 		@PathVariable String clubId) {
 		log.debug("파티원 조회 API 시작");
 		PartyMemberProjection response = partyService.findPartyMember(participantId, PartyMemberProjection.class);
+		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_MEMBER_READ_SUCCESS, response);
 	}
 
@@ -97,6 +107,7 @@ public class PartyController {
 		@PathVariable String clubId) {
 		log.debug("파티원 삭제 API 시작");
 		Long response = partyService.deletePartyMember(participantId);
+		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_MEMBER_DELETE_SUCCESS, response);
 	}
 }

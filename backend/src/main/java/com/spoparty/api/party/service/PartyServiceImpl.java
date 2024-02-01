@@ -47,16 +47,21 @@ public class PartyServiceImpl implements PartyService {
 
 	@Override
 	@Transactional
-	public PartyResponseDto createParty(PartyCreateRequestDto createDto) throws OpenViduJavaClientException, OpenViduHttpException {
+	public PartyResponseDto createParty(PartyCreateRequestDto createDto) throws
+		OpenViduJavaClientException,
+		OpenViduHttpException {
 		Club club = clubService.findClubById(createDto.getClubId());
 		Member member = memberService.findById(createDto.getMemberId());
+
 		Map<String, Object> openviduInfo = createDto.getOpenViduSessionInfo();
 		log.debug("before : openviduInfo - {}", openviduInfo);
 		openviduInfo.put("customSessionId", club.getId().toString()); // customSessionId 세션명을 clubId로 대체
-		// openviduInfo.put("customSessionId", UUID.randomUUID().toString()); // customSessionId 세션명을 uuid로 대체
 		log.debug("after : openviduInfo - {}", openviduInfo);
-		String openviduSessionId = openViduService.initializeSession(createDto.getOpenViduSessionInfo()); // openvidu 세션 생성
+
+		String openviduSessionId = openViduService.initializeSession(
+			createDto.getOpenViduSessionInfo()); // openvidu 세션 생성
 		log.debug("openviduSessionId - {}", openviduSessionId);
+
 		Party party = Party.createParty(member, club, openviduSessionId);
 		partyRepository.save(party);
 		return findParty(party.getId());
@@ -113,7 +118,8 @@ public class PartyServiceImpl implements PartyService {
 		Party party = findPartyById(partyId);
 		Member member = memberService.findById(requestDto.getMemberId());
 		log.debug("openviduSessionId - {}", party.getOpenviduSessionId());
-		String openviduToken = openViduService.createConnection(party.getOpenviduSessionId(), requestDto.getOpenViduConnectionInfo());
+		String openviduToken = openViduService.createConnection(party.getOpenviduSessionId(),
+			requestDto.getOpenViduConnectionInfo());
 		log.debug("openviduToken - {}", openviduToken);
 		PartyMember partyMember = PartyMember.createPartyMember(party, member, openviduToken);
 		log.debug("partyMember - {}", partyMember);

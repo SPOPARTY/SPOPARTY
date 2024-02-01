@@ -34,7 +34,7 @@ import lombok.ToString;
 @Getter
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "club")
+@ToString
 @Where(clause = "is_deleted = 0")
 public class Party extends BaseEntity {
 	@Id
@@ -55,11 +55,11 @@ public class Party extends BaseEntity {
 
 	@Column(nullable = false)
 	@ColumnDefault("0")
-	@Min(0) @Max(6)
+	@Min(0)
+	@Max(6)
 	private Integer currentParticipants = 0;
 
 	@Setter
-	// @Max(2048)
 	private String fixtureUrl;
 
 	@Setter
