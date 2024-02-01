@@ -2,7 +2,7 @@
   <v-container fluid class="pa-2 fill-height part-section">
     <v-row justify="center">
       <v-col cols="12" class="d-flex flex-column align-center justify-center">
-        <v-carousel class='carousel' cycle interval="6000" height="450px" hide-delimiter-background color="red">
+        <v-carousel v-model="model" class='carousel' cycle interval="6000" height="450px" hide-delimiter-background color="red">
           <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
             <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
               <!-- 경기 기본 정보 -->
@@ -20,11 +20,11 @@
                 <h1>{{ convertToBoolean(match.already_cheer) ? '이미 투표하셨습니다' : '팀을 선택해주세요!' }}</h1>
               </div>
               <!-- 투표 버튼 및 득표율 -->
-              <div class="d-flex justify-center align-center">
+              <div class="d-flex justify-center align-center pb-12">
                 <!-- 투표 버튼 -->
                 <!-- 홈 팀 카드 -->
                 <v-card :disabled="convertToBoolean(match.already_cheer)" class="team-card"
-                  @click="() => voteForTeam(index, 'home')">
+                  @click="() => voteForTeam(match, 'home')">
                   <v-img :src="match.fixture.homeTeam.logo" class="team-logo"></v-img>
                   <v-card-title :class="{ chosen: match.fixture.chosenTeam == 'home' }">{{ match.fixture.homeTeam.nameKr
                   }}</v-card-title>
@@ -34,7 +34,7 @@
                 <span class="VS">VS</span>
                 <!-- 원정 팀 카드 -->
                 <v-card :disabled="convertToBoolean(match.already_cheer)" class="team-card"
-                  @click="() => voteForTeam(index, 'away')">
+                  @click="() => voteForTeam(match, 'away')">
                   <v-img :src="match.fixture.awayTeam.logo" class="team-logo"></v-img>
                   <v-card-title :class="{ chosen: match.fixture.chosenTeam == 'away' }">{{ match.fixture.awayTeam.nameKr
                   }}</v-card-title>
@@ -57,10 +57,20 @@ import { useFootballStore } from '@/stores/football/football';
 
 const footballStore = useFootballStore();
 
-const { getCheersData } = footballStore;
+const { getCheersData, postCheersData } = footballStore;
 
 // 비동기 함수 호출
 getCheersData();
+
+// post 메서드 함수 관련
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
+const memberId = ref(sessionStorage.getItem("id"));
+
+const postCheers = (matchIndex, team) => {
+  postCheersData(matchIndex, team);
+};
+
+const model = ref(0);
 
 // cheersData가 업데이트 되면 cheer를 업데이트합니다.
 const cheer = ref(null);
@@ -115,16 +125,33 @@ function formatDate(dateStr) {
 //     }
 // }
 
-function voteForTeam(matchIndex, team) {
-  const match = cheer.value[matchIndex];
-  if (team === 'home') {
-    match.homeTeamCount++;
-    match.fixture.chosenTeam = 'home';
-  } else {
-    match.awayTeamCount++;
-    match.fixture.chosenTeam = 'away';
+function voteForTeam(match, team) {
+  if (match.already_cheer === 'true') return;
+  if (isLogined.value === false || memberId === null) {
+    alert("로그인이 필요한 서비스입니다.");
+    return;
   }
-  match.already_cheer = 'true';
+
+  const cheerFixtureId = match.cheerFixtureId;
+  const teamId = team === 'home' ? match.fixture.homeTeam.teamId : match.fixture.awayTeam.teamId;
+  const fixtureId = match.fixture.fixtureId;
+  memberId.value = Number(memberId.value)
+  // const data = {
+  //   memberId: memberId.value,
+  //   teamId: teamId,
+  //   cheerFixtureId: cheerFixtureId,
+  //   fixtureId: fixtureId
+  // };
+  const data = new FormData();
+  data.append('memberId', memberId.value);
+  data.append('teamId', teamId);
+  data.append('cheerFixtureId', cheerFixtureId);
+  data.append('fixtureId', fixtureId);
+
+  console.log(data);
+  console.log(data.values())
+  // postCheers(memberId.value, cheerFixtureId, teamId, fixtureId);
+  postCheers(data);
 }
 
 const votePercentage = (match, team) => {

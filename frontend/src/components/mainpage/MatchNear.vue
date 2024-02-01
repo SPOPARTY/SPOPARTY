@@ -2,7 +2,7 @@
   <v-container class="match-near part-section" fluid>
     <v-row>
       <v-col cols="12">
-        <h1 class="near-title">오늘 예정 경기</h1>
+        <h1 class="near-title">예정 경기 일정</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -32,7 +32,7 @@
 </template>
   
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onUnmounted} from 'vue'
 
 import { useFootballStore } from '@/stores/football/football'
 
@@ -54,6 +54,48 @@ watch(() => footballStore.nextMatches, (newVal) => {
   console.warn(matches.value)
 }, { immediate: true }
 );
+
+// let intervalId = null;
+// onMounted(() => {
+//   intervalId = setInterval(() => {
+//     console.log("인터벌 확인");
+//   }, 1000);
+// });
+
+// onUnmounted(() => {
+//   clearInterval(intervalId);
+// });
+
+// // 남은 시간을 실시간으로 업데이트하기 위한 커스텀 훅
+// function useCountdown(targetDate) {
+//   const timeLeft = ref(calculateTimeLeft(targetDate));
+
+//   function updateCountdown() {
+//     console.log("updateCountdown")
+//     timeLeft.value = calculateTimeLeft(targetDate);
+//   }
+
+//   // 실시간 업데이트를 위해 setInterval 사용
+//   // let intervalId = null;
+//   // onMounted(() => {
+//   //   intervalId = setInterval(updateCountdown, 1000); // 매 분마다 업데이트
+//   // });
+//   let intervalId = null;
+//   onMounted(() => {
+//   intervalId = setInterval(() => {
+//     console.log("인터벌 확인")
+//     updateCountdown();
+//     }, 1000);
+//   });
+
+//   // 컴포넌트가 해제될 때 setInterval 정지
+//   onUnmounted(() => {
+//     clearInterval(intervalId);
+//   });
+
+//   return timeLeft;
+// }
+
 
 // 남은 시간 계산
 function calculateTimeLeft(startTimeStr) {
@@ -136,7 +178,6 @@ function calculateTimeLeft(startTimeStr) {
   height: 50px;
   margin: 0 10px;
 }
-
 .league-round-details, .team-vs-team {
   display: flex;
   align-items: center;
