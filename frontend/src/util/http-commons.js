@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { httpStatusCode } from '@/util/http-status'
+import { jwtDecode } from 'jwt-decode'
 
 const {VITE_REST_API} = import.meta.env;
 
@@ -45,7 +46,6 @@ function localAxios() {
             // 페이지가 새로고침되어 저장된 accessToken이 없어진 경우
             // or 토큰 자체가 만료
             if (status == httpStatusCode.UNAUTHORIZED) {
-                alert("accessToken이 없어짐!!!!!!")
                 const originalRequest = config;
 
                 // Token을 재발급하는 동안 다른 요청은 대기
@@ -58,7 +58,7 @@ function localAxios() {
                     return await instance.post(
                         "/authentication/regenerate", // 주소
                         {refreshToken : sessionStorage.getItem("refreshToken")}, // body
-                        {Authorization : localStorage.getItem("accessToken")} // header
+                        {headers: { Authorization: localStorage.getItem("accessToken") }} // header
                         )
                         .then((response) => {
                             alert("accessToken 재발급!!!")
@@ -67,19 +67,15 @@ function localAxios() {
                             let refreshToken = data["headers"]["refreshtoken"];
                             console.log("히히 새로운 access-token 발사 -> ", accessToken);
                             console.log("히히 새로운 refresh-token 발사 -> ", refreshToken)
-                            isLogin.value = true;
-                            isLoginError.value = false;
-                            isValidToken.value = true;
                             let decodedToken = jwtDecode(accessToken);
                             console.log("히히 decoded-token 발사 -> ",decodedToken);
+
+                            // 스토리지에 각종 토큰 저장
                             localStorage.setItem('accessToken',accessToken);
-                            sessionStorage.setItem('refreshToken',refreshToken);
+                            if(refreshToken !== null) {
+                                sessionStorage.setItem('refreshToken',refreshToken);
+                            }
                             sessionStorage.setItem("id",decodedToken.id);
-                            memberId.value = sessionStorage.getItem("id");
-
-                            // instance.defaults.headers.common["Authorization"] = newAccessToken;
-                            // originalRequest.headers.Authorization = newAccessToken;
-
                             isTokenRefreshing = false;
 
                             // 에러가 발생했던 원래 요청 반환

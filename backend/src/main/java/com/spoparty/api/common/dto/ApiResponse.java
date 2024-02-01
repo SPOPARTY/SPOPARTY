@@ -28,6 +28,11 @@ public class ApiResponse<T> {
 		this.message = message;
 	}
 
+	public static ResponseEntity<?> success(SuccessCode code) {
+		return ResponseEntity.status(code.getStatus().value())
+			.body(new ApiResponse<>(code.getStatus().value(), code.getMessage()));
+	}
+
 	public static <T> ResponseEntity<?> success(SuccessCode code, T data) {
 		return ResponseEntity.status(code.getStatus().value())
 			.body(new ApiResponse<>(code.getStatus().value(), code.getMessage(), data));

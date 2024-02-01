@@ -28,7 +28,7 @@ public class TeamController {
 
 		HttpStatusCode code = common.getStatusByContent(responseDTO);
 
-		return new ResponseEntity<>(responseDTO, code);
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 
 	}
 

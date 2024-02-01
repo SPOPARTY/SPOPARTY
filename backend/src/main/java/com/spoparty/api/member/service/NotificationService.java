@@ -1,5 +1,7 @@
 package com.spoparty.api.member.service;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.Notification;
 import com.spoparty.api.member.entity.NotificationProjection;
@@ -25,7 +28,6 @@ public class NotificationService {
 
 	private final NotificationRepository notificationRepository;
 	private final MemberRepository memberRepository;
-	// private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 	private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
 	public List<NotificationProjection> getNotificationList(Long memberId) {
@@ -33,22 +35,23 @@ public class NotificationService {
 	}
 
 	public NotificationProjection registerNotification(Notification notification) {
-		Member member = memberRepository.findById(notification.getMember().getId(), Member.class).orElse(null);
-		if (member == null)
-			return null;
+		Member member = memberRepository.findById(notification.getMember().getId(), Member.class)
+			.orElseThrow(() -> new CustomException(
+				DATA_NOT_FOUND));
 		notification.setMember(member);
 		Notification tmp = notificationRepository.save(notification);
 		push(notification);
-		return notificationRepository.findById(tmp.getId(), NotificationProjection.class).orElse(null);
+		return notificationRepository.findById(tmp.getId(), NotificationProjection.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 	}
 
 	@Transactional
 	public NotificationProjection updateNotificationState(Long notificationId, int state) {
-		Notification data = notificationRepository.findById(notificationId, Notification.class).orElse(null);
-		if (data == null)
-			return null;
+		Notification data = notificationRepository.findById(notificationId, Notification.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		data.setState(state);
-		return notificationRepository.findById(notificationId, NotificationProjection.class).orElse(null);
+		return notificationRepository.findById(notificationId, NotificationProjection.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 	}
 
 	public void add(Long memberId, SseEmitter emitter) {
