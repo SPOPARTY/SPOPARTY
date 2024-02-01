@@ -80,7 +80,7 @@ const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
 //     });
 // }
 
-console.log(followList.value);
+// console.log(followList.value);
 
 // // Props 정의
 // const props = defineProps({
@@ -192,11 +192,18 @@ const changeFollowing = (item) => {
         return;
     }
     const oldVal = item.following;
-    const memberId = sessionStorage.getItem("id");
+    const memberId = Number(sessionStorage.getItem("id"));
+    const data = {
+        memberId: memberId,
+        teamId: item.teamId,
+    };
+    console.log(data);
     if (item.following) {
-        doUnFollow(memberId, item.teamId);
+        console.log("언팔")
+        doUnFollow(item.teamId);
     } else {
-        doFollow(memberId, item.teamId);
+        console.log("팔로우")
+        doFollow(data);
     }
     item.following = !oldVal;
 };
