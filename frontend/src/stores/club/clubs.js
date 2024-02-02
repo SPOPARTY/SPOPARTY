@@ -46,7 +46,9 @@ export const useClubStore = defineStore("club",() => {
                     createdClub.value = res.data.data;
                     console.log("내가 만든 클럽~")
                     console.log(createdClub.value)
+                    requestClub();
                     // 그룹이 생성되면 바로 이동할 수 있게 리다이렉트??
+                    // window.location.replace()
                 }
             },
             (error) => {
