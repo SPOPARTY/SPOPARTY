@@ -83,7 +83,7 @@ public class CheerServiceImpl implements CheerService {
 					if (cheerFixtureDTO.getCheerFixtureId() == cheer.getCheerFixture().getId()) {
 						cheerFixtureDTO.switchAlreadyCheer();
 						cheerFixtureDTO.setCheerTeamId(cheer.getSeasonLeagueTeam().getId());
-						System.out.println("응원 응원");
+
 						break;
 					}
 				}
@@ -104,7 +104,6 @@ public class CheerServiceImpl implements CheerService {
 
 		long checkAlreadyCheer = cheerRepository.checkAlreadyCheer(memberId, cheerFixtureId);
 
-		System.out.println(checkAlreadyCheer);
 
 
 		if (checkAlreadyCheer != 0){
