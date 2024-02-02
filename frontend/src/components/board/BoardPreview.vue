@@ -83,6 +83,10 @@ const deletePost = (postId) => {
 
 
 <style>
+h1{
+    color:black
+}
+
 .v-toolbar-title{
     color:white;
 }
