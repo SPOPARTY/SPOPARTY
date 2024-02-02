@@ -51,6 +51,18 @@
         </v-card>
     </v-dialog>
 
+    <!-- 인증코드가 메일로 잘 보내졌을 때 뜨는 모달 -->
+    <v-dialog v-model="emailSent" max-width="200px">
+        <v-card>
+            <v-card-text>
+                이메일에 인증코드가 보내졌습니다.
+            </v-card-text>
+            <v-card-actions>
+                <v-btn color="black" @click="emailSent = false">확인</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    
     <!-- 인증코드가 맞았을 때 뜨는 모달 -->
     <v-dialog v-model="codeChecked" max-width="200px">
         <v-card>
@@ -75,17 +87,6 @@
         </v-card>
     </v-dialog>
 
-    <!-- 인증코드가 메일로 잘 보내졌을 때 뜨는 모달 -->
-    <v-dialog v-model="emailSent" max-width="200px">
-        <v-card>
-            <v-card-text>
-                이메일에 인증코드가 보내졌습니다.
-            </v-card-text>
-            <v-card-actions>
-                <v-btn color="black" @click="emailSent = false">확인</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
 
     <!-- 이메일 인증 후 이메일 수정이 완료되었음을 알려주는 모달 -->
     <v-dialog v-model="verifyDone" max-width="200px">
@@ -146,6 +147,7 @@ function sendEmail () {
     emailCheck(
       newEmail.value,
       (res) => {
+        console.log(res)
         if(res.status === httpStatusCode.OK) {
           console.log("잘 발송 되었음")
           console.log(res.status)
@@ -153,6 +155,8 @@ function sendEmail () {
         }
       },
       (error) => {
+        console.log("비상!")
+        console.log(error)
         if (error.response.status === httpStatusCode.CONFLICT) {
           console.log(error)
           alert("이미 사용 중인 이메일입니다!")
@@ -177,28 +181,31 @@ function checkVerifyCode () {
       data,
       (res)=>{
         if(res.status === httpStatusCode.OK){
-          codeChecked.value = true
-          emailVerifiedConfirm.value = true;
-        }
+            console.log("")
+            codeChecked.value = true // 인증코드가 알맞고
+            emailVerifiedConfirm.value = true; // 그로 인해 이메일 인증도 되었음
+            //   verifyDone.value = true; // 인증완료 ==> 얘는 최후의 수정버튼을 클릭했을 때만!
+            }
       },
       (error)=>{
         console.log(error)
-        if (error.response.status === "400") {
-          console.log(error)
-          codeNotChecked.value = true;
+        if(error.response.status === httpStatusCode.BAD_REQUEST){
+            codeNotChecked.value = true;
         }
       }
     )
 }
 
 function confirmChange() {
-    if(!verifyDone.value) {
-        alert("인증 과정을 진행주세요!")
+    if(!emailVerifiedConfirm.value) { // 이메일이 인증되지 않았으면
+        verifyNotDone.value = true; // 인증 X 모달을 띄움
         return;
     }
 
-    if (emailVerifiedConfirm) {
-        verifyDone.value = true;
+    if (emailVerifiedConfirm.value) { // 이메일 인증이 되었다면
+        verifyDone.value = true; // 인증 O 모달을 띄움
+        // console.log("바뀐 이메일??")
+        // console.log(newEmail.value)
         emit('update-email',newEmail)
     }
     else {

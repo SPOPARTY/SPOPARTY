@@ -30,9 +30,15 @@
       <v-btn v-if="!isLogined" text to="/signup" class="mx-2" color="primary">
         <v-icon size="x-large">mdi-account-plus</v-icon>
       </v-btn>
+      <v-btn v-if="isLogined" text to="/mypage" class="mx-2" color="primary">
+        <v-icon size="x-large">mdi-home-edit-outline</v-icon>
+      </v-btn>
 
       <v-btn v-if="!isLogined" text to="/login" class="mx-2" color="primary">
         <v-icon size="x-large">mdi-login</v-icon>
+      </v-btn>
+      <v-btn v-if="isLogined" @click="logout" class="mx-2" color="primary">
+        <v-icon size="x-large">mdi-logout</v-icon>
       </v-btn>
     </v-list-item>
   </v-navigation-drawer>
@@ -215,6 +221,7 @@ span.v-btn__content {
 /* IE and Edge */
 .club-list {
   -ms-overflow-style: none; /* Internet Explorer 및 Edge에서 스크롤바를 숨깁니다 */
+  overscroll-behavior: contain;
 }
 
 </style>
