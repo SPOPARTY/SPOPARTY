@@ -98,11 +98,11 @@ public class CheerServiceImpl implements CheerService {
 	}
 
 	@Override
-	public void makeCheer(int memberId, int teamId, int cheerFixtureId) {
+	public void makeCheer(Long memberId, Long teamId, Long cheerFixtureId) {
 		// return cheerRepository.makeCheer(memberId, cheerFixtureId, teamId);
-		Member member = memberRepository.findById((long)memberId).orElse(null);
-		CheerFixture cheerFixture = cheerFixtureRepository.findById((long)cheerFixtureId).orElse(null);
-		SeasonLeagueTeam seasonLeagueTeam = seasonLeagueTeamRepository.findById((long)teamId).orElse(null);
+		Member member = memberRepository.findById(memberId).orElse(null);
+		CheerFixture cheerFixture = cheerFixtureRepository.findById(cheerFixtureId).orElse(null);
+		SeasonLeagueTeam seasonLeagueTeam = seasonLeagueTeamRepository.findById(teamId).orElse(null);
 
 		Cheer newCheer = Cheer.builder()
 			.member(member)
