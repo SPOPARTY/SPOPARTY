@@ -27,7 +27,7 @@
                     class="elevation-1"
                     hide-default-footer>
                     <template v-slot:item.logo="{ item }">
-                        <v-img :src="item.logo" class="mr-2 team-logo" @click="toTDP(item.seasonLeagueTeamId)" style="width: 50px; height: 50px;" contain></v-img>
+                        <v-img :src="item.logo" class="mr-2" style="width: 50px; height: 50px;" contain></v-img>
                     </template>
                     <!-- 팀 상세 페이지로 보내기 (밑줄 none)-->
                     <template @click="toTDP(item.seasonLeagueTeamId)" v-slot:item.nameKr="{ item }">
@@ -204,7 +204,5 @@ hr {
     border: 1px solid #E0E0E0;
     /* 밑줄 색상 */
 }
-.team-logo {
-    cursor: pointer;
-}
+
 </style>

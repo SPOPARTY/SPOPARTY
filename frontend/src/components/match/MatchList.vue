@@ -40,7 +40,7 @@
                 </v-card>
             </v-col>
         </v-row>
-        <v-row v-if="matches || matches.length === 0">
+        <v-row v-if="matches.length === 0">
             <v-col cols="12" align="center">
             <v-card class="card-match mt-6">
                 <span>예정된 경기가 없습니다!</span>
@@ -90,10 +90,7 @@ watch(() => selectedDate.value, (newVal) => {
 
 
 watch(() => footballStore.dateMatches, (newVal) => {
-    if (newVal) {
-        matches.value = newVal;
-    }
-    // matches.value = newVal;
+    matches.value = newVal;
     console.warn(matches.value);
 }, { immediate: true });
 

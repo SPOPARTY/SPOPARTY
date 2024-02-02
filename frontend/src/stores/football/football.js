@@ -41,15 +41,14 @@ export const useFootballStore = defineStore("football",() => {
         )
     }
 
-    const postCheersData = async (data) => {
-        await requestPostCheersData(
+    const postCheersData = (data) => {
+        requestPostCheersData(
             data,
             (res) => {
                 console.log(res)
-                if(res.status === httpStatusCode.CREATE) {
+                if(res.status === httpStatusCode.OK) {
                     console.log("히히 응원 정보 등록하기 발사")
                     console.log(res.data.data)
-                    // cheersData.value = [];
                     cheersData.value = res.data.data;
                 }
             },

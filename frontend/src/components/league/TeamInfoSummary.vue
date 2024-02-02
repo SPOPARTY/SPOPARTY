@@ -41,7 +41,8 @@ import { useFollowStore } from '@/stores/member/follows';
 
 const { doFollow, doUnFollow } = useFollowStore();
 
-const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
+// 로그인 여부 감지
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
 
 const footballStore = useFootballStore();
 const { getTeamDetail, teamDetail } = footballStore;
@@ -73,18 +74,16 @@ const inputDash = (form) => {
 };
 
 const changeFollowing = (item) => {
-      // 로그인 여부 감지
-    console.log(isLogined.value)
-    console.log(sessionStorage.getItem("accessToken"))
     if (!isLogined.value) {
         alert('로그인이 필요한 서비스입니다.');
         return;
     }
     const oldVal = item.following;
+    const memberId = sessionStorage.getItem("id");
     if (item.following) {
-        doUnFollow(item.teamId);
+        doUnFollow(memberId, item.teamId);
     } else {
-        doFollow(item.teamId);
+        doFollow(memberId, item.teamId);
     }
     item.following = !oldVal;
 };
