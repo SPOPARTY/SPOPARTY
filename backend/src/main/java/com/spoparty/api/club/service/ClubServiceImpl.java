@@ -143,7 +143,7 @@ public class ClubServiceImpl implements ClubService {
 		return clubMember.getId();
 	}
 
-	private Club findClubById(Long clubId) {
+	public Club findClubById(Long clubId) {
 		Optional<Club> club = clubRepository.findById(clubId);
 		log.debug("club - {}", club);
 		if (club.isEmpty()) {
