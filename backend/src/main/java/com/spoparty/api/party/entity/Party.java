@@ -8,7 +8,7 @@ import org.hibernate.annotations.Where;
 
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
-import com.spoparty.api.common.exception.BadRequestException;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.member.entity.Member;
 
@@ -82,14 +82,14 @@ public class Party extends BaseEntity {
 	// 비즈니스 로직
 	public void increaseParticipants() {
 		if (maxParticipants.equals(currentParticipants)) {
-			throw new BadRequestException(CANNOT_CREATE_PARTY_MEMBER);
+			throw new CustomException(CANNOT_CREATE_PARTY_MEMBER);
 		}
 		currentParticipants++;
 	}
 
 	public void decreaseParticipants() {
 		if (currentParticipants == 0) {
-			throw new BadRequestException(CANNOT_CREATE_PARTY_MEMBER);
+			throw new CustomException(CANNOT_CREATE_PARTY_MEMBER);
 		}
 		currentParticipants--;
 	}

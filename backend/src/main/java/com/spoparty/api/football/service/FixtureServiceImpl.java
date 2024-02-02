@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.spoparty.api.common.exception.NotFoundException;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.football.entity.SeasonLeague;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
@@ -219,7 +219,7 @@ public class FixtureServiceImpl implements FixtureService {
 	// }
 
 	public Fixture findFixtureById(Long fixtureId) {
-		return fixtureRepository.findById(fixtureId).orElseThrow(() -> new NotFoundException(FIXTURE_NOT_FOUND));
+		return fixtureRepository.findById(fixtureId).orElseThrow(() -> new CustomException(FIXTURE_NOT_FOUND));
 	}
 
 }

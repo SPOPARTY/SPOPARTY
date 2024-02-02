@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.club.service.ClubServiceImpl;
-import com.spoparty.api.common.exception.NotFoundException;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.football.repository.FixtureRepository;
 import com.spoparty.api.football.response.PartyFixtureDTO;
@@ -78,7 +78,7 @@ public class PartyServiceImpl implements PartyService {
 	}
 
 	public Party findPartyById(Long partyId) {
-		return partyRepository.findById(partyId).orElseThrow(() -> new NotFoundException(PARTY_NOT_FOUND));
+		return partyRepository.findById(partyId).orElseThrow(() -> new CustomException(PARTY_NOT_FOUND));
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class PartyServiceImpl implements PartyService {
 
 	@Override
 	public <T> T findPartyMember(Long partyMemberId, Class<T> type) {
-		return partyMemberRepository.findById(partyMemberId, type).orElseThrow(() -> new NotFoundException(
+		return partyMemberRepository.findById(partyMemberId, type).orElseThrow(() -> new CustomException(
 			PARTY_MEMBER_NOT_FOUND));
 	}
 
