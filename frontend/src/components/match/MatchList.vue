@@ -14,19 +14,19 @@
                         {{ getMatchStatus(match.startTime) }}</span>
                     <v-card-title class="pb-6">
                         <v-row class="card-content" align="center" justify="center">
-                            <v-col cols="4" class="text-end">
+                            <v-col cols="4" class="text-end team-name" @click="toTDP(match.homeTeam.teamId)">
                                 {{ match.homeTeam.nameKr }}
                             </v-col>
                             <v-col cols="1" class="d-flex justify-center align-center">
-                                <v-img :src="match.homeTeam.logo" contain class="team-logo"></v-img>
+                                <v-img :src="match.homeTeam.logo" contain class="team-logo team-name" @click="toTDP(match.homeTeam.teamId)"></v-img>
                             </v-col>
                             <v-col cols="1" class="d-flex justify-center align-center">
                                 VS
                             </v-col>
                             <v-col cols="1" class="d-flex justify-center align-center">
-                                <v-img :src="match.awayTeam.logo" contain class="team-logo"></v-img>
+                                <v-img :src="match.awayTeam.logo" contain class="team-logo team-name" @click="toTDP(match.awayTeam.teamId)"></v-img>
                             </v-col>
-                            <v-col cols="4" class="text-start">
+                            <v-col cols="4" class="text-start team-name" @click="toTDP(match.awayTeam.teamId)">
                                 {{ match.awayTeam.nameKr }}
                             </v-col>
                         </v-row>
@@ -52,9 +52,13 @@
   
 <script setup>
 import { ref, computed, watch } from 'vue';
-import { format, set, parseISO, differenceInHours, isToday, differenceInMinutes, isTomorrow, isSameDay } from 'date-fns';
+import { useRouter } from 'vue-router';
+import { format, set, parseISO, differenceInHours, differenceInMinutes } from 'date-fns';
 
 import { useFootballStore } from '@/stores/football/football';
+
+// 라우터링크를 위해 사용
+const router = useRouter();
 
 const footballStore = useFootballStore();
 
@@ -89,6 +93,10 @@ watch(() => footballStore.dateMatches, (newVal) => {
     matches.value = newVal;
     console.warn(matches.value);
 }, { immediate: true });
+
+const toTDP = (teamId) => {
+    router.push(`/team/${teamId}`);
+};
 
 // 예시 데이터 (특정 날자의 경기 데이터)
 // matches
@@ -206,6 +214,12 @@ function checkStatus(status) {
 
 .card-content {
     white-space: nowrap;
+}
+
+.team-name {
+    cursor: pointer;
+    font-size: 1.25rem;
+    /* font-weight: bold; */
 }
 </style>
   
