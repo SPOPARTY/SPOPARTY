@@ -88,14 +88,6 @@ const clubMemberList = computed(() => {
     return props.clubMemberList
 })
 
-const clubMembers = ref([
-    {memberId : 1, name : "실버스타", role : "그룹원"},
-    {memberId : 2, name : "제라드", role : "그룹장"},
-    {memberId : 3, name : "벨타이거", role : "그룹원"},
-    {memberId : 4, name : "램파드", role : "그룹원"},
-    {memberId : 5, name : "별명별명", role : "그룹원"},
-    {memberId : 6, name : "글로리맨유", role : "그룹원"},
-])
 
 const memberId = sessionStorage.getItem("id");
 

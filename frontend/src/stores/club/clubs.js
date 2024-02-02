@@ -58,9 +58,9 @@ export const useClubStore = defineStore("club",() => {
     }
 
     // 그룹 조회
-    const getClubInfo = (memberId) => {
+    const getClubInfo = (clubId) => {
         requestClubInfo(
-            memberId,
+            clubId,
             (res) => {
                 console.log(res)
                 if (res.data.status === httpStatusCode.OK) {
@@ -76,40 +76,48 @@ export const useClubStore = defineStore("club",() => {
         )
     }
 
-    // 그룹명 수정(그룹장 권한)
     const updateClub = (clubId, data) => {
-        requestUpdateClubName(
-            clubId,data,
-            (res) => {
-                console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
-                    console.log("******히히 그룹 정보 수정~*********")
-                    window.location.reload("/");
+        return new Promise((resolve, reject) => { // 함수 내부에서 값을 반환하지 않고 콜백함수에서 값을 처리해야한다.
+            requestUpdateClubName(
+                clubId, data,
+                (res) => {
+                    console.log(res);
+                    if (res.data.status === httpStatusCode.OK) {
+                        console.log("******히히 그룹 정보 수정~*********");
+                        resolve(true); // 성공 시 true를 리턴 -> 비동기 콜백함수에서 값을 처리하도록...
+                        getClubInfo(clubId);
+                    } else {
+                        reject("그룹 정보 수정 실패"); 
+                    }
+                },
+                (error) => {
+                    console.log(error);
+                    reject("그룹 정보 수정 실패"); 
                 }
-            },
-            (error) => {
-                console.log(error)
-                alert("그룹 수정 실패!")
-            }
-        )
-    }
+            );
+        });
+    };
 
     // 그룹 삭제(그룹장 권한)
     const deleteClub = (clubId) => {
-        requestDeleteClub(
-            clubId,
-            (res) => {
-                console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
-                    console.log("******히히 그룹 삭제*********")
-                    window.location.replace("/"); // 삭제되면 메인으로 이동
+        return new Promise((resolve,reject) => {
+
+            requestDeleteClub(
+                clubId,
+                (res) => {
+                    console.log(res)
+                    if (res.data.status === httpStatusCode.OK) {
+                        console.log("******히히 그룹 삭제*********")
+                        resolve(true)
+                        // window.location.replace("/"); // 삭제되면 메인으로 이동
+                    }
+                },
+                (error) => {
+                    console.log(error)
+                    reject("그룹 삭제 실패!")
                 }
-            },
-            (error) => {
-                console.log(error)
-                alert("그룹 삭제 실패!")
-            }
-        )
+            )
+        }) 
     }
 
     // 그룹 초대 링크
