@@ -25,7 +25,7 @@ public class BoardService {
 	private final FileService fileService;
 
 	public List<BoardProjection> findByClubId(Long clubId) {
-		return boardRepository.findByClub_id(clubId, BoardProjection.class);
+		return boardRepository.findByClub_idOrderByCreatedTimeDesc(clubId, BoardProjection.class);
 	}
 
 	public BoardProjection findById(Long id) {
