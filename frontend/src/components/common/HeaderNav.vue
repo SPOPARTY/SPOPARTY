@@ -215,6 +215,7 @@ span.v-btn__content {
 /* IE and Edge */
 .club-list {
   -ms-overflow-style: none; /* Internet Explorer 및 Edge에서 스크롤바를 숨깁니다 */
+  overscroll-behavior: contain;
 }
 
 </style>
