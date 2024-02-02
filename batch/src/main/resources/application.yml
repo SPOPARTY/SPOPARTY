@@ -1,0 +1,13 @@
+jpa:
+  database-platform: mariadb
+  show-sql: false
+  hibernate:
+    ddl-auto: update
+sql:
+  init:
+    continue-on-error: true
+
+spring:
+  batch:
+    jdbc:
+      initialize-schema: never
