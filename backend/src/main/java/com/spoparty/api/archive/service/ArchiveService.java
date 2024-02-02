@@ -25,7 +25,7 @@ public class ArchiveService {
 	private final FileService fileService;
 
 	public List<ArchiveProjection> getArchiveList(Long clubId) {
-		return archiveRepository.findByClub_id(clubId, ArchiveProjection.class);
+		return archiveRepository.findByClub_idOrderByCreatedTimeDesc(clubId, ArchiveProjection.class);
 	}
 
 	public ArchiveProjection getArchive(Long archiveId) {

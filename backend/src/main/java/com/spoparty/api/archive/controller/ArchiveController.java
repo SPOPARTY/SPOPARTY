@@ -1,5 +1,6 @@
 package com.spoparty.api.archive.controller;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
 import static com.spoparty.api.common.constants.SuccessCode.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import com.spoparty.api.archive.entity.ArchiveProjection;
 import com.spoparty.api.archive.service.ArchiveService;
 import com.spoparty.api.club.repository.ClubRepository;
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.service.FileService;
 import com.spoparty.api.member.service.MemberService;
 
@@ -53,7 +55,7 @@ public class ArchiveController {
 		MultipartFile file) {
 		Archive archive = new Archive();
 		archive.setMember(memberService.findById(memberId));
-		archive.setClub(clubRepository.findById(clubId).orElse(null));
+		archive.setClub(clubRepository.findById(clubId).orElseThrow(() -> new CustomException(DATA_NOT_FOUND)));
 		archive.setPartyTitle(partyTitle);
 		archive.setFixtureTitle(fixtureTitle);
 		if (file != null) {
