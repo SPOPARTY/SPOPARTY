@@ -16,28 +16,30 @@
             <p id="timeLeft" v-else class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
             <v-row class="league-round-details">
               <v-col cols="2" align="center" class="pa-1">
-              <v-img :src="match.league.logo" class="league-logo"></v-img>
-            </v-col>
-            <v-col cols="2">
-              <span>{{ match.round }}</span>
-            </v-col>
+                <v-img :src="match.league.logo" class="league-logo"></v-img>
+              </v-col>
+              <v-col cols="2">
+                <span>{{ match.round }}</span>
+              </v-col>
             </v-row>
             <v-row class="team-vs-team">
-              <v-col cols="2">
-              <h3>{{ match.homeTeam.nameKr }}</h3>
-            </v-col>
+              <v-col cols="2" class="team-name" @click="toTDP(match.homeTeam.teamId)">
+                <h3>{{ match.homeTeam.nameKr }}</h3>
+              </v-col>
               <v-col cols="2" align="center">
-              <v-img :src="match.homeTeam.logo" class="team-logo"></v-img>
-            </v-col>
-              <v-col cols="1" class="pa-0">
-              <span class="vs">VS</span>
-            </v-col>
+                <v-img :src="match.homeTeam.logo" class="team-logo team-name"
+                  @click="toTDP(match.homeTeam.teamId)"></v-img>
+              </v-col>
+              <v-col cols="2" class="pa-0">
+                <span class="vs">VS</span>
+              </v-col>
               <v-col cols="2" align="center">
-              <v-img :src="match.awayTeam.logo" class="team-logo"></v-img>
-            </v-col>
-              <v-col cols="2">
-              <h3>{{ match.awayTeam.nameKr }}</h3>
-            </v-col>
+                <v-img :src="match.awayTeam.logo" class="team-logo team-name"
+                  @click="toTDP(match.awayTeam.teamId)"></v-img>
+              </v-col>
+              <v-col cols="2" class="team-name" @click="toTDP(match.awayTeam.teamId)">
+                <h3>{{ match.awayTeam.nameKr }}</h3>
+              </v-col>
             </v-row>
           </div>
         </v-card>
@@ -47,9 +49,11 @@
 </template>
   
 <script setup>
-import { ref, watch, onMounted, onUnmounted} from 'vue'
-
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router';
 import { useFootballStore } from '@/stores/football/football'
+
+const router = useRouter();
 
 const footballStore = useFootballStore()
 
@@ -136,6 +140,10 @@ function calculateTimeLeft(startTimeStr) {
   return `${res1} ${res2} ${res3} ${res4}`;
 }
 
+const toTDP = (teamId) => {
+  router.push(`/team/${teamId}`);
+};
+
 // 예정 경기 예시 데이터
 // matches
 // {
@@ -194,7 +202,9 @@ function calculateTimeLeft(startTimeStr) {
   height: 50px;
   margin: 0 10px;
 }
-.league-round-details, .team-vs-team {
+
+.league-round-details,
+.team-vs-team {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -205,5 +215,8 @@ function calculateTimeLeft(startTimeStr) {
   font-size: 24px;
   font-weight: bold;
   margin: 0 10px;
+}
+.team-name {
+  cursor: pointer;
 }
 </style>
