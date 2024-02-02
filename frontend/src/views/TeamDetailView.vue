@@ -61,7 +61,7 @@ import { useFollowStore } from '@/stores/member/follows';
 const { doFollow, doUnFollow } = useFollowStore();
 
 // 로그인 여부 감지
-const isLogined = ref(localStorage.getItem("accessToken") !== null);
+const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
 
 
 
