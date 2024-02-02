@@ -127,7 +127,9 @@ function goToNewClubPage() {
       window.location.replace("/login")
       return;
     }
+    return;
   }
+  return;
   isNewClubModalVisible.value = true;
 
 }
