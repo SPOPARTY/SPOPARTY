@@ -1,5 +1,7 @@
 package com.spoparty.redis;
 
+import java.util.List;
+
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.ListOperations;
@@ -8,7 +10,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spoparty.api.party.dto.ChatEnterRequestDto;
 import com.spoparty.api.party.dto.ChatRequestDto;
+import com.spoparty.api.party.dto.RedisDataDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,29 +23,49 @@ import lombok.extern.slf4j.Slf4j;
 public class RedisSubscriber implements MessageListener {
 
 	private final ObjectMapper objectMapper;
-	private final RedisTemplate<String, ChatRequestDto> redisTemplate;
+	private final RedisTemplate<String, Object> redisTemplate;
 	private final SimpMessagingTemplate messagingTemplate;
-
-	/**
-	 * Redis에서 메시지가 발행(publish)되면 대기하고 있던 Redis Subscriber가 해당 메시지를 받아 처리한다.
-	 */
-
+	private final String SUBSCRIBE_DESTINATION = "/sub/chat";
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
 		try {
-			// redis에서 발행된 데이터를 받아 deserialize
 			log.debug("redis 발행 데이터 : {}",message);
-			String channel = (String) redisTemplate.getStringSerializer().deserialize(message.getChannel());
-			ChatRequestDto chatRequestDto = (ChatRequestDto) redisTemplate.getValueSerializer().deserialize(message.getBody());
-			// ChatMessage 객채로 맵핑
-			// Websocket 구독자에게 채팅 메시지 Send
-			ListOperations<String, ChatRequestDto> listOperations = redisTemplate.opsForList();
-			listOperations.rightPush(channel, chatRequestDto);
-			messagingTemplate.convertAndSendToUser(chatRequestDto.getUserName(),"/sub/chat", "유저가 보낸 redis user message");
-			// messagingTemplate.convertAndSend("/sub/chat", "redis message");
+			String channel = redisTemplate.getStringSerializer().deserialize(message.getChannel());
+			RedisDataDto redisDataDto = (RedisDataDto) redisTemplate.getValueSerializer().deserialize(message.getBody());
+
+			if (redisDataDto.getDataType().equals(DataType.ENTER)) {
+				processEnterMessage(channel, redisDataDto);
+			} else if (redisDataDto.getDataType().equals(DataType.MESSAGE)) {
+				processSendMessage(channel, redisDataDto);
+			} else if (redisDataDto.getDataType().equals(DataType.OUT)) {
+				processOutMessage(channel, redisDataDto);
+			}
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
+	}
+	public void processEnterMessage(String channel, RedisDataDto redisDataDto) {
+		ChatEnterRequestDto chatEnterRequestDto = (ChatEnterRequestDto) redisDataDto.getData();
+
+		messagingTemplate.convertAndSend(SUBSCRIBE_DESTINATION, "test");
+	}
+	public void processSendMessage(String channel, RedisDataDto redisDataDto) {
+		ChatRequestDto chatRequestDto = (ChatRequestDto)redisDataDto.getData();
+		ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+
+		listOperations.rightPush(channel, chatRequestDto);
+		if (chatRequestDto.getType().equals(SubscribeType.USER)) {
+			long chatLogSize = listOperations.size(channel);
+			List<Object> list = listOperations.range(channel, 0, chatLogSize);
+
+			messagingTemplate.convertAndSendToUser(chatRequestDto.getUserName(),SUBSCRIBE_DESTINATION, list);
+		} else {
+			// 채팅 채널로 BROAD CAST
+			messagingTemplate.convertAndSend(SUBSCRIBE_DESTINATION, chatRequestDto);
+		}
+	}
+	public void processOutMessage(String channel, RedisDataDto redisDataDto) {
+
 	}
 }

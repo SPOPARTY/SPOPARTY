@@ -16,7 +16,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ChatRequestDto {
+public class ChatResponseDto {
+
 	SubscribeType type;
 
 	String sessionId;

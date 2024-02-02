@@ -12,7 +12,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import com.spoparty.api.party.dto.ChatRequestDto;
+import com.spoparty.api.party.dto.ChatEnterRequestDto;
 import com.spoparty.redis.RedisSubscriber;
 
 @Configuration
@@ -48,12 +48,12 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisTemplate<String, ChatRequestDto> redisTemplate
+	public RedisTemplate<String, Object> redisTemplate
 		(RedisConnectionFactory connectionFactory) { // (3)
-		RedisTemplate<String, ChatRequestDto> redisTemplate = new RedisTemplate<>();
+		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(connectionFactory);
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatRequestDto.class));
+		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
 		return redisTemplate;
 	}
 

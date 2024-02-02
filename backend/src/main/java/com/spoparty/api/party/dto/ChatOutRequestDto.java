@@ -16,17 +16,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ChatRequestDto {
+public class ChatOutRequestDto {
 	SubscribeType type;
-
-	String sessionId;
-
-	@NotNull(message = "nickName이 없습니다.")
-	String userName;
-
-	@NotNull(message = "teamLogo가 없습니다.")
-	String teamLogo;
 
 	@NotNull(message = "message가 없습니다.")
 	String message;
+
+	String sessionId;
 }

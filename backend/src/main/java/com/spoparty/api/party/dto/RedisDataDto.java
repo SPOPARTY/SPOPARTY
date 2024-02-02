@@ -1,6 +1,6 @@
 package com.spoparty.api.party.dto;
 
-import java.util.List;
+import com.spoparty.redis.DataType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ChatAllResponseDto {
-	List<ChatRequestDto> chats;
+public class RedisDataDto<T> {
+	DataType dataType;
+	T data;
 }
