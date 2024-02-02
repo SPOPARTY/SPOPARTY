@@ -135,23 +135,18 @@ function voteForTeam(match, team) {
   const cheerFixtureId = match.cheerFixtureId;
   const teamId = team === 'home' ? match.fixture.homeTeam.teamId : match.fixture.awayTeam.teamId;
   const fixtureId = match.fixture.fixtureId;
-  memberId.value = Number(memberId.value)
-  // const data = {
-  //   memberId: memberId.value,
-  //   teamId: teamId,
-  //   cheerFixtureId: cheerFixtureId,
-  //   fixtureId: fixtureId
-  // };
-  const data = new FormData();
-  data.append('memberId', memberId.value);
-  data.append('teamId', teamId);
-  data.append('cheerFixtureId', cheerFixtureId);
-  data.append('fixtureId', fixtureId);
+  // memberId.value = Number(memberId.value)
 
-  console.log(data);
-  console.log(data.values())
-  // postCheers(memberId.value, cheerFixtureId, teamId, fixtureId);
+  const data = {
+    memberId: memberId.value,
+    teamId: teamId,
+    cheerFixtureId: cheerFixtureId,
+    fixtureId: fixtureId
+  } 
+
+  console.log("data=",data);
   postCheers(data);
+  // postCheers(data);
 }
 
 const votePercentage = (match, team) => {
@@ -177,6 +172,7 @@ const votePercentage = (match, team) => {
   margin-bottom: 20px;
   text-align: center;
   font-size: 2rem;
+  color: #292646;
 }
 
 .team-card {

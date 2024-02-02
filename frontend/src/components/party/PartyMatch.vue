@@ -7,7 +7,7 @@
                 <v-tab value="three">팀 플레이어들</v-tab>
                 <!-- 새로고침 버튼 -->
                 <v-spacer></v-spacer>
-                <v-btn icon @click="refreshData" variant="text">
+                <v-btn :loading="loading" icon @click="refreshData" variant="text">
                     <v-icon>mdi-refresh</v-icon>
                 </v-btn>
             </v-tabs>
@@ -41,8 +41,12 @@ const props = defineProps({
 const matchId = ref(props.matchId)
 const tab = ref(null) // 현재 선택된 탭을 관리
 
+const loading = ref(false) // 새로고침 버튼 로딩 상태
+
 const refreshData = () => {
     // 여기에 데이터 새로고침 로직 구현
+    loading.value = true
+    setTimeout(() => (loading.value = false), 2000)
 }
 </script>
 

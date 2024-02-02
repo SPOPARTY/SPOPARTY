@@ -12,7 +12,8 @@
             <!-- 경기 시작 시간 -->
             <p class="mb-2">{{ formatDate(match.startTime) }}</p>
             <!-- 남은 시간 표시 -->
-            <p id="timeLeft" class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
+            <p id="timeLeft" v-if="count" class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
+            <p id="timeLeft" v-else class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
             <v-row class="league-round-details">
               <v-col cols="2" align="center" class="pa-1">
               <v-img :src="match.league.logo" class="league-logo"></v-img>
@@ -93,6 +94,21 @@ watch(() => footballStore.nextMatches, (newVal) => {
 //   clearInterval(intervalId);
 // });
 
+const count = ref(true);
+let intervalId = null; // 인터벌 ID를 저장할 변수 선언
+
+onMounted(() => {
+  // setInterval 함수가 반환하는 ID를 intervalId에 저장
+  intervalId = setInterval(() => {
+    count.value = !count.value;
+  }, 1000);
+});
+
+onUnmounted(() => {
+  // intervalId를 사용하여 인터벌을 취소
+  clearInterval(intervalId);
+});
+
 
 
 // 남은 시간 계산
@@ -110,14 +126,14 @@ function calculateTimeLeft(startTimeStr) {
   const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-  // const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+  const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
   const res1 = days > 0 ? `${days}일` : "";
   const res2 = hours + days > 0 ? `${hours}시간` : "";
-  const res3 = minutes + hours + days > 0 ? `${minutes}분 남음!` : "곧 시작!";
-  // const res4 = seconds + minutes + hours + days > 0 ? `${seconds}초` : "";
+  const res3 = minutes + hours + days > 0 ? `${minutes}분` : "경기 임박!";
+  const res4 = seconds + minutes + hours + days > 0 ? `${seconds}초 남음!` : "";
 
-  return `${res1} ${res2} ${res3}`;
+  return `${res1} ${res2} ${res3} ${res4}`;
 }
 
 // 예정 경기 예시 데이터
@@ -161,6 +177,7 @@ function calculateTimeLeft(startTimeStr) {
 .near-title {
   text-align: center;
   margin-bottom: 20px;
+  color: #292646;
 }
 
 .match-card {
