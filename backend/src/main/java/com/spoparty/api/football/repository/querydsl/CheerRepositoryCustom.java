@@ -7,5 +7,5 @@ import com.spoparty.api.football.entity.Cheer;
 public interface CheerRepositoryCustom {
 	List<Cheer> findMemberCheer(long memberId);
 
-	long makeCheer(int memberId, int teamId, int cheerFixtureId);
+	long makeCheer(Long memberId, Long teamId, Long cheerFixtureId);
 }

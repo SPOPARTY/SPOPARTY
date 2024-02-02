@@ -9,6 +9,6 @@ public interface CheerService {
 
 	public ResponseDTO findCheerFixture(PrincipalDetails principalDetails, Long fixtureId);
 
-	public void makeCheer(int memberId, int cheerFixtureId, int teamId);
+	public void makeCheer(Long memberId, Long cheerFixtureId, Long teamId);
 
 }
