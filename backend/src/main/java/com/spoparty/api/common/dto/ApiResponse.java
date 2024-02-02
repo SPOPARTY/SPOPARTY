@@ -50,6 +50,11 @@ public class ApiResponse<T> {
 			.body(new ApiResponse<>(code.getStatus().value(), code.getMessage()));
 	}
 
+	public static ResponseEntity<?> error(ErrorCode code, String message) {
+		return ResponseEntity.status(code.getStatus().value())
+			.body(new ApiResponse<>(code.getStatus().value(), "[" + code.getMessage() + "]" + message));
+	}
+
 	public static ResponseEntity<?> error(HttpStatus status, String message) {
 		return ResponseEntity.status(status.value()).body(new ApiResponse<>(status.value(), message));
 	}

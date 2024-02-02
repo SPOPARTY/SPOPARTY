@@ -52,7 +52,9 @@ public class FileService {
 	@Transactional
 	public void deleteFile(Long id) {
 		File file = fileRepository.findById(id, File.class)
-			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+			.orElse(null);
+		if (file == null)
+			return;
 		try {
 			String fileName = file.getUrl().split("/")[3];
 			log.info("delete file: {}", fileName);

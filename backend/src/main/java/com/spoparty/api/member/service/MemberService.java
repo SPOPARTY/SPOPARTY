@@ -70,9 +70,9 @@ public class MemberService {
 	public MemberProjection updateMember(Member member) {
 		Member data = memberRepository.findById(member.getId(), Member.class)
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
-		if (member.getLoginPwd() != null && member.getLoginPwd().isEmpty())
+		if (member.getLoginPwd() != null && !member.getLoginPwd().isEmpty())
 			data.setLoginPwd(bCryptPasswordEncoder.encode(member.getLoginPwd()));
-		if (member.getEmail() != null && member.getEmail().isEmpty())
+		if (member.getEmail() != null && !member.getEmail().isEmpty())
 			data.setEmail(member.getEmail());
 		if (member.getNickname() != null)
 			data.setNickname(member.getNickname());

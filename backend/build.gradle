@@ -7,8 +7,14 @@ buildscript {
         querydslPluginVer = '1.0.10'
         springDependencyMgmtVer = '1.0.11'
         springLoadedVer = '1.2.8'
-        jUnitVer = "5.6.0"
+        jUnitVer = "5.5.1"
+        jUnitPlatformVer = "1.5.1"
         openViduVer = "2.29.0"
+        jdbcVer = "2.4.1"
+        awsS3Ver = "2.2.6.RELEASE"
+        jwtVer = "3.10.3"
+        lombokVer = "1.18.20"
+        guavaVer = "29.0-jre"
     }
     repositories {
         mavenCentral()
@@ -39,22 +45,13 @@ repositories {
     maven { url "https://build.shibboleth.net/nexus/content/repositories/releases" }
 }
 
-group 'com.ssafy'
+group 'com.spoparty'
 version '1.0-SNAPSHOT'
 sourceCompatibility = '17'
 
 configurations {
     providedRuntime
 }
-
-//set build time and inject value to application.properties
-def buildTime() {
-    def date = new Date()
-    def formattedDate = date.format('yyyyMMdd_HHmm')
-    return formattedDate
-}
-
-project.ext.set("build.date", buildTime())
 
 processResources {
     with copySpec {
@@ -75,88 +72,78 @@ processResources {
 }
 
 dependencies {
-    // smtp
-    implementation("org.springframework.boot:spring-boot-starter-mail")
-    // oauth2
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-    // s3
-    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
-
-    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
-
+    // spring framework
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation('org.springframework.boot:spring-boot-starter-validation')
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE")
-    testImplementation("org.springframework.security:spring-security-test")
+    // smtp
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    // oauth2
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
     annotationProcessor("org.springframework.boot:spring-boot-starter-data-jpa")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    implementation('commons-io:commons-io:2.6')
-    implementation("org.apache.commons:commons-collections4:4.4")
-    implementation("org.apache.commons:commons-lang3:3.9")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    implementation "com.querydsl:querydsl-jpa:${querydslVer}:jakarta"
-    annotationProcessor "com.querydsl:querydsl-apt:${querydslVer}:jakarta"
+    // jwt
+    implementation("com.auth0:java-jwt:${jwtVer}")
+
+    // s3
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:${awsS3Ver}")
+
+    // database
+    implementation("org.mariadb.jdbc:mariadb-java-client:${jdbcVer}")
+
+    // querydsl
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
-    //STOMP 웹소캣 서버 사이드 테스트를 위한 의존성 추가
-    implementation("org.springframework.boot:spring-boot-starter-mustache")
-    //STOMP 관련 프론트 라이브러리
-    implementation('org.webjars.bower:jquery:3.3.1')
-    implementation('org.webjars:sockjs-client:1.1.2')
-    implementation('org.webjars:stomp-websocket:2.3.3-1')
-    implementation('org.webjars:webjars-locator:0.30')
-
-    implementation("io.openvidu:openvidu-java-client:${openViduVer}")
-
-
+    implementation "com.querydsl:querydsl-jpa:${querydslVer}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${querydslVer}:jakarta"
     //IntelliJ용
     //IntelliJ에서는 하기 annotationProcessor를 쓰면 별도의 querydsl 플러그인 및 플러그인 설정이 불필요.
     annotationProcessor("com.querydsl:querydsl-apt:${querydslVer}:jpa")
 
-    implementation("com.squareup.retrofit2:retrofit:2.7.1")
-    implementation("com.squareup.retrofit2:converter-jackson:2.7.1")
-    implementation("com.squareup.okhttp3:logging-interceptor:3.9.0")
+    // openvidu
+    implementation("io.openvidu:openvidu-java-client:${openViduVer}")
 
-    implementation("com.google.guava:guava:29.0-jre")
-    annotationProcessor("com.google.guava:guava:29.0-jre")
+    // commons
+    implementation('commons-io:commons-io:2.6')
+    implementation("org.apache.commons:commons-collections4:4.4")
+    implementation("org.apache.commons:commons-lang3:3.9")
+
+    // lombok
+    implementation("org.projectlombok:lombok:${lombokVer}")
+    annotationProcessor("org.projectlombok:lombok:${lombokVer}")
+
+    // guava
+    implementation("com.google.guava:guava:${guavaVer}")
+    annotationProcessor("com.google.guava:guava:${guavaVer}")
+
+    // test
+    testImplementation("com.h2database:h2")
 
     testImplementation("com.jayway.jsonpath:json-path:2.4.0")
 
-    implementation("com.auth0:java-jwt:3.10.3")
-
-    implementation("org.projectlombok:lombok:1.18.20")
-    annotationProcessor("org.projectlombok:lombok:1.18.20")
-
+    testImplementation("org.springframework.security:spring-security-test")
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
-//    testImplementation("org.junit.vintage:junit-vintage-engine") {
-//        exclude group: "org.hamcrest", module: "hamcrest-core"
-//    }
-
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.1") {
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${jUnitVer}") {
         exclude module: 'junit-platform-commons'
     }
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-engine:1.5.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-commons:1.5.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jUnitVer}")
+    testRuntimeOnly("org.junit.platform:junit-platform-engine:${jUnitPlatformVer}")
+    testRuntimeOnly("org.junit.platform:junit-platform-commons:${jUnitPlatformVer}")
 
-    testImplementation("com.h2database:h2")
 }
-
 
 test {
     processResources {
         duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
     }
-
     useJUnitPlatform()
 }

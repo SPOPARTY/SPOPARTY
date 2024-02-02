@@ -18,7 +18,7 @@ public class RestExceptionHandler {
 	public ResponseEntity<?> customExceptionHandler(CustomException exception, HttpServletRequest request) {
 		log.error("ExceptionCode: {}", exception.getCode());
 		log.error("ExceptionMessage: {}", exception.getMessage());
-		return ApiResponse.error(exception.getCode());
+		return ApiResponse.error(exception.getCode(), exception.toString());
 	}
 
 	@ExceptionHandler(RuntimeException.class)
