@@ -129,9 +129,8 @@ function goToNewClubPage() {
     }
     return;
   }
-  return;
   isNewClubModalVisible.value = true;
-
+  return;
 }
 
 
