@@ -20,7 +20,6 @@
                <v-col class="chatting-section">
                     <v-row>
                          <v-col cols="6" class="cam-video" v-for="member in partyMembers" :key="member.memberId">
-                              <p>웹캠 영역</p>
                               {{ member.name }}
                               <!-- 여기에 캠 화면 또는 이미지 배치 -->
                          </v-col>

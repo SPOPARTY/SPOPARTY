@@ -4,12 +4,12 @@ const API_URL = "football"
 
 const local = localAxios();
 
-async function requestGetCheersData(success,fail) {
+function requestGetCheersData(success,fail) {
     // 응원 정보 조회
     local.get(`/${API_URL}/cheers`).then(success).catch(fail);
 }
 
-async function requestPostCheersData(data,success,fail) {
+function requestPostCheersData(data,success,fail) {
     // 응원 정보 등록
     local.post(`/${API_URL}/cheers`,data).then(success).catch(fail);
 }
