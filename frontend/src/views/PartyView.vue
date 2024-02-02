@@ -21,13 +21,12 @@
                     <v-row>
                          <v-col cols="6" class="cam-video" v-for="member in partyMembers" :key="member.memberId">
                               {{ member.name }}
-                              {{ member.role }}
                               <!-- 여기에 캠 화면 또는 이미지 배치 -->
                          </v-col>
                          <!-- 파티 초대 -->
                          <v-col cols="6" class="cam-video" v-if="partyMembers.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
-                              <v-icon class="invite-icon">mdi-account-plus</v-icon>
+                              <v-icon class="invite-icon">mdi-human-greeting</v-icon>
                               <span>파티 초대</span>
                          </v-col>
                     </v-row>
@@ -89,11 +88,11 @@ const matchId = ref("1")
 const maxMembers = 6
 
 const partyMembers = ref([
-     { memberId: 1, name: "실버스타", role: "그룹원" },
-     { memberId: 2, name: "제라드", role: "그룹장" },
-     { memberId: 3, name: "벨타이거", role: "그룹원" },
-     { memberId: 4, name: "램파드", role: "그룹원" },
-     { memberId: 5, name: "별명별명", role: "그룹원" },
+     { memberId: 1, name: "실버스타" },
+     { memberId: 2, name: "제라드" },
+     { memberId: 3, name: "벨타이거" },
+     { memberId: 4, name: "램파드" },
+     { memberId: 5, name: "별명별명" },
 ])
 
 // 파티 초대
