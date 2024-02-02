@@ -98,6 +98,8 @@ watch(() => footballStore.nextMatches, (newVal) => {
 //   clearInterval(intervalId);
 // });
 
+
+// 실시간 업데이트를 위한 변수와 함수
 const count = ref(true);
 let intervalId = null; // 인터벌 ID를 저장할 변수 선언
 
