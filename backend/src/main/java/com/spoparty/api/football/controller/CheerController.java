@@ -2,11 +2,14 @@ package com.spoparty.api.football.controller;
 
 import static com.spoparty.api.common.constants.SuccessCode.*;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,13 +51,15 @@ public class CheerController {
 	}
 
 	@PostMapping
-	public ResponseEntity makeCheer(@AuthenticationPrincipal PrincipalDetails principalDetails, int memberId,
-		int teamId, int cheerFixtureId, Long fixtureId) {
-		cheerServiceImpl.makeCheer(memberId, teamId, cheerFixtureId);
+	// public ResponseEntity makeCheer(@AuthenticationPrincipal PrincipalDetails principalDetails, int memberId,
+	// 	int teamId, int cheerFixtureId, Long fixtureId) {
+	public ResponseEntity makeCheer(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody Map<String, Long> data) {
+
+		cheerServiceImpl.makeCheer(data.get("memberId"), data.get("teamId"), data.get("cheerFixtureId"));
 
 		cheerServiceImpl.deleteEndCheerFixture();
 
-		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails, fixtureId);
+		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails, data.get("fixtureId"));
 
 		responseDTO.changeMessage("응원 정보 생성 성공");
 
