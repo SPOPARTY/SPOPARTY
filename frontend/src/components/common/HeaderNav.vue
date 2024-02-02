@@ -27,11 +27,11 @@
 
     <!-- 로그인 관련 footer -->
     <v-list-item class="sidebar-footer" align="center">
-      <v-btn text to="/signup" class="mx-2" color="primary">
+      <v-btn v-if="!isLogined" text to="/signup" class="mx-2" color="primary">
         <v-icon size="x-large">mdi-account-plus</v-icon>
       </v-btn>
 
-      <v-btn text to="/login" class="mx-2" color="primary">
+      <v-btn v-if="!isLogined" text to="/login" class="mx-2" color="primary">
         <v-icon size="x-large">mdi-login</v-icon>
       </v-btn>
     </v-list-item>
@@ -74,7 +74,6 @@ import { useClubStore} from "@/stores/club/clubs"
 import NewClub from '@/components/club/NewClub.vue';
 
 const {myClubs} = useClubStore();
-
 
 onMounted(async () => {
   if (sessionStorage.getItem("accessToken") != null) {
