@@ -1,6 +1,7 @@
 <template>
     <v-toolbar flat class="preview-toolbar">
         <v-toolbar-title>그룹 게시판</v-toolbar-title>
+        <v-btn color="white" variant="outlined" @click="writeBoard">글쓰기</v-btn>
         <v-spacer></v-spacer>
         <v-toolbar-items>
             <RouterLink :to="`/club/${clubId}/board`">
@@ -49,6 +50,7 @@ import BoardDetail from '@/components/board/BoardDetail.vue';
 
 const boardStore = useBoardStore();
 
+const router = useRouter();
 const routes = useRoute();
 const clubId = routes.params.clubId
 
@@ -77,6 +79,11 @@ const showBoardDetail = (post) => {
 
 const deletePost = (postId) => {
     posts.value = posts.value.filter(p => p.id != postId)
+}
+
+// 임시 추가
+function writeBoard() {
+    router.push(`/club/${clubId}/board/write`)
 }
 
 </script>

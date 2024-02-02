@@ -86,7 +86,7 @@ export const useFollowStore = defineStore("follow", () => {
     // teamId를 받아서 followTeamId를 찾아서 팔로우 취소 요청을 보내는 함수
     const doUnFollow = (teamId) => {
         getFollowList(sessionStorage.getItem("id"));
-
+        // console.log(followList.value)
         const followTeamId = followList.value
         .filter((club) => club.teamId === teamId)
         .map((club) => club.id)[0];
