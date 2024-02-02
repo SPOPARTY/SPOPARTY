@@ -22,7 +22,7 @@ public class WebStompConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.enableSimpleBroker("/chat", "/sub"); // sub
+		registry.enableSimpleBroker("/chat", "/sub", "/user"); // sub
 		registry.setApplicationDestinationPrefixes("/"); // pub
 	}
 }
