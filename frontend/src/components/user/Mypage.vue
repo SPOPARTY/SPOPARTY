@@ -5,7 +5,7 @@
         
             <v-row>
                 <v-col cols="12" md="8">
-                    <v-text-field label="아이디" :value="memberInfo.loginId" outlined dense readonly></v-text-field>
+                    <v-text-field label="아이디" v-model="memberInfo.loginId" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
                     <v-btn color="#393646" style="margin-top:10px" @click="showChangePwdModal" block>비밀번호 수정</v-btn>
@@ -24,11 +24,11 @@
             
             <v-row>
                 <v-col cols="4" md="4">
-                    <v-text-field label="이메일 아이디" :value="memberInfo.email.split('@')[0]" outlined dense></v-text-field>
+                    <v-text-field label="이메일 아이디" v-model="memberInfo.email.split('@')[0]" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="1" md="1" class="text-center">@</v-col>
                 <v-col cols="4" md="4">
-                    <v-text-field label="도메인" :value="memberInfo.email.split('@')[1]" outlined dense></v-text-field>
+                    <v-text-field label="도메인" v-model="memberInfo.email.split('@')[1]" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="3" md="3">
                     <v-btn color="#123421" style="margin-top:10px;" @click="showChangeEmailModal">이메일 수정</v-btn>
@@ -231,6 +231,7 @@ function showChangeEmailModal() {
 }
 
 function updateEmail(newEmail) {
+    console.log("마이페이지에서 update된 이메일을 받아오자!!!")
     console.log(newEmail.value)
     emailId.value = newEmail.value.split("@")[0];
     emailDomain.value = newEmail.value.split("@")[1];
