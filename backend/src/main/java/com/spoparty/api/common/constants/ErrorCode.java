@@ -37,7 +37,7 @@ public enum ErrorCode {
 
 	/* 400 BadRequest: 클라이언트에서 보낸 정보가 잘못됨 */
 	CANNOT_CREATE_CHEER(BAD_REQUEST, "응원 생성에 실패하였습니다."),
-
+	DUPLICATE_CHEER_RECORD(BAD_REQUEST, "이미 응원한 경기입니다."),
 	/* 401 UNAUTHORIZED: 인증 실패 */
 	UNAUTHORIZED_USER(UNAUTHORIZED, "만료되었거나 잘못된 토큰입니다. 토큰을 확인해주세요."),
 

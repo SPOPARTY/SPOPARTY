@@ -52,6 +52,7 @@ public class CheerServiceImpl implements CheerService {
 	@Override
 	public ResponseDTO findCheerFixture(PrincipalDetails principalDetails, Long fixtureId) {
 
+
 		List<CheerFixture> cheerFixtures = null;
 
 		// 메인의 경기 응원이면
@@ -71,6 +72,8 @@ public class CheerServiceImpl implements CheerService {
 
 		// 로그인 중일 경우, 투표한 경기 응원만 결과 볼 수 있게 하기
 		if (principalDetails != null) {
+
+			log.info("로그인 정보 있음 !");
 			long memberId = principalDetails.getMember().getId();
 
 			List<Cheer> cheers = cheerRepository.findMemberCheer(memberId);
@@ -80,18 +83,15 @@ public class CheerServiceImpl implements CheerService {
 					if (cheerFixtureDTO.getCheerFixtureId() == cheer.getCheerFixture().getId()) {
 						cheerFixtureDTO.switchAlreadyCheer();
 						cheerFixtureDTO.setCheerTeamId(cheer.getSeasonLeagueTeam().getId());
+						System.out.println("응원 응원");
 						break;
 					}
-				}
-				if (!cheerFixtureDTO.isAlreadyCheer()) {
-					cheerFixtureDTO.setCountAsNull();
 				}
 
 			}
 		} else {
-			for (CheerFixtureDTO cheerFixtureDTO : cheerFixtureDTOs) {
-				cheerFixtureDTO.setCountAsNull();
-			}
+
+			log.info("로그인 정보 없음 !");;
 		}
 
 		return ResponseDTO.toDTO(cheerFixtureDTOs, "응원 진행 경기 조회 성공");
@@ -100,6 +100,17 @@ public class CheerServiceImpl implements CheerService {
 	@Override
 	public void makeCheer(Long memberId, Long teamId, Long cheerFixtureId) {
 		// return cheerRepository.makeCheer(memberId, cheerFixtureId, teamId);
+
+
+		long checkAlreadyCheer = cheerRepository.checkAlreadyCheer(memberId, cheerFixtureId);
+
+		System.out.println(checkAlreadyCheer);
+
+
+		if (checkAlreadyCheer != 0){
+			throw new IllegalArgumentException(ErrorCode.DUPLICATE_CHEER_RECORD.getMessage());
+		}
+
 		Member member = memberRepository.findById(memberId).orElse(null);
 		CheerFixture cheerFixture = cheerFixtureRepository.findById(cheerFixtureId).orElse(null);
 		SeasonLeagueTeam seasonLeagueTeam = seasonLeagueTeamRepository.findById(teamId).orElse(null);
