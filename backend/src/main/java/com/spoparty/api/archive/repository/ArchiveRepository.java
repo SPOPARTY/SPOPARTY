@@ -11,7 +11,7 @@ public interface ArchiveRepository extends JpaRepository<Archive, Long> {
 
 	<T> Optional<T> findById(Long id, Class<T> type);
 
-	<T> List<T> findByClub_id(Long clubId, Class<T> type);
+	<T> List<T> findByClub_idOrderByCreatedTimeDesc(Long clubId, Class<T> type);
 
 	<T> List<T> findByMember_Id(Long memberId, Class<T> type);
 

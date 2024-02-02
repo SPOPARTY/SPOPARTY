@@ -8,4 +8,6 @@ public interface CheerRepositoryCustom {
 	List<Cheer> findMemberCheer(long memberId);
 
 	long makeCheer(Long memberId, Long teamId, Long cheerFixtureId);
+
+	Long checkAlreadyCheer(Long memberId, Long cheerFixtureId);
 }

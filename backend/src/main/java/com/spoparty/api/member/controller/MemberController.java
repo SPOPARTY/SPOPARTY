@@ -24,6 +24,7 @@ import com.spoparty.api.member.entity.FollowingTeamProjection;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.MemberProjection;
 import com.spoparty.api.member.service.MemberService;
+import com.spoparty.common.util.CustomEncryptor;
 import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 
 	private final MemberService memberService;
+	private final CustomEncryptor customEncryptor;
 
 	// Member 기능
 	@GetMapping("/{memberId}")
@@ -103,5 +105,16 @@ public class MemberController {
 	public ResponseEntity<?> getTeamList() {
 		List<Team> list = memberService.getTeamList();
 		return ApiResponse.success(GET_SUCCESS, list);
+	}
+
+	@GetMapping("/test/{string}")
+	public ResponseEntity<?> test(@PathVariable("string") String string) {
+		String s1 = string;
+		String s2 = customEncryptor.encrypt(string);
+		String s3 = customEncryptor.decrypt(s2);
+		log.error(s1);
+		log.error(s2);
+		log.error(s3);
+		return ApiResponse.success(GET_SUCCESS, s1 + ", " + s2 + ", " + s3);
 	}
 }

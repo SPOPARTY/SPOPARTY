@@ -1,5 +1,7 @@
 package com.spoparty.api.football.service;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -7,6 +9,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.football.entity.SeasonLeague;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
@@ -30,7 +33,7 @@ public class FixtureServiceImpl implements FixtureService {
 
 	private final FixtureRepository fixtureRepository;
 	private final SeasonLeagueTeamRepository seasonLeagueteamRepository;
-	private final SeasonLeagueRepository seasonLeagueRespository;
+	private final SeasonLeagueRepository seasonLeagueRepository;
 	private final FixtureEventRepository fixtureEventRepository;
 	private final CommonService commonService;
 
@@ -116,7 +119,7 @@ public class FixtureServiceImpl implements FixtureService {
 
 	public ResponseDTO findLeagueByKeyword(String keyword) {
 
-		List<SeasonLeague> seasonLeagues = seasonLeagueRespository.findLeagueByKeyword(keyword);
+		List<SeasonLeague> seasonLeagues = seasonLeagueRepository.findLeagueByKeyword(keyword);
 
 		if (!commonService.emptyCheckLeague(seasonLeagues)) {
 			return ResponseDTO.toDTO(null, "해당 리그 없음");
@@ -214,5 +217,9 @@ public class FixtureServiceImpl implements FixtureService {
 	//
 	// 	return fixtureEventDTOs;
 	// }
+
+	public Fixture findFixtureById(Long fixtureId) {
+		return fixtureRepository.findById(fixtureId).orElseThrow(() -> new CustomException(FIXTURE_NOT_FOUND));
+	}
 
 }

@@ -34,4 +34,11 @@ public class CheerRepositoryCustomImpl implements CheerRepositoryCustom {
 			.set(cheer.cheerFixture.id, cheerFixtureId)
 			.execute();
 	}
+
+	public Long checkAlreadyCheer(Long memberId, Long cheerFixtureId) {
+		return jpaQueryFactory.select(cheer.count())
+			.from(cheer)
+			.where(cheer.member.id.eq(memberId).and(cheer.cheerFixture.id.eq(cheerFixtureId)))
+			.fetchOne();
+	}
 }
