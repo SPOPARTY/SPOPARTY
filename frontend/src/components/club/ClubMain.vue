@@ -32,11 +32,6 @@ const clubStore = useClubStore();
 
 const clubId = route.params.clubId;
 
-onMounted(() => {
-    clubStore.getClubInfo(clubId);
-    clubStore.getClubMemberList(clubId);
-})
-
 const clubInfo = ref({});
 watch(() => clubStore.clubInfo,(newClubs) => {
     clubInfo.value = newClubs;
@@ -46,6 +41,11 @@ const clubMemberList = ref([]);
 watch(() => clubStore.clubMemberList,(newClubMemberList) => {
     clubMemberList.value = newClubMemberList;
 },{immediate:true})
+
+onMounted(() => {
+    clubStore.getClubInfo(clubId);
+    clubStore.getClubMemberList(clubId);
+})
 
 
 

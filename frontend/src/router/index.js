@@ -70,6 +70,11 @@ const router = createRouter({
       component: () => import("@/components/user/Kakao.vue")
     },
     {
+      path:"/invite/:inviteUrl",
+      name:"invite",
+      component: () => import("@/components/club/ClubInvite.vue")
+    },
+    {
       path: "/club/:clubId",
       name: "ClubView",
       component: () => import("@/views/ClubView.vue"),

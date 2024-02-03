@@ -38,26 +38,43 @@
     />
     <QuitClub
         v-if="isQuitClubVisible"
+        :club-member-list="clubMemberList"
         @quit-club-close="closeQuitClub"
     />
     <BanClubMemeber
         v-if="isBanClubMemberVisible"
+        :club-member-list="clubMemberList"
         @ban-member-close="closeBanClubMember"
     />
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted,watch} from 'vue';
+import {useRouter, useRoute} from 'vue-router'
+
 import ChangeClubName from '@/components/club/ChangeClubName.vue';
 import QuitClub from '@/components/club/QuitClub.vue';
 import BanClubMemeber from '@/components/club/BanClubMemeber.vue';
 
+import {useClubStore} from '@/stores/club/clubs'
+
+const router = useRouter();
+const route = useRoute();
 
 const emits = defineEmits([
     'club-leader-close'
 ])
 
+const clubStore = useClubStore();
+
+const clubId = route.params.clubId;
+
 const ModalVisible = ref(true)
+
+const clubMemberList = ref([]);
+watch(() => clubStore.clubMemberList,(newClubMemberList) => {
+    clubMemberList.value = newClubMemberList;
+},{immediate:true})
 
 // 그룹명 바꾸기 
 const isChangeClubNameVisible = ref(false)
@@ -99,6 +116,9 @@ function closeModal(){
     emits('club-leader-close')
 }
 
+onMounted(()=> {
+    clubStore.getClubMemberList(clubId);
+})
 
 </script>
 
