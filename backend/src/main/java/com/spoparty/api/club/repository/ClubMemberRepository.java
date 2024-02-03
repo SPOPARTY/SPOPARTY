@@ -10,7 +10,9 @@ import com.spoparty.api.club.entity.ClubMember;
 import com.spoparty.api.member.entity.Member;
 
 public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
-	Optional<ClubMember> findByClubAndMember(Club club, Member member);
-
+	<T> Optional<T> findById(Long id, Class<T> type);
+	Optional<ClubMember> findByClub_IdAndMember_Id(Long clubId, Long memberId);
 	List<ClubMember> findAllByMember(Member member);
+	List<ClubMember> findAllByClub(Club club);
+	List<ClubMember> findAllByClub_Id(Long clubId);
 }
