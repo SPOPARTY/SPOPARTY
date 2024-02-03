@@ -24,6 +24,7 @@
             </div>
             <QuitClub
                 v-if="isQuitClubVisible"
+                :club-member-list="clubMemberList"
                 @quit-club-close="closeQuitClub"
             />
 
@@ -32,14 +33,27 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, watch,onMounted} from 'vue';
+import {useRouter, useRoute} from 'vue-router';
+import {useClubStore} from '@/stores/club/clubs'
+
 import QuitClub from '@/components/club/QuitClub.vue';
 
-const ModalVisible = ref(true)
+const route = useRoute();
 
 const emits = defineEmits([
     'club-member-close'
 ])
+
+const ModalVisible = ref(true)
+
+const clubId = route.params.clubId;
+const clubStore = useClubStore();
+
+const clubMemberList = ref([]);
+watch(() => clubStore.clubMemberList,(newClubMemberList) => {
+    clubMemberList.value = newClubMemberList;
+},{immediate:true})
 
 
 function closeModal(){
@@ -56,6 +70,10 @@ function showQuitClub(){
 function closeQuitClub() {
     isQuitClubVisible.value = false
 }
+
+onMounted(()=> {
+    clubStore.getClubMemberList(clubId);
+})
 
 </script>
 

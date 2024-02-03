@@ -1,7 +1,5 @@
 <template>
-    <v-card>
-        <h1>여기는 카카오 리다이렉트</h1>
-    </v-card>
+    <h1> 카카오 로그인 진행 중...</h1>
 </template>
 
 <script setup>

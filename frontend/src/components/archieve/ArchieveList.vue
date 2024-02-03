@@ -1,11 +1,11 @@
 <template>
     <v-container class="test">
-        <v-row>
+        <v-row class="headers">
             <v-col cols="10">
-                <h1 class="text-center">추억 아카이브</h1>
+                <h1 class="text-center" style="color:white; margin-left:100px;">추억 아카이브</h1>
             </v-col>
             <v-col cols="2">
-                <v-btn color="black" class="download-button" @click="showDownloadConfirm">
+                <v-btn class="download-button" variant="outlined" @click="showDownloadConfirm">
                     <v-icon>mdi-download</v-icon>
                 </v-btn>
             </v-col>
@@ -55,7 +55,7 @@
             </v-card>
         </v-dialog>
 
-        <v-btn icon class="left-arrow" @click="goBack">
+        <v-btn icon class="left-arrow" color="white" variant="outlined" @click="goBack">
             <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
     </v-container>
@@ -126,6 +126,12 @@ function goBack() {
 </script>
 
 <style lang="scss" scoped>
+.download-button{
+    color:white; 
+    margin-top:10px;
+    margin-left:110px;
+}
+
 .left-arrow {
     position: fixed;
     left : 0;

@@ -36,8 +36,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import MatchList from '@/components/match/MatchList.vue';
-import { format, addDays } from 'date-fns';
-import { differenceInCalendarDays } from 'date-fns';
+import { format, addDays, differenceInCalendarDays } from 'date-fns';
 
 const selectedDate = ref(new Date());
 const showDatePicker = ref(false);
