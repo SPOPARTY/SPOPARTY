@@ -1,7 +1,9 @@
 <template>
     <v-footer class="footer">
         <v-col class="text-center" cols="12">
-            <span class="white--text">&copy; A802</span>
+            <span>&copy; A802</span>
+            <v-icon class="pb-1">mdi-all-inclusive</v-icon>
+            <span>SPOPARTY</span>
         </v-col>
     </v-footer>
 </template>
@@ -20,6 +22,11 @@
 .footer {
     background-color:#223355;
     color: #D3AC2B;
+    max-height: 8vh;
+}
+
+span {
+    margin : 0 10px;
 }
 
 </style>

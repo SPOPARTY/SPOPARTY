@@ -2,8 +2,8 @@
   <v-container fluid class="pa-2 fill-height part-section">
     <v-row justify="center">
       <v-col cols="12" class="d-flex flex-column align-center justify-center">
-        <v-carousel v-model="model" class='carousel' cycle interval="6000" height="450px" hide-delimiter-background
-          color="red">
+        <v-carousel v-model="model" class='carousel' cycle interval="7000" height="500px" 
+          hide-delimiter-background progress="primary" color="red">
           <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
             <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
               <!-- 경기 기본 정보 -->
@@ -24,6 +24,13 @@
               <div class="d-flex justify-center align-center pb-12">
                 <!-- 투표 버튼 -->
                 <!-- 홈 팀 카드 -->
+                <div class="wrapper pb-1">
+                <div v-if="match.alreadyCheer"
+                  :class="{ 'barWin': votePercentage(match, 'home') >= 50, 'barLose': votePercentage(match, 'home') < 50 }"
+                  :style="{ height: votePercentage(match, 'home')*2.5 + 'px' }"
+                  class="bar"></div>
+                </div>
+                <!-- 여기까지 득표율에 따른 막대기 -->
                 <v-card :disabled="match.alreadyCheer" class="team-card text-center"
                   @click="() => voteForTeam(match, 'home')">
                   <v-img :src="match.fixture.homeTeam.logo" class="team-logo"></v-img>
@@ -31,7 +38,7 @@
                     {{ match.fixture.homeTeam.nameKr }}
                   </v-card-title>
                   <v-card-text v-if="match.alreadyCheer">
-                    <p>득표 : {{ votePercentage(match, 'home') }}</p>
+                    <p>득표 : {{ votePercentage(match, 'home') }}%</p>
                   </v-card-text>
                 </v-card>
                 <span class="VS">VS</span>
@@ -43,9 +50,17 @@
                     {{ match.fixture.awayTeam.nameKr }}</v-card-title>
                     
                   <v-card-text v-if="match.alreadyCheer">
-                    <p>득표 : {{ votePercentage(match, 'away') }}</p>
+                    <p>득표 : {{ votePercentage(match, 'away') }}%</p>
                   </v-card-text>
                 </v-card>
+                <!-- 득표율에 따른 막대기 -->
+                <div class="wrapper pb-1">
+                <div v-if="match.alreadyCheer"
+                  :class="{ 'barWin': votePercentage(match, 'away') >= 50, 'barLose': votePercentage(match, 'away') < 50 }"
+                  :style="{ height: votePercentage(match, 'away')*2.5 + 'px' }"
+                  class="bar"></div>
+                </div>
+                <!-- 여기까지 득표율에 따른 막대기 -->
               </div>
             </div>
           </v-carousel-item>
@@ -158,16 +173,32 @@ const votePercentage = (match, team) => {
   const totalVotes = match.homeCount + match.awayCount;
   const result1 = ((match.homeCount / totalVotes) * 100).toFixed(0);
   const result2 = 100 - result1;
-  if (totalVotes === 0) return "0%";
+  if (totalVotes === 0) return 0;
   return team === 'home'
-    ? result1 + "%"
-    : result2 + "%";
+    ? result1
+    : result2;
 };
 
 </script>
 
 <style scoped>
 /* .carousel {} */
+.wrapper {
+  margin-top: auto;
+  width: 20px; /* 래퍼 너비 조정 */
+}
+.bar {
+  width: 20px;
+  /* background-color: rgb(61, 172, 186); */
+  transition: height 0.5s ease; /* 애니메이션 효과 */
+  bottom: 0;
+}
+.barWin {
+  background-color: red;
+}
+.barLose {
+  background-color: rgb(61, 172, 186);
+}
 
 .vote-container {
   display: flex;
