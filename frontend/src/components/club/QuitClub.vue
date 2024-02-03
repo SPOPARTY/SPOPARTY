@@ -93,7 +93,7 @@
             </v-card-text>
             <v-card-actions style="transform:translateX(-40px)">
                     <v-spacer></v-spacer>
-                    <v-btn color="red" @click="leaveForever">진행시켜</v-btn>
+                    <v-btn color="red" @click="quitClub">진행시켜</v-btn>
                     <v-btn color="green" @click="closeModal"><h3>돌이킬 수 있는 마지막 기회</h3></v-btn>
             </v-card-actions>
         </v-card>
@@ -107,8 +107,10 @@
                     <h2>함께해서 더러웠고</h2><br><br>
                     <h2>다시는 만나지 말자</h2>
                 </v-card-title>
-                <br>
-                <br>
+                <v-card-actions style="transform:translateX(-40px)">
+                    <v-spacer></v-spacer>
+                    <v-btn color="red" @click="leaveForever">확인</v-btn>
+                </v-card-actions>
             </v-card>
         </v-container>
 
@@ -186,18 +188,21 @@ function showTakeOver() {
 
 const goodBye = ref(false)
 
-// 이거 일단 쓰지 말자 -> 아직 강퇴기능이 없다 -> 바꿔야 한다.
-function leaveForever() {
+function quitClub() {
     try{
         const success = clubStore.leaveClub(clubId);
         if(success) {
             alert("함께해서 더러웠고 다신 만나지 말자!")
-            console.log("그룹 삭제, 성공적")
-            goodBye.value = true;
+            console.log("****히히 그룹 떠나기 발사*****")
         }
     } catch{
-
+        alert("그룹 나가기 실패!")
     }
+    goodBye.value = true;
+}
+
+function leaveForever() {
+    goodBye.value = false;
     window.location.replace("/")
 }
 

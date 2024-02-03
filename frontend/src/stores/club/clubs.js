@@ -173,7 +173,7 @@ export const useClubStore = defineStore("club",() => {
                 (error) => {
                     if (error.response.status === httpStatusCode.BAD_REQUEST){
                         console.log(error)
-                        alert()
+                        alert("")
                         reject("그룹원 초대 실패!")
                     }
                 }
@@ -201,7 +201,7 @@ export const useClubStore = defineStore("club",() => {
     }
 
     // 그룹원 탈퇴(그룹장 권한)
-    const leaveClub = () => {
+    const leaveClub = (clubId) => {
         return new Promise((resolve,reject) => {
             requestDeleteClubMember(
                 clubId,
