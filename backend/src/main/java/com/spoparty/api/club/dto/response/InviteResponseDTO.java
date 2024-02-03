@@ -1,4 +1,4 @@
-package com.spoparty.api.club.dto;
+package com.spoparty.api.club.dto.response;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class InviteResponseDto {
+public class InviteResponseDTO {
 	private String inviteUrl;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdTime;
