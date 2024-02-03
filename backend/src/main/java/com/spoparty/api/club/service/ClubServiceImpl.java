@@ -23,9 +23,12 @@ import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.club.entity.ClubMember;
 import com.spoparty.api.club.repository.ClubMemberRepository;
 import com.spoparty.api.club.repository.ClubRepository;
+import com.spoparty.api.common.constants.ErrorCode;
 import com.spoparty.api.common.entity.RoleType;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.repository.MemberRepository;
+import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +42,11 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubMemberRepository clubMemberRepository;
 	private final MemberRepository memberRepository;
 
-	public List<ClubResponseDto> findRecentClubs(Member member) {
-		List<ClubMember> clubMembers = clubMemberRepository.findAllByMember(member);
+	public List<ClubResponseDto> findRecentClubs(PrincipalDetails principalDetails) {
+		if (principalDetails == null) {
+			throw new CustomException(UNAUTHORIZED_USER);
+		}
+		List<ClubMember> clubMembers = clubMemberRepository.findAllByMember(principalDetails.getMember());
 		return clubMembers.stream()
 			.map(clubMember -> ClubResponseDto.entityToDto(clubMember.getClub()))
 			.sorted(Comparator.comparing(ClubResponseDto::getUpdatedTime).reversed())
@@ -67,7 +73,11 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Transactional
-	public ClubResponseDto updateClubName(Member member, Long clubId, ClubRequestDto clubRequestDto) { // 그룹장 권한
+	public ClubResponseDto updateClubName(PrincipalDetails principalDetails, Long clubId, ClubRequestDto clubRequestDto) { // 그룹장 권한
+		if (principalDetails == null) {
+			throw new CustomException(UNAUTHORIZED_USER);
+		}
+		Member member = principalDetails.getMember();
 		Club club = findClubById(clubId);
 		validateHost(club, member); //호스트 권한 체크
 		club.setName(clubRequestDto.getName());
@@ -75,7 +85,11 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Transactional
-	public Long deleteClub(Member member, Long clubId) { // 그룹장 권한
+	public Long deleteClub(PrincipalDetails principalDetails, Long clubId) { // 그룹장 권한
+		if (principalDetails == null) {
+			throw new CustomException(UNAUTHORIZED_USER);
+		}
+		Member member = principalDetails.getMember();
 		Club club = findClubById(clubId);
 		validateHost(club, member); //호스트 권한 체크
 		club.deleteClub();
@@ -113,7 +127,11 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Transactional
-	public ClubMemberResponseDto assignHost(Member hostMember, Long clubId, ClubHostRequestDto clubHostRequestDto) {
+	public ClubMemberResponseDto assignHost(PrincipalDetails principalDetails, Long clubId, ClubHostRequestDto clubHostRequestDto) {
+		if (principalDetails == null) {
+			throw new CustomException(UNAUTHORIZED_USER);
+		}
+		Member hostMember = principalDetails.getMember();
 		Club club = findClubById(clubId);
 		validateHost(club, hostMember); //호스트 권한 체크
 		Member nextHostMember = memberRepository.findById(clubHostRequestDto.getNextHostId()).orElseThrow(() -> new IllegalArgumentException(
@@ -132,7 +150,11 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Transactional
-	public Long deleteGroupMember(Member member, Long clubId) {
+	public Long deleteGroupMember(PrincipalDetails principalDetails, Long clubId) {
+		if (principalDetails == null) {
+			throw new CustomException(UNAUTHORIZED_USER);
+		}
+		Member member = principalDetails.getMember();
 		log.debug("member - {} ", member);
 		Club club = findClubById(clubId);
 		log.debug("club - {} ", club);
