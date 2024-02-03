@@ -42,6 +42,7 @@ export const useManagementStore = defineStore("management",() => {
                     sessionStorage.setItem('refreshToken',refreshToken);
                     sessionStorage.setItem("id",decodedToken.id);
                     memberId.value = sessionStorage.getItem("id");
+                    // window.location.replace(document.referrer) // 이전에 갔던 페이지로 돌아가는 함수인데 잘 안됨 
                     window.location.replace("/")
                     // getMemberInfo(accessToken)
                 } 

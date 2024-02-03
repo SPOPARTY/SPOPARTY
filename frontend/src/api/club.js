@@ -51,7 +51,7 @@ function requestUpdateClubLeader(clubId, data,success,fail) {
 
 // 그룹 떠나기
 function requestDeleteClubMember(clubId, success, fail) {
-    local.delete(`${API_URL}/${clubId}/participant`).then(success).catch(fail);
+    local.delete(`${API_URL}/${clubId}/participants`).then(success).catch(fail);
 }
 
 
