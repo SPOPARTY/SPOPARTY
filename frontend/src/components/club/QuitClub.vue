@@ -95,7 +95,7 @@
                     <v-spacer></v-spacer>
                     <v-btn color="red" @click="leaveForever">진행시켜</v-btn>
                     <v-btn color="green" @click="closeModal"><h3>돌이킬 수 있는 마지막 기회</h3></v-btn>
-                </v-card-actions>
+            </v-card-actions>
         </v-card>
 
     </v-dialog>
@@ -186,9 +186,10 @@ function showTakeOver() {
 
 const goodBye = ref(false)
 
+// 이거 일단 쓰지 말자 -> 아직 강퇴기능이 없다 -> 바꿔야 한다.
 function leaveForever() {
     try{
-        const success = clubStore.deleteClub(clubId);
+        const success = clubStore.leaveClub(clubId);
         if(success) {
             alert("함께해서 더러웠고 다신 만나지 말자!")
             console.log("그룹 삭제, 성공적")
@@ -221,7 +222,6 @@ h1{
 .v-container {
     padding:0px;
 }
-
 
 
 .v-card-title {

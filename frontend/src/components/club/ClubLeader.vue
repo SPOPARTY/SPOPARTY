@@ -43,6 +43,7 @@
     />
     <BanClubMemeber
         v-if="isBanClubMemberVisible"
+        :club-member-list="clubMemberList"
         @ban-member-close="closeBanClubMember"
     />
 </template>

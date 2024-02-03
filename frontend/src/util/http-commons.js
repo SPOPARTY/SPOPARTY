@@ -38,11 +38,12 @@ function localAxios() {
             return response;
         },
         async (error) => {
+            console.log(error);
             const {
                 config,
                 response : {status},
             } = error;
-
+            
             // 페이지가 새로고침되어 저장된 accessToken이 없어진 경우
             // or 토큰 자체가 만료
             if (status == httpStatusCode.UNAUTHORIZED) {

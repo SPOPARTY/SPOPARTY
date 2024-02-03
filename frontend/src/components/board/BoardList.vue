@@ -2,10 +2,10 @@
     <v-container>
         <v-row justify="center">
             <v-col cols="10">
-                <h1 class="text-center">그룹 게시판</h1>
+                <h1 class="text-center" style="color:white; margin-left:100px;">그룹 게시판</h1>
             </v-col>
             <v-col cols="2">
-                <v-btn color="primary" @click="writeBoard">글쓰기</v-btn>
+                <v-btn class="write-board" variant="outlined" @click="writeBoard">글쓰기</v-btn>
             </v-col>
         </v-row>
         <v-row>
@@ -34,7 +34,7 @@
             </v-col>
         </v-row>
 
-        <v-btn icon class="left-arrow" @click="goBack">
+        <v-btn icon class="left-arrow" color="white" variant="outlined" @click="goBack">
             <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
     </v-container>
@@ -91,6 +91,12 @@ const showBoardDetail = (post) => {
 </script>
 
 <style lang="scss" scoped>
+.write-board{
+    color:white; 
+    margin-top:10px;
+    margin-left:110px;
+}
+
 .left-arrow {
     position: fixed;
     left : 0;

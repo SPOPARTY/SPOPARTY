@@ -55,7 +55,7 @@
             <v-card-title>초대 링크를 복사하세요!</v-card-title>
             <div class="text-to-copy">
                 <v-card-text class="invite">
-                    URL : <b><u>{{ textToCopy }}</u></b>
+                    URL : <b><u>{{ inviteURL }}</u></b>
                     <v-btn @click="copyText" class="copy-btn">
                         <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
@@ -80,6 +80,11 @@ const props = defineProps({
     clubMemberList:Object
 })
 
+const clubStore = useClubStore();
+
+const route = useRoute();
+const clubId = route.params.clubId;
+
 const clubInfo = computed(()=> {
     return props.clubInfo
 })
@@ -99,18 +104,24 @@ function showClubMembers() {
 }
 
 // 그룹원 초대 on/off
+const inviteURL = computed(() => {
+    return clubStore.clubInviteLink;
+})
+
 const isInviteVisible = ref(false)
-function showInvite() {
+async function showInvite() {
     isInviteVisible.value = true;
+
+    await clubStore.getClubInviteLink(clubId);
+
 }
 
-// 복사할 초대 링크
-const textToCopy = ref('www.naver.com')
+
 
 // 그룹 초대 링크 복사
 const copyText = async() => {
     try {
-        await navigator.clipboard.writeText(textToCopy.value);
+        await navigator.clipboard.writeText(inviteURL.value);
         alert("텍스트가 클립보드에 복사되었습니다.")
     } catch (err) {
         console.error('복사 실패 : ',err);
