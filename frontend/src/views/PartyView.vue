@@ -36,12 +36,13 @@
 
                                    <v-card-text>
                                         <!-- <div class="text-caption pa-3">시청 중인 경기를 선택하세요</div> -->
-
+                                        <!-- {{ matchModel }} -->
                                         <v-autocomplete v-model="matchModel"
                                              :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
-                                             :items="matches" :readonly="!isMatchEditing"
+                                             :items="matches" :item-title="getMatchTitle" item-value="fixtureId" :readonly="!isMatchEditing"
                                              :label="`경기  — ${isMatchEditing ? 'Editable' : 'Readonly'}`" auto-select-first
-                                             clearable variant="outlined" persistent-hint prepend-icon="mdi-soccer">
+                                             clearable variant="outlined" persistent-hint prepend-icon="mdi-soccer"
+                                             @update:menu="onMatchChange">
                                              <template v-slot:append>
                                                   <v-slide-x-reverse-transition mode="out-in">
                                                        <v-icon :key="`icon-${isMatchEditing}`"
@@ -113,19 +114,26 @@
           <!-- 경기정보영역 -->
           <v-row class="contents-section pa-3">
                <v-col cols="12">
-                    <PartyMatch :match-id="matchId" />
+                    <PartyMatch/>
                </v-col>
           </v-row>
      </v-container>
 </template>
  
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { format, set, parseISO, addDays } from 'date-fns';
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
 
+import { useFootballStore } from '@/stores/football/football'
+
+const footballStore = useFootballStore()
+
+const { getMatchWatchable } = footballStore
+
 // 임시 경기 id
-const matchId = ref("1")
+const fixtureId = ref(null);
 
 // 파티 최대 인원 수
 const maxMembers = 6
@@ -169,16 +177,69 @@ const titleModel = ref(null);
 // 경기 정보 수정
 const isMatchEditing = ref(false);
 const matchModel = ref(null);
-const matches = [
-     // 축구 경기 목록
-     "리버풀 vs 맨체스터 유나이티드",
-     "맨체스터 시티 vs 첼시",
-     "아스널 vs 토트넘",
-     "레스터 시티 vs 에버턴",
-     "웨스트햄 vs 브라이튼",
-     "번리 vs 사우샘프턴",
-     "왓포드 vs 뉴캐슬",
-]
+const matches = ref([]);
+
+watch(() => footballStore.matchWatchable , (newVal) => {
+     console.log(newVal);
+     matches.value = newVal;
+}, { immediate: true }), { deep: true };
+
+// 시청 가능 경기 목록
+const today = ref(new Date());
+const startDate = ref(format(addDays(today.value, -1), 'yyyy-MM-dd'));
+const endDate = ref(format(addDays(today.value, 7), 'yyyy-MM-dd'));
+
+// console.log(today.value)
+// console.log(format(addDays(today.value, -1), 'yyyy-MM-dd'))
+// console.log(format(addDays(today.value, 7), 'yyyy-MM-dd'))
+const getMatchTitle = (item) => {
+     const status = ref("");
+     if (item.status === "not start") {
+          status.value = "예정";
+     } else {
+          status.value = "경기 중";
+     }
+    return `${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`;
+};
+
+
+const onMatchChange = () => {
+     // console.log("onMatchChange")
+     fixtureId.value = matchModel.value;
+     footballStore.fixtureIdForParty = matchModel.value;
+}
+
+getMatchWatchable(startDate.value, endDate.value);
+
+// matches 
+// {
+//     "fixtureId": 15,
+//     "startTime": "2024-02-02T08:00:00",
+//     "round": "5차전",
+//     "status": "not start",
+//     "homeTeamGoal": 0,
+//     "awayTeamGoal": 0,
+//     "league": {
+//         "leagueId": 1,
+//         "nameKr": "챔피언십",
+//         "logo": "https://media.api-sports.io/football/leagues/40.png"
+//     },
+//     "homeTeam": {
+//         "seasonLeagueTeamId": 4,
+//         "teamId": 4,
+//         "nameKr": "멍뭉",
+//         "nameEng": "cccc",
+//         "logo": "https://source.unsplash.com/random/300x300?emblem"
+//     },
+//     "awayTeam": {
+//         "seasonLeagueTeamId": 1,
+//         "teamId": 1,
+//         "nameKr": "마루쉐",
+//         "nameEng": "maroche",
+//         "logo": "https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg"
+//     }
+// }
+
 
 
 // const editMatch = () => {
