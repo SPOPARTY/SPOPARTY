@@ -40,6 +40,16 @@ function requestGetTeamDetail(teamId,success,fail) {
     local.get(`/${API_URL}/teams?teamId=${teamId}`).then(success).catch(fail);
 }
 
+function requestGetMatchWatchable(startDate,endDate,success,fail) {
+    // 시청 가능한 경기 정보 조회
+    local.get(`/${API_URL}/fixtures?startDate=${startDate}&endDate=${endDate}`).then(success).catch(fail);
+}
+
+function requestGetMatchRealTimeData(fixtureId,success,fail) {
+    // 경기 실황 정보 조회
+    local.get(`/${API_URL}/fixtures/events?${fixtureId}`).then(success).catch(fail);
+}
+
 export {
     requestGetCheersData,
     requestPostCheersData,
@@ -48,4 +58,6 @@ export {
     requestGetLeagueList,
     requestGetLeagueRanking,
     requestGetTeamDetail,
+    requestGetMatchRealTimeData,
+    requestGetMatchWatchable,
 }
