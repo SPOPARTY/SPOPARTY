@@ -9,17 +9,18 @@ import com.spoparty.api.club.dto.ClubResponseDto;
 import com.spoparty.api.club.dto.InviteRequestDto;
 import com.spoparty.api.club.dto.InviteResponseDto;
 import com.spoparty.api.member.entity.Member;
+import com.spoparty.security.model.PrincipalDetails;
 
 public interface ClubService {
-	List<ClubResponseDto> findRecentClubs(Member member);
+	List<ClubResponseDto> findRecentClubs(PrincipalDetails principalDetails);
 
 	ClubResponseDto createClub(ClubRequestDto clubRequestDto);
 
 	ClubResponseDto findClub(Long clubId);
 
-	ClubResponseDto updateClubName(Member member, Long clubId, ClubRequestDto clubRequestDto);
+	ClubResponseDto updateClubName(PrincipalDetails principalDetails, Long clubId, ClubRequestDto clubRequestDto);
 
-	Long deleteClub(Member member, Long clubId);
+	Long deleteClub(PrincipalDetails principalDetails, Long clubId);
 
 	InviteResponseDto getInviteUrl(Long clubId);
 
@@ -27,7 +28,7 @@ public interface ClubService {
 
 	List<ClubMemberResponseDto> getGroupMembers(Long clubId);
 
-	ClubMemberResponseDto assignHost(Member hostMember, Long clubId, ClubHostRequestDto clubHostRequestDto);
+	ClubMemberResponseDto assignHost(PrincipalDetails principalDetails, Long clubId, ClubHostRequestDto clubHostRequestDto);
 
-	Long deleteGroupMember(Member member, Long clubId);
+	Long deleteGroupMember(PrincipalDetails principalDetails, Long clubId);
 }

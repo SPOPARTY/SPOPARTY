@@ -40,8 +40,8 @@ public class ClubController {
 	public ResponseEntity<?> getRecentClubs(
 		@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		log.debug("최근 활동 그룹 목록 조회 API 시작");
-		log.debug("member 정보 - {}", principalDetails.getMember());
-		List<ClubResponseDto> response = clubService.findRecentClubs(principalDetails.getMember());
+		log.debug("principalDetails 정보 - {}", principalDetails);
+		List<ClubResponseDto> response = clubService.findRecentClubs(principalDetails);
 		return ApiResponse.success(GET_SUCCESS, response);
 	}
 
@@ -64,7 +64,8 @@ public class ClubController {
 	public ResponseEntity<?> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
 		@PathVariable Long clubId, @RequestBody @Valid ClubRequestDto clubRequestDto) {
 		log.debug("그룹명 수정 API 시작");
-		ClubResponseDto response = clubService.updateClubName(principalDetails.getMember(), clubId, clubRequestDto);
+		log.debug("principalDetails 정보 - {}", principalDetails);
+		ClubResponseDto response = clubService.updateClubName(principalDetails, clubId, clubRequestDto);
 		return ApiResponse.success(CLUB_UPDATE_SUCCESS, response);
 	}
 
@@ -72,7 +73,8 @@ public class ClubController {
 	public ResponseEntity<?> delete(@AuthenticationPrincipal PrincipalDetails principalDetails,
 		@PathVariable Long clubId) {
 		log.debug("그룹 삭제 API 시작");
-		Long response = clubService.deleteClub(principalDetails.getMember(), clubId);
+		log.debug("principalDetails 정보 - {}", principalDetails);
+		Long response = clubService.deleteClub(principalDetails, clubId);
 		return ApiResponse.success(CLUB_DELETE_SUCCESS, response);
 	}
 
@@ -101,8 +103,8 @@ public class ClubController {
 	public ResponseEntity<?> assignHost(@AuthenticationPrincipal PrincipalDetails principalDetails,
 		@PathVariable Long clubId, @RequestBody @Valid ClubHostRequestDto clubHostRequestDto) {
 		log.debug("그룹장 수정 API 시작");
-		log.debug("member - {}", principalDetails.getMember());
-		ClubMemberResponseDto response = clubService.assignHost(principalDetails.getMember(), clubId,
+		log.debug("principalDetails 정보 - {}", principalDetails);
+		ClubMemberResponseDto response = clubService.assignHost(principalDetails, clubId,
 			clubHostRequestDto);
 		return ApiResponse.success(CLUB_HOST_UPDATE_SUCCESS, response);
 	}
@@ -111,7 +113,8 @@ public class ClubController {
 	public ResponseEntity<?> leaveGroup(@AuthenticationPrincipal PrincipalDetails principalDetails,
 		@PathVariable Long clubId) {
 		log.debug("그룹원 삭제 API 시작");
-		Long response = clubService.deleteGroupMember(principalDetails.getMember(), clubId);
+		log.debug("principalDetails 정보 - {}", principalDetails);
+		Long response = clubService.deleteGroupMember(principalDetails, clubId);
 		return ApiResponse.success(CLUB_MEMBER_DELETE_SUCCESS, response);
 	}
 }
