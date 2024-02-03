@@ -21,6 +21,7 @@ export const useFootballStore = defineStore("football",() => {
     const teamDetail = ref([]);
     const matchWatchable = ref([]);
     const matchRealTimeData = ref([]);
+    const fixtureIdForParty = ref(null);
 
     const getCheersData = () => {
         requestGetCheersData(
@@ -236,5 +237,6 @@ export const useFootballStore = defineStore("football",() => {
         teamDetail,
         matchWatchable,
         matchRealTimeData,
+        fixtureIdForParty,
     }
 })

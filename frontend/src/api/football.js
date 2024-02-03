@@ -47,7 +47,7 @@ function requestGetMatchWatchable(startDate,endDate,success,fail) {
 
 function requestGetMatchRealTimeData(fixtureId,success,fail) {
     // 경기 실황 정보 조회
-    local.get(`/${API_URL}/fixtures/events?${fixtureId}`).then(success).catch(fail);
+    local.get(`/${API_URL}/fixtures/events?fixtureId=${fixtureId}`).then(success).catch(fail);
 }
 
 export {
