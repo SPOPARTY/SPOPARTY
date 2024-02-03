@@ -174,6 +174,8 @@ function selectLeader(member) {
     nextLeader.value.memberId = member.memberId;
     nextLeader.value.memberNickName = member.memberNickName;
     nextLeader.value.role = member.role
+    console.log("*****다음 그룹장은???*******")
+    console.log(nextLeader.value)
 }
 
 // 그룹장 넘기기
@@ -184,21 +186,41 @@ function showTakeOver() {
     }
     isTakeOverVisible.value = true
     isMemberListVisible.value = false
+
 }
 
 const goodBye = ref(false)
 
 function quitClub() {
     try{
-        const success = clubStore.leaveClub(clubId);
-        if(success) {
-            alert("함께해서 더러웠고 다신 만나지 말자!")
-            console.log("****히히 그룹 떠나기 발사*****")
+        const data = {
+            currentHostId : loginUser,
+            nextHostId : nextLeader.value.memberId,
         }
-    } catch{
+        console.log("그룹인원은??",clubMemberList.value)
+        if (clubMemberList.value.length !== 1){
+            const takeOverSuccess = clubStore.updateClubLeader(clubId,data);
+            console.log("그룹장 잘 넘겼나?? --> ",takeOverSuccess)
+            if (!takeOverSuccess) {
+                alert("그룹장 넘기기 실패!")
+                return;
+            }
+        }
+        else {
+            const leaveSuccess = clubStore.leaveClub(clubId);
+            if(leaveSuccess) {
+                // alert("함께해서 더러웠고 다신 만나지 말자!")
+                console.log("****히히 그룹 떠나기 발사*****")
+                goodBye.value = true;
+            }
+        }
+
+    } catch(err){
+        console.log("****그룹 나가기 실패!!!****")
+        console.error(err)
         alert("그룹 나가기 실패!")
+        closeModal()
     }
-    goodBye.value = true;
 }
 
 function leaveForever() {

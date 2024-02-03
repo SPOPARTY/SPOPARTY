@@ -76,6 +76,7 @@ export const useClubStore = defineStore("club",() => {
         )
     }
 
+    // 그룹명 수정
     const updateClub = (clubId, data) => {
         return new Promise((resolve, reject) => { // 함수 내부에서 값을 반환하지 않고 콜백함수에서 값을 처리해야한다.
             requestUpdateClubName(
@@ -183,21 +184,25 @@ export const useClubStore = defineStore("club",() => {
     }
 
     // 그룹장 물려주기(그룹장 권한)
-    const updateClubLeader = () => {
-        requestUpdateClubLeader(
-            clubId,
-            (res) => {
-                console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
+    const updateClubLeader = (clubId, data) => {
+        return new Promise((success,fail) => {
+            requestUpdateClubLeader(
+                clubId,
+                data,
+                (res) => {
                     console.log("******히히 그룹장 물려주기*********")
-                    alert(res.data.status)
+                    console.log(res)
+                    if (res.data.status === httpStatusCode.OK) {
+                        console.log("그룹장 물려주기 성공!!")
+                        success(true)
+                    }
+                },
+                (error) => {
+                    console.log(error)
+                    alert("그룹장 물려주기 실패!")
                 }
-            },
-            (error) => {
-                console.log(error)
-                alert("그룹장 물려주기 실패!")
-            }
-        )
+            )
+        })
     }
 
     // 그룹원 탈퇴(그룹장 권한)
