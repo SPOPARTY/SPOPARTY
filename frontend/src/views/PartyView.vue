@@ -2,62 +2,22 @@
      <v-container fluid>
           <!-- 기존 비디오 및 채팅 섹션 -->
           <v-row class="party-section mb-1">
-               <v-col class="match-section" cols="9">
+               <v-col class="match-section">
                     <v-row class="match-video">
-                         <v-img src="/soccer-screen.png" aspect-ratio="16/9" contain></v-img>
+                         <v-img src="/soccer-screen.png" aspect-ratio="16/9"></v-img>
                     </v-row>
-                    <v-row class="selector">
-                         <!-- 파티 타이틀 선택 -->
-                         <v-col cols="6" class="party pa-2">
-                              <v-card>
-                                   <v-card-text>
-                                        <v-text-field v-model="titleModel" :clearable="isTitleEditing"
-                                             :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
-                                             :readonly="!isTitleEditing" persistent-hint hide-details="auto"
-                                             :label="`타이틀  — ${isMatchEditing ? 'Editable' : 'Readonly'}`">
-                                             <template v-slot:append>
-                                                  <v-slide-x-reverse-transition mode="out-in">
-                                                       <v-icon :key="`icon-${isTitleEditing}`"
-                                                            :color="isTitleEditing ? 'success' : 'info'"
-                                                            :icon="isTitleEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
-                                                            @click="isTitleEditing = !isTitleEditing"></v-icon>
-                                                  </v-slide-x-reverse-transition>
-                                             </template>
-                                        </v-text-field>
-                                   </v-card-text>
-                              </v-card>
+                    <v-row>
+                         <v-col cols="7" class="party pa-1 px-4">
+                              {{ partyTitle }}
+                              <v-icon @click="editParty" size="x-small" class="pa-6">mdi-pencil</v-icon>
                          </v-col>
-                         <!-- 경기 선택 -->
-                         <v-col cols="6" class="match pa-2">
-                              <v-card>
-                                   <!-- <v-card-title class="text-h5 font-weight-regular bg-blue-grey">
-                                   Profile
-                              </v-card-title> -->
-
-                                   <v-card-text>
-                                        <!-- <div class="text-caption pa-3">시청 중인 경기를 선택하세요</div> -->
-                                        <!-- {{ matchModel }} -->
-                                        <v-autocomplete v-model="matchModel"
-                                             :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
-                                             :items="matches" :item-title="getMatchTitle" item-value="fixtureId" :readonly="!isMatchEditing"
-                                             :label="`경기  — ${isMatchEditing ? 'Editable' : 'Readonly'}`" auto-select-first
-                                             clearable variant="outlined" persistent-hint prepend-icon="mdi-soccer"
-                                             @update:menu="onMatchChange">
-                                             <template v-slot:append>
-                                                  <v-slide-x-reverse-transition mode="out-in">
-                                                       <v-icon :key="`icon-${isMatchEditing}`"
-                                                            :color="isMatchEditing ? 'success' : 'info'"
-                                                            :icon="isMatchEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
-                                                            @click="isMatchEditing = !isMatchEditing"></v-icon>
-                                                  </v-slide-x-reverse-transition>
-                                             </template>
-                                        </v-autocomplete>
-                                   </v-card-text>
-                              </v-card>
+                         <v-col cols="5" class="match pa-1">
+                              {{ matchName }}
+                              <v-icon @click="editMatch" size="x-small" class="pa-6">mdi-pencil</v-icon>
                          </v-col>
                     </v-row>
                </v-col>
-               <v-col class="chatting-section" cols="3">
+               <v-col class="chatting-section">
                     <v-row>
                          <v-col cols="6" class="cam-video" v-for="member in partyMembers" :key="member.memberId">
                               <p>웹캠 영역</p>
@@ -71,37 +31,34 @@
                               <span>파티 초대</span>
                          </v-col>
                     </v-row>
-                    <v-spacer></v-spacer>
                     <!-- 버튼 영역 -->
                     <v-row class="button-section">
-                         <v-col cols="2">
+                         <v-col cols="2" class="mx-1">
                               <v-btn color="secondary">
                                    <v-icon size="x-large">mdi-camera-outline</v-icon>
                               </v-btn>
                          </v-col>
-                         <v-col cols="2">
+                         <v-col cols="2" class="mx-1">
                               <v-btn color="secondary">
                                    <v-icon size="x-large">mdi-video-plus-outline</v-icon>
                               </v-btn>
                          </v-col>
-                         <v-col cols="2">
+                         <v-col cols="2" class="mx-1">
                               <v-btn color="#D3AC2B">
                                    <v-icon size="x-large" color="#333D51">mdi-bullhorn-outline</v-icon>
                               </v-btn>
                          </v-col>
-                         <v-col cols="2">
+                         <v-col cols="2" class="mx-1">
                               <v-btn color="#CBD0D8">
                                    투표
                               </v-btn>
                          </v-col>
-                         <v-col cols="2">
+                         <v-col cols="2" class="mx-1">
                               <v-btn color="yellow" class="chat-button">
                                    <v-icon color="#08042B">mdi-chat</v-icon>
                               </v-btn>
                          </v-col>
-                    </v-row>
-                    <!-- 다음 줄 -->
-                    <v-row class="button-section">
+                         <!-- 다음 줄 -->
                          <v-col cols="6">
                               <v-btn color="primary">추가 버튼</v-btn>
                          </v-col>
@@ -114,26 +71,19 @@
           <!-- 경기정보영역 -->
           <v-row class="contents-section pa-3">
                <v-col cols="12">
-                    <PartyMatch/>
+                    <PartyMatch :match-id="matchId"/>
                </v-col>
           </v-row>
      </v-container>
 </template>
  
 <script setup>
-import { ref, watch } from 'vue'
-import { format, set, parseISO, addDays } from 'date-fns';
+import { ref } from 'vue'
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
 
-import { useFootballStore } from '@/stores/football/football'
-
-const footballStore = useFootballStore()
-
-const { getMatchWatchable } = footballStore
-
 // 임시 경기 id
-const fixtureId = ref(null);
+const matchId = ref("1")
 
 // 파티 최대 인원 수
 const maxMembers = 6
@@ -153,99 +103,28 @@ const inviteToParty = () => {
 
 // 파티 나가기
 const closeTab = () => {
-     // 사용자에게 확인을 요청하는 대화상자 표시
-     if (confirm("파티를 나가시겠습니까?")) {
-          window.close(); // 사용자가 '예'를 선택한 경우 탭 닫기
-     }
-     // '아니오'를 선택한 경우 아무 동작도 하지 않음
+    // 사용자에게 확인을 요청하는 대화상자 표시
+    if (confirm("파티를 나가시겠습니까?")) {
+        window.close(); // 사용자가 '예'를 선택한 경우 탭 닫기
+    }
+    // '아니오'를 선택한 경우 아무 동작도 하지 않음
 }
 
 
-// let partyTitle = ref('파티 타이틀');
-// let matchName = ref('경기 이름');
+let partyTitle = ref('파티 타이틀');
+let matchName = ref('경기 이름');
 
 // 파티 정보 수정
-const isTitleEditing = ref(false);
-const titleModel = ref(null);
-
-
-// const editParty = () => {
-//      const newPartyTitle = prompt('새 파티 타이틀을 입력하세요', partyTitle.value);
-//      if (newPartyTitle !== null) partyTitle.value = newPartyTitle;
-// }
-
-// 경기 정보 수정
-const isMatchEditing = ref(false);
-const matchModel = ref(null);
-const matches = ref([]);
-
-watch(() => footballStore.matchWatchable , (newVal) => {
-     console.log(newVal);
-     matches.value = newVal;
-}, { immediate: true }), { deep: true };
-
-// 시청 가능 경기 목록
-const today = ref(new Date());
-const startDate = ref(format(addDays(today.value, -1), 'yyyy-MM-dd'));
-const endDate = ref(format(addDays(today.value, 7), 'yyyy-MM-dd'));
-
-// console.log(today.value)
-// console.log(format(addDays(today.value, -1), 'yyyy-MM-dd'))
-// console.log(format(addDays(today.value, 7), 'yyyy-MM-dd'))
-const getMatchTitle = (item) => {
-     const status = ref("");
-     if (item.status === "not start") {
-          status.value = "예정";
-     } else {
-          status.value = "경기 중";
-     }
-    return `${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`;
-};
-
-
-const onMatchChange = () => {
-     // console.log("onMatchChange")
-     fixtureId.value = matchModel.value;
-     footballStore.fixtureIdForParty = matchModel.value;
+const editParty = () => {
+     const newPartyTitle = prompt('새 파티 타이틀을 입력하세요', partyTitle.value);
+     if (newPartyTitle !== null) partyTitle.value = newPartyTitle;
 }
 
-getMatchWatchable(startDate.value, endDate.value);
-
-// matches 
-// {
-//     "fixtureId": 15,
-//     "startTime": "2024-02-02T08:00:00",
-//     "round": "5차전",
-//     "status": "not start",
-//     "homeTeamGoal": 0,
-//     "awayTeamGoal": 0,
-//     "league": {
-//         "leagueId": 1,
-//         "nameKr": "챔피언십",
-//         "logo": "https://media.api-sports.io/football/leagues/40.png"
-//     },
-//     "homeTeam": {
-//         "seasonLeagueTeamId": 4,
-//         "teamId": 4,
-//         "nameKr": "멍뭉",
-//         "nameEng": "cccc",
-//         "logo": "https://source.unsplash.com/random/300x300?emblem"
-//     },
-//     "awayTeam": {
-//         "seasonLeagueTeamId": 1,
-//         "teamId": 1,
-//         "nameKr": "마루쉐",
-//         "nameEng": "maroche",
-//         "logo": "https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg"
-//     }
-// }
-
-
-
-// const editMatch = () => {
-//      const newMatchName = prompt('새 경기 이름을 입력하세요', matchName.value);
-//      if (newMatchName !== null) matchName.value = newMatchName;
-// }
+// 경기 정보 수정
+const editMatch = () => {
+     const newMatchName = prompt('새 경기 이름을 입력하세요', matchName.value);
+     if (newMatchName !== null) matchName.value = newMatchName;
+}
 
 </script>
 
@@ -259,32 +138,23 @@ getMatchWatchable(startDate.value, endDate.value);
 
 .match-section {
      background-color: grey;
+     /* 화면 크기 960*540 고려 */
+     /* 1080p 의 50% 크기 */
      min-width: 960px;
-     /* 최소 너비 유지 */
-     width: 60vw;
-     /* 화면 너비에 따라 조정 */
-     max-width: 70%;
-     /* 최대 너비 제한, 필요에 따라 조정 */
      min-height: 540px;
-     margin: auto;
-     /* 중앙 정렬 */
+     max-width: 960px;
+     height: 590px;
 }
 
-.selector {
-     min-height: 45px;
-     height: 12vh;
-
-}
-
-.party {
+.match-section .party {
      /* background-color: #333D51; */
      height: 45px;
      font-size: 1.5rem;
 }
 
-.match {
+.match-section .match {
      /* background-color: #333D51; */
-     padding: auto;
+     padding-top: 5px;
      height: 40px;
      font-size: 1.25rem;
 }
@@ -295,20 +165,10 @@ getMatchWatchable(startDate.value, endDate.value);
 }
 
 .chatting-section {
-     display: flex;
-     flex: 0 0 30%;
-     flex-direction: column;
-     justify-content: space-between;
-     /* 콘텐츠를 위아래로 분산시킴 */
      background-color: #333D51;
      min-height: 100%;
      min-width: 320px;
-     max-width: 30%;
-     width: 30vw;
-     /* 채팅 섹션의 높이를 브라우저 창의 높이와 맞춤 */
-     /* height: 100vh;  */
 }
-
 
 .cam-video {
      background-color: blueviolet;
@@ -324,13 +184,9 @@ getMatchWatchable(startDate.value, endDate.value);
 }
 
 .button-section {
-     /* 나머지 콘텐츠 위에 버튼 섹션을 밀어 올림 */
-     /* margin-top: auto;  */
-     max-height: 60px;
-     width: 100%;
+     padding-top: 20px;
+     /* 버튼 영역과 위의 콘텐츠 사이에 간격 추가 */
      text-align: center;
-     /* 버튼을 가운데 정렬 */
-     justify-content: space-between;
 }
 
 .chat-button {
@@ -352,9 +208,5 @@ getMatchWatchable(startDate.value, endDate.value);
      /* min-height: 100%; */
      min-width: 1280px;
      /* color: #121212; */
-}
-
-.button-section button {
-     width: 300px;
 }
 </style>
