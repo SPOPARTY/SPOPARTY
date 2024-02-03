@@ -1,10 +1,6 @@
 package com.spoparty.api.club.entity;
 
-import static com.spoparty.api.common.constants.ErrorCode.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
@@ -22,8 +18,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +28,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString(exclude = "clubMembers")
+@ToString
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "is_deleted = 0")
@@ -44,18 +40,12 @@ public class Club extends BaseEntity {
 
 	@Setter
 	@Column(nullable = false)
+	@Size(max = 30)
 	private String name;
 
 	@Column(nullable = false)
-	// @ColumnDefault("6")
-	private Integer maxParticipants = 6;
-
-	@Column(nullable = false)
-	// @ColumnDefault("0")
-	private Integer currentParticipants = 0;
-
-	@OneToMany(mappedBy = "club")
-	private List<ClubMember> clubMembers = new ArrayList<>(); // 그룹원
+	@ColumnDefault("6")
+	private Integer maxParticipants;
 
 	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -67,8 +57,6 @@ public class Club extends BaseEntity {
 	@JoinColumn(name = "party_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Party party;
 
-
-	// 생성 메서드
 	public static Club createClub(String name, Member member) {
 		Club club = new Club();
 		club.name = name;
@@ -77,28 +65,28 @@ public class Club extends BaseEntity {
 	}
 
 	// 비즈니스 로직
-	public void addClubMember(ClubMember clubMember) {
-		if (currentParticipants.equals(maxParticipants)) {
-			throw new IllegalStateException(ENOUGH_GROUP_PARTICIPANTS.getMessage());
-		}
-		this.currentParticipants++;
-		clubMembers.add(clubMember);
-	}
-
-	public void removeClubMember(ClubMember clubMember) {
-		if (currentParticipants <= 0) {
-			throw new IllegalStateException(NOT_ENOUGH_GROUP_PARTICIPANTS.getMessage());
-		}
-		this.currentParticipants--;
-		clubMembers.remove(clubMember);
-	}
-
-	public void deleteClub() {
-		for (ClubMember clubMember : clubMembers) {
-			clubMember.softDelete();
-		}
-		this.softDelete();
-		clubMembers.clear();
-		currentParticipants = 0;
-	}
+	// public void addClubMember(ClubMember clubMember) {
+	// 	if (currentParticipants.equals(maxParticipants)) {
+	// 		throw new IllegalStateException(ENOUGH_GROUP_PARTICIPANTS.getMessage());
+	// 	}
+	// 	this.currentParticipants++;
+	// 	clubMembers.add(clubMember);
+	// }
+	//
+	// public void removeClubMember(ClubMember clubMember) {
+	// 	if (currentParticipants <= 0) {
+	// 		throw new IllegalStateException(NOT_ENOUGH_GROUP_PARTICIPANTS.getMessage());
+	// 	}
+	// 	this.currentParticipants--;
+	// 	clubMembers.remove(clubMember);
+	// }
+	//
+	// public void deleteClub() {
+	// 	for (ClubMember clubMember : clubMembers) {
+	// 		clubMember.softDelete();
+	// 	}
+	// 	this.softDelete();
+	// 	clubMembers.clear();
+	// 	currentParticipants = 0;
+	// }
 }
