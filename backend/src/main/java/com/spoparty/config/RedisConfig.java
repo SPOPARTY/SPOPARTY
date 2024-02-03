@@ -1,5 +1,6 @@
 package com.spoparty.config;
 
+import com.spoparty.api.party.dto.ChatRequestDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,6 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import com.spoparty.api.party.dto.ChatEnterRequestDto;
 import com.spoparty.redis.RedisSubscriber;
 
 @Configuration
@@ -48,12 +48,17 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisTemplate<String, Object> redisTemplate
+	public RedisTemplate<String, ChatRequestDto> redisTemplate
 		(RedisConnectionFactory connectionFactory) { // (3)
-		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+		RedisTemplate<String, ChatRequestDto> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(connectionFactory);
+		redisTemplate.setEnableTransactionSupport(true);
+
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(ChatRequestDto.class));
+
+		redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+		redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer(ChatRequestDto.class));
 		return redisTemplate;
 	}
 

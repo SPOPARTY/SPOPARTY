@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Builder
 @Getter
 @Setter
@@ -17,12 +19,17 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ChatRequestDto {
-	SubscribeType type;
 
-	String sessionId;
+	SubscribeType type;
 
 	@NotNull(message = "nickName이 없습니다.")
 	String userName;
+
+	@NotNull(message = "clubId가 없습니다.")
+	String clubId;
+
+	@NotNull(message = "partyId가 없습니다.")
+	String partyId;
 
 	@NotNull(message = "teamLogo가 없습니다.")
 	String teamLogo;

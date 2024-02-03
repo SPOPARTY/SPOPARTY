@@ -1,21 +1,13 @@
 package com.spoparty.api.party.service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
-import com.spoparty.api.party.dto.ChatEnterRequestDto;
-import com.spoparty.api.party.dto.ChatOutRequestDto;
 import com.spoparty.api.party.dto.ChatRequestDto;
-import com.spoparty.api.party.dto.ChatResponseDto;
-import com.spoparty.api.party.dto.RedisDataDto;
-import com.spoparty.redis.DataType;
 import com.spoparty.redis.RedisPublisher;
 import com.spoparty.redis.RedisSubscriber;
 import com.spoparty.redis.SubscribeType;
@@ -34,28 +26,28 @@ public class ChatServiceImpl implements ChatService {
 	private Map<String, ChannelTopic> channels = new HashMap<>();
 
 	@Override
-	public void enter(ChatEnterRequestDto chatEnterRequestDto) {
-		ChannelTopic topic = channels.get("chat");
+	public void enter(ChatRequestDto chatRequestDto) {
+		String topicName = String.format("%s-%s", chatRequestDto.getClubId(), chatRequestDto.getPartyId());
+		ChannelTopic topic = channels.get(topicName);
 		if (topic == null) {
-			topic = new ChannelTopic("chat");
+			topic = new ChannelTopic(topicName);
 			redisMessageListenerContainer.addMessageListener(redisSubscriber, topic);
-			chatEnterRequestDto.setType(SubscribeType.BROAD_CAST);
+
+			chatRequestDto.setType(SubscribeType.BROAD_CAST);
 		} else {
-			chatEnterRequestDto.setType(SubscribeType.USER);
+			chatRequestDto.setType(SubscribeType.USER);
 		}
 		channels.put("chat", topic);
 
-		RedisDataDto.RedisDataDtoBuilder<Object> redisDataDto =
-			RedisDataDto
-				.builder()
-				.dataType(DataType.ENTER)
-				.data(chatEnterRequestDto);
-
-		redisPublisher.publish(topic, redisDataDto);
+		redisPublisher.publish(topic, chatRequestDto);
 	}
 
 	@Override
-	public void out(ChatOutRequestDto chatOutRequestDto) {
+	public void out(ChatRequestDto chatRequestDto) {
+		ChannelTopic topic = channels.get("chat");
+		if (topic == null) {
+			// 오류 처리
+		}
 
 	}
 
@@ -71,12 +63,12 @@ public class ChatServiceImpl implements ChatService {
 			// 오류 처리
 		}
 
-		RedisDataDto.RedisDataDtoBuilder<Object> redisDataDto =
-			RedisDataDto
-				.builder()
-				.dataType(DataType.ENTER)
-				.data(chatRequestDto);
+//		RedisDataDto.RedisDataDtoBuilder<Object> redisDataDto =
+//			RedisDataDto
+//				.builder()
+//				.dataType(DataType.ENTER)
+//				.data(chatRequestDto);
 
-		redisPublisher.publish(topic, redisDataDto);
+		redisPublisher.publish(topic, chatRequestDto);
 	}
 }

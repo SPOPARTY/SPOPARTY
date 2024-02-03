@@ -94,7 +94,6 @@ const subscribers = ref([])
 let mySessionId = 'SessionA'
 let myUserName = 'Participant' + Math.floor(Math.random() * 100)
 
-
 const joinSession = () => {
   OV.value = new OpenVidu()
   // --- 2) Init a session ---
@@ -142,7 +141,7 @@ const joinSession = () => {
         // element: we will manage it on our own) and with the desired properties
         let initPublisher = OV.value.initPublisher(undefined, {
           audioSource: undefined, // The source of audio. If undefined default microphone
-          videoSource: undefined, // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
+          videoSource: 'screen', // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
           publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
           publishVideo: true, // Whether you want to start publishing with your video enabled or not
           resolution: '640x480', // The resolution of your video
@@ -210,7 +209,10 @@ const createSession = async (sessionId) => {
 const createToken = async (sessionId) => {
   console.log(sessionId)
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'api/openvidu/sessions/' + sessionId + '/connections',
+    APPLICATION_SERVER_URL +
+      'api/openvidu/sessions/' +
+      sessionId +
+      '/connections',
     {},
     {
       headers: { 'Content-Type': 'application/json' },

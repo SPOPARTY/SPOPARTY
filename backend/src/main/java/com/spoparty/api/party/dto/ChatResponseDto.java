@@ -18,8 +18,6 @@ import lombok.ToString;
 @ToString
 public class ChatResponseDto {
 
-	SubscribeType type;
-
 	String sessionId;
 
 	@NotNull(message = "nickName이 없습니다.")
