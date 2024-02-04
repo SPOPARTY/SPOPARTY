@@ -59,10 +59,15 @@ public class NotificationService {
 		log.info("new emitter added: {}", emitter);
 		log.info("emitters: {}", emitters);
 		emitter.onCompletion(() -> {
-			this.emitters.remove(memberId);    // 만료되면 리스트에서 삭제
+			log.info(emitter.toString());
 		});
 		emitter.onTimeout(() -> {
 			emitter.complete();
+			emitters.remove(memberId);    // 만료되면 리스트에서 삭제
+		});
+		emitter.onError((error) -> {
+			log.error(error.toString());
+			emitters.remove(memberId);
 		});
 	}
 
