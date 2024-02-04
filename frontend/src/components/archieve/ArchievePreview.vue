@@ -43,8 +43,6 @@ import ArchieveDetail from '@/components/archieve/ArchieveDetail.vue';
 const routes = useRoute();
 const clubId = routes.params.clubId;
 
-console.log("clubId -> ", clubId)
-
 const dummy = ref([
     {id : 1, title : "제목 1", img : "/tear.png", created_time : "2024년 1월 24일", selected : false},
     {id : 2, title : "제목 2", img : "/tear.png", created_time : "2024년 1월 24일", selected : false},
@@ -72,6 +70,9 @@ const showDetailModal = (detail) => {
 </script>
 
 <style lang="scss" scoped>
+.v-toolbar-title{
+    color:white;
+}
 .preview-toolbar{
     background:white
 }

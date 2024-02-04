@@ -30,10 +30,10 @@ async function findById(memberId, success, fail) {
 }
 
 
-// function logout(success, fail) {
-//     local.defaults.headers['Authorization'] = localStorage.getItem("accessToken")
-//     local.delete(`/members/logout`).then(success).catch(fail);
-// }
+function memberLogout(success, fail) {
+    // local.defaults.headers['Authorization'] = localStorage.getItem("accessToken")
+    local.delete(`/members/logout`).then(success).catch(fail);
+}
 
 
 export {
@@ -43,5 +43,5 @@ export {
     deleteMember,
     memberConfirm,
     findById,
-    // logout,
+    memberLogout,
 };

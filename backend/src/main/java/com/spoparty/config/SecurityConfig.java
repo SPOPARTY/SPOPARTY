@@ -63,7 +63,7 @@ public class SecurityConfig {
 			// '/admin' 은 권한이 'ROLE_ADMIN'인 사람만 접근 가능
 			// 나머지 경로에 대해서 인증(로그인)된 사람만 접근 가능 ( 임시로 모두가능하게 설정 )
 			.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-				.requestMatchers("/authentication/**", "/members/register", "/members/login", "/error").permitAll()
+				.requestMatchers("/authentication/**", "/members/register", "/members/login", "/error", "/ws-stomp").permitAll()
 				.requestMatchers("/admin").hasAnyRole("ADMIN")
 				.anyRequest().permitAll()
 			)
@@ -115,13 +115,13 @@ public class SecurityConfig {
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		config.addAllowedOrigin("*");
+		config.addAllowedOrigin("http://localhost:5173");
 		config.addAllowedMethod("*");
 		config.addAllowedHeader("*");
 		config.addExposedHeader("Authorization");
 		config.addExposedHeader("AccessToken");
 		config.addExposedHeader("RefreshToken");
-		config.setAllowCredentials(false);
+		config.setAllowCredentials(true);
 		config.setMaxAge(3600L);
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);

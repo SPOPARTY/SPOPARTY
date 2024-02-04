@@ -4,7 +4,7 @@ import {defineStore} from 'pinia'
 import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
 
-import {memberConfirm} from "@/api/member"
+import {memberConfirm, memberLogout} from "@/api/member"
 import { requestTempPassword } from '@/api/authentication'
 import {httpStatusCode} from "@/util/http-status"
 const {VITE_REST_API} = import.meta.env;
@@ -18,7 +18,7 @@ export const useManagementStore = defineStore("management",() => {
     const memberInfo = ref(null);
     const isLoginError = ref(false);
     const isValidToken = ref(false);
-    const memberId = ref(null)
+    const memberId = ref(null);
 
 
     const login = async(loginMember) => {
@@ -88,51 +88,29 @@ export const useManagementStore = defineStore("management",() => {
         )
     }
 
-    const logout = () => {
-        axios.delete(
-            `${VITE_REST_API}/members/logout`,{
-            headers : {
-                "Authorization" : localStorage.getItem("accessToken")
+    const logout = async () => {
+        console.log("히히 logout발사")
+        await memberLogout(
+            (response) => {
+                if(response.status === httpStatusCode.OK) {
+                    localStorage.removeItem("accessToken");
+                    sessionStorage.removeItem("refreshToken");
+                    sessionStorage.removeItem("id")
+                    isLogin.value = false;
+                    memberInfo.value = null;
+                    isValidToken.value = null;
+                    memberId.value = null;
+                    window.location.replace("/")
+                } else {
+                    console.error("유저 정보 X")
+                }
+            } , 
+            (error) => {
+                console.log("*******비상*******")
+                console.log(error);
             }
-        })
-        .then((res) => {
-            console.log(res);
-            localStorage.removeItem("accessToken");
-            sessionStorage.removeItem("refreshToken");
-            sessionStorage.removeItem("id")
-            isLogin.value = false;
-            memberInfo.value = null;
-            isValidToken.value = null;
-            memberId.value = null;
-            window.location.replace("/")
-        })
-        .catch((err) => {
-            console.error(err);
-            console.log("*******비상*******")
-        })
+        )
     }
-
-    // const doLogout = async () => {
-    //     console.log("히히 logout발사")
-    //     await logout(
-    //         (response) => {
-    //             if(response.status === httpStatusCode.OK) {
-    //                 sessionStorage.removeItem("accessToken");
-    //                 sessionStorage.removeItem("refreshToken");
-    //                 sessionStorage.removeItem("id")
-    //                 isLogin.value = false;
-    //                 memberInfo.value = null;
-    //                 isValidToken.value = null;
-    //                 memberId.value = null;
-    //             } else {
-    //                 console.error("유저 정보 X")
-    //             }
-    //         } , 
-    //         (error) => {
-    //             console.log(error);
-    //         }
-    //     )
-    // }
 
     return {
         isLogin,
