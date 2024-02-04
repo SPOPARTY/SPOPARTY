@@ -22,6 +22,7 @@ export const useFootballStore = defineStore("football",() => {
     const matchWatchable = ref([]);
     const matchRealTimeData = ref([]);
     const fixtureIdForParty = ref(null);
+    const teamIdsForParty = ref({home: null, homeName:null, away: null, awayName: null});
 
     const getCheersData = () => {
         requestGetCheersData(
@@ -218,6 +219,20 @@ export const useFootballStore = defineStore("football",() => {
             }
         )
     }
+
+    const findTeamIdsByFixtureId = (fixtureId) => {
+        const matches = matchWatchable.value;
+        for(let i=0; i<matches.length; i++) {
+            if(matches[i].fixtureId === fixtureId) {
+                const match = matches[i];
+                teamIdsForParty.value.home = match.homeTeam.teamId;
+                teamIdsForParty.value.homeName = match.homeTeam.nameKr;
+                teamIdsForParty.value.away = match.awayTeam.teamId;
+                teamIdsForParty.value.awayName = match.awayTeam.nameKr;
+                return teamIdsForParty.value;
+            }
+        } return "not found";
+    }
     
     return {
         getCheersData,
@@ -229,6 +244,7 @@ export const useFootballStore = defineStore("football",() => {
         getTeamDetail,
         getMatchWatchable,
         getMatchRealTimeData,
+        findTeamIdsByFixtureId,
         cheersData,
         nextMatches,
         dateMatches,
@@ -238,5 +254,6 @@ export const useFootballStore = defineStore("football",() => {
         matchWatchable,
         matchRealTimeData,
         fixtureIdForParty,
+        teamIdsForParty,
     }
 })
