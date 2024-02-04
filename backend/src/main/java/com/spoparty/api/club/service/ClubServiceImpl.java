@@ -2,9 +2,7 @@ package com.spoparty.api.club.service;
 
 import static com.spoparty.api.common.constants.ErrorCode.*;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,16 +31,15 @@ public class ClubServiceImpl implements ClubService {
 
 	public List<ClubResponseDTO> findRecentClubs(PrincipalDetails principalDetails) {
 		Member member = validatePrincipalDetails(principalDetails);
-		// return clubRepository.findClubsAndClubMemberCountOrderByTime(member.getId());
-		List<ClubMember> clubMembers = clubMemberRepository.findAllByMember(member);
-
-		return clubMembers.stream()
-			.map(clubMember -> new ClubResponseDTO(
-				clubMember.getClub(),
-				clubMemberRepository.findAllByClub(clubMember.getClub()).size())
-			)
-			.sorted(Comparator.comparing(ClubResponseDTO::getUpdatedTime).reversed())
-			.collect(Collectors.toList());
+		return clubRepository.findClubsAndClubMemberCountOrderByTime(member.getId());
+		// List<ClubMember> clubMembers = clubMemberRepository.findAllByMember(member);
+		// return clubMembers.stream()
+		// 	.map(clubMember -> {
+		// 		Club club = clubMember.getClub();
+		// 		return new ClubResponseDTO(club, clubMemberRepository.findAllByClub(club).size());
+		// 	})
+		// 	.sorted(Comparator.comparing(ClubResponseDTO::getUpdatedTime).reversed())
+		// 	.collect(Collectors.toList());
 	}
 
 	@Transactional
@@ -65,7 +62,8 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Transactional
-	public ClubResponseDTO updateClubName(PrincipalDetails principalDetails, Long clubId, ClubRequestDTO clubRequestDTO) { // 그룹장 권한
+	public ClubResponseDTO updateClubName(PrincipalDetails principalDetails, Long clubId,
+		ClubRequestDTO clubRequestDTO) { // 그룹장 권한
 		validatePrincipalDetails(principalDetails);
 		Member member = principalDetails.getMember();
 		Club club = findClubById(clubId);

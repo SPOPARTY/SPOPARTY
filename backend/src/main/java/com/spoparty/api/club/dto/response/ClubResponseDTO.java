@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.querydsl.core.annotations.QueryProjection;
 import com.spoparty.api.club.entity.Club;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +28,8 @@ public class ClubResponseDTO {
 	private LocalDateTime updatedTime;
 
 	@QueryProjection
-	public ClubResponseDTO (Club entity, int currentParticipants) {
+	public ClubResponseDTO(Club entity, int currentParticipants) {
 		// log.debug("ClubResponseDTO - entity: {}, currentParticipants: {}", entity, currentParticipants);
-		// log.debug("clubId - {}, name - {}, party - {}, host - {}", entity.getId(), entity.getName(), entity.getParty(), entity.getHostMember());
 		this.clubId = entity.getId();
 		this.name = entity.getName();
 		this.maxParticipants = entity.getMaxParticipants();
@@ -37,10 +37,11 @@ public class ClubResponseDTO {
 		this.createdTime = entity.getCreatedTime();
 		this.updatedTime = entity.getUpdatedTime();
 
-		if (entity.getHostMember() != null) {
-			log.debug(">>>>>>>>>>>>>>");
-			log.debug("host 정보 - {}", entity.getHostMember());
+		try {
 			hostName = entity.getHostMember().getNickname();
+		} catch (EntityNotFoundException e) {
+			log.debug("entity.getHostMember() EntityNotFoundException 발생!!!");
+			hostName = null;
 		}
 
 		if (entity.getParty() != null) {

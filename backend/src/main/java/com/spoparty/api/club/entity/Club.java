@@ -1,6 +1,5 @@
 package com.spoparty.api.club.entity;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
@@ -44,12 +43,11 @@ public class Club extends BaseEntity {
 	private String name;
 
 	@Column(nullable = false)
-	@ColumnDefault("6")
-	private Integer maxParticipants;
+	private Integer maxParticipants = 6;
 
 	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "member_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member hostMember;
 
 	@Setter
@@ -63,30 +61,4 @@ public class Club extends BaseEntity {
 		club.hostMember = member;
 		return club;
 	}
-
-	// 비즈니스 로직
-	// public void addClubMember(ClubMember clubMember) {
-	// 	if (currentParticipants.equals(maxParticipants)) {
-	// 		throw new IllegalStateException(ENOUGH_GROUP_PARTICIPANTS.getMessage());
-	// 	}
-	// 	this.currentParticipants++;
-	// 	clubMembers.add(clubMember);
-	// }
-	//
-	// public void removeClubMember(ClubMember clubMember) {
-	// 	if (currentParticipants <= 0) {
-	// 		throw new IllegalStateException(NOT_ENOUGH_GROUP_PARTICIPANTS.getMessage());
-	// 	}
-	// 	this.currentParticipants--;
-	// 	clubMembers.remove(clubMember);
-	// }
-	//
-	// public void deleteClub() {
-	// 	for (ClubMember clubMember : clubMembers) {
-	// 		clubMember.softDelete();
-	// 	}
-	// 	this.softDelete();
-	// 	clubMembers.clear();
-	// 	currentParticipants = 0;
-	// }
 }
