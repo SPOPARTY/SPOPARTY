@@ -4,17 +4,16 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.spoparty.api.club.entity.Club;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @ToString
+@Slf4j
 public class ClubResponseDTO {
 	private Long clubId;
 	private String name;
@@ -27,19 +26,25 @@ public class ClubResponseDTO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updatedTime;
 
-	public static ClubResponseDTO toDTO(Club entity, int currentParticipants) {
-		ClubResponseDTOBuilder dto = ClubResponseDTO.builder()
-			.clubId(entity.getId())
-			.name(entity.getName())
-			.maxParticipants(entity.getMaxParticipants())
-			.currentParticipants(currentParticipants)
-			.hostName(entity.getHostMember().getNickname())
-			.createdTime(entity.getCreatedTime())
-			.updatedTime(entity.getUpdatedTime());
+	@QueryProjection
+	public ClubResponseDTO (Club entity, int currentParticipants) {
+		// log.debug("ClubResponseDTO - entity: {}, currentParticipants: {}", entity, currentParticipants);
+		// log.debug("clubId - {}, name - {}, party - {}, host - {}", entity.getId(), entity.getName(), entity.getParty(), entity.getHostMember());
+		this.clubId = entity.getId();
+		this.name = entity.getName();
+		this.maxParticipants = entity.getMaxParticipants();
+		this.currentParticipants = currentParticipants;
+		this.createdTime = entity.getCreatedTime();
+		this.updatedTime = entity.getUpdatedTime();
+
+		if (entity.getHostMember() != null) {
+			log.debug(">>>>>>>>>>>>>>");
+			log.debug("host 정보 - {}", entity.getHostMember());
+			hostName = entity.getHostMember().getNickname();
+		}
 
 		if (entity.getParty() != null) {
-			dto.partyId(entity.getParty().getId());
+			partyId = entity.getParty().getId();
 		}
-		return dto.build();
 	}
 }

@@ -32,11 +32,12 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubMemberRepository clubMemberRepository;
 
 	public List<ClubResponseDTO> findRecentClubs(PrincipalDetails principalDetails) {
-		validatePrincipalDetails(principalDetails);
-		List<ClubMember> clubMembers = clubMemberRepository.findAllByMember(principalDetails.getMember());
+		Member member = validatePrincipalDetails(principalDetails);
+		// return clubRepository.findClubsAndClubMemberCountOrderByTime(member.getId());
+		List<ClubMember> clubMembers = clubMemberRepository.findAllByMember(member);
 
 		return clubMembers.stream()
-			.map(clubMember -> ClubResponseDTO.toDTO(
+			.map(clubMember -> new ClubResponseDTO(
 				clubMember.getClub(),
 				clubMemberRepository.findAllByClub(clubMember.getClub()).size())
 			)
@@ -60,7 +61,7 @@ public class ClubServiceImpl implements ClubService {
 	public ClubResponseDTO findClub(Long clubId) {
 		Club club = findClubById(clubId);
 		int currentParticipants = clubMemberRepository.findAllByClub(club).size();
-		return ClubResponseDTO.toDTO(club, currentParticipants);
+		return new ClubResponseDTO(club, currentParticipants);
 	}
 
 	@Transactional
@@ -95,10 +96,11 @@ public class ClubServiceImpl implements ClubService {
 		return clubRepository.findById(clubId).orElseThrow(() -> new CustomException(CLUB_NOT_FOUND));
 	}
 
-	private void validatePrincipalDetails(PrincipalDetails principalDetails) { // 로그인 토큰 검증
+	private Member validatePrincipalDetails(PrincipalDetails principalDetails) { // 로그인 토큰 검증
 		if (principalDetails == null) {
 			throw new CustomException(UNAUTHORIZED_USER);
 		}
+		return principalDetails.getMember();
 	}
 
 	private void validateHost(Club club, Member member) {

@@ -73,7 +73,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 		List<ClubMember> clubMembers = clubMemberRepository.findAllByClub_Id(clubId);
 
 		return clubMembers.stream()
-			.filter(clubMember -> clubMember.getMember().getState() != 1) // 탈퇴가 아닌 경우만 체크
+			.filter(clubMember -> clubMember.getMember() != null && clubMember.getMember().getState() != 1) // 탈퇴가 아닌 경우만 체크
 			.map(ClubMemberResponseDTO::toDTO)
 			.collect(Collectors.toList());
 	}
@@ -116,7 +116,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
 		clubMember.softDelete(); // 그룹원 삭제
 
-		if (countParticipantsInClub(clubId) == 1) { // 남아있는 그룹원이 없는 경우 -> 그룹도 삭제됨
+		if (countClubMembers(clubId) == 1) { // 남아있는 그룹원이 없는 경우 -> 그룹도 삭제됨
 			club.softDelete();
 		}
 		return clubMember.getId();
@@ -147,7 +147,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 			.orElseThrow(() -> new CustomException(CLUB_MEMBER_NOT_FOUND));
 	}
 
-	public int countParticipantsInClub(Long clubId) {
+	public int countClubMembers(Long clubId) {
 		return clubMemberRepository.findAllByClub_Id(clubId).size();
 	}
 
