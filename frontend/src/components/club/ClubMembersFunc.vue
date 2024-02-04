@@ -3,7 +3,7 @@
         <v-row class="pa-4" align="center" justify="start" no-gutters style="background-color: #E0E0E0;">
             <v-col cols="10">
                 <div class="headline">{{ clubInfo.name }}</div>
-                <div>정원 - {{clubMemberList.length}}/{{ clubInfo.maxParticipants }}</div>
+                <div>정원 - {{clubInfo.currentParticipants}}/{{ clubInfo.maxParticipants }}</div>
             </v-col>
             <v-col cols="2">
                 <v-icon large @click="showClubMemberFunc">mdi-cog</v-icon>
@@ -81,7 +81,7 @@ const props = defineProps({
 })
 
 const clubStore = useClubStore();
-
+const router = useRouter();
 const route = useRoute();
 const clubId = route.params.clubId;
 

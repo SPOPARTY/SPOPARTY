@@ -10,7 +10,7 @@ function requestAllTeamList(success,fail) {
 
 function requestFollowList(memberId,success,fail) {
     // local.defaults.header['Authorization'] = sessionStorage.getItem("accessToken")
-    console.log("팔로우 리스트 가져오기")
+    // console.log("팔로우 리스트 가져오기")
     local.get(`/members/${memberId}/follows`).then(success).catch(fail);
 }
 

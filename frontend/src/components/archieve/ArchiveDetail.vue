@@ -8,7 +8,7 @@
         <v-card>
             <v-row>
                 <v-col cols="10" style="margin-left:0px; padding-left:230px;">
-                    <v-card-title>추억 한 조각</v-card-title>
+                    <v-card-title> {{props.detail.fixtureTitle}} </v-card-title>
                 </v-col>
                 <v-col cols="2" style="margin-top:5px;">
                     <v-btn :ripple="false" @click="closeModal" class="no-background-hover">
@@ -16,18 +16,18 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-card-item class="text-center">
-                <v-img :src="props.detail.img" :alt="props.detail.title"/>
+            <v-card-text class="text-right"></v-card-text>
+            <v-card-item class="text-center" v-if="props.detail.file">
+                <v-img :src="props.detail.file.url" :alt="props.detail.title"/>
             </v-card-item>
-            <v-card-text class="text-right">
-                {{ props.detail.title }}
-            </v-card-text>
+            <v-card-subtitle class="text-right">파티명 : {{ props.detail.partyTitle }}</v-card-subtitle>
+            <v-card-text class="text-right">작성자 : {{ props.detail.member.nickname }}</v-card-text>
             <v-card-subtitle class="text-right">
-                {{ props.detail.created_time }}
+                생성 날짜 : {{ formatDateTime(props.detail.createdTime) }}
             </v-card-subtitle>
             <v-card-actions>
                 <v-spacer/>
-                <v-btn color="blue darken-1" text @click="closeModal">다운로드</v-btn>
+                <v-btn v-if="props.detail.file" color="blue darken-1"  :href="props.detail.file.url" downlaod>다운로드</v-btn>
                 <v-btn color="green darken-2" text @click="closeModal">취소</v-btn>
             </v-card-actions>
         </v-card>
@@ -35,7 +35,11 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, watch} from 'vue'
+import {useRoute, useRouter} from 'vue-router';
+import { useArchiveStore } from '@/stores/club/archives';
+import {formatDateTime} from "@/util/tools.js"
+
 
 // Detail on/off
 const modalVisible = ref(true);
@@ -56,6 +60,7 @@ function closeModal() {
     modalVisible.value = false;
     emits('detail-close')
 }
+
 
 onMounted(()=>{
     console.log("히히 모달 발사")
