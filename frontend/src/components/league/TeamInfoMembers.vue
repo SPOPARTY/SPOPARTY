@@ -1,5 +1,5 @@
 <template>
-  <v-card class="container" align="center">
+  <v-card elevation="0" class="container" align="center">
     <!-- <h2 v-if="team.coach">감독: {{ team.coach.nameKr }}</h2> -->
     <h2>감독</h2>
     <v-table v-if="team.coach" class="mb-6">

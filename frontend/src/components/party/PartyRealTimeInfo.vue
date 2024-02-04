@@ -1,7 +1,7 @@
 <template>
     <v-container fluid class="vc">
       <p>실시간 정보 페이지. fixtureId = {{ fixtureId? fixtureId : 'null'}}</p>
-      <p>예시 테이블</p>
+      <p class="table-title">예시 테이블</p>
       <p>{{ footballStore.matchRealTimeData }}</p>
       <v-table>
         <template v-slot:default>
@@ -104,6 +104,12 @@ const timeLine = ref({
 <style lang="scss" scoped>
 .vc {
     color : #121212;
+}
+.table-title {
+    height: 25px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 10px;
 }
 thead tr {
   background-color: #E0E0E0;

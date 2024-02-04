@@ -37,7 +37,9 @@ onMounted(() => {
         if (isInvited){
             alert("너, 동료가 되었다!")
         }
-        window.location.replace(`/club/${clubId}`)
+        setTimeout(() => {
+            window.location.replace(`/club/${clubId}`)
+        }, 1000);
     }
 })
 

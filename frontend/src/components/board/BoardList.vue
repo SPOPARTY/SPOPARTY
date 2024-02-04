@@ -91,6 +91,9 @@ const showBoardDetail = (post) => {
 </script>
 
 <style lang="scss" scoped>
+h1{
+    color:black
+}
 .write-board{
     color:white; 
     margin-top:10px;

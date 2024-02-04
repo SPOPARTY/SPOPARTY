@@ -104,7 +104,9 @@ function closeModal() {
 </script>
 
 <style lang="scss" scoped>
-
+h1{
+    color:black
+}
 .img{
     border:solid;
     border-radius: 20px;
