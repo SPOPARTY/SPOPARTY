@@ -48,7 +48,7 @@ export const useClubStore = defineStore("club",() => {
                     console.log("내가 만든 클럽~")
                     console.log(createdClub.value)
                     requestClub();
-                    // window.location.replace("/");
+                    window.location.replace("/");
                 }
             },
             (error) => {

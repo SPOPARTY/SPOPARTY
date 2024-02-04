@@ -72,7 +72,7 @@ const router = createRouter({
     {
       path:"/invite/:inviteUrl",
       name:"invite",
-      component: () => import("@/components/club/ClubInvite.vue")
+      component: () => import("@/components/club/InviteClub.vue")
     },
     {
       path: "/club/:clubId",

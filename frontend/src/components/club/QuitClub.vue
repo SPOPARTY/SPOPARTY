@@ -146,7 +146,6 @@ const clubMemberList = computed(() => {
 const clubId = route.params.clubId;
 
 const loginUser = sessionStorage.getItem("id")
-
 const isHost = props.clubMemberList.find((member) => member.memberId == loginUser)["role"] === 'host'
 
 const modalVisible = ref(true)
@@ -191,29 +190,31 @@ function showTakeOver() {
 
 const goodBye = ref(false)
 
-function quitClub() {
+async function quitClub() {
     try{
         const data = {
             currentHostId : loginUser,
             nextHostId : nextLeader.value.memberId,
         }
         console.log("그룹인원은??",clubMemberList.value)
-        if (clubMemberList.value.length !== 1){
-            const takeOverSuccess = clubStore.updateClubLeader(clubId,data);
+        console.log("그룹장인가? -> ",isHost)
+        if (isHost && clubMemberList.value.length !== 1){ // 그룹장이면서 그룹 인원이 2명 이상일 때는 그룹장 넘기기 진행
+            const takeOverSuccess = await clubStore.updateClubLeader(clubId,data);
             console.log("그룹장 잘 넘겼나?? --> ",takeOverSuccess)
             if (!takeOverSuccess) {
                 alert("그룹장 넘기기 실패!")
                 return;
             }
         }
-        else {
-            const leaveSuccess = clubStore.leaveClub(clubId);
-            if(leaveSuccess) {
-                // alert("함께해서 더러웠고 다신 만나지 말자!")
-                console.log("****히히 그룹 떠나기 발사*****")
-                goodBye.value = true;
-            }
+
+        console.log("****그룹장을 넘겼으니 그룹을 나가볼까?****")
+        const leaveSuccess = await clubStore.leaveClub(clubId);
+        if(leaveSuccess) {
+            // alert("함께해서 더러웠고 다신 만나지 말자!")
+            console.log("****히히 그룹 떠나기 발사*****")
+            goodBye.value = true;
         }
+
 
     } catch(err){
         console.log("****그룹 나가기 실패!!!****")
