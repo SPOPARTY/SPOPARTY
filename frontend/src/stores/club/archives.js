@@ -105,9 +105,13 @@ export const useArchiveStore = defineStore("archive",() => {
         )
     }
 
-
-
     return {
-
+        getArchiveList,
+        getArchiveDetail,
+        createArchive,
+        updateArchive,
+        deleteArchive,
+        archiveList,
+        archiveDetail,
     }
 })

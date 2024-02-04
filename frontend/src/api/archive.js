@@ -9,7 +9,7 @@ function requestArchiveList(clubId,success,fail) {
     local.get(`${API_URL}/clubs/${clubId}`).then(success).catch(fail)
 }
 
-// 추억 조회
+// 추억 상세 조회
 function requestArchiveDetail(archiveId, success,fail) {
     local.get(`${API_URL}/${archiveId}`).then(success).catch(fail)
 }
