@@ -107,14 +107,4 @@ public class MemberController {
 		return ApiResponse.success(GET_SUCCESS, list);
 	}
 
-	@GetMapping("/test/{string}")
-	public ResponseEntity<?> test(@PathVariable("string") String string) {
-		String s1 = string;
-		String s2 = customEncryptor.encrypt(string);
-		String s3 = customEncryptor.decrypt(s2);
-		log.error(s1);
-		log.error(s2);
-		log.error(s3);
-		return ApiResponse.success(GET_SUCCESS, s1 + ", " + s2 + ", " + s3);
-	}
 }

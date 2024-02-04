@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Slf4j
@@ -63,7 +65,7 @@ public class SecurityConfig {
 			// '/admin' 은 권한이 'ROLE_ADMIN'인 사람만 접근 가능
 			// 나머지 경로에 대해서 인증(로그인)된 사람만 접근 가능 ( 임시로 모두가능하게 설정 )
 			.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-				.requestMatchers("/authentication/**", "/members/register", "/members/login", "/error").permitAll()
+				.requestMatchers("/authentication/**", "/members/register", "/members/teams", "/error").permitAll()
 				.requestMatchers("/admin").hasAnyRole("ADMIN")
 				.anyRequest().permitAll()
 			)
