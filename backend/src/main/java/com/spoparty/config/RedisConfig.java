@@ -31,7 +31,7 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisMessageListenerContainer redisMessageListenerContainer( // (1)
+	public RedisMessageListenerContainer redisMessageListenerContainer(
 		RedisConnectionFactory connectionFactory,
 		MessageListenerAdapter listenerAdapter,
 		ChannelTopic channelTopic
@@ -43,13 +43,13 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) { // (2)
+	public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
 		return new MessageListenerAdapter(subscriber, "onMessage");
 	}
 
 	@Bean
 	public RedisTemplate<String, ChatRequestDto> redisTemplate
-		(RedisConnectionFactory connectionFactory) { // (3)
+		(RedisConnectionFactory connectionFactory) {
 		RedisTemplate<String, ChatRequestDto> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(connectionFactory);
 		redisTemplate.setEnableTransactionSupport(true);
