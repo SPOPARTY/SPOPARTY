@@ -46,8 +46,9 @@ public class ChatServiceImpl implements ChatService {
 		ChannelTopic topic = channels.get(topicName);
 		if (topic == null) {
 			// 오류 처리
+
 		}
-		chatRequestDto.setType(SubscribeType.BROAD_CAST);
+
 		redisPublisher.publish(topic, chatRequestDto);
 	}
 
@@ -58,7 +59,7 @@ public class ChatServiceImpl implements ChatService {
 		if (topic == null) {
 			// 오류 처리
 		}
-		chatRequestDto.setType(SubscribeType.BROAD_CAST);
+
 		redisPublisher.publish(topic, chatRequestDto);
 	}
 }

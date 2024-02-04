@@ -23,7 +23,7 @@ public class ChatController {
 
 	@MessageMapping("chat/enter")
 	public void enter(@RequestBody ChatRequestDto chatRequestDto, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-		log.debug("received message : {}", chatRequestDto);
+		log.debug("/chat/enter received message : {}", chatRequestDto);
 
 		// Websocket에 발행된 메시지를 redis로 발행(publish)
 		chatService.enter(chatRequestDto);
@@ -31,17 +31,15 @@ public class ChatController {
 
 	@MessageMapping("chat/out")
 	public void out(ChatRequestDto chatRequestDto, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-		log.debug("received message : {}", chatRequestDto);
+		log.debug("/chat/out received message : {}", chatRequestDto);
 
 		chatService.out(chatRequestDto);
-		// Websocket에 발행된 메시지를 redis로 발행(publish)
 	}
 
 	@MessageMapping("chat/send")
 	public void send(@RequestBody ChatRequestDto chatRequestDto, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-		log.debug("received message : {}", chatRequestDto);
+		log.debug("/chat/send received message : {}", chatRequestDto);
 
 		chatService.sendChat(chatRequestDto);
-		// Websocket에 발행된 메시지를 redis로 발행(publish)
 	}
 }
