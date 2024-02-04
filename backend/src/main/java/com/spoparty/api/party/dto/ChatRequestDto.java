@@ -20,7 +20,7 @@ import java.io.Serializable;
 @ToString
 public class ChatRequestDto {
 
-	SubscribeType type;
+	SubscribeType type = SubscribeType.BROAD_CAST;
 
 	@NotNull(message = "nickName이 없습니다.")
 	String userName;

@@ -32,43 +32,33 @@ public class ChatServiceImpl implements ChatService {
 		if (topic == null) {
 			topic = new ChannelTopic(topicName);
 			redisMessageListenerContainer.addMessageListener(redisSubscriber, topic);
-
-			chatRequestDto.setType(SubscribeType.BROAD_CAST);
 		} else {
 			chatRequestDto.setType(SubscribeType.USER);
 		}
-		channels.put("chat", topic);
+		channels.put(topicName, topic);
 
 		redisPublisher.publish(topic, chatRequestDto);
 	}
 
 	@Override
 	public void out(ChatRequestDto chatRequestDto) {
-		ChannelTopic topic = channels.get("chat");
+		String topicName = String.format("%s-%s", chatRequestDto.getClubId(), chatRequestDto.getPartyId());
+		ChannelTopic topic = channels.get(topicName);
 		if (topic == null) {
 			// 오류 처리
 		}
-
-	}
-
-	@Override
-	public void sendChatAll() {
-
+		chatRequestDto.setType(SubscribeType.BROAD_CAST);
+		redisPublisher.publish(topic, chatRequestDto);
 	}
 
 	@Override
 	public void sendChat(ChatRequestDto chatRequestDto) {
-		ChannelTopic topic = channels.get("chat");
+		String topicName = String.format("%s-%s", chatRequestDto.getClubId(), chatRequestDto.getPartyId());
+		ChannelTopic topic = channels.get(topicName);
 		if (topic == null) {
 			// 오류 처리
 		}
-
-//		RedisDataDto.RedisDataDtoBuilder<Object> redisDataDto =
-//			RedisDataDto
-//				.builder()
-//				.dataType(DataType.ENTER)
-//				.data(chatRequestDto);
-
+		chatRequestDto.setType(SubscribeType.BROAD_CAST);
 		redisPublisher.publish(topic, chatRequestDto);
 	}
 }

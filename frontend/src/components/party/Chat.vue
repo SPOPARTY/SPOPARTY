@@ -11,8 +11,8 @@
         <template v-slot:prepend>
           <v-icon :icon="item.icon"></v-icon>
         </template>
-
-        <v-list-item-title v-text="item.text"></v-list-item-title>
+        <v-list-item-title v-text="item.userName"></v-list-item-title>
+        <v-list-item-title v-text="item.message"></v-list-item-title>
       </v-list-item>
     </v-list>
   </v-container>
@@ -22,8 +22,8 @@
         <v-col cols="12">
           <v-text-field
             class="chat-input"
-            v-model="message"
-            :append-icon="message ? 'mdi-send' : 'mdi-microphone'"
+            v-model="connectMessage.message"
+            :append-icon="connectMessage.message ? 'mdi-send' : 'mdi-microphone'"
             variant="filled"
             clear-icon="mdi-close-circle"
             clearable
@@ -47,51 +47,47 @@ const serverURL = 'http://localhost:9090/api/ws-stomp'
 let stompClient = undefined
 
 const chats = reactive([
-  { text: 'a', icon: 'mdi-clock' },
-  { text: 'b', icon: 'mdi-clock' },
-  { text: 'c', icon: 'mdi-clock' },
-  { text: 'd', icon: 'mdi-clock' },
+{userName: "test",
+  teamLogo: "test",
+  message: "잘하네"},
+  {userName: "maru",
+  teamLogo: "test",
+  message: "달려라 마루쎄"},
+  {userName: "제라드",
+  teamLogo: "test",
+  message: "훔바훔바링"},
+
 ])
 
-const memberInfo = ref({
-  id: '123',
-  loginId: '',
-  loginPwd: '',
-  nickname: 'maru',
-  email: '',
-  team: {
-    id: '123',
-    logo: '123',
-  },
-  status: '',
-})
 const message = ref('')
 
-const connectMessage = {
-  userName: memberInfo.value.nickname,
+const connectMessage = ref({
+  userName: "maru",
   teamLogo: 'test',
-  partyId: '123',
-  clubId: '123',
-  message: message.value,
-}
+  partyId: '125',
+  clubId: '125',
+  message: "",
+})
 
 onMounted(() => {
   connect()
 })
 
 const clearMessage = () => {
-  message.value = ''
+  connectMessage.value.message = ''
 }
 
 const sendMessage = () => {
-  if (connectMessage.userName.value !== '' && message.value !== '') {
+  console.log("sendMessage")
+  if (connectMessage.value.userName !== '' && connectMessage.value.message !== '') {
+    console.log("sendMessage rrrr")
     send('/chat/send', connectMessage.value, connectMessage.value)
-    message.value = ''
+    connectMessage.value.message = ''
   }
 }
 
 const send = (destination, body, header) => {
-  if (stompClient && stompClient.connected) {
+  if (stompClient) {
     console.log(
       `send message destination : ${destination}, body : ${body}, header : ${header}`,
     )
@@ -111,16 +107,18 @@ const connect = () => {
     {},
     (frame) => {
       console.log('stomp client connected.')
-
-      send('/chat/enter', connectMessage, connectMessage)
-
+      connectMessage.value.message = `${connectMessage.value.userName} 님이 입장했습니다.`
+      send('/chat/enter', connectMessage.value, connectMessage.value)
+      connectMessage.value.message = ""
       stompClient.subscribe(`/sub/chat`, (response) => {
         console.log(response)
+        chats.push(JSON.parse(response.body))
       })
       stompClient.subscribe(
-        `/user/${memberInfo.value.nickname}/sub/chat`,
+        `/user/${connectMessage.value.userName}/sub/chat`,
         (response) => {
-          console.log(response)
+          chats.push(...JSON.parse(response.body))
+          console.log(chats)
         },
       )
     },
@@ -131,6 +129,8 @@ const connect = () => {
 }
 
 const disconnect = () => {
+  connectMessage.value.message = `${connectMessage.value.userName} 님이 퇴장했습니다.`
+  send('/sub/chat/out', connectMessage.value, connectMessage.value)
   stompClient.disconnect(() => {
     console.log('stomp client disconnected.')
   })

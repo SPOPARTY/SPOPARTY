@@ -1,15 +1,12 @@
 package com.spoparty.redis;
 
-import com.spoparty.api.party.dto.ChatResponseDto;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spoparty.api.party.dto.ChatRequestDto;
 
 import lombok.RequiredArgsConstructor;
