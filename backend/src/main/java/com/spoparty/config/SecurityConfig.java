@@ -121,7 +121,7 @@ public class SecurityConfig {
 		config.addExposedHeader("Authorization");
 		config.addExposedHeader("AccessToken");
 		config.addExposedHeader("RefreshToken");
-		config.setAllowCredentials(true);
+		config.setAllowCredentials(false);
 		config.setMaxAge(3600L);
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);
