@@ -2,7 +2,7 @@
   <v-container fluid class="pa-2 fill-height part-section">
     <v-row justify="center">
       <v-col cols="12" class="d-flex flex-column align-center justify-center">
-        <v-carousel v-model="model" class='carousel' cycle interval="7000" height="500px" 
+        <v-carousel v-model="model" class='carousel' cycle interval="6000" height="500px" 
           hide-delimiter-background progress="primary" color="red">
           <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
             <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
@@ -26,8 +26,10 @@
                 <!-- 홈 팀 카드 -->
                 <div class="wrapper pb-1">
                 <div v-if="match.alreadyCheer"
-                  :class="{ 'barWin': votePercentage(match, 'home') >= 50, 'barLose': votePercentage(match, 'home') < 50 }"
-                  :style="{ height: votePercentage(match, 'home')*2.5 + 'px' }"
+                  :class="{ 'barWin': votePercentage(match, 'home') > 50, 
+                            'barLose': votePercentage(match, 'home') < 50,
+                            'barSame':votePercentage(match, 'home') == 50, }"
+                  :style="{ height: homePercentage*2.5 + 'px' }"
                   class="bar"></div>
                 </div>
                 <!-- 여기까지 득표율에 따른 막대기 -->
@@ -43,12 +45,12 @@
                 </v-card>
                 <span class="VS">VS</span>
                 <!-- 원정 팀 카드 -->
-                <v-card :disabled="convertToBoolean(match.already_cheer)" class="team-card"
+                <v-card :disabled="match.alreadyCheer" class="team-card text-center"
                   @click="() => voteForTeam(match, 'away')">
                   <v-img :src="match.fixture.awayTeam.logo" class="team-logo"></v-img>
                   <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.teamId }">
-                    {{ match.fixture.awayTeam.nameKr }}</v-card-title>
-                    
+                    {{ match.fixture.awayTeam.nameKr }}
+                  </v-card-title>
                   <v-card-text v-if="match.alreadyCheer">
                     <p>득표 : {{ votePercentage(match, 'away') }}%</p>
                   </v-card-text>
@@ -56,8 +58,10 @@
                 <!-- 득표율에 따른 막대기 -->
                 <div class="wrapper pb-1">
                 <div v-if="match.alreadyCheer"
-                  :class="{ 'barWin': votePercentage(match, 'away') >= 50, 'barLose': votePercentage(match, 'away') < 50 }"
-                  :style="{ height: votePercentage(match, 'away')*2.5 + 'px' }"
+                :class="{ 'barWin': votePercentage(match, 'away') > 50, 
+                          'barLose': votePercentage(match, 'away') < 50,
+                          'barSame':votePercentage(match, 'away') == 50 }"
+                  :style="{ height: awayPercentage*2.5 + 'px' }"
                   class="bar"></div>
                 </div>
                 <!-- 여기까지 득표율에 따른 막대기 -->
@@ -72,7 +76,7 @@
 
 
 <script setup>
-import { ref, reactive, computed, watch, onMounted, watchEffect } from 'vue';
+import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue';
 import { useFootballStore } from '@/stores/football/football';
 
 const footballStore = useFootballStore();
@@ -93,7 +97,7 @@ const postCheers = (matchIndex, team) => {
 const model = ref(0);
 
 // cheersData가 업데이트 되면 cheer를 업데이트합니다.
-const cheer = ref(null);
+const cheer = ref([]);
 watch(() => footballStore.cheersData, (newVal) => {
   cheer.value = newVal;
 }, { immediate: true });
@@ -169,6 +173,9 @@ function voteForTeam(match, team) {
   // postCheers(data);
 }
 
+const homePercentage = ref(0);
+const awayPercentage = ref(0);
+
 const votePercentage = (match, team) => {
   const totalVotes = match.homeCount + match.awayCount;
   const result1 = ((match.homeCount / totalVotes) * 100).toFixed(0);
@@ -178,6 +185,53 @@ const votePercentage = (match, team) => {
     ? result1
     : result2;
 };
+
+//// 응원 득표율을 Bar로 표현하기 위한 로직
+onMounted(() => {
+  // setInterval을 사용하여 cheer.value.length가 0보다 큰지 확인
+  const checkCheerLength = setInterval(() => {
+    if (cheer.value.length > 0) {
+      // cheer.value.length가 0보다 크면 초기화 로직을 실행
+      const currentMatch = cheer.value[model.value];
+      if (currentMatch && currentMatch.alreadyCheer) {
+        resetBarAnimation(currentMatch);
+      }
+      // 필요한 작업을 수행한 후, 더 이상 확인이 필요 없으므로 setInterval을 정리
+      clearInterval(checkCheerLength);
+    }
+  }, 1000); // 1초 간격으로 확인
+});
+
+// 캐러셀의 현재 항목이 변경될 때 호출되는 함수
+watch(model, async (newVal) => {
+  await nextTick(); // 캐러셀 항목 변경 후 DOM 업데이트를 기다림
+  const currentMatch = cheer.value[newVal];
+  console.log("nextTick", newVal)
+  if (currentMatch && currentMatch.alreadyCheer) {
+    // 막대 애니메이션 초기화
+    // 여기서 막대의 높이를 0으로 설정한 후 실제 높이로 변경
+    console.log("reset")
+    resetBarAnimation(currentMatch);
+  }
+}, { immediate: false }, { deep: true });
+
+function resetBarAnimation(match) {
+  // 막대의 높이를 0으로 초기화
+  homePercentage.value = 0;
+  awayPercentage.value = 0;
+
+  // 약간의 지연 후 막대의 높이를 원래 값으로 설정하여 애니메이션을 생성합니다.
+  setTimeout(() => {
+    homePercentage.value = votePercentage(match, 'home');
+    awayPercentage.value = votePercentage(match, 'away');
+    // 막대 높이를 득표율에 맞게 조정하는 로직
+    // {homePercentage * 2.5}px;
+    // {awayPercentage * 2.5}px;
+  }, 200); 
+  // 200ms의 지연은 애니메이션을 생성하기 위한 시간
+  // 필요에 따라 수정 가능, 아래 .bar 스타일의 transition 속성도 함께 수정 가능
+}
+
 
 </script>
 
@@ -190,14 +244,17 @@ const votePercentage = (match, team) => {
 .bar {
   width: 20px;
   /* background-color: rgb(61, 172, 186); */
-  transition: height 0.5s ease; /* 애니메이션 효과 */
+  transition: height 1.0s ease; /* 애니메이션 효과 */
   bottom: 0;
 }
 .barWin {
-  background-color: red;
+  background-color: rgb(232, 20, 20);
 }
 .barLose {
-  background-color: rgb(61, 172, 186);
+  background-color: #333D51;
+}
+.barSame {
+  background-color: #D3AC2B;
 }
 
 .vote-container {
