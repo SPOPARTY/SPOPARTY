@@ -4,7 +4,7 @@
             <v-toolbar-title>추억 아카이브</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-            <RouterLink :to="`/club/${clubId}/archieve`">
+            <RouterLink :to="`/club/${clubId}/archive`">
                 <v-btn icon>
                     <v-icon class="plus-btn">mdi-plus</v-icon>
                 </v-btn>
@@ -24,7 +24,7 @@
                         <v-img :src="detail.img" :alt="detail.img" class="thumb_img"/>
                     </v-card-item>
                 </v-card>
-                <ArchieveDetail 
+                <ArchiveDetail 
                     v-if="isDetailVisible && currentDetail.id === detail.id"
                     :detail="currentDetail" 
                     @detail-close="isDetailVisible = false"
@@ -38,7 +38,7 @@
 <script setup>
 import {ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router';
-import ArchieveDetail from '@/components/archieve/ArchieveDetail.vue';
+import ArchiveDetail from '@/components/archieve/ArchiveDetail.vue';
 
 const routes = useRoute();
 const clubId = routes.params.clubId;

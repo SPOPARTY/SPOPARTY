@@ -16,7 +16,7 @@
                 v-for="(detail, index) in dummy"
                 :key="index"
             >
-                <ArchieveDetail 
+                <ArchiveDetail 
                     v-if="isDetailVisible && currentDetail.id === detail.id"
                     :detail="currentDetail" 
                     @detail-close="isDetailVisible = false"
@@ -65,7 +65,7 @@
 import {ref, computed} from 'vue';
 import {useRouter, useRoute} from 'vue-router'
 
-import ArchieveDetail from '@/components/archieve/ArchieveDetail.vue';
+import ArchiveDetail from '@/components/archieve/ArchiveDetail.vue';
 
 const router = useRouter();
 const routes = useRoute();

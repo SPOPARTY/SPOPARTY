@@ -86,9 +86,9 @@ const router = createRouter({
           component : () => import("@/components/club/ClubMain.vue")
         },
         {
-          path : "archieve",
-          name : "ArchieveList",
-          component : () => import("@/components/archieve/ArchieveList.vue")
+          path : "archive",
+          name : "ArchiveList",
+          component : () => import("@/components/archieve/ArchiveList.vue")
         },
         {
           path : "board",
