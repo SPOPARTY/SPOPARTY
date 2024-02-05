@@ -26,39 +26,39 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class SimpleJobConfiguration {
-
-	@Bean
-	public Job yourJob(JobRepository jobRepository, Step myStep) {
-		return new JobBuilder("yourJob", jobRepository)
-			.start(myStep)
-			// .incrementer(new RunIdIncrementer())
-			.build();
-	}
-
-	@Bean
-	@JobScope
-	public Step myStep(JobRepository jobRepository, @Qualifier("metaTxManager") PlatformTransactionManager transactionManager, @Value("#{jobParameters[requestTime]}") String requestDate) {
-		return new StepBuilder("myStep", jobRepository)
-			.tasklet((contribution, chunkContext) -> {
-				log.info(">>>>>>>>>>> requestDate " + requestDate);
-				return RepeatStatus.FINISHED;
-			}, transactionManager)
-			.build();
-	}
-
-	@Bean
-	@StepScope
-	public Tasklet myTasklet( ) {
-		return ((contribution, chunkContext) -> {
-			JobParameters jobParameters =  contribution.getStepExecution().getJobExecution().getJobParameters();
-			LocalDateTime localDateTime = jobParameters.getLocalDateTime("date");
-			log.info(" >>>>>>> jobParameter" + localDateTime.now());
-			log.info(">>>> This is Step");
-			// log.info(">>>>> jobParmaters " + requestDate);
-			return RepeatStatus.FINISHED;
-		});
-	}
-
+	//
+	// @Bean
+	// public Job yourJob(JobRepository jobRepository, Step myStep) {
+	// 	return new JobBuilder("yourJob", jobRepository)
+	// 		.start(myStep)
+	// 		// .incrementer(new RunIdIncrementer())
+	// 		.build();
+	// }
+	//
+	// @Bean
+	// @JobScope
+	// public Step myStep(JobRepository jobRepository, @Qualifier("metaTxManager") PlatformTransactionManager transactionManager, @Value("#{jobParameters[requestTime]}") String requestDate) {
+	// 	return new StepBuilder("myStep", jobRepository)
+	// 		.tasklet((contribution, chunkContext) -> {
+	// 			log.info(">>>>>>>>>>> requestDate " + requestDate);
+	// 			return RepeatStatus.FINISHED;
+	// 		}, transactionManager)
+	// 		.build();
+	// }
+	//
+	// @Bean
+	// @StepScope
+	// public Tasklet myTasklet( ) {
+	// 	return ((contribution, chunkContext) -> {
+	// 		JobParameters jobParameters =  contribution.getStepExecution().getJobExecution().getJobParameters();
+	// 		LocalDateTime localDateTime = jobParameters.getLocalDateTime("date");
+	// 		log.info(" >>>>>>> jobParameter" + localDateTime.now());
+	// 		log.info(">>>> This is Step");
+	// 		// log.info(">>>>> jobParmaters " + requestDate);
+	// 		return RepeatStatus.FINISHED;
+	// 	});
+	// }
+	//
 
 
 }
