@@ -42,6 +42,7 @@
                     <v-card-subtitle class="text-right">파티명 : {{ detail.partyTitle }}</v-card-subtitle>
                     <v-card-text class="text-right">작성자 : {{ detail.member.nickname }}</v-card-text>
                     <v-card-subtitle class="text-right">생성 날짜 : {{ formatDateTime(detail.createdTime) }}</v-card-subtitle>
+                    <br>
                 </v-card>
             </v-col>
         </v-row>
