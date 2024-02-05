@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.Notification;
 import com.spoparty.api.member.entity.NotificationProjection;
 import com.spoparty.api.member.service.NotificationService;
@@ -71,10 +72,12 @@ public class NotificationController {
 		return ResponseEntity.status(200).body(emitter);
 	}
 
-	@GetMapping("/push/{message}")
-	public ResponseEntity<?> push(@PathVariable("message") String msg) {
+	@GetMapping("/push/{memberId}/{message}")
+	public ResponseEntity<?> push(@PathVariable("memberId") Long memberId, @PathVariable("message") String msg) {
 		Notification notification = new Notification();
-		notification.setId(2L);
+		Member member = new Member();
+		member.setId(memberId);
+		notification.setMember(member);
 		notification.setTitle(msg);
 		notification.setContent(msg);
 		notificationService.push(notification);

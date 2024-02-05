@@ -72,7 +72,7 @@ public class NotificationService {
 	}
 
 	public void push(Notification notification) {
-		SseEmitter emitter = emitters.get(notification.getId());
+		SseEmitter emitter = emitters.get(notification.getMember().getId());
 		if (emitter != null) {
 			try {
 				emitter.send(SseEmitter.event()
@@ -82,7 +82,6 @@ public class NotificationService {
 				throw new RuntimeException(e);
 			}
 		}
-
 	}
 
 }
