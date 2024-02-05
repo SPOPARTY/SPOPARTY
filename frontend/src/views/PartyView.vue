@@ -121,6 +121,11 @@
                </v-col>
           </v-row>
           <!-- 경기정보영역 -->
+          <v-row>
+               <v-col cols="12">
+                    <Chat></Chat>
+               </v-col>
+          </v-row>
           <v-row class="contents-section pa-3">
                <v-col cols="12">
                     <PartyMatch />
@@ -134,6 +139,7 @@ import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { format, set, parseISO, addDays } from 'date-fns';
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
+import Chat from '../components/party/Chat.vue';
 
 import { useFootballStore } from '@/stores/football/football'
 

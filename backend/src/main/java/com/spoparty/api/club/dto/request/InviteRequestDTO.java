@@ -1,4 +1,4 @@
-package com.spoparty.api.club.dto;
+package com.spoparty.api.club.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class InviteRequestDto {
-	@NotNull(message = "memberId가 없습니다.")
-	private Long memberId;
+public class InviteRequestDTO {
 	@NotNull(message = "초대 URL이 없습니다.")
 	private String inviteUrl;
 }

@@ -17,13 +17,15 @@
     "jwt-decode": "^4.0.0",
     "openvidu-browser": "^2.29.0",
     "pinia": "^2.1.7",
+    "sockjs-client": "^1.6.1",
     "styled-components": "^6.1.8",
     "sweetalert2": "^11.10.3",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5",
     "vuetify": "^3.5.0",
     "vuex": "^4.1.0",
-    "vuex-persistedstate": "^4.1.0"
+    "vuex-persistedstate": "^4.1.0",
+    "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
     "@mdi/font": "^7.4.47",
