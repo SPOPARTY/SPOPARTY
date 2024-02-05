@@ -129,8 +129,8 @@
       </v-card>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="gray" @click="deleteNotification(notification.id)">삭제</v-btn>
-        <v-btn color="primary" @click="()=>{isNotificationDetailVisible=false; isNotificationListVisible=true}">확인</v-btn>
+        <v-btn color="gray" @click="()=>{deleteNotification(notification.id); exitNotificationDetail()}">삭제</v-btn>
+        <v-btn color="primary" @click="exitNotificationDetail">확인</v-btn>
       </v-card-actions>
     </v-card>
 
@@ -212,15 +212,23 @@ const isNotificationListVisible = ref(false);
 const isNotificationDetailVisible = ref(false);
 const notification = ref({});
 const notificationStore = useNotificationStore()
-const {getNotificationList, readNotification, deleteNotification} = notificationStore;
+const {getNotificationList, readNotification, deleteNotification, connect} = notificationStore;
 const {notificationList} = storeToRefs(notificationStore);
+
+const exitNotificationDetail = () => {
+  isNotificationDetailVisible.value = false; 
+  isNotificationListVisible.value = true
+}
 
 onMounted(async () => {
   if (sessionStorage.getItem("accessToken") != null) {
     await clubStore.requestClub();
   }
-  const id = sessionStorage.getItem("id");
-  if(id) getNotificationList(id);
+  const memberId = sessionStorage.getItem("id");
+  if(memberId) {
+    await getNotificationList(memberId);
+    await connect(memberId);
+  }
 })
 
 const notificationDetail = async (id) => {

@@ -45,11 +45,35 @@ export const useNotificationStore = defineStore("notification", () => {
             }
         )
     }
+
+    const createNotification = (notification) => {
+        requestCreateNoification(
+            JSON.stringify(notification),
+            ({data}) => {
+                console.log(data);
+            },
+            (error) => {
+                console.log(error);
+            }
+        )
+    }
+
+    const connect = (memberId) => {
+        console.log("SSE Connecting");
+        const data = new EventSource(`https://i10a802.p.ssafy.io/api/notifications/connect/${memberId}`);
+        data.addEventListener('connect', (emit) => {
+            console.log('SSE Connet Success: ',emit);
+        })
+        data.addEventListener('notification', (emit) => {
+        console.log('SSE notification: ',emit);
+            getNotificationList(memberId);
+        })
+    }
     
     
     
     return {
         notificationList,
-        getNotificationList, readNotification, deleteNotification
+        getNotificationList, readNotification, deleteNotification, connect, createNotification
     }
 })
