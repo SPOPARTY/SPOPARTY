@@ -51,7 +51,7 @@ public class NotificationService {
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		data.setState(state);
 		return notificationRepository.findById(notificationId, NotificationProjection.class)
-			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+			.orElse(null);
 	}
 
 	public void add(Long memberId, SseEmitter emitter) {
