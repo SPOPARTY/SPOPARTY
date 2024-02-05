@@ -1,4 +1,4 @@
-package com.spoparty.api.party.dto;
+package com.spoparty.api.party.dto.request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +15,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PartyMemberRequestDto {
+public class PartyCreateRequestDto {
+	@NotNull(message = "clubId가 없습니다.")
+	private Long clubId;
+
 	@NotNull(message = "memberId가 없습니다.")
 	private Long memberId;
 
-	@NotNull(message = "openViduConnectionInfo가 없습니다.")
-	private Map<String, Object> openViduConnectionInfo = new HashMap<>();
+	@NotNull(message = "openViduSessionInfo가 없습니다.")
+	private Map<String, Object> openViduSessionInfo = new HashMap<>();
 }

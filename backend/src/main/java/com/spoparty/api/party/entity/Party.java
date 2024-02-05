@@ -1,14 +1,10 @@
 package com.spoparty.api.party.entity;
 
-import static com.spoparty.api.common.constants.ErrorCode.*;
-
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
-import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.member.entity.Member;
 
@@ -22,8 +18,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,14 +44,7 @@ public class Party extends BaseEntity {
 	private String title;
 
 	@Column(nullable = false)
-	@ColumnDefault("6")
 	private Integer maxParticipants = 6;
-
-	@Column(nullable = false)
-	@ColumnDefault("0")
-	@Min(0)
-	@Max(6)
-	private Integer currentParticipants = 0;
 
 	@Setter
 	private String fixtureUrl;
@@ -68,34 +55,14 @@ public class Party extends BaseEntity {
 	private Fixture fixture;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Member host;
+	@JoinColumn(name = "member_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Member hostMember;
 
-	public static Party createParty(Member host, Club club, String openviduSessionId) {
+	public static Party createParty(Member hostMember, Club club, String openviduSessionId) {
 		Party party = new Party();
-		party.host = host;
+		party.hostMember = hostMember;
 		party.openviduSessionId = openviduSessionId;
 		club.setParty(party);
 		return party;
 	}
-
-	// 비즈니스 로직
-	public void increaseParticipants() {
-		if (maxParticipants.equals(currentParticipants)) {
-			throw new CustomException(CANNOT_CREATE_PARTY_MEMBER);
-		}
-		currentParticipants++;
-	}
-
-	public void decreaseParticipants() {
-		if (currentParticipants == 0) {
-			throw new CustomException(CANNOT_CREATE_PARTY_MEMBER);
-		}
-		currentParticipants--;
-	}
-
-	// public void deleteParty() {
-	// 	club.setParty(null); // null로 초기화
-	// 	softDelete();
-	// }
 }
