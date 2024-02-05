@@ -2,6 +2,7 @@ package com.spoparty.api.member.service;
 
 import static com.spoparty.api.common.constants.ErrorCode.*;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -45,7 +46,7 @@ public class FileService {
 
 		File saveFile = new File();
 		saveFile.setType("image");
-		saveFile.setUrl("https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName);
+		saveFile.setUrl("https://" + bucket + ".s3." + region + ".amazonaws.com/" + URLEncoder.encode(fileName));
 		return fileRepository.save(saveFile);
 	}
 

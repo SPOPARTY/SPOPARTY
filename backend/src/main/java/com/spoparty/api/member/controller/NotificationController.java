@@ -58,8 +58,8 @@ public class NotificationController {
 
 	@DeleteMapping("/{notificationId}")
 	public ResponseEntity<?> deleteNotification(@PathVariable("notificationId") Long notificationId) {
-		NotificationProjection data = notificationService.updateNotificationState(notificationId, 2);
-		return ApiResponse.error(BAD_CLIENT_REQUEST);
+		notificationService.updateNotificationState(notificationId, 2);
+		return ApiResponse.success(DELETE_SUCCESS);
 	}
 
 	@GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
