@@ -203,6 +203,7 @@ const createSession = async (sessionId) => {
       headers: { 'Content-Type': 'application/json' },
     },
   )
+  console.warn(response.data)
   return response.data.data // The sessionId
 }
 
@@ -218,6 +219,7 @@ const createToken = async (sessionId) => {
       headers: { 'Content-Type': 'application/json' },
     },
   )
+  console.warn(response.data)
   return response.data.data // The token
 }
 
