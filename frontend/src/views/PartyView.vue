@@ -58,7 +58,7 @@
                </v-col>
                <v-col class="chatting-section" cols="3">
                     <!-- 여기가 유저들 캠 화면 오는 영역 -->
-                    <v-row>
+                    <v-row class="cam-section">
                          <v-col cols="6" class="cam-video" v-for="member in partyMembers" :key="member.memberId">
                               {{ member.name }}
                               <!-- 여기에 캠 화면 또는 이미지 배치 -->
@@ -77,6 +77,7 @@
                                    <Chat/>
                               </div>
                          </v-col>
+                         <v-spacer></v-spacer>
                     </v-row>
                     <!-- 캠 영역 끝 -->
 
@@ -417,18 +418,25 @@ getMatchWatchable(startDate.value, endDate.value);
      /* height: 100vh;  */
      border : 1px solid #CBD0D8;
 }
+.cam-section {
+     height: 65%;
+     /* justify-self: start; */
+     align-content: start;
+}
 
 .cam-video {
      background-color: blueviolet;
      border: 1px solid white;
      min-height: 100px;
+     height: 30%;
+     /* height: 300px; */
      text-align: center;
      /* 중앙 정렬 */
      display: flex;
      flex-direction: column;
      justify-content: center;
      align-items: center;
-
+     /* aspect-ratio: 16/16; */
 }
 
 .button-section {

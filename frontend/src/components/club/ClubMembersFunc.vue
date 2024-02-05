@@ -87,6 +87,7 @@ import { usePartyStore } from '@/stores/club/party/party';
 
 import ClubLeader from '@/components/club/ClubLeader.vue';
 import ClubMember from '@/components/club/ClubMember.vue';
+import { set } from 'date-fns';
 
 const props = defineProps({
     clubInfo:Object,
@@ -208,19 +209,42 @@ onMounted(() => {
     }
 })
 
+// const goToPartyPage = async () => {
+//     if (isPartyExist.value) {
+//         await getClubInfo(clubId);
+//         console.log("파티가 있어요", clubInfo.value.partyId);
+//         // partyId.value = clubInfo.value.partyId;
+//     } else {
+//         await postPartyInfo(clubId);
+//         await getClubInfo(clubId);
+//         console.log("파티가 생성되었어요", partyId.value);
+//         isPartyExist.value = true;
+//     }
+//     console.log(partyId.value)
+//     openPartyPage(partyId.value);
+// }
+
 const goToPartyPage = async () => {
+    // partyId를 업데이트 하기 위한 임시 변수 선언
+    let tempPartyId = null;
+
     if (isPartyExist.value) {
         await getClubInfo(clubId);
         console.log("파티가 있어요", clubInfo.value.partyId);
-        // partyId.value = clubInfo.value.partyId;
     } else {
         await postPartyInfo(clubId);
         await getClubInfo(clubId);
-        console.log("파티가 생성되었어요", partyId.value);
+        console.log("파티가 생성되었어요", clubInfo.value.partyId);
         isPartyExist.value = true;
     }
-    console.log(partyId.value)
-    openPartyPage(partyId.value);
+    setTimeout(() => {
+        tempPartyId = clubInfo.value.partyId;
+        console.log(tempPartyId);
+        openPartyPage(tempPartyId);
+    }, 100);
+    // tempPartyId = clubInfo.value.partyId;
+    // console.log(tempPartyId);
+    // openPartyPage(tempPartyId);
 }
 
 const openPartyPage = (partyId) => {
