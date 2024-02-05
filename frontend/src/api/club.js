@@ -41,7 +41,7 @@ function requestClubMemberList(clubId, success, fail) {
 
 // 그룹원 초대
 function requestClubInvite(data, success,fail) {
-    local.post("/club/invite",data).then(success).catch(fail);
+    local.post(`${API_URL}/invite`,data).then(success).catch(fail);
 }
 
 // 그룹장 수정(그룹장 권한)
@@ -49,9 +49,9 @@ function requestUpdateClubLeader(clubId, data,success,fail) {
     local.put(`${API_URL}/${clubId}/host`,data).then(success).catch(fail);
 }
 
-// 그룹원 삭제(그룹장 권한)
+// 그룹 떠나기
 function requestDeleteClubMember(clubId, success, fail) {
-    local.delete(`${API_URL}/${clubId}/participant`).then(success).catch(fail);
+    local.delete(`${API_URL}/${clubId}/participants`).then(success).catch(fail);
 }
 
 

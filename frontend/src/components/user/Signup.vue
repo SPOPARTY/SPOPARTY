@@ -48,7 +48,7 @@
           ></v-text-field>
           
           <v-row align="center">
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" sm="4" xs="4">
               <v-text-field
                 label="이메일"
                 v-model="emailId"
@@ -57,8 +57,8 @@
                 dense
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="1" class="text-center">@</v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="1" sm="1" xs="1" class="text-center">@</v-col>
+            <v-col cols="12" md="4" sm="4" xs="4">
               <v-text-field
                 label="도메인"
                 v-model="emailDomain"
@@ -67,7 +67,7 @@
                 dense
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="3" sm="3" xs="3">
               <v-btn class="email-verify"
                 color="primary"
                 @click="showEmailVerify"

@@ -16,6 +16,13 @@ import MyPage from "@/components/user/Mypage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
   routes: [
     {
       path: '/',
@@ -45,19 +52,28 @@ const router = createRouter({
     {
       path: "/signup",
       name: "Signup",
-      component: Signup
+      component: () => import("@/components/user/Signup.vue")
     },
     {
       path: "/login",
       name: "Login",
-      component: Login
+      component: () => import("@/components/user/Login.vue")
     },
     {
       path:"/mypage",
       name:"Mypage",
-      component: MyPage,
+      component: () => import("@/components/user/Mypage.vue")
     },
-
+    {
+      path:"/kakao",
+      name:"kakao",
+      component: () => import("@/components/user/Kakao.vue")
+    },
+    {
+      path:"/invite/:inviteUrl",
+      name:"invite",
+      component: () => import("@/components/club/InviteClub.vue")
+    },
     {
       path: "/club/:clubId",
       name: "ClubView",
@@ -70,9 +86,9 @@ const router = createRouter({
           component : () => import("@/components/club/ClubMain.vue")
         },
         {
-          path : "archieve",
-          name : "ArchieveList",
-          component : () => import("@/components/archieve/ArchieveList.vue")
+          path : "archive",
+          name : "ArchiveList",
+          component : () => import("@/components/archieve/ArchiveList.vue")
         },
         {
           path : "board",

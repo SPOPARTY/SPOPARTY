@@ -2,10 +2,10 @@
     <v-container>
         <v-row justify="center">
             <v-col cols="10">
-                <h1 class="text-center">그룹 게시판</h1>
+                <h1 class="text-center" style="color:white; margin-left:100px;">그룹 게시판</h1>
             </v-col>
             <v-col cols="2">
-                <v-btn color="primary" @click="writeBoard">글쓰기</v-btn>
+                <v-btn class="write-board" variant="outlined" @click="writeBoard">글쓰기</v-btn>
             </v-col>
         </v-row>
         <v-row>
@@ -19,19 +19,22 @@
                     v-if="isDetailVisible && currentPost.id === post.id" 
                     :post="currentPost"
                     @detail-close="isDetailVisible = false"
-                    @delete-post="deletePost"
                 />
                 <v-card @click="showBoardDetail(post)" >
                     <v-card-title>{{ post.title }}</v-card-title>
                     <v-card-subtitle>{{ post.member.nickname }}</v-card-subtitle>
-                    <v-card-text v-if="post.file">{{ formatDateTime(post.file.updatedTime) }}</v-card-text>
-                    <v-card-text>{{ post.content }}</v-card-text>
+                    <v-card-text >{{ formatDateTime(post.updatedTime) }}</v-card-text>
                     <v-card-item v-if="post.file"> <img class="thumbnail" :src="post.file.url" :alt="post.title"></v-card-item>
+                    <v-card-text>
+                        <div>
+                            <div v-html="post.content"></div>
+                        </div>
+                    </v-card-text>
                 </v-card>
             </v-col>
         </v-row>
 
-        <v-btn icon class="left-arrow" @click="goBack">
+        <v-btn icon class="left-arrow" color="white" variant="outlined" @click="goBack">
             <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
     </v-container>
@@ -85,10 +88,18 @@ const showBoardDetail = (post) => {
 
 
 
-
 </script>
 
 <style lang="scss" scoped>
+h1{
+    color:black
+}
+.write-board{
+    color:white; 
+    margin-top:10px;
+    margin-left:110px;
+}
+
 .left-arrow {
     position: fixed;
     left : 0;

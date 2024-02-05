@@ -2,7 +2,7 @@
   <v-container class="match-near part-section" fluid>
     <v-row>
       <v-col cols="12">
-        <h1 class="near-title">오늘 예정 경기</h1>
+        <h1 class="near-title">예정 경기 일정</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -12,18 +12,35 @@
             <!-- 경기 시작 시간 -->
             <p class="mb-2">{{ formatDate(match.startTime) }}</p>
             <!-- 남은 시간 표시 -->
-            <p class="mb-2">{{ calculateTimeLeft(match.startTime) }}</p>
-            <div class="league-round-details">
-              <v-img :src="match.league.logo" class="league-logo"></v-img>
-              <span>{{ match.round }}</span>
-            </div>
-            <div class="team-vs-team">
-              <h3>{{ match.homeTeam.nameKr }}</h3>
-              <v-img :src="match.homeTeam.logo" class="team-logo"></v-img>
-              <span class="vs">VS</span>
-              <v-img :src="match.awayTeam.logo" class="team-logo"></v-img>
-              <h3>{{ match.awayTeam.nameKr }}</h3>
-            </div>
+            <p id="timeLeft" v-if="count" class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
+            <p id="timeLeft" v-else class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
+            <v-row class="league-round-details">
+              <v-col cols="2" align="center" class="pa-1">
+                <v-img :src="match.league.logo" class="league-logo"></v-img>
+              </v-col>
+              <v-col cols="2">
+                <span>{{ match.round }}</span>
+              </v-col>
+            </v-row>
+            <v-row class="team-vs-team">
+              <v-col cols="2" class="team-name" @click="toTDP(match.homeTeam.teamId)">
+                <h3>{{ match.homeTeam.nameKr }}</h3>
+              </v-col>
+              <v-col cols="2" align="center">
+                <v-img :src="match.homeTeam.logo" class="team-logo team-name"
+                  @click="toTDP(match.homeTeam.teamId)"></v-img>
+              </v-col>
+              <v-col cols="2" class="pa-0">
+                <span class="vs">VS</span>
+              </v-col>
+              <v-col cols="2" align="center">
+                <v-img :src="match.awayTeam.logo" class="team-logo team-name"
+                  @click="toTDP(match.awayTeam.teamId)"></v-img>
+              </v-col>
+              <v-col cols="2" class="team-name" @click="toTDP(match.awayTeam.teamId)">
+                <h3>{{ match.awayTeam.nameKr }}</h3>
+              </v-col>
+            </v-row>
           </div>
         </v-card>
       </v-col>
@@ -32,9 +49,11 @@
 </template>
   
 <script setup>
-import { ref, watch } from 'vue'
-
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router';
 import { useFootballStore } from '@/stores/football/football'
+
+const router = useRouter();
 
 const footballStore = useFootballStore()
 
@@ -47,13 +66,54 @@ function formatDate(dateStr) {
 
 getNextMatches();
 
-const matches = ref(null);
+const matches = ref([]);
 
 watch(() => footballStore.nextMatches, (newVal) => {
   matches.value = newVal;
   console.warn(matches.value)
 }, { immediate: true }
 );
+
+// watch(() => footballStore.nextMatches, (newVal) => {
+//   matches.value = newVal.map(match => ({
+//     ...match,
+//     timeLeft: calculateTimeLeft(match.startTime)
+//   }));
+//   updateTimeInterval();
+// }, { immediate: true });
+
+// let intervalId = null;
+
+// function updateTimeInterval() {
+//   // intervalId = null;
+//   if (intervalId) clearInterval(intervalId);
+//   intervalId = setInterval(() => {
+//     matches.value.forEach(match => {
+//       match.timeLeft = calculateTimeLeft(match.startTime);
+//     });
+//   }, 3000); // Update every minute
+// }
+
+// onUnmounted(() => {
+//   clearInterval(intervalId);
+// });
+
+const count = ref(true);
+let intervalId = null; // 인터벌 ID를 저장할 변수 선언
+
+onMounted(() => {
+  // setInterval 함수가 반환하는 ID를 intervalId에 저장
+  intervalId = setInterval(() => {
+    count.value = !count.value;
+  }, 1000);
+});
+
+onUnmounted(() => {
+  // intervalId를 사용하여 인터벌을 취소
+  clearInterval(intervalId);
+});
+
+
 
 // 남은 시간 계산
 function calculateTimeLeft(startTimeStr) {
@@ -70,14 +130,19 @@ function calculateTimeLeft(startTimeStr) {
   const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-  // const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+  const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
   const res1 = days > 0 ? `${days}일` : "";
   const res2 = hours + days > 0 ? `${hours}시간` : "";
-  const res3 = minutes + hours + days > 0 ? `${minutes}분 남음!` : "곧 시작!";
+  const res3 = minutes + hours + days > 0 ? `${minutes}분` : "경기 임박!";
+  const res4 = seconds + minutes + hours + days > 0 ? `${seconds}초 남음!` : "";
 
-  return `${res1} ${res2} ${res3}`;
+  return `${res1} ${res2} ${res3} ${res4}`;
 }
+
+const toTDP = (teamId) => {
+  router.push(`/team/${teamId}`);
+};
 
 // 예정 경기 예시 데이터
 // matches
@@ -120,6 +185,7 @@ function calculateTimeLeft(startTimeStr) {
 .near-title {
   text-align: center;
   margin-bottom: 20px;
+  color: #292646;
 }
 
 .match-card {
@@ -127,8 +193,8 @@ function calculateTimeLeft(startTimeStr) {
 }
 
 .league-logo {
-  width: 50px;
-  height: 50px;
+  width: 75px;
+  height: 75px;
 }
 
 .team-logo {
@@ -137,7 +203,8 @@ function calculateTimeLeft(startTimeStr) {
   margin: 0 10px;
 }
 
-.league-round-details, .team-vs-team {
+.league-round-details,
+.team-vs-team {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,5 +215,8 @@ function calculateTimeLeft(startTimeStr) {
   font-size: 24px;
   font-weight: bold;
   margin: 0 10px;
+}
+.team-name {
+  cursor: pointer;
 }
 </style>

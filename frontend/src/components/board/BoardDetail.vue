@@ -14,7 +14,9 @@
                 <v-img :src="props.post.file.url" class="img" cover width="100%"></v-img>
             </v-card-item>
             <v-card-text>
-                {{ props.post.content }}
+                <div>
+                    <div v-html="props.post.content"></div>
+                </div>
             </v-card-text>
             <v-card-actions>
                 <v-spacer/>
@@ -45,11 +47,13 @@
 <script setup>
 import  {ref, onMounted} from 'vue';
 import EditBoard from '@/components/board/EditBoard.vue';
+import {useBoardStore} from "@/stores/club/boards";
+
 import {formatDateTime} from "@/util/tools.js"
 
+const boardStore = useBoardStore();
 
 const currentUserId = sessionStorage.getItem("id"); // 로그인 된 id
-
 const modalVisible = ref(true); // BoardDetail on/off 관장
 
 const props = defineProps({
@@ -67,9 +71,13 @@ function showEditModal() {
 }
 
 // EditBoard모달 off
-function editClose(editPost) {
+function editClose(editedPost) {
+    if(editedPost) {
+        props.post = editedPost
+    }
     isEditModalVisible.value = false // EditBoard off
     modalVisible.value = true// BoardDetail on
+    closeModal()
 }
 
 // 삭제 확인 모달
@@ -80,6 +88,7 @@ const confirmDelete = () => {
 
 // 진짜 삭제
 function deletePost() {
+    boardStore.deleteBoard(props.post.id,props.post.club_id);
     emits('delete-post',props.post.id)
     closeModal()
     deleteConfirmVisible.value = false;
@@ -89,19 +98,15 @@ function deletePost() {
 function closeModal() {
     modalVisible.value = false; // 1. modalVisible off
     emits('detail-close') // 2. emit
-    console.log("BoardDetail닫음")
-    console.log("modalVisible --> ",modalVisible.value)
 }
 
-
-onMounted(() => {
-    console.log("히히 boardDetail 발사")
-})
 
 </script>
 
 <style lang="scss" scoped>
-
+h1{
+    color:black
+}
 .img{
     border:solid;
     border-radius: 20px;

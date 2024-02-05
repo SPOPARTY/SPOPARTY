@@ -9,6 +9,11 @@ function requestGetCheersData(success,fail) {
     local.get(`/${API_URL}/cheers`).then(success).catch(fail);
 }
 
+function requestPostCheersData(data,success,fail) {
+    // 응원 정보 등록
+    local.post(`/${API_URL}/cheers`,data).then(success).catch(fail);
+}
+
 function requestGetNextMatches(success,fail) {
     // 다음 6 경기 정보 조회
     local.get(`/${API_URL}/fixtures?next=6`).then(success).catch(fail);
@@ -30,10 +35,29 @@ function requestGetLeagueRanking(leagueId,success,fail) {
     local.get(`/${API_URL}/leagues/rank/${leagueId}`).then(success).catch(fail);
 }
 
+function requestGetTeamDetail(teamId,success,fail) {
+    // 팀 상세 정보 조회
+    local.get(`/${API_URL}/teams?teamId=${teamId}`).then(success).catch(fail);
+}
+
+function requestGetMatchWatchable(startDate,endDate,success,fail) {
+    // 시청 가능한 경기 정보 조회
+    local.get(`/${API_URL}/fixtures?startDate=${startDate}&endDate=${endDate}`).then(success).catch(fail);
+}
+
+function requestGetMatchRealTimeData(fixtureId,success,fail) {
+    // 경기 실황 정보 조회
+    local.get(`/${API_URL}/fixtures/events?fixtureId=${fixtureId}`).then(success).catch(fail);
+}
+
 export {
     requestGetCheersData,
+    requestPostCheersData,
     requestGetNextMatches,
     requestGetDateMatches,
     requestGetLeagueList,
     requestGetLeagueRanking,
+    requestGetTeamDetail,
+    requestGetMatchRealTimeData,
+    requestGetMatchWatchable,
 }

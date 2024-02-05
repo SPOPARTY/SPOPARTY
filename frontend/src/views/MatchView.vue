@@ -16,13 +16,13 @@
                </v-col>
                <v-col cols="12" class="text-center">
                     <v-btn @click="resetDate" class="mx-2">오늘</v-btn>
-                    <v-menu v-model="showDatePicker" :close-on-content-click="true" :nudge-bottom="10" offset-y
+                    <v-menu v-model="showDatePicker" :close-on-content-click="false" :nudge-bottom="10" offset-y
                          attach=".date-picker-button">
                          <template v-slot:activator="{ on, attrs }">
                               <v-btn class="date-picker-button mx-2" v-bind="attrs" v-on="on"
-                                   @click="showDatePicker = !showDatePicker">날짜 선택</v-btn>
+                                   @mousedown="showDatePicker = true">날짜 선택</v-btn>
                          </template>
-                         <v-date-picker v-model="selectedDate" no-title @input="datePickerSelected"></v-date-picker>
+                         <v-date-picker v-model="selectedDate" show-adjacent-months no-title></v-date-picker>
                     </v-menu>
                </v-col>
           </v-row>
@@ -34,13 +34,24 @@
    
    
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import MatchList from '@/components/match/MatchList.vue';
-import { format, addDays } from 'date-fns';
-import { differenceInCalendarDays } from 'date-fns';
+import { format, addDays, differenceInCalendarDays } from 'date-fns';
 
 const selectedDate = ref(new Date());
 const showDatePicker = ref(false);
+
+watch(showDatePicker, () => {
+     console.log(showDatePicker.value);
+});
+
+watch(selectedDate, () => {
+     console.log("날짜변경")
+     console.log(selectedDate.value);
+     showDatePicker.value = false;
+});
+
+// console.log(selectedDate.value);
 
 // console.log(selectedDate.value);
 // "2024-01-31T05:46:09.320Z"

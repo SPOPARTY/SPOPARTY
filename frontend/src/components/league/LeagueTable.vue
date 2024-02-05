@@ -23,20 +23,22 @@
                     <br>
                 </v-card-title>
 
-                <v-data-table :headers="headers" :items="teams" :search="search" :items-per-page="-1" class="elevation-1"
+                <v-data-table :headers="headers" :items="teams" :search="search" :items-per-page="-1" 
+                    class="elevation-1"
                     hide-default-footer>
                     <template v-slot:item.logo="{ item }">
                         <v-img :src="item.logo" class="mr-2" style="width: 50px; height: 50px;" contain></v-img>
                     </template>
                     <!-- 팀 상세 페이지로 보내기 (밑줄 none)-->
-                    <template v-slot:item.nameKr="{ item }">
-                        <router-link :to="`/team/${item.teamId}`" style="text-decoration: none;">{{ item.nameKr }}</router-link>
+                    <template @click="toTDP(item.seasonLeagueTeamId)" v-slot:item.nameKr="{ item }">
+                        <!-- <router-link :to="`/team/${item.seasonLeagueTeamId}`" style="text-decoration: none;">{{ item.nameKr }}</router-link> -->
+                        <v-btn variant="text" :to="`/team/${item.seasonLeagueTeamId}`">{{ item.nameKr }}</v-btn>
                     </template>
                     <template v-slot:item.standing.form="{ item }">
                         {{ inputDash(item.standing.form) }}
                     </template>
                     <template v-slot:item.following="{ item }">
-                        <v-icon v-if="checkFollowing(item)" color="pink" @click="changeFollowing(item)">mdi-heart</v-icon>
+                        <v-icon v-if="item.following" color="pink" @click="changeFollowing(item)">mdi-heart</v-icon>
                         <v-icon v-else color="grey" @click="changeFollowing(item)">mdi-heart-outline</v-icon>
                     </template>
                     <template v-slot:no-results>
@@ -58,31 +60,12 @@ import { useRouter } from 'vue-router';
 import { useFootballStore } from '@/stores/football/football';
 import { useFollowStore } from '@/stores/member/follows';
 
-const { getFollowList, followList, doFollow, doUnFollow } = useFollowStore();
+const { doFollow, doUnFollow } = useFollowStore();
 
 // 로그인 여부 감지
-const isLogined = ref(localStorage.getItem("accessToken") !== null);
+const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
 
-// 로그인한 사용자의 팔로우 목록 가져오기
-if (isLogined.value) {
-    // 사용자 id 가져오기
-    const memberId = sessionStorage.getItem("id");
-
-    // 사용자가 팔로우한 팀 목록 가져오기
-    getFollowList(memberId);
-    const followTeams = ref([]);
-    watch(() => followList.value, (newValue) => {
-        followTeams.value = newValue;
-    });
-}
-
-// // Props 정의
-// const props = defineProps({
-//     leagueId: {
-//         type: Number,
-//         required: true,
-//     },
-// });
+// 라우터로부터 리그 아이디 가져오기
 const router = useRouter();
 const leagueId = router.currentRoute.value.params.leagueId;
 
@@ -168,12 +151,8 @@ const inputDash = (form) => {
     return result;
 };
 
-// 미완성 로직 (팔로우 기능) 차후 수정 필요
-const checkFollowing = (item) => {
-    if (!isLogined.value) {
-        return false;
-    }
-    return followTeams.value.some(team => team.teamId === item.teamId);
+const toTDP = (id) => {
+    router.push(`/team/${id}`);
 };
 
 const changeFollowing = (item) => {
@@ -181,11 +160,15 @@ const changeFollowing = (item) => {
         alert('로그인이 필요한 서비스입니다.');
         return;
     }
+    // 팔로우 상태 변경 표시를 위해 값 저장
     const oldVal = item.following;
+
     if (item.following) {
-        doUnFollow(memberId, item.teamId);
+        console.log("언팔로우")
+        doUnFollow(item.teamId);
     } else {
-        doFollow(memberId, item.teamId);
+        console.log("팔로우")
+        doFollow(item.teamId);
     }
     item.following = !oldVal;
 };
@@ -221,4 +204,5 @@ hr {
     border: 1px solid #E0E0E0;
     /* 밑줄 색상 */
 }
+
 </style>

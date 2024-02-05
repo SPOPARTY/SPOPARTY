@@ -23,7 +23,7 @@
             <v-file-input
                 accept="image/*"
                 label="파일을 첨부해주세요"
-                v-model="editedImg"
+                v-model="editedFile"
                 class="file-input"
             >
             </v-file-input>
@@ -60,6 +60,12 @@ import {ref} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import TextEditor from '@/components/board/TextEditor.vue'
 
+import {useBoardStore} from "@/stores/club/boards"
+
+const memberId = sessionStorage.getItem("id");
+
+const boardStore = useBoardStore();
+
 const modalVisible = ref(true)
 
 const props = defineProps({
@@ -77,9 +83,11 @@ const titleRules = [
     v => (v && v.length <= 40) || '제목은 40자 이하로 작성해주세요'
 ];
 
+const boardId = props.detail.id
+const clubId = props.detail.clubId
 const editedTitle = ref(props.detail.title);
 const editedContent = ref(props.detail.content);
-const editedImg = ref([props.detail.file.url])
+const editedFile = ref(props.detail.file && props.detail.file.url ? [props.detail.file.url] : []);
 
 
 const editConfirmVisible = ref(false);
@@ -91,16 +99,28 @@ function confirmEdit(){
 
 // 진짜 수정
 const editPost = () => {
-    // 저장 로직 
-    // store에 업데이트 로직 요청
-    // 여기서는 그냥 예시
+    const formdata = new FormData(); 
+    formdata.append("id",boardId);
+    formdata.append("title",editedTitle.value);
+    formdata.append("content",editedContent.value);
+    formdata.append("file",editedFile.value[0])
+
+    console.log("이건 formData 내용")
+    for (let [key, value] of formdata.entries()) {
+        console.log(key, value);
+    }
+
+    boardStore.updateBoard(formdata)
+
     const editedPost = {
-        id: props.detail.id,
-        title: editedTitle.value,
-        content: editedContent.value,
-        img: editedImg.value,
-    };
-    emits('edit-close',editedPost) // 실제로는 데이터를 emit하지 않음
+        id : boardId,
+        clubId : clubId,
+        title : editedTitle.value,
+        content : editedContent.value,
+        file : editedFile.value[0]
+    }
+    
+    emits('edit-close',editedPost) 
     editConfirmVisible.value = false; // 수정 확인 모달 off
     modalVisible.value = false; // EditBoard 모달도 off
 }

@@ -8,8 +8,8 @@
     </v-list-item>
 
     <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
-    <v-list dense class="club-list">
-      <v-list-item v-for="(club, index) in clubs" v-if="clubs" :key="index" class="mb-1">
+    <v-list dense class="club-list" v-if="clubs"> 
+      <v-list-item v-for="(club, index) in clubs"  :key="index" class="mb-1">
         <div @click="openClubInNewTab(club.clubId)" class="d-flex justify-start align-center club-item"
           style="text-transform: none; padding: 16px; cursor: pointer;">
           <v-list-item-title class="align-start">{{ club.name }}<br>{{ 'ID: ' + club.clubId }}</v-list-item-title>
@@ -27,12 +27,18 @@
 
     <!-- 로그인 관련 footer -->
     <v-list-item class="sidebar-footer" align="center">
-      <v-btn text to="/signup" class="mx-2" color="primary">
+      <v-btn v-if="!isLogined" text to="/signup" class="mx-2" color="primary">
         <v-icon size="x-large">mdi-account-plus</v-icon>
       </v-btn>
+      <v-btn v-if="isLogined" text to="/mypage" class="mx-2" color="primary">
+        <v-icon size="x-large">mdi-home-edit-outline</v-icon>
+      </v-btn>
 
-      <v-btn text to="/login" class="mx-2" color="primary">
+      <v-btn v-if="!isLogined" text to="/login" class="mx-2" color="primary">
         <v-icon size="x-large">mdi-login</v-icon>
+      </v-btn>
+      <v-btn v-if="isLogined" @click="logout" class="mx-2" color="primary">
+        <v-icon size="x-large">mdi-logout</v-icon>
       </v-btn>
     </v-list-item>
   </v-navigation-drawer>
@@ -61,6 +67,7 @@
     <v-btn v-if="isLogined" text class="mx-2 btn-text" @click="logout">로그아웃</v-btn>
     <v-btn v-else text to="/login" class="mx-2 btn-text">로그인</v-btn>
   </v-app-bar>
+  <NewClub v-if="isNewClubModalVisible" @close-new-club="isNewClubModalVisible = false"/>
 </template>
 
 <script setup>
@@ -69,11 +76,13 @@ import { useRouter } from 'vue-router';
 
 import { useManagementStore} from "@/stores/member/managements"
 import { useClubStore} from "@/stores/club/clubs"
+
+import NewClub from '@/components/club/NewClub.vue';
+
 const {myClubs} = useClubStore();
 
-
 onMounted(async () => {
-  if (localStorage.getItem("accessToken") != null) {
+  if (sessionStorage.getItem("accessToken") != null) {
     await clubStore.requestClub();
   }
 })
@@ -88,7 +97,9 @@ watch(() => clubStore.myClubs,(newClubs) => {
 
 
 // 로그인 여부 감지
-const isLogined = ref(localStorage.getItem("accessToken") !== null);
+const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
+console.log("로그인 됨?")
+console.log(sessionStorage.getItem("accessToken") !== null);
 
 // 로그아웃
 const logout = () => {
@@ -112,9 +123,20 @@ function openClubInNewTab(clubId) {
 }
 
 
-// 새 클럽 만들기 페이지
+// 새 클럽 만들기 모달
+const isNewClubModalVisible = ref(false)
+
 function goToNewClubPage() {
-  router.push('/new-club'); // '새 클럽' 페이지로 라우팅하는 경로를 적절히 조정하세요.
+  if (sessionStorage.getItem("accessToken")== null) {
+    console.log()
+    if(confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?") === true) {
+      window.location.replace("/login")
+      return;
+    }
+    return;
+  }
+  isNewClubModalVisible.value = true;
+  return;
 }
 
 
@@ -199,6 +221,7 @@ span.v-btn__content {
 /* IE and Edge */
 .club-list {
   -ms-overflow-style: none; /* Internet Explorer 및 Edge에서 스크롤바를 숨깁니다 */
+  overscroll-behavior: contain;
 }
 
 </style>

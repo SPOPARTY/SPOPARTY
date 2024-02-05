@@ -6,7 +6,7 @@
         @click:outside="closeModal"
         persistent
     >
-        <v-container v-if="role === '그룹장'">
+        <v-container v-if="isHost">
             <v-card>
                 <v-card-text class="mention">
                     <br>
@@ -20,7 +20,8 @@
                 </v-card-text>
                 <v-card-actions style="transform:translateX(-75px)">
                     <v-spacer></v-spacer>
-                    <v-btn color="red" @click="showMemberList">진행시켜</v-btn>
+                    <v-btn color="red" v-if="clubMemberList.length == 1" @click="showTakeOver">진행시켜</v-btn>
+                    <v-btn color="red" v-else @click="showMemberList">진행시켜</v-btn>
                     <v-btn color="green" @click="closeModal"><h3>다시 생각해보자</h3></v-btn>
                 </v-card-actions>
             </v-card>
@@ -52,18 +53,18 @@
             <v-card>
                 <v-card-text class="member-list-title">
                     <h1>그룹원 명단</h1> <br>
-                    <div v-if="nextLeader.name !== ''">
-                        <b>차세대 리더</b> : <b><u>{{ nextLeader.name }}</u></b> <br>
+                    <div v-if="nextLeader.memberNickName !== ''">
+                        <b>차세대 리더</b> : <b><u>{{ nextLeader.memberNickName }}</u></b> <br>
                     </div>
                 </v-card-text>
                 <v-card-text 
                     class="member"
-                    v-for="(member, index) in clubMembers" 
+                    v-for="(member, index) in clubMemberList" 
                     :key="index" 
                     @click="selectLeader(member)"
                     >
-                    {{ member.name}}
-                <v-icon v-if="member.role === '그룹장'" class="star">mdi-star</v-icon>
+                    {{ member.memberNickName}}
+                <v-icon v-if="member.role === 'host'" class="star">mdi-star</v-icon>
                 </v-card-text>
                 <v-card-actions style="transform:translateX(-40px)">
                     <v-spacer></v-spacer>
@@ -92,9 +93,9 @@
             </v-card-text>
             <v-card-actions style="transform:translateX(-40px)">
                     <v-spacer></v-spacer>
-                    <v-btn color="red" @click="goodBye = true">진행시켜</v-btn>
+                    <v-btn color="red" @click="quitClub">진행시켜</v-btn>
                     <v-btn color="green" @click="closeModal"><h3>돌이킬 수 있는 마지막 기회</h3></v-btn>
-                </v-card-actions>
+            </v-card-actions>
         </v-card>
 
     </v-dialog>
@@ -106,11 +107,10 @@
                     <h2>함께해서 더러웠고</h2><br><br>
                     <h2>다시는 만나지 말자</h2>
                 </v-card-title>
-                <br>
-                <v-card-actions class="justify-center">
-                    <v-btn color="blue lighten-1" text @click="leaveForever" width="200px"><h1>확인</h1></v-btn>
+                <v-card-actions style="transform:translateX(-40px)">
+                    <v-spacer></v-spacer>
+                    <v-btn color="red" @click="leaveForever">확인</v-btn>
                 </v-card-actions>
-                <br>
             </v-card>
         </v-container>
 
@@ -119,17 +119,34 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue'
-import {useRouter} from 'vue-router'
+import {ref, computed,onMounted,watch} from 'vue'
+import {useRouter, useRoute} from 'vue-router'
+
+import {useClubStore} from '@/stores/club/clubs'
+
 
 const router = useRouter();
+const route = useRoute();
 
-const role = "그룹장"; // 나중에 스토어로 불러올 것임.
+const props = defineProps({
+    clubMemberList:Object
+})
 
 const emits = defineEmits([
     'quit-club-close'
 ])
 
+const clubStore = useClubStore();
+
+
+const clubMemberList = computed(() => {
+    return props.clubMemberList
+})
+
+const clubId = route.params.clubId;
+
+const loginUser = sessionStorage.getItem("id")
+const isHost = props.clubMemberList.find((member) => member.memberId == loginUser)["role"] === 'host'
 
 const modalVisible = ref(true)
 
@@ -143,48 +160,75 @@ function showMemberList() {
 }
 
 const nextLeader = ref({
-    memberId : null,
-    name : '',
+    memberId : '',
+    memberNickName : '',
     role : '',
 });
 
 
 function selectLeader(member) {
-    if (member.role === '그룹장'){
+    if (member.role === 'host'){
         return
     }
     nextLeader.value.memberId = member.memberId;
-    nextLeader.value.name = member.name;
-    nextLeader.value.role = "그룹장"
+    nextLeader.value.memberNickName = member.memberNickName;
+    nextLeader.value.role = member.role
+    // console.log("*****다음 그룹장은???*******")
+    // console.log(nextLeader.value)
 }
 
 // 그룹장 넘기기
 const isTakeOverVisible = ref(false)
 function showTakeOver() {
-    if (role === "그룹장" && nextLeader.value.name === '') {
+    if (isHost&& nextLeader.value.name === '') {
         return
     }
     isTakeOverVisible.value = true
     isMemberListVisible.value = false
+
 }
 
 const goodBye = ref(false)
 
-function leaveForever() {
-    closeModal();
-    router.push("/")
+async function quitClub() {
+    try{
+        const data = {
+            currentHostId : loginUser,
+            nextHostId : nextLeader.value.memberId,
+        }
+        // console.log("그룹인원은??",clubMemberList.value)
+        // console.log("그룹장인가? -> ",isHost)
+        if (isHost && clubMemberList.value.length !== 1){ // 그룹장이면서 그룹 인원이 2명 이상일 때는 그룹장 넘기기 진행
+            const takeOverSuccess = await clubStore.updateClubLeader(clubId,data);
+            // console.log("그룹장 잘 넘겼나?? --> ",takeOverSuccess)
+            if (!takeOverSuccess) {
+                alert("그룹장 넘기기 실패!")
+                return;
+            }
+        }
+
+        console.log("****그룹장을 넘겼으니 그룹을 나가볼까?****")
+        const leaveSuccess = await clubStore.leaveClub(clubId);
+        if(leaveSuccess) {
+            // alert("함께해서 더러웠고 다신 만나지 말자!")
+            console.log("****히히 그룹 떠나기 발사*****")
+            goodBye.value = true;
+        }
+
+
+    } catch(err){
+        console.log("****그룹 나가기 실패!!!****")
+        console.error(err)
+        alert("그룹 나가기 실패!")
+        closeModal()
+    }
 }
 
+function leaveForever() {
+    goodBye.value = false;
+    window.location.replace("/")
+}
 
-// 대충 store에서 그룹원들의 명단을 가져옴
-const clubMembers = ref([
-    {memberId : 1, name : "실버스타", role : "그룹원"},
-    {memberId : 2, name : "제라드", role : "그룹장"},
-    {memberId : 3, name : "벨타이거", role : "그룹원"},
-    {memberId : 4, name : "램파드", role : "그룹원"},
-    {memberId : 5, name : "별명별명", role : "그룹원"},
-    {memberId : 6, name : "글로리맨유", role : "그룹원"},
-])
 
 // QuitClub.vue 닫음
 function closeModal() {
@@ -206,7 +250,6 @@ h1{
 .v-container {
     padding:0px;
 }
-
 
 
 .v-card-title {

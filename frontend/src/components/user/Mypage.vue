@@ -5,7 +5,7 @@
         
             <v-row>
                 <v-col cols="12" md="8">
-                    <v-text-field label="아이디" :value="memberInfo.loginId" outlined dense readonly></v-text-field>
+                    <v-text-field label="아이디" v-model="memberInfo.loginId" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
                     <v-btn color="#393646" style="margin-top:10px" @click="showChangePwdModal" block>비밀번호 수정</v-btn>
@@ -18,17 +18,17 @@
             
             <v-row>
                 <v-col cols="12">
-                    <v-text-field label="닉네임" :value="memberInfo.nickname" outlined dense></v-text-field>
+                    <v-text-field label="닉네임" v-model="memberInfo.nickname" outlined dense></v-text-field>
                 </v-col>
             </v-row>
             
             <v-row>
                 <v-col cols="4" md="4">
-                    <v-text-field label="이메일 아이디" :value="memberInfo.email.split('@')[0]" outlined dense></v-text-field>
+                    <v-text-field label="이메일 아이디" v-model="memberInfo.email.split('@')[0]" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="1" md="1" class="text-center">@</v-col>
                 <v-col cols="4" md="4">
-                    <v-text-field label="도메인" :value="memberInfo.email.split('@')[1]" outlined dense></v-text-field>
+                    <v-text-field label="도메인" v-model="memberInfo.email.split('@')[1]" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="3" md="3">
                     <v-btn color="#123421" style="margin-top:10px;" @click="showChangeEmailModal">이메일 수정</v-btn>
@@ -104,10 +104,10 @@ import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
 
 
+const followStore = useFollowStore();
 
 const router = useRouter();
 const memberId = ref("");
- const followStore = useFollowStore();
 const teamList = ref(null);
 const followList = ref(null);
 
@@ -131,11 +131,12 @@ watch(() => followStore.teamList, (newTeamList) => {
 },{immediate:true})
 
 
+const updatedPwd = ref("");
 
 const memberInfo = ref({
     id : "",
     loginId : "",
-    loginPwd : "",
+    loginPwd : updatedPwd.value,
     nickname : "",
     email : "",
     team : {
@@ -215,7 +216,8 @@ function showChangePwdModal() {
 function changePwd(newPwds){
     isPwdModalVisible.value = false;
     console.log(newPwds)
-    memberInfo.value.loginPwd = newPwds.password;
+    updatedPwd.value = newPwds.password;
+    memberInfo.value.loginPwd = updatedPwd.value;
     console.log("새로 바뀐 비밀번호!")
     console.log(memberInfo.value.loginPwd)
     
@@ -229,6 +231,7 @@ function showChangeEmailModal() {
 }
 
 function updateEmail(newEmail) {
+    console.log("마이페이지에서 update된 이메일을 받아오자!!!")
     console.log(newEmail.value)
     emailId.value = newEmail.value.split("@")[0];
     emailDomain.value = newEmail.value.split("@")[1];

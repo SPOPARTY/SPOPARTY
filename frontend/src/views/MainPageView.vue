@@ -8,7 +8,7 @@
         class="contents-section mx-12 my-8 pa-1">
         <!-- 비로그인 시 소개 출력 -->
         <v-col
-          v-if="!isLogin"
+          v-if="!isLogined"
           cols="12"
           class="my-1 mx-12">
           <Welcome />
@@ -44,11 +44,12 @@ import Welcome from '@/components/mainpage/Welcome.vue'
 import OpenViduView from './OpenViduView.vue'
 import { ref, onMounted, watch } from 'vue'
 
-import { useManagementStore } from '@/stores/member/managements'
+// import { useManagementStore } from '@/stores/member/managements'
 
-const managementStore = useManagementStore()
+// const managementStore = useManagementStore()
 
-const isLogin = ref(managementStore.isLogin)
+// const isLogin = ref(managementStore.isLogin)
+const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
 
 </script>
 

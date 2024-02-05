@@ -7,20 +7,20 @@
                 <v-tab value="three">팀 플레이어들</v-tab>
                 <!-- 새로고침 버튼 -->
                 <v-spacer></v-spacer>
-                <v-btn icon @click="refreshData" variant="text">
+                <v-btn :loading="loading" icon @click="refreshData" variant="text">
                     <v-icon>mdi-refresh</v-icon>
                 </v-btn>
             </v-tabs>
             <v-card-text>
                 <v-window v-model="tab">
                     <v-window-item value="one">
-                        <PartyRealTimeInfo :matchId="matchId" />
+                        <PartyRealTimeInfo/>
                     </v-window-item>
                     <v-window-item value="two">
-                        <PartyMatchHistory :matchId="matchId" />
+                        <PartyMatchHistory/>
                     </v-window-item>
                     <v-window-item value="three">
-                        <PartyTeamPlayers :matchId="matchId" />
+                        <PartyTeamPlayers/>
                     </v-window-item>
                 </v-window>
             </v-card-text>
@@ -29,21 +29,36 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import PartyMatchHistory from '@/components/party/PartyMatchHistory.vue'
 import PartyRealTimeInfo from '@/components/party/PartyRealTimeInfo.vue'
 import PartyTeamPlayers from '@/components/party/PartyTeamPlayers.vue'
 
-const props = defineProps({
-    matchId: String
-})
+import { useFootballStore } from '@/stores/football/football'
 
-const matchId = ref(props.matchId)
+const footballStore = useFootballStore()
+
+const fixtureId = ref(null)
+
+watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
+    fixtureId.value = newFixtureId
+}, { immediate: true })
+
 const tab = ref(null) // 현재 선택된 탭을 관리
+
+const loading = ref(false) // 새로고침 버튼 로딩 상태
 
 const refreshData = () => {
     // 여기에 데이터 새로고침 로직 구현
+    loading.value = true
+    console.log(footballStore.matchRealTimeData)
+    footballStore.matchRealTimeData = ["로딩 중"]
+    console.log(footballStore.matchRealTimeData)
+    footballStore.getMatchRealTimeData(fixtureId.value)
+    setTimeout(() => (loading.value = false, footballStore.matchRealTimeData = ["끝났다 로딩"]), 2000)
 }
+
+footballStore.matchRealTimeData = ["우측 버튼을 눌러 새로고침"]
 </script>
 
 <style scoped>

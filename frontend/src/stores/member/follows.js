@@ -10,7 +10,7 @@ export const useFollowStore = defineStore("follow", () => {
     const router = useRouter();
     const route = useRoute();
 
-
+    const memberId = sessionStorage.getItem("id") // 나중에 입력받은 memberId로 바꿔야함
     const teamList = ref(null);
     const followList = ref(null);
 
@@ -57,13 +57,18 @@ export const useFollowStore = defineStore("follow", () => {
         }
 
     }
-
-    const doFollow = (data) => {
+    // teamId를 받아서 memberId와 함께 팔로우 요청을 보내는 함수
+    const doFollow = (teamId) => {
+        const data = {
+            memberId: sessionStorage.getItem("id"),
+            teamId: teamId
+        }
         requestFollow(
             data,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.CREATE) {
+                    getFollowList(memberId);
                     alert("팔로우 완료!")
                 }
             },
@@ -78,13 +83,20 @@ export const useFollowStore = defineStore("follow", () => {
 
         )
     }
-
+    // teamId를 받아서 followTeamId를 찾아서 팔로우 취소 요청을 보내는 함수
     const doUnFollow = (teamId) => {
+        getFollowList(sessionStorage.getItem("id"));
+
+        const followTeamId = followList.value
+        .filter((club) => club.teamId === teamId)
+        .map((club) => club.id)[0];
+
         requestUnFollow(
-            teamId,
+            followTeamId,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
+                    getFollowList(memberId);
                     alert("팔로우 취소 완료")
                     
                 }
