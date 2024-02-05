@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
-import com.spoparty.api.party.dto.request.PartyCreateRequestDto;
-import com.spoparty.api.party.dto.request.PartyMemberRequestDto;
-import com.spoparty.api.party.dto.response.PartyResponseDTO;
+import com.spoparty.api.party.dto.request.PartyCreateRequestDTO;
+import com.spoparty.api.party.dto.request.PartyMemberRequestDTO;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
+import com.spoparty.api.party.dto.response.PartyResponseDTO;
 import com.spoparty.api.party.entity.PartyMemberProjection;
 import com.spoparty.api.party.service.PartyServiceImpl;
 
@@ -36,7 +36,7 @@ public class PartyController {
 	private final PartyServiceImpl partyService;
 
 	@PostMapping()
-	public ResponseEntity<?> createParty(@RequestBody @Valid PartyCreateRequestDto partyRequestDto) throws
+	public ResponseEntity<?> createParty(@RequestBody @Valid PartyCreateRequestDTO partyRequestDto) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
 		log.debug("파티 생성 API 시작");
@@ -86,7 +86,7 @@ public class PartyController {
 
 	@PostMapping("/{partyId}/participants")
 	public ResponseEntity<?> createParticipant(@PathVariable Long partyId,
-		@RequestBody PartyMemberRequestDto partyMemberRequestDto, @PathVariable String clubId) throws
+		@RequestBody PartyMemberRequestDTO partyMemberRequestDto, @PathVariable String clubId) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
 		log.debug("파티원 추가 API 시작");

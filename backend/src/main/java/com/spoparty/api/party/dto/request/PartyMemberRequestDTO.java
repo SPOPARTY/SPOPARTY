@@ -15,13 +15,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PartyCreateRequestDto {
-	@NotNull(message = "clubId가 없습니다.")
-	private Long clubId;
-
+public class PartyMemberRequestDTO {
 	@NotNull(message = "memberId가 없습니다.")
 	private Long memberId;
 
-	@NotNull(message = "openViduSessionInfo가 없습니다.")
-	private Map<String, Object> openViduSessionInfo = new HashMap<>();
+	@NotNull(message = "openViduConnectionInfo가 없습니다.")
+	private Map<String, Object> openViduConnectionInfo = new HashMap<>();
 }

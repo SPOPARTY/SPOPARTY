@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spoparty.api.club.entity.Club;
-import com.spoparty.api.club.entity.ClubMember;
 import com.spoparty.api.club.service.ClubServiceImpl;
 import com.spoparty.api.common.entity.RoleType;
 import com.spoparty.api.common.exception.CustomException;
@@ -20,15 +19,15 @@ import com.spoparty.api.football.response.PartyFixtureDTO;
 import com.spoparty.api.football.service.FixtureServiceImpl;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.service.MemberService;
-import com.spoparty.api.party.dto.request.PartyCreateRequestDto;
-import com.spoparty.api.party.dto.request.PartyMemberRequestDto;
-import com.spoparty.api.party.dto.response.PartyResponseDTO;
+import com.spoparty.api.party.dto.request.PartyCreateRequestDTO;
+import com.spoparty.api.party.dto.request.PartyMemberRequestDTO;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
+import com.spoparty.api.party.dto.response.PartyResponseDTO;
 import com.spoparty.api.party.entity.Party;
 import com.spoparty.api.party.entity.PartyMember;
+import com.spoparty.api.party.entity.PartyMemberProjection;
 import com.spoparty.api.party.repository.PartyMemberRepository;
 import com.spoparty.api.party.repository.PartyRepository;
-import com.spoparty.api.party.entity.PartyMemberProjection;
 
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -50,26 +49,31 @@ public class PartyServiceImpl implements PartyService {
 
 	@Override
 	@Transactional
-	public PartyResponseDTO createParty(PartyCreateRequestDto createDto) throws
+	public PartyResponseDTO createParty(PartyCreateRequestDTO createDTO) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
-		Club club = clubService.findClubById(createDto.getClubId());
+		Club club = clubService.findClubById(createDTO.getClubId());
 		validateNewParty(club); // 이미 파티가 존재하는 경우 체크
 
-		Member member = memberService.findById(createDto.getMemberId());
+		Member member = memberService.findById(createDTO.getMemberId());
 
-		Map<String, Object> openviduInfo = createDto.getOpenViduSessionInfo();
-		log.debug("before : openviduInfo - {}", openviduInfo);
-		openviduInfo.put("customSessionId", club.getId().toString()); // customSessionId 세션명을 clubId로 대체
-		log.debug("after : openviduInfo - {}", openviduInfo);
-
-		String openviduSessionId = openViduService.initializeSession(
-			createDto.getOpenViduSessionInfo()); // openvidu 세션 생성
+		// openvidu session 발급
+		String openviduSessionId = getOpenviduSessionId(createDTO, club);
 		log.debug("openviduSessionId - {}", openviduSessionId);
 
+		// party 엔티티 생성
 		Party party = Party.createParty(member, club, openviduSessionId);
 		partyRepository.save(party);
-		return findParty(party.getId());
+		return new PartyResponseDTO(party, null, 0); // partyMember 생성 api 호출 필요
+	}
+
+	private String getOpenviduSessionId(PartyCreateRequestDTO createDto, Club club) throws
+		OpenViduJavaClientException,
+		OpenViduHttpException {
+		Map<String, Object> openviduInfo = createDto.getOpenViduSessionInfo();
+		openviduInfo.put("customSessionId", club.getId().toString()); // customSessionId 세션명을 clubId로 대체
+		log.debug("after : openviduInfo - {}", openviduInfo);
+		return openViduService.initializeSession(createDto.getOpenViduSessionInfo());
 	}
 
 	@Override
@@ -79,8 +83,7 @@ public class PartyServiceImpl implements PartyService {
 		if (party.getFixture() != null) {
 			partyFixtureDTO = fixtureRepository.findPartyFixture(party.getFixture().getId());
 		}
-		int currentParticipants = countPartyMembers(partyId);
-		return new PartyResponseDTO(party, partyFixtureDTO, currentParticipants);
+		return new PartyResponseDTO(party, partyFixtureDTO, countPartyMembers(partyId));
 	}
 
 	public Party findPartyById(Long partyId) {
@@ -94,6 +97,7 @@ public class PartyServiceImpl implements PartyService {
 		log.debug("party - {}", party);
 		Fixture fixture = fixtureService.findFixtureById(updateDto.getFixtureId());
 		log.debug("fixture - {}", fixture);
+
 		party.setTitle(updateDto.getTitle());
 		party.setFixtureUrl(updateDto.getFixtureUrl());
 		party.setFixture(fixture);
@@ -110,7 +114,8 @@ public class PartyServiceImpl implements PartyService {
 		club.setParty(null);
 		party.softDelete();
 
-		List<PartyMember> partyMembers = partyMemberRepository.findAllByParty_Id(party.getId(), PartyMember.class); // 그룹원 삭제
+		List<PartyMember> partyMembers = partyMemberRepository.findAllByParty_Id(party.getId(),
+			PartyMember.class); // 그룹원 삭제
 		log.debug("삭제할 그룹원 - {}", partyMembers);
 		partyMembers.forEach(PartyMember::softDelete);
 		return party.getId();
@@ -123,11 +128,11 @@ public class PartyServiceImpl implements PartyService {
 
 	@Override
 	@Transactional
-	public PartyMemberProjection createPartyMember(Long partyId, PartyMemberRequestDto requestDto) throws
+	public PartyMemberProjection createPartyMember(Long partyId, PartyMemberRequestDTO requestDTO) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
 		Party party = findPartyById(partyId);
-		Member member = memberService.findById(requestDto.getMemberId());
+		Member member = memberService.findById(requestDTO.getMemberId());
 
 		// 유효성 체크
 		validateNewPartyMember(party, member); // 이미 존재하는 멤버인지 확인
@@ -135,7 +140,8 @@ public class PartyServiceImpl implements PartyService {
 
 		// openvidu 커넥션 토큰 발급
 		log.debug("openviduSessionId - {}", party.getOpenviduSessionId());
-		String openviduToken = openViduService.createConnection(party.getOpenviduSessionId(), requestDto.getOpenViduConnectionInfo());
+		String openviduToken = openViduService.createConnection(party.getOpenviduSessionId(),
+			requestDTO.getOpenViduConnectionInfo());
 		log.debug("openviduToken - {}", openviduToken);
 
 		RoleType role = RoleType.guest;
@@ -151,7 +157,8 @@ public class PartyServiceImpl implements PartyService {
 
 	@Override
 	public <T> T findPartyMember(Long partyMemberId, Class<T> type) {
-		return partyMemberRepository.findById(partyMemberId, type).orElseThrow(() -> new CustomException(PARTY_MEMBER_NOT_FOUND));
+		return partyMemberRepository.findById(partyMemberId, type)
+			.orElseThrow(() -> new CustomException(PARTY_MEMBER_NOT_FOUND));
 	}
 
 	@Override
@@ -173,7 +180,8 @@ public class PartyServiceImpl implements PartyService {
 	}
 
 	private void validateNewPartyMember(Party party, Member member) {
-		Optional<PartyMemberProjection> partyMember = partyMemberRepository.findByParty_IdAndMember_Id(party.getId(), member.getId(), PartyMemberProjection.class);
+		Optional<PartyMemberProjection> partyMember = partyMemberRepository.findByParty_IdAndMember_Id(party.getId(),
+			member.getId(), PartyMemberProjection.class);
 		if (partyMember.isPresent()) {
 			throw new CustomException(ALREADY_PARTY_MEMBER);
 		}
