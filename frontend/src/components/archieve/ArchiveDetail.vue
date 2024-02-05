@@ -27,9 +27,9 @@
             </v-card-subtitle>
             <v-card-actions>
                 <v-spacer/>
-                <v-btn v-if="props.detail.file" color="blue darken-1"  
+                <v-btn v-if="props.detail.file" color="blue darken-1"
                         @click="downloadFile(props.detail.file.url)">
-                    다운로드
+                        다운로드
                 </v-btn>
                 <v-btn v-if="props.detail.member.id == memberId" color="red darken-2" text @click="deleteProcess(props.detail.id)">삭제</v-btn>
             </v-card-actions>
