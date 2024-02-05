@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.spoparty.api.club.entity.Club;
+import com.spoparty.api.member.entity.Member;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class ClubResponseDTO {
 	private Integer maxParticipants;
 	private Integer currentParticipants;
 	private Long partyId;
+	private Long hostId;
 	private String hostName;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdTime;
@@ -38,9 +40,12 @@ public class ClubResponseDTO {
 		this.updatedTime = entity.getUpdatedTime();
 
 		try {
-			hostName = entity.getHostMember().getNickname();
+			Member hostMember = entity.getHostMember();
+			hostId = hostMember.getId();
+			hostName = hostMember.getNickname();
 		} catch (EntityNotFoundException e) {
 			log.debug("entity.getHostMember() EntityNotFoundException 발생!!!");
+			hostId = null;
 			hostName = null;
 		}
 
