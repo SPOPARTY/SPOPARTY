@@ -9,9 +9,11 @@
                     <v-row class="selector">
                          <!-- 파티 타이틀 선택 -->
                          <v-col cols="6" class="party pa-2">
-                              <v-card class="select-card">
-                                   <v-card-text>
-                                        <v-text-field v-model="titleModel" :clearable="isTitleEditing"
+                              <!-- <v-card >
+                                   <v-card-text> -->
+                                        <v-text-field v-model="titleModel" class="select-field" 
+                                             :clearable="isTitleEditing" 
+                                             variant="outlined"
                                              :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
                                              :readonly="!isTitleEditing" persistent-hint hide-details="auto"
                                              :label="`타이틀  — ${isMatchEditing ? 'Editable' : 'Readonly'}`">
@@ -24,19 +26,16 @@
                                                   </v-slide-x-reverse-transition>
                                              </template>
                                         </v-text-field>
-                                   </v-card-text>
-                              </v-card>
+                                   <!-- </v-card-text>
+                              </v-card> -->
                          </v-col>
                          <!-- 경기 선택 -->
                          <v-col cols="6" class="match pa-2">
-                              <v-card class="select-card">
-                                   <!-- <v-card-title class="text-h5 font-weight-regular bg-blue-grey">
-                                   Profile
-                              </v-card-title> -->
-                                   <v-card-text>
+                              <!-- <v-card class="select-field">
+                                   <v-card-text> -->
                                         <!-- <div class="text-caption pa-3">시청 중인 경기를 선택하세요</div> -->
                                         <!-- {{ matchModel }} -->
-                                        <v-autocomplete v-model="matchModel"
+                                        <v-autocomplete v-model="matchModel" class="select-field"
                                              :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
                                              :items="matches" :item-title="getMatchTitle" item-value="fixtureId"
                                              :readonly="!isMatchEditing"
@@ -52,8 +51,8 @@
                                                   </v-slide-x-reverse-transition>
                                              </template>
                                         </v-autocomplete>
-                                   </v-card-text>
-                              </v-card>
+                                   <!-- </v-card-text>
+                              </v-card> -->
                          </v-col>
                     </v-row>
                </v-col>
@@ -365,7 +364,7 @@ getMatchWatchable(startDate.value, endDate.value);
 }
 
 .match-section {
-     background-color: grey;
+     /* background-color: #333D51; */
      min-width: 800px;
      /* 최소 너비 유지 */
      width: 60vw;
@@ -378,6 +377,7 @@ getMatchWatchable(startDate.value, endDate.value);
 }
 
 .selector {
+     margin-top: 10px;
      min-height: 45px;
      height: 12vh;
 
@@ -397,7 +397,7 @@ getMatchWatchable(startDate.value, endDate.value);
 }
 
 .match-video {
-     background-color: lightslategray;
+     background-color: lightgrey;
      min-height: 400px;
 }
 
@@ -415,6 +415,7 @@ getMatchWatchable(startDate.value, endDate.value);
      width: 30vw;
      /* 채팅 섹션의 높이를 브라우저 창의 높이와 맞춤 */
      /* height: 100vh;  */
+     border : 1px solid #CBD0D8;
 }
 
 .cam-video {
@@ -489,7 +490,8 @@ getMatchWatchable(startDate.value, endDate.value);
 .button-section button {
      width: 400px;
 }
-.select-card > .v-card-text {
+.select-field > .v-card-text {
+     color: #333D51;
      height: 90px;
      padding: 0;
 }
