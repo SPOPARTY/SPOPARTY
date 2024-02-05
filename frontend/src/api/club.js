@@ -15,8 +15,8 @@ function requestCreateClubs(data,success,fail) {
 }
 
 // 그룹 조회
-function requestClubInfo(memberId,success,fail) {
-    local.get(`${API_URL}/${memberId}`).then(success).catch(fail);
+function requestClubInfo(clubId,success,fail) {
+    local.get(`${API_URL}/${clubId}`).then(success).catch(fail);
 }
 
 // 그룹명 수정(그룹장 권한)
@@ -36,7 +36,7 @@ function requestClubInviteLink(clubId, success, fail) {
 
 // 그룹원 목록 조회(닉네임, 방장)
 function requestClubMemberList(clubId, success, fail) {
-    local.get(`${API_URL}/${clubId}/participants`).then(success).catch(fail);
+    local.get(`${API_URL}/${clubId}/clubmembers`).then(success).catch(fail);
 }
 
 // 그룹원 초대
@@ -45,13 +45,18 @@ function requestClubInvite(data, success,fail) {
 }
 
 // 그룹장 수정(그룹장 권한)
-function requestUpdateClubLeader(clubId, data,success,fail) {
-    local.put(`${API_URL}/${clubId}/host`,data).then(success).catch(fail);
+function requestUpdateClubLeader(clubId, clubMemberId,success,fail) {
+    local.put(`${API_URL}/${clubId}/host/${clubMemberId}`).then(success).catch(fail);
 }
 
 // 그룹 떠나기
 function requestDeleteClubMember(clubId, success, fail) {
-    local.delete(`${API_URL}/${clubId}/participants`).then(success).catch(fail);
+    local.delete(`${API_URL}/${clubId}/clubmembers`).then(success).catch(fail);
+}
+
+// 그룹원 강퇴
+function requestBanClubMember(clubId,clubMemberId,success,fail) {
+    local.delete(`${API_URL}/${clubId}/clubmembers/${clubMemberId}`).then(success).catch(fail);
 }
 
 
@@ -67,4 +72,5 @@ export {
     requestClubInvite,
     requestUpdateClubLeader,
     requestDeleteClubMember,
+    requestBanClubMember,
 }

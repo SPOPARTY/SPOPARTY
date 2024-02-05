@@ -1,9 +1,10 @@
 <template>
     <v-dialog 
         v-model="modalVisible" 
-        persistent 
         max-width="600px"
         max-height="500px"
+        @click:outside="closeModal"
+        persistent 
         >
         <v-card>
             <v-row>
@@ -16,7 +17,6 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-card-text class="text-right"></v-card-text>
             <v-card-item class="text-center" v-if="props.detail.file">
                 <v-img :src="props.detail.file.url" :alt="props.detail.title"/>
             </v-card-item>
@@ -27,8 +27,11 @@
             </v-card-subtitle>
             <v-card-actions>
                 <v-spacer/>
-                <v-btn v-if="props.detail.file" color="blue darken-1"  :href="props.detail.file.url" downlaod>다운로드</v-btn>
-                <v-btn color="green darken-2" text @click="closeModal">취소</v-btn>
+                <v-btn v-if="props.detail.file" color="blue darken-1"  
+                        @click="downloadFile(props.detail.file.url)">
+                    다운로드
+                </v-btn>
+                <v-btn v-if="props.detail.member.id == memberId" color="red darken-2" text @click="deleteProcess(props.detail.id)">삭제</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -40,6 +43,12 @@ import {useRoute, useRouter} from 'vue-router';
 import { useArchiveStore } from '@/stores/club/archives';
 import {formatDateTime} from "@/util/tools.js"
 
+const archiveStore = useArchiveStore();
+
+const route = useRoute();
+
+const memberId = sessionStorage.getItem("id")
+const clubId = route.params.clubId;
 
 // Detail on/off
 const modalVisible = ref(true);
@@ -53,9 +62,28 @@ const emits = defineEmits([
 ])
 
 // 다운로드 하기
-// 추후 작성
+function downloadFile(url) {
+    console.log(url)
+    console.log(url.split("/")[3]);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = url.split("/")[3];
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
 
-// Detail off
+
+// 추억 삭제 process
+const confirmDelete = ref(false)
+
+function deleteProcess(archiveId) {
+    if(confirm("우리들의 추억이 사라집니다") === true) {
+        archiveStore.deleteArchive(archiveId,clubId)
+    }
+}
+
+// ArchiveDetail.vue 닫기
 function closeModal() {
     modalVisible.value = false;
     emits('detail-close')

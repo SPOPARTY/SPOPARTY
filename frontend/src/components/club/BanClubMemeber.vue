@@ -53,16 +53,18 @@
             </v-card-text>
             <v-card-actions class="buttons">
                 <v-spacer></v-spacer>
-                <v-btn color="red" @click="showBanConfirm">진행시켜</v-btn>
+                <v-btn color="red" @click="banMember">진행시켜</v-btn>
                 <v-btn color="green" @click="closeModal"><h3>미워도 다시 한 번</h3></v-btn>
             </v-card-actions>
         </v-card>
-
     </v-dialog>
 </template>
 
 <script setup>
 import {ref, computed, onMounted} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import { useClubStore } from '@/stores/club/clubs';
+
 
 const props = defineProps({
     clubMemberList:Array
@@ -72,6 +74,11 @@ const props = defineProps({
 const emits = defineEmits([
     'ban-member-close'
 ])
+
+const clubStore = useClubStore();
+
+ const route = useRoute();
+ const clubId = route.params.clubId;
 
 // BanClubMember 모달 on/off
 const modalVisible = ref(true)
@@ -84,12 +91,14 @@ const bannedMember = ref({
     memberId : '',
     memberNickName : '',
     role : '',
+    clubMemberId : '',
 });
 
 function selectMember(member) {
     bannedMember.value.memberId = member.memberId;
     bannedMember.value.memberNickName = member.memberNickName;
     bannedMember.value.role = member.role;
+    bannedMember.value.clubMemberId = member.clubMemberId;
 }
 
 // 강퇴하기 직전 재확인 모달
@@ -103,7 +112,10 @@ function showBanConfirm() {
 
 // 강퇴 api
 function banMember() {
-    
+    if(confirm("해당 그룹원을 강퇴하시겠습니까?") === true){
+        clubStore.banClubMember(clubId, bannedMember.value.clubMemberId);
+    }
+    closeModal();
 }
 
 function closeModal() {

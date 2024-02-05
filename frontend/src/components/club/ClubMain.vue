@@ -11,7 +11,7 @@
                 />
             </v-col>
         </v-row>
-    <BoardPreview/>
+        <BoardPreview/>
     </v-container>
 </template>
 
