@@ -3,6 +3,7 @@
         <v-row class="pa-4" align="center" justify="start" no-gutters style="background-color: #E0E0E0;">
             <v-col cols="10">
                 <div class="headline">{{ clubInfo.name }}</div>
+                <div class="club-host-name">그룹장 : {{ clubInfo.hostName }}</div>
                 <div>정원 - {{clubInfo.currentParticipants}}/{{ clubInfo.maxParticipants }}</div>
             </v-col>
             <v-col cols="2">

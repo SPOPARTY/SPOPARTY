@@ -4,8 +4,8 @@ import { defineStore } from 'pinia';
 
 import {httpStatusCode} from "@/util/http-status"
 
-import {requestRecentClubs, requestCreateClubs, requestClubInfo, requestUpdateClubName, requestDeleteClub,
-    requestClubInviteLink, requestClubMemberList, requestClubInvite, requestUpdateClubLeader, requestDeleteClubMember} from "@/api/club"
+import {requestRecentClubs, requestCreateClubs, requestClubInfo, requestUpdateClubName, requestDeleteClub, requestClubInviteLink, 
+    requestClubMemberList, requestClubInvite, requestUpdateClubLeader, requestDeleteClubMember,requestBanClubMember} from "@/api/club"
 
 
 export const useClubStore = defineStore("club",() => {
@@ -160,35 +160,40 @@ export const useClubStore = defineStore("club",() => {
     }
 
     // 그룹원 초대
-    const clubInvite = (data) => {
-        return new Promise((resolve,reject) => {
-            requestClubInvite(
-                data,
-                (res) => {
-                    console.log(res)
-                    if (res.data.status === httpStatusCode.OK) {
-                        console.log("******히히 그룹원 초대 후 생성*********")
-                        resolve(true)
-                    }
-                },
-                (error) => {
-                    if (error.response.status === httpStatusCode.BAD_REQUEST){
-                        console.log(error)
-                        alert("")
-                        reject("그룹원 초대 실패!")
-                    }
+    const clubInvite = (data,memberId) => {
+        requestClubInvite(
+            data,
+            (res) => {
+                if (memberId === null) {
+                    alert("동료가 되기 전 로그인부터 해라!")
+                    window.location.replace("/login") // 로그인으로 보낸 다음에 다시 원래 요청으로 돌아오고 싶다.
+                    return;
                 }
-            )
-        }) 
-        
+                console.log(res)
+                if (res.data.status === httpStatusCode.CREATE) {
+                    console.log("******히히 그룹원 초대 후 생성*********")
+                    const clubId = res.data.data.clubId
+                    alert("너, 동료가 되었다!")
+                    setTimeout(() => {
+                        window.location.replace(`/club/${clubId}`)
+                    }, 1000);
+                }
+            },
+            (error) => {
+                if (error.response.status === httpStatusCode.BAD_REQUEST){
+                    console.log(error)
+                    reject("그룹원 초대 실패!")
+                }
+            }
+        )
     }
 
-    // 그룹장 물려주기(그룹장 권한)
-    const updateClubLeader = (clubId, data) => {
+    // 그룹장 물려주기/변경 (그룹장 권한)
+    const updateClubLeader = (clubId, clubMemberId) => {
         return new Promise((success,fail) => {
             requestUpdateClubLeader(
                 clubId,
-                data,
+                clubMemberId,
                 (res) => {
                     console.log("******히히 그룹장 물려주기*********")
                     console.log(res)
@@ -225,11 +230,30 @@ export const useClubStore = defineStore("club",() => {
         })
     }
 
+    // 그룹원 강퇴(그룹장 권한)
+    const banClubMember = (clubId, clubMemberId) => {
+        requestBanClubMember(
+            clubId,clubMemberId,
+            (res) => {
+                console.log(res)
+                if (res.data.status === httpStatusCode.OK) {
+                    console.log("******히히 그룹원 강퇴*******")
+                    alert("강퇴 완료!")
+                    getClubInfo(clubId)
+                    getClubMemberList(clubId)
+                }
+            },
+            (error) => {
+                console.error(error)
+            }
+        )
+    }
+
 
     return {
         myClubs,createdClub, clubInfo, clubInviteLink, clubMemberList,
         requestClub,createClubs,getClubInfo,updateClub, 
         deleteClub,getClubInviteLink,getClubMemberList,clubInvite,
-        updateClubLeader,leaveClub,
+        updateClubLeader,leaveClub,banClubMember,
     }
 })
