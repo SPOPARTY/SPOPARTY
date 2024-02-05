@@ -13,14 +13,14 @@
                                    <v-card-text> -->
                                         <v-text-field v-model="titleModel" class="select-field" 
                                              :clearable="isTitleEditing" 
-                                             variant="outlined"
-                                             :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
+                                             variant="outlined" 
+                                             :hint="!isTitleEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
                                              :readonly="!isTitleEditing" persistent-hint hide-details="auto"
-                                             :label="`타이틀  — ${isMatchEditing ? 'Editable' : 'Readonly'}`">
+                                             :label="`타이틀  — ${isTitleEditing ? 'Editable' : 'Readonly'}`">
                                              <template v-slot:append>
                                                   <v-slide-x-reverse-transition mode="out-in">
                                                        <v-icon :key="`icon-${isTitleEditing}`"
-                                                            :color="isTitleEditing ? 'success' : 'info'"
+                                                            :color="isTitleEditing ? 'info' : 'success'"
                                                             :icon="isTitleEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
                                                             @click="isTitleEditing = !isTitleEditing"></v-icon>
                                                   </v-slide-x-reverse-transition>
@@ -36,16 +36,16 @@
                                         <!-- <div class="text-caption pa-3">시청 중인 경기를 선택하세요</div> -->
                                         <!-- {{ matchModel }} -->
                                         <v-autocomplete v-model="matchModel" class="select-field"
-                                             :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
+                                             :hint="!isMatchEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
                                              :items="matches" :item-title="getMatchTitle" item-value="fixtureId"
-                                             :readonly="!isMatchEditing"
+                                             :readonly="!isMatchEditing" :clearable="isTitleEditing"
                                              :label="`경기  — ${isMatchEditing ? 'Editable' : 'Readonly'}`" auto-select-first
-                                             clearable variant="outlined" persistent-hint prepend-icon="mdi-soccer"
+                                             variant="outlined" persistent-hint prepend-icon="mdi-soccer"
                                              @update:menu="onMatchChange">
                                              <template v-slot:append>
                                                   <v-slide-x-reverse-transition mode="out-in">
                                                        <v-icon :key="`icon-${isMatchEditing}`"
-                                                            :color="isMatchEditing ? 'success' : 'info'"
+                                                            :color="isMatchEditing ? 'info' : 'success'"
                                                             :icon="isMatchEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
                                                             @click="isMatchEditing = !isMatchEditing"></v-icon>
                                                   </v-slide-x-reverse-transition>
