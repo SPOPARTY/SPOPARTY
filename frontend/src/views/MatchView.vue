@@ -42,6 +42,9 @@ import { differenceInCalendarDays } from 'date-fns';
 const selectedDate = ref(new Date());
 const showDatePicker = ref(false);
 
+// console.log(selectedDate.value);
+// "2024-01-31T05:46:09.320Z"
+
 // 날짜 표시를 위한 계산된 속성
 const displayedDates = computed(() => {
      let dates = [];

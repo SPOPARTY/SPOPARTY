@@ -42,9 +42,14 @@ import MatchNear from '@/components/mainpage/MatchNear.vue'
 import CheerVote from '@/components/mainpage/CheerVote.vue'
 import Welcome from '@/components/mainpage/Welcome.vue'
 import OpenViduView from './OpenViduView.vue'
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 
-const isLogin = ref(false)
+import { useManagementStore } from '@/stores/member/managements'
+
+const managementStore = useManagementStore()
+
+const isLogin = ref(managementStore.isLogin)
+
 </script>
 
 <style scoped></style>

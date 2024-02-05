@@ -14,10 +14,10 @@
         <v-col cols="10" v-for="league in filteredLeagues" :key="league.id">
           <v-card class="d-flex pa-6 flex-row align-center league-card">
             <v-img :src="league.logo" contain class="league-logo ml-12"></v-img>
-            <v-card-title class="flex-grow-1" :style="{ fontSize: '2rem'}" align="center">{{ league.name }}</v-card-title>
+            <v-card-title class="flex-grow-1" :style="{ fontSize: '2rem'}" align="center">{{ league.nameKr }}</v-card-title>
             <v-card-actions>
-              <v-btn class="mr-12" color="primary" :to="`/league/${league.id}`" icon>
-                <v-icon class="btn-detail" size="50px" color="">mdi-arrow-right-bold-circle</v-icon>
+              <v-btn class="mr-12" color="primary" :to="`/league/${league.leagueId}`" icon>
+                <v-icon class="btn-detail" size="50px" color="">mdi-arrow-right-circle-outline</v-icon>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -35,33 +35,39 @@
   
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
+
+import { useFootballStore } from '@/stores/football/football';
+
+const footballStore = useFootballStore();
+
+const { getLeagueList } = footballStore;
+
+getLeagueList();
+
+const leagues = ref([]);
+
+watch(() => footballStore.leagueList, (leagueList) => {
+    leagues.value = leagueList;
+});
+
+console.log(leagues.value);
+
 
 // 예시 데이터
-const leagues = ref([
-    {
-        id: 1,
-        name: '프리미어 리그',
-        logo: '/premier_league.png'
-    },
-    {
-        id: 2,
-        name: '라 리가',
-        logo: '/la_liga.svg',
-    },
-    {
-        id: 3,
-        name: '분데스리가',
-        logo: '/bundesliga.svg',
-    }
-])
+// leagues
+// {
+//     "leagueId": 1,
+//     "nameKr": "챔피언십",
+//     "logo": "https://media.api-sports.io/football/leagues/40.png"
+// }
 
 const search = ref('');
 
 // 리그 검색 필터링
 const filteredLeagues = computed(() => {
   return leagues.value.filter(league => 
-    league.name.toLowerCase().includes(search.value.toLowerCase())
+    league.nameKr.toLowerCase().includes(search.value.toLowerCase())
   );
 });
 
@@ -101,6 +107,7 @@ h1 {
 
 .search-section {
   background-color: white;
+  border-radius: 4px;
 }
 
 </style>

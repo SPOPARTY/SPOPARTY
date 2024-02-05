@@ -69,6 +69,11 @@
                </v-col>
           </v-row>
           <!-- 경기정보영역 -->
+          <v-row>
+               <v-col cols="12">
+                    <Chat></Chat>
+               </v-col>
+          </v-row>
           <v-row class="contents-section pa-3">
                <v-col cols="12">
                     <PartyMatch :match-id="matchId"/>
@@ -81,6 +86,7 @@
 import { ref } from 'vue'
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
+import Chat from '../components/party/Chat.vue';
 
 // 임시 경기 id
 const matchId = ref("1")

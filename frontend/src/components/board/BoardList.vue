@@ -23,10 +23,10 @@
                 />
                 <v-card @click="showBoardDetail(post)" >
                     <v-card-title>{{ post.title }}</v-card-title>
-                    <v-card-subtitle>{{ post.nickname }}</v-card-subtitle>
-                    <v-card-text>{{ post.created_time }}</v-card-text>
+                    <v-card-subtitle>{{ post.member.nickname }}</v-card-subtitle>
+                    <v-card-text v-if="post.file">{{ formatDateTime(post.file.updatedTime) }}</v-card-text>
                     <v-card-text>{{ post.content }}</v-card-text>
-                    <v-card-item> <img :src="post.img" :alt="post.title"></v-card-item>
+                    <v-card-item v-if="post.file"> <img class="thumbnail" :src="post.file.url" :alt="post.title"></v-card-item>
                 </v-card>
             </v-col>
         </v-row>
@@ -39,26 +39,29 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted,watch} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
-import BoardDetail from '@/components/board/BoardDetail.vue';
+import {useBoardStore} from '@/stores/club/boards';
+import {formatDateTime} from "@/util/tools.js"
 
-const posts = ref([
-    {id: 1,title : "제목 1", nickname : "글쓴이 1" , created_time : "작성일 1", content:"작성내용 1", img : "/never_heard.jpg"},
-    {id: 2,title : "제목 2", nickname : "글쓴이 2" , created_time : "작성일 2", content:"작성내용 2", img : "/never_heard.jpg"},
-    {id: 3,title : "제목 3", nickname : "글쓴이 3" , created_time : "작성일 3", content:"작성내용 3", img : "/never_heard.jpg"},
-    {id: 4,title : "제목 4", nickname : "글쓴이 4" , created_time : "작성일 4", content:"작성내용 4", img : "/never_heard.jpg"},
-    {id: 5,title : "제목 5", nickname : "글쓴이 5" , created_time : "작성일 5", content:"작성내용 5", img : "/never_heard.jpg"},
-    {id: 6,title : "제목 6", nickname : "글쓴이 6" , created_time : "작성일 6", content:"작성내용 6", img : "/never_heard.jpg"},
-    {id: 7,title : "제목 7", nickname : "글쓴이 7" , created_time : "작성일 7", content:"작성내용 7", img : "/never_heard.jpg"},
-    {id: 8,title : "제목 8", nickname : "글쓴이 8" , created_time : "작성일 8", content:"작성내용 8", img : "/never_heard.jpg"},
-    {id: 9,title : "제목 9", nickname : "글쓴이 9" , created_time : "작성일 9", content:"작성내용 9", img : "/never_heard.jpg"},
-])
+import BoardDetail from '@/components/board/BoardDetail.vue';
+const boardStore = useBoardStore();
 
 const router = useRouter();
 const routes = useRoute();
 
 const clubId = routes.params.clubId;
+
+onMounted(() => {
+    boardStore.getBoardList(clubId);
+})
+
+
+const posts = ref([]);
+watch(() => boardStore.boardList,(newBoardList) => {
+    posts.value = newBoardList;
+})
+
 
 function writeBoard() {
     router.push(`/club/${clubId}/board/write`)
@@ -80,9 +83,6 @@ const showBoardDetail = (post) => {
     isDetailVisible.value  = true;
 }
 
-const deletePost = (postId) => {
-    posts.value = posts.value.filter(p => p.id != postId)
-}
 
 
 
@@ -95,6 +95,9 @@ const deletePost = (postId) => {
     top : 50%;
 }
 
-
+.thumbnail{
+    width : 100%;
+    height: 100%;
+}
 
 </style>
