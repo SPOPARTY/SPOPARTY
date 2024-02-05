@@ -1,5 +1,5 @@
 <template>
-    <h1>그룹 가입 진행중.....</h1>
+    <h1 style="color:white">그룹 가입 진행중.....</h1>
 </template>
 
 <script setup>
@@ -16,31 +16,19 @@ const managementStore = useManagementStore();
 
 onMounted(() => {
     alert("너, 동료가 되어라!!!!!!")
-    const memberId = sessionStorage.getItem("id");
+    const memberId = sessionStorage.getItem("id"); // 로그인 여부 판단
     // const inviteUrl = route.path; // 로컬에서 시험이 안됨 ㅠ
     const param = route.params.inviteUrl;
-    const inviteUrl = `${VITE_REST_API}/${param}`;
-    const clubId = route.params.inviteUrl.split("_")[0];
+    const inviteUrl = `https://i10a802.p.ssafy.io/invite/${param}`;
     console.log(inviteUrl)
 
     const data = JSON.stringify({
-        "memberId" : memberId,
         "inviteUrl" : inviteUrl
     })
 
-    if (memberId === null) {
-        alert("동료가 되기 전 로그인부터 해라!")
-        window.location.replace("/login") // 로그인으로 보낸 다음에 다시 원래 요청으로 돌아오고 싶다.
-    }
-    else {
-        const isInvited = clubStore.clubInvite(data)
-        if (isInvited){
-            alert("너, 동료가 되었다!")
-        }
-        setTimeout(() => {
-            window.location.replace(`/club/${clubId}`)
-        }, 1000);
-    }
+
+    clubStore.clubInvite(data,memberId)
+
 })
 
 

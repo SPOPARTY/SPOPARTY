@@ -163,6 +163,7 @@ const nextLeader = ref({
     memberId : '',
     memberNickName : '',
     role : '',
+    clubMemberId : '',
 });
 
 
@@ -172,7 +173,8 @@ function selectLeader(member) {
     }
     nextLeader.value.memberId = member.memberId;
     nextLeader.value.memberNickName = member.memberNickName;
-    nextLeader.value.role = member.role
+    nextLeader.value.role = member.role;
+    nextLeader.value.clubMemberId = member.clubMemberId;
     // console.log("*****다음 그룹장은???*******")
     // console.log(nextLeader.value)
 }
@@ -192,14 +194,12 @@ const goodBye = ref(false)
 
 async function quitClub() {
     try{
-        const data = {
-            currentHostId : loginUser,
-            nextHostId : nextLeader.value.memberId,
-        }
+        let nextHostId = nextLeader.value.clubMemberId;
         // console.log("그룹인원은??",clubMemberList.value)
         // console.log("그룹장인가? -> ",isHost)
+        console.log("차세대 리더의 clubMemberId -> ",nextHostId)
         if (isHost && clubMemberList.value.length !== 1){ // 그룹장이면서 그룹 인원이 2명 이상일 때는 그룹장 넘기기 진행
-            const takeOverSuccess = await clubStore.updateClubLeader(clubId,data);
+            const takeOverSuccess = await clubStore.updateClubLeader(clubId,nextHostId);
             // console.log("그룹장 잘 넘겼나?? --> ",takeOverSuccess)
             if (!takeOverSuccess) {
                 alert("그룹장 넘기기 실패!")
