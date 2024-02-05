@@ -1,4 +1,4 @@
-package com.spoparty.api.club.dto;
+package com.spoparty.api.club.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,9 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ClubRequestDto {
-	@NotNull(message = "memberId가 없습니다.")
-	private Long memberId;
+public class ClubRequestDTO {
 	@NotNull(message = "그룹명이 없습니다.")
 	private String name;
 }

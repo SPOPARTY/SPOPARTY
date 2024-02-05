@@ -32,7 +32,7 @@
           <p class="text-center">
             <button
               class="btn btn-lg btn-success"
-              @click="joinSession()">
+              @click="joinSession">
               Join!
             </button>
           </p>
@@ -93,21 +93,6 @@ const subscribers = ref([])
 
 let mySessionId = 'SessionA'
 let myUserName = 'Participant' + Math.floor(Math.random() * 100)
-
-const sendMessage = () => {
-  session.value
-    .signal({
-      data: '채팅 전송하기', // Any string (optional)
-      to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-      type: 'chat', // The type of message (optional)
-    })
-    .then(() => {
-      console.log('Message successfully sent')
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-}
 
 const joinSession = () => {
   OV.value = new OpenVidu()
@@ -224,7 +209,10 @@ const createSession = async (sessionId) => {
 const createToken = async (sessionId) => {
   console.log(sessionId)
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'api/openvidu/sessions/' + sessionId + '/connections',
+    APPLICATION_SERVER_URL +
+      'api/openvidu/sessions/' +
+      sessionId +
+      '/connections',
     {},
     {
       headers: { 'Content-Type': 'application/json' },

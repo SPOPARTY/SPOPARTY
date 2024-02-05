@@ -102,7 +102,7 @@ import {useFollowStore} from '@/stores/member/follows'
 import SetNewPwd from '@/components/user/SetNewPwd.vue';
 import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
-import FollowList from '@/components/user/FollowList.vue';
+
 
 const followStore = useFollowStore();
 
