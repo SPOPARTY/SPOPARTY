@@ -9,7 +9,7 @@
                     <v-row class="selector">
                          <!-- 파티 타이틀 선택 -->
                          <v-col cols="6" class="party pa-2">
-                              <v-card>
+                              <v-card class="select-card">
                                    <v-card-text>
                                         <v-text-field v-model="titleModel" :clearable="isTitleEditing"
                                              :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
@@ -29,7 +29,7 @@
                          </v-col>
                          <!-- 경기 선택 -->
                          <v-col cols="6" class="match pa-2">
-                              <v-card>
+                              <v-card class="select-card">
                                    <!-- <v-card-title class="text-h5 font-weight-regular bg-blue-grey">
                                    Profile
                               </v-card-title> -->
@@ -71,10 +71,11 @@
                               <span>파티 초대</span>
                          </v-col>
                          <!-- 채팅창 -->
-                         <v-col cols="12" v-if="showChat" class="chat-window" :style="{ height: camVideoHeight }">
+                         <v-col cols="12" v-if="showChat" class="chat-window" :style="{ height: chatDivHeight }">
                               <div class="chat-content">
                                    <!-- 채팅 내용을 여기에 표시 -->
                                    채팅 내용이 여기에 표시됩니다.
+                                   <Chat/>
                               </div>
                          </v-col>
                     </v-row>
@@ -84,7 +85,7 @@
                     <!-- 버튼 영역 -->
                     <v-row class="button-section">
                          <v-col cols="3">
-                              <v-btn color="secondary">
+                              <v-btn color="secondary" @click="dpi">
                                    <v-icon size="x-large">mdi-camera-outline</v-icon>
                               </v-btn>
                          </v-col>
@@ -121,11 +122,11 @@
                </v-col>
           </v-row>
           <!-- 경기정보영역 -->
-          <v-row>
+          <!-- <v-row>
                <v-col cols="12">
                     <Chat></Chat>
                </v-col>
-          </v-row>
+          </v-row> -->
           <v-row class="contents-section pa-3">
                <v-col cols="12">
                     <PartyMatch />
@@ -136,16 +137,62 @@
  
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router';
 import { format, set, parseISO, addDays } from 'date-fns';
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
 import Chat from '../components/party/Chat.vue';
 
 import { useFootballStore } from '@/stores/football/football'
+import { usePartyStore } from '@/stores/club/party/party'
+
+const route = useRoute()
+const router = useRouter()
 
 const footballStore = useFootballStore()
+const partyStore = usePartyStore()
 
 const { getMatchWatchable, findTeamIdsByFixtureId } = footballStore
+const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember, 
+     getPartyParticipant, deletePartyMember } = partyStore
+
+
+//// 파티 정보 수정 로직
+// 파티 입장 및 퇴장
+const clubId = route.params.clubId;
+const partyId = route.params.partyId;
+const partyMemberList = ref(partyStore.partyMemberList);
+
+watch(() => partyStore.partyMemberList, (newPartyMembers) => {
+     partyMemberList.value = newPartyMembers;
+}, { immediate: true, deep: true });
+
+onMounted(() => {
+     // const clubId = route.params.clubId;
+     // const partyId = route.params.partyId;
+     console.log("onMounted",clubId, partyId);
+     console.log(getPartyMemberList(clubId, partyId));
+     postPartyMember(clubId, partyId);
+})
+
+onUnmounted(() => {
+     // const clubId = route.params.clubId;
+     // const partyId = route.params.partyId;
+     deletePartyMember(clubId, partyId);
+})
+
+const dpm = () => {
+     console.log("dpm", partyMemberList.value);
+     deletePartyMember(clubId, partyId);
+}
+
+const dpi = () => {
+     console.log("dpi", partyMemberList.value);
+     deletePartyInfo(clubId, partyId);
+}
+
+console.log(clubId, partyId);
+console.log(getPartyMemberList(clubId, partyId));
 
 // 채팅창 표시 여부를 제어할 상태 변수
 const showChat = ref(false);
@@ -156,35 +203,35 @@ function toggleChat() {
 }
 
 // 채팅창 높이 동적 설정
-const camVideoHeight = ref('450px'); // 초기값 설정
+const chatDivHeight = ref('300px'); // 초기값 설정
 
-const updateCamVideoHeight = () => {
+const updatechatDivHeight = () => {
   const chattingSection = document.querySelector('.chatting-section');
   const buttonSection = document.querySelector('.button-section');
   
   if (chattingSection && buttonSection) {
     // 버튼 섹션을 제외한 높이 계산
     const height = chattingSection.offsetHeight - 2*buttonSection.offsetHeight;
-    camVideoHeight.value = `${height}px`;
+    chatDivHeight.value = `${height}px`;
   }
 };
 
 // 0.2초 후에 채팅창 높이를 다시 계산
 setTimeout(() => {
-     updateCamVideoHeight();
+     updatechatDivHeight();
 }, 200);
 
-watch(camVideoHeight, (newVal) => {
-     console.log('camVideoHeight changed', newVal);
+watch(chatDivHeight, (newVal) => {
+     console.log('chatDivHeight changed', newVal);
 });
 
 onMounted(() => {
-     updateCamVideoHeight();
-     window.addEventListener('resize', updateCamVideoHeight);
+     updatechatDivHeight();
+     window.addEventListener('resize', updatechatDivHeight);
 });
 
 onUnmounted(() => {
-     window.removeEventListener('resize', updateCamVideoHeight);
+     window.removeEventListener('resize', updatechatDivHeight);
 });
 
 
@@ -319,7 +366,7 @@ getMatchWatchable(startDate.value, endDate.value);
 
 .match-section {
      background-color: grey;
-     min-width: 960px;
+     min-width: 800px;
      /* 최소 너비 유지 */
      width: 60vw;
      /* 화면 너비에 따라 조정 */
@@ -351,7 +398,7 @@ getMatchWatchable(startDate.value, endDate.value);
 
 .match-video {
      background-color: lightslategray;
-     min-height: 500px;
+     min-height: 400px;
 }
 
 .chatting-section {
@@ -373,7 +420,7 @@ getMatchWatchable(startDate.value, endDate.value);
 .cam-video {
      background-color: blueviolet;
      border: 1px solid white;
-     min-height: 150px;
+     min-height: 100px;
      text-align: center;
      /* 중앙 정렬 */
      display: flex;
@@ -442,4 +489,9 @@ getMatchWatchable(startDate.value, endDate.value);
 .button-section button {
      width: 400px;
 }
+.select-card > .v-card-text {
+     height: 90px;
+     padding: 0;
+}
+
 </style> 
