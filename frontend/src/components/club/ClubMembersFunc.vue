@@ -23,8 +23,19 @@
         <v-btn block color="blue" style="margin-top:30px;" @click="showInvite">그룹으로 초대</v-btn>
 
         <v-btn @click="goToPartyPage" block color="red" dark class="mt-4" style="height:100px;">
-            파티를 열어보세요!
+            <div v-if="!isPartyExist">파티를 열어보세요!</div>
+            <div v-else>
+                <p>파티 페이지로 이동</p>
+                <p class="party-title">{{ partyInfo.title }}</p>
+                <p>{{ partyInfo.hostNickName }}</p>
+                <p>{{ partyInfo.fixtureInfo?.leagueName }} {{ partyInfo.fixtureInfo?.round }}</p>
+                <p v-if="partyInfo.fixtureInfo">{{ partyInfo.fixtureInfo?.homeTeam?.name }} vs {{ partyInfo.fixtureInfo?.awayTeam?.name }}</p>
+                <p>{{ partyInfo.currentParticipants }} / {{ partyInfo.maxParticipants }}</p>
+            </div>
         </v-btn>
+        <!-- <div>
+            {{ partyInfo }}
+        </div> -->
     </v-card>
 
     <!-- 그룹원 보기 -->
@@ -67,10 +78,11 @@
   </template>
 
 <script setup>
-import {ref,onMounted,computed} from 'vue'
+import {ref,onMounted,computed, watch} from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 
 import {useClubStore} from '@/stores/club/clubs';
+import { usePartyStore } from '@/stores/club/party/party';
 
 import ClubLeader from '@/components/club/ClubLeader.vue';
 import ClubMember from '@/components/club/ClubMember.vue';
@@ -81,18 +93,23 @@ const props = defineProps({
 })
 
 const clubStore = useClubStore();
+const partyStore = usePartyStore();
+
 const router = useRouter();
 const route = useRoute();
 const clubId = route.params.clubId;
 
-const clubInfo = computed(()=> {
-    return props.clubInfo
-})
+const clubInfo = ref([]);
+const { getClubInfo } = clubStore;
+getClubInfo(clubId);
+
+watch(() => clubStore.clubInfo, (newClubInfo) => {
+    clubInfo.value = newClubInfo;
+}, { immediate: true, deep: true });
 
 const clubMemberList = computed(() => {
     return props.clubMemberList
 })
-
 
 const memberId = sessionStorage.getItem("id");
 
@@ -142,27 +159,102 @@ function closeClubMemberFunc() {
     isClubMemberFuncVisible.value = false
 }
 
-// 파티 페이지 로직
-const isPartyMade = ref(false)
+////////////////////////
+//// 파티 페이지 로직
 
-const goToPartyPage = () => {
-    const partyId = getPartyId();
+const { getPartyInfo, postPartyInfo } = partyStore;
+
+const partyId = ref(clubInfo.value.partyId);
+
+const isPartyExist = ref(false);
+
+const partyInfo = ref(getPartyInfo(clubId, partyId.value));
+
+watch(() => partyStore.partyInfo, (newPartyInfo) => {
+    console.log("파티인포 와치", newPartyInfo)
+    partyInfo.value = newPartyInfo;
+    if (newPartyInfo) {
+        isPartyExist.value = true;
+        partyId.value = newPartyInfo.partyId;
+    } else {
+        isPartyExist.value = false;
+    }
+    console.log("파티id", partyId.value)
+    console.log("파티유무", isPartyExist.value)
+}, { immediate: true, deep: true });
+
+watch(() => clubInfo.value, (newClubInfo) => {
+    // console.log("클럽인포 와치", newClubInfo)
+    const newPartyId = newClubInfo?.partyId;
+    if (newPartyId) {
+        // console.log("와치-파티가 있어요", newPartyId)
+        isPartyExist.value = true;
+        partyId.value = newPartyId;
+        getPartyInfo(clubId, newPartyId);
+    } else {
+        isPartyExist.value = false;
+    }
+}, { immediate: true, deep: true });
+
+onMounted(() => {
+    if (clubInfo?.value.partyId) {
+        isPartyExist.value = true;
+        partyId.value = clubInfo.value.partyId;
+        console.log("파티가 있어요", partyId.value)
+    } else {
+        isPartyExist.value = false;
+        console.log("파티가 없어요")
+    }
+})
+
+const goToPartyPage = async () => {
+    if (isPartyExist.value) {
+        await getClubInfo(clubId);
+        console.log("파티가 있어요", clubInfo.value.partyId);
+        // partyId.value = clubInfo.value.partyId;
+    } else {
+        await postPartyInfo(clubId);
+        await getClubInfo(clubId);
+        console.log("파티가 생성되었어요", partyId.value);
+        isPartyExist.value = true;
+    }
+    console.log(partyId.value)
+    openPartyPage(partyId.value);
+}
+
+const openPartyPage = (partyId) => {
+    console.log("파티 페이지로 이동합니다", partyId); // partyId 값 확인
+    if (!partyId) {
+        console.error("partyId가 제공되지 않았습니다.");
+        return;
+    }
     const url = router.resolve({ name: 'PartyView', params: { partyId } }).href;
     window.open(url, '_blank');
 }
 
-const getPartyId = () => {
-    let partyId;
-    if (isPartyMade.value) {
-        // 이미 존재하는 파티 아이디 받아옴
-        partyId = 2; // 실제 파티 ID를 여기에 할당해야 합니다.
-    } else {
-        // 새로운 파티 아이디 생성
-        partyId = 1; // 새 파티 ID 생성 로직을 여기에 추가해야 합니다.
-        isPartyMade.value = true; // 파티가 생성되었음을 상태로 저장
-    }
-    return partyId;
-}
+// 파티 정보 예시
+// "data": {
+//     "partyId": 6,
+//     "sessionId": "d3e07dd8-2e2b-4476-b694-cdd922efc8b0",
+//     "title": "손흥민 폼 미쳤다이",
+//     "maxParticipants": 6,
+//     "currentParticipants": 0,
+//     "hostNickName": "김종범",
+//     "fixtureUrl": "https://www.coupangplay.com/titles/016d6d60-9a95-45ec-8e38-cd501fddb07c?type=LIVE&availability=&live=true&channel=&rowId=70bb548b-cf24-46e2-a656-040fa551d577&trackId=&src=page_discover_feed%3AMulti-Hero-Live-Event-Curation-0%3ALIVE&sourceType=&supportLive=",
+//     "fixtureInfo": {
+//       "leagueName": "챔피언십",
+//       "round": "5차전",
+//       "startTime": "2024-01-26 12:00:00.000000",
+//       "homeTeam": {
+//         "teamId": 1,
+//         "name": "마루쉐"
+//       },
+//       "awayTeam": {
+//         "teamId": 4,
+//         "name": "멍뭉"
+//       }
+//     }
+//   }
 
 </script>
 
@@ -200,4 +292,9 @@ div.text-to-copy {
     }
 }
 
+.party-title {
+    margin : 10px;
+    font-size: 2rem;
+    font-weight: bold;
+}
 </style>

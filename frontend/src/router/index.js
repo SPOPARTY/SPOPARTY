@@ -78,6 +78,9 @@ const router = createRouter({
       path: "/club/:clubId",
       name: "ClubView",
       component: () => import("@/views/ClubView.vue"),
+      // path : "",
+      // name : "ClubMain",
+      // component : () => import("@/components/club/ClubMain.vue"),
       props:true,
       children : [
         {
