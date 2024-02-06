@@ -102,12 +102,22 @@ public class PartyServiceImpl implements PartyService {
 	public PartyResponseDTO updateParty(Long partyId, PartyUpdateRequestDto updateDto) {
 		Party party = findPartyById(partyId);
 		log.debug("party - {}", party);
-		Fixture fixture = fixtureService.findFixtureById(updateDto.getFixtureId());
-		log.debug("fixture - {}", fixture);
 
-		party.setTitle(updateDto.getTitle());
-		party.setFixtureUrl(updateDto.getFixtureUrl());
-		party.setFixture(fixture);
+		if (updateDto.getTitle() != null) {
+			log.debug("title - {}", updateDto.getTitle());
+			party.setTitle(updateDto.getTitle());
+		}
+
+		if (updateDto.getFixtureUrl() != null) {
+			log.debug("fixtureUrl - {}", updateDto.getFixtureUrl());
+			party.setFixtureUrl(updateDto.getFixtureUrl());
+		}
+
+		if (updateDto.getFixtureId() != null) {
+			Fixture fixture = fixtureService.findFixtureById(updateDto.getFixtureId());
+			log.debug("fixture - {}", fixture);
+			party.setFixture(fixture);
+		}
 		return findParty(party.getId());
 	}
 
