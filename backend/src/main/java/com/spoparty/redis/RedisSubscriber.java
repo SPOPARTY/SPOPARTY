@@ -33,9 +33,12 @@ public class RedisSubscriber implements MessageListener {
 
 			operations.rightPush(channel, request);
 
-			if (request.getType().equals(SubscribeType.BROAD_CAST)) {
-				messagingTemplate.convertAndSend(SUBSCRIBE_DESTINATION, request);
-			} else if (request.getType().equals(SubscribeType.USER)) {
+//			if (request.getType().equals(SubscribeType.BROAD_CAST)) {
+			// 기본적으로 모든 메세지는 broadcast 되도록 하고, 유저 입장의 경우
+			// 전체 채팅 로그를 전달
+			messagingTemplate.convertAndSend(SUBSCRIBE_DESTINATION, request);
+//			}
+			if (request.getType().equals(SubscribeType.USER)) {
 				long size = operations.size(channel);
 				List<ChatRequestDto> list = operations.range(channel, 0, size);
 				messagingTemplate.convertAndSendToUser(request.getUserName(), SUBSCRIBE_DESTINATION, list);
