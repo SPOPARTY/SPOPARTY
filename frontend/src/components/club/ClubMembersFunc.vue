@@ -279,8 +279,12 @@ const openPartyPage = (partyId) => {
 };
 
 const newPartyInfo = () => {
-    console.log("새로운 파티 정보를 가져옵니다")
-    getPartyInfo(clubId, partyId.value);
+    if (isPartyExist) {
+        console.log("새로운 파티 정보를 가져옵니다")
+        getPartyInfo(clubId, partyId.value);
+    } else {
+        console.log("파티가 없어요")
+    }
 }
 
 // 파티 정보 예시

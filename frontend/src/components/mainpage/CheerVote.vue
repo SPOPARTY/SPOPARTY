@@ -100,7 +100,7 @@ const model = ref(0);
 const cheer = ref([]);
 watch(() => footballStore.cheersData, (newVal) => {
   cheer.value = newVal;
-}, { immediate: true });
+}, { immediate: true, deep: true});
 
 
 function convertToBoolean(str) {
