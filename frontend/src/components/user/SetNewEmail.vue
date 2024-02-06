@@ -5,7 +5,7 @@
         @click:outside="closeModal"
         persistent        >
         <v-card>
-            <v-card-title class="text-h4">이메일 수정</v-card-title>
+            <v-card-title class="text-center">이메일 수정</v-card-title>
             <v-card-text>
                 <v-row>
                     <v-col cols="4" md="4">                        
