@@ -35,11 +35,11 @@ public class PartyMember extends BaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "party_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "party_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Party party;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "member_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member member;
 
 	@Enumerated(EnumType.STRING)
@@ -49,20 +49,12 @@ public class PartyMember extends BaseEntity {
 	@Column(name = "openvidu_token", nullable = false)
 	private String openviduToken;
 
-	public static PartyMember createPartyMember(Party party, Member member, String openviduToken) {
+	public static PartyMember createPartyMember(Party party, Member member, String openviduToken, RoleType role) {
 		PartyMember partyMember = new PartyMember();
 		partyMember.party = party;
 		partyMember.member = member;
 		partyMember.openviduToken = openviduToken;
-		partyMember.role = checkRole(party);
-		party.increaseParticipants();
+		partyMember.role = role;
 		return partyMember;
-	}
-
-	private static RoleType checkRole(Party party) {
-		if (party.getCurrentParticipants() == 0) {
-			return RoleType.host;
-		}
-		return RoleType.guest;
 	}
 }

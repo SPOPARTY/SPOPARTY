@@ -1,6 +1,6 @@
 package com.spoparty.api.party.service;
 
-import com.spoparty.api.party.dto.ChatRequestDto;
+import com.spoparty.api.party.dto.request.ChatRequestDto;
 
 interface ChatService {
 	void enter(ChatRequestDto chatRequestDto);

@@ -7,7 +7,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
-import com.spoparty.api.party.dto.ChatRequestDto;
+import com.spoparty.api.party.dto.request.ChatRequestDto;
 import com.spoparty.redis.RedisPublisher;
 import com.spoparty.redis.RedisSubscriber;
 import com.spoparty.redis.SubscribeType;
