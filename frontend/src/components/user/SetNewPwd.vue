@@ -60,7 +60,7 @@
     <v-dialog v-model="inValidPwd" max-width="200px">
         <v-card>
             <v-card-text>
-                옳지 않은 비밀번호 형식입니다!
+                비밀번호는 8자리 이상 특수문자가 포함되어야 합니다!
             </v-card-text>
             <v-card-actions>
                 <v-btn color="black" @click="inValidPwd = false">확인</v-btn>
