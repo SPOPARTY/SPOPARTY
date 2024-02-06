@@ -42,7 +42,7 @@ import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 import { onMounted, reactive, ref } from 'vue'
 
-const serverURL = 'http://localhost:9090/api/ws-stomp'
+const serverURL = 'https://i10a802.p.ssafy.io/api/ws-stomp'
 
 let stompClient = undefined
 
