@@ -221,16 +221,12 @@ watch(() => partyStore.myParticipantId, (newMyId) => {
      myId.value = newMyId;
 }, { immediate: true });
 
+
 // 사용자가 탭을 나갈 때 실행할 함수
 function handleBeforeUnload(event) {
-  // 여기에 실행하고 싶은 코드를 작성합니다.
-  // 예: 서버에 데이터를 저장하는 함수 호출 등
   delPartyMem();
-
   // 사용자에게 경고 메시지를 띄우기
   // event.returnValue를 설정하면 브라우저가 사용자에게 나가기 전에 확인을 요청합니다.
-
-
      event.preventDefault();
      event.returnValue = "정말로 페이지를 나가시겠습니까?";
      return message; // 다른 브라우저에서 필요
@@ -251,6 +247,12 @@ onBeforeUnmount(() => {
      // deletePartyMember(clubId, partyId, myId.value);
      window.removeEventListener('beforeunload', handleBeforeUnload);
 })
+
+const answer = window.confirm('쿠팡 플레이 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?');
+if (answer) {
+     const url = "https://www.coupangplay.com/login";
+     window.open(url, '_blank');
+}
 
 const delPartyMem = () => {
      console.log("delPartyMem", partyMemberList.value);
@@ -626,7 +628,7 @@ const leaveSession = () => {
      border : 1px solid #CBD0D8;
 }
 .cam-section {
-     height: 65%;
+     height: 70%;
      /* justify-self: start; */
      align-content: start;
 }
@@ -635,7 +637,7 @@ const leaveSession = () => {
      background-color: blueviolet;
      border: 1px solid white;
      min-height: 100px;
-     height: 30%;
+     height: 33%;
      /* height: 300px; */
      text-align: center;
      /* 중앙 정렬 */

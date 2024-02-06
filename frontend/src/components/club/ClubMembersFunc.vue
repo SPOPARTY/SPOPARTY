@@ -23,9 +23,7 @@
 
         <v-btn block color="blue" style="margin-top:30px;" @click="showInvite">그룹으로 초대</v-btn>
 
-                
-        <!-- 버튼 정보 최신화 -->
-        <v-btn @mouseenter="newPartyInfo" v-bind="props" @click="goToPartyPage" block :color="isPartyExist? 'primary':'red'" dark class="mt-4" style="height:100px;">
+        <v-btn v-bind="props" @click="goToPartyPage" block :color="isPartyExist? 'primary':'red'" dark class="mt-4" style="height:100px;">
             <v-tooltip v-if="isPartyExist" activator="parent" location="top">
                 <p>인원 : {{ partyInfo.currentParticipants }} / {{ partyInfo.maxParticipants }}</p>
                 <p>{{ partyInfo.fixtureInfo?.leagueName }} {{ partyInfo.fixtureInfo?.round }}</p>
@@ -87,7 +85,7 @@ import { usePartyStore } from '@/stores/club/party/party';
 
 import ClubLeader from '@/components/club/ClubLeader.vue';
 import ClubMember from '@/components/club/ClubMember.vue';
-import { set } from 'date-fns';
+import { nextDay, set } from 'date-fns';
 
 const props = defineProps({
     clubInfo:Object,
@@ -170,7 +168,17 @@ const { getPartyInfo, postPartyInfo } = partyStore;
 
 const partyId = ref(clubInfo.value.partyId);
 
-const isPartyExist = ref(false);
+const isPartyExist = ref(clubInfo.value.partyId ? true : false);
+computed(() => {
+    if (partyStore.partyInfo.value) {
+        isPartyExist.value = true;
+        partyId.value = partyStore.partyInfo.value.partyId;
+        console.log("파티가 있어요", partyId.value)
+    } else {
+        isPartyExist.value = false;
+        console.log("파티가 없어요")
+    }
+})
 
 const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 
@@ -217,20 +225,7 @@ onMounted(() => {
     }
 })
 
-// const goToPartyPage = async () => {
-//     if (isPartyExist.value) {
-//         await getClubInfo(clubId);
-//         console.log("파티가 있어요", clubInfo.value.partyId);
-//         // partyId.value = clubInfo.value.partyId;
-//     } else {
-//         await postPartyInfo(clubId);
-//         await getClubInfo(clubId);
-//         console.log("파티가 생성되었어요", partyId.value);
-//         isPartyExist.value = true;
-//     }
-//     console.log(partyId.value)
-//     openPartyPage(partyId.value);
-// }
+// 파티 페이지로 이동
 
 const goToPartyPage = async () => {
     let startTime = Date.now(); // 시작 시간
@@ -278,14 +273,22 @@ const openPartyPage = (partyId) => {
     window.open(url, '_blank');
 };
 
-const newPartyInfo = () => {
-    if (isPartyExist) {
-        console.log("새로운 파티 정보를 가져옵니다")
-        getPartyInfo(clubId, partyId.value);
-    } else {
-        console.log("파티가 없어요")
-    }
-}
+// const newPartyInfo = async () => {
+//     console.log("새로운 파티 정보를 가져옵니다")
+//     const tempInfo = await getPartyInfo(clubId, partyId.value);
+//     if (tempInfo) {
+//         console.log("파티가 있습니다.")
+//         if (!isPartyExist.value) {
+//             isPartyExist.value = true;
+//         }
+//         return
+//     } else {
+//         console.log("파티가 없습니다.")
+//         if (isPartyExist.value) {
+//             isPartyExist.value = false;
+//         }
+//     }
+// }
 
 // 파티 정보 예시
 // "data": {
