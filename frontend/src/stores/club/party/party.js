@@ -16,7 +16,7 @@ export const usePartyStore = defineStore("party",() => {
     const openViduSession = ref({});
     const partyMemberList = ref([]);
 
-    const getPartyInfo = (clubId,partyId) => {
+    const getPartyInfo = async (clubId,partyId) => {
         requestGetPartyInfo(
             clubId,partyId,
             (res) => {
@@ -39,7 +39,7 @@ export const usePartyStore = defineStore("party",() => {
         )
     }
 
-    const postPartyInfo = (clubId) => {
+    const postPartyInfo = async (clubId) => {
         const data = {
             clubId: clubId,
             memberId: sessionStorage.getItem("id"),
