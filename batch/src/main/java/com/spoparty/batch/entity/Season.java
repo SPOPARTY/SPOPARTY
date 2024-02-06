@@ -12,14 +12,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "season")
 public class Season extends FootballBaseEntity {
 
 	@Id
@@ -34,7 +39,8 @@ public class Season extends FootballBaseEntity {
 	@OneToMany(mappedBy = "season", fetch = FetchType.LAZY)
 	List<SeasonLeague> seasonLeagues = new ArrayList<>();
 
-	public void setValue(String value) {
+	@Builder
+	public Season(String value) {
 		this.value = value;
 	}
 }
