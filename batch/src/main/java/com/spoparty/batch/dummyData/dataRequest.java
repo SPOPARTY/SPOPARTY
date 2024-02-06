@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -25,7 +26,7 @@ public class dataRequest {
 	public final SeasonRepository seasonRepository;
 
 	// @Transactional(value = defaultTxManager())
-	// @Scheduled(fixedRate=20000)
+	@Scheduled(fixedRate=20000)
 	void getAllSeason() {
 		ResponseEntity<Map> response = apiRequest.sendRequest("/leagues/seasons", null, Map.class);
 		List<Integer> seasons = (List<Integer>)response.getBody().get("response");
