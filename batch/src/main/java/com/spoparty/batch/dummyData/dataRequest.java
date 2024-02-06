@@ -26,7 +26,7 @@ public class dataRequest {
 	public final SeasonRepository seasonRepository;
 
 	// @Transactional(value = defaultTxManager())
-	@Scheduled(fixedRate=20000)
+	// @Scheduled(fixedRate=20000)
 	void getAllSeason() {
 		ResponseEntity<Map> response = apiRequest.sendRequest("/leagues/seasons", null, Map.class);
 		List<Integer> seasons = (List<Integer>)response.getBody().get("response");

@@ -48,9 +48,8 @@ public class League extends FootballBaseEntity {
 	@Column(length=200, nullable=false)
 	private String countryLogo;
 
-	@Enumerated(EnumType.STRING)
 	@Column(length=10, nullable=false)
-	private LeagueType type;
+	private String type;
 
 	@OneToMany(mappedBy="league")
 	List<SeasonLeague> seasonLeagues = new ArrayList<>();
@@ -59,7 +58,7 @@ public class League extends FootballBaseEntity {
 		this.country = country;
 	}
 	@Builder
-	public League(long id, String nameKr, String nameEng, String logo, String country, String countryLogo, LeagueType type) {
+	public League(long id, String nameKr, String nameEng, String logo, String country, String countryLogo, String type) {
 		this.id = id;
 		this.nameKr = nameKr;
 		this.nameEng = nameEng;
