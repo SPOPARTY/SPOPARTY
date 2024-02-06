@@ -1,4 +1,4 @@
-package com.spoparty.api.party.dto;
+package com.spoparty.api.party.dto.request;
 
 import com.spoparty.redis.SubscribeType;
 

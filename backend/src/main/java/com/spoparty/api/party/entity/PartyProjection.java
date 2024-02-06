@@ -1,4 +1,4 @@
-package com.spoparty.api.party.repository.projection;
+package com.spoparty.api.party.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

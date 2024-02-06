@@ -18,6 +18,7 @@ import com.spoparty.api.club.dto.response.InviteResponseDTO;
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.club.entity.ClubMember;
 import com.spoparty.api.club.repository.ClubMemberRepository;
+import com.spoparty.api.common.constants.ErrorCode;
 import com.spoparty.api.common.entity.RoleType;
 import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.entity.Member;
@@ -65,6 +66,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 		// 유효성 체크
 		Club club = validateInviteUrl(inviteRequestDto.getInviteUrl()); // 유효한 초대 url 확인
 		validateNewClubMember(club, member); // 이미 존재하는 멤버인지 확인
+		validateParticipants(club); // 남은 자리가 있는지 확인
 
 		ClubMember clubMember = ClubMember.createClubMember(member, club, RoleType.guest);
 		clubMemberRepository.save(clubMember);
@@ -208,6 +210,14 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 		Optional<ClubMember> clubMember = clubMemberRepository.findByClub_IdAndMember_Id(club.getId(), member.getId());
 		if (clubMember.isPresent()) {
 			throw new CustomException(ALREADY_GROUP_MEMBER);
+		}
+	}
+
+	private void validateParticipants(Club club) {
+		log.debug("MaxParticipants - {}", club.getMaxParticipants());
+		log.debug("currentParticipants - {}", countClubMembers(club.getId()));
+		if (club.getMaxParticipants() <= countClubMembers(club.getId())) {
+			throw new CustomException(ENOUGH_GROUP_PARTICIPANTS);
 		}
 	}
 

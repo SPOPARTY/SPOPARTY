@@ -32,6 +32,11 @@ public enum ErrorCode {
 	INVALID_INVITE_URL(BAD_REQUEST, "유효하지 않은 초대 링크입니다."),
 	HOST_CANNOT_LEAVE_GROUP(BAD_REQUEST, "그룹장은 그룹을 나갈 수 없습니다. 그룹장을 넘기세요."),
 
+	// 파티
+	ALREADY_PARTY(BAD_REQUEST, "이미 파티가 존재합니다."),
+	ALREADY_PARTY_MEMBER(BAD_REQUEST, "이미 존재하는 파티원입니다."),
+	ENOUGH_PARTY_PARTICIPANTS(BAD_REQUEST, "파티에 회원이 꽉 찼습니다."),
+
 	/* 400 BadRequest: 클라이언트에서 보낸 정보가 잘못됨 */
 	CANNOT_CREATE_CHEER(BAD_REQUEST, "응원 생성에 실패하였습니다."),
 	CANNOT_CREATE_PARTY_MEMBER(BAD_REQUEST, "파티원 생성에 실패하였습니다."),

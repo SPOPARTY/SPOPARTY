@@ -1,10 +1,9 @@
 package com.spoparty.api.party.controller;
 
-import com.spoparty.api.party.dto.ChatRequestDto;
-import org.springframework.data.redis.listener.ChannelTopic;
+import com.spoparty.api.party.dto.request.ChatRequestDto;
+
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 

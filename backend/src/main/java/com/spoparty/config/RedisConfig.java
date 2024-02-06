@@ -1,6 +1,6 @@
 package com.spoparty.config;
 
-import com.spoparty.api.party.dto.ChatRequestDto;
+import com.spoparty.api.party.dto.request.ChatRequestDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
