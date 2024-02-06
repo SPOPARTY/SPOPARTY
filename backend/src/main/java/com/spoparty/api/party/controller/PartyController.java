@@ -5,6 +5,7 @@ import static com.spoparty.api.common.constants.SuccessCode.*;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
-import com.spoparty.api.party.dto.request.PartyCreateRequestDTO;
-import com.spoparty.api.party.dto.request.PartyMemberRequestDTO;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
 import com.spoparty.api.party.dto.response.PartyResponseDTO;
 import com.spoparty.api.party.entity.PartyMemberProjection;
 import com.spoparty.api.party.service.PartyServiceImpl;
+import com.spoparty.security.model.PrincipalDetails;
 
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -36,12 +36,12 @@ public class PartyController {
 	private final PartyServiceImpl partyService;
 
 	@PostMapping()
-	public ResponseEntity<?> createParty(@RequestBody @Valid PartyCreateRequestDTO partyRequestDto) throws
+	public ResponseEntity<?> createParty(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long clubId) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
 		log.debug("파티 생성 API 시작");
-		log.debug("요청 partyRequestDto - {}", partyRequestDto);
-		PartyResponseDTO response = partyService.createParty(partyRequestDto);
+		log.debug("요청 - principalDetails:{}, partyId: {}", principalDetails, clubId);
+		PartyResponseDTO response = partyService.createParty(principalDetails, clubId);
 		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_CREATE_SUCCESS, response);
 	}
@@ -85,13 +85,12 @@ public class PartyController {
 	}
 
 	@PostMapping("/{partyId}/participants")
-	public ResponseEntity<?> createParticipant(@PathVariable Long partyId,
-		@RequestBody PartyMemberRequestDTO partyMemberRequestDto, @PathVariable String clubId) throws
+	public ResponseEntity<?> createParticipant(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable String clubId, @PathVariable Long partyId) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
 		log.debug("파티원 추가 API 시작");
-		log.debug("요청 - partyMemberRequestDto: {}, clubId: {}", partyMemberRequestDto, clubId);
-		PartyMemberProjection response = partyService.createPartyMember(partyId, partyMemberRequestDto);
+		log.debug("요청 - principalDetails: {}, clubId: {}, partyId: {}", principalDetails, clubId, partyId);
+		PartyMemberProjection response = partyService.createPartyMember(principalDetails, partyId);
 		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_MEMBER_CREATE_SUCCESS, response);
 	}

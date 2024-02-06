@@ -2,6 +2,7 @@ package com.spoparty.api.party.service;
 
 import static com.spoparty.api.common.constants.ErrorCode.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,8 +20,6 @@ import com.spoparty.api.football.response.PartyFixtureDTO;
 import com.spoparty.api.football.service.FixtureServiceImpl;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.service.MemberService;
-import com.spoparty.api.party.dto.request.PartyCreateRequestDTO;
-import com.spoparty.api.party.dto.request.PartyMemberRequestDTO;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
 import com.spoparty.api.party.dto.response.PartyResponseDTO;
 import com.spoparty.api.party.entity.Party;
@@ -28,6 +27,7 @@ import com.spoparty.api.party.entity.PartyMember;
 import com.spoparty.api.party.entity.PartyMemberProjection;
 import com.spoparty.api.party.repository.PartyMemberRepository;
 import com.spoparty.api.party.repository.PartyRepository;
+import com.spoparty.security.model.PrincipalDetails;
 
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -49,31 +49,38 @@ public class PartyServiceImpl implements PartyService {
 
 	@Override
 	@Transactional
-	public PartyResponseDTO createParty(PartyCreateRequestDTO createDTO) throws
+	public PartyResponseDTO createParty(PrincipalDetails principalDetails, Long clubId) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
-		Club club = clubService.findClubById(createDTO.getClubId());
+		Member member = validatePrincipalDetails(principalDetails); // 로그인 토큰 검증
+		Club club = clubService.findClubById(clubId);
 		validateNewParty(club); // 이미 파티가 존재하는 경우 체크
 
-		Member member = memberService.findById(createDTO.getMemberId());
-
 		// openvidu session 발급
-		String openviduSessionId = getOpenviduSessionId(createDTO, club);
+		String openviduSessionId = getOpenviduSessionId(club);
 		log.debug("openviduSessionId - {}", openviduSessionId);
 
 		// party 엔티티 생성
 		Party party = Party.createParty(member, club, openviduSessionId);
 		partyRepository.save(party);
-		return new PartyResponseDTO(party, null, 0); // partyMember 생성 api 호출 필요
+
+		// openvidu 커넥션 토큰 발급
+		String openviduToken = openViduService.createConnection(openviduSessionId, new HashMap<>());
+		log.debug("openviduToken - {}", openviduToken);
+
+		// partyMember 엔티티 생성
+		PartyMember partyMember = PartyMember.createPartyMember(party, member, openviduToken, RoleType.host);
+		log.debug("partyMember - {}", partyMember);
+		partyMemberRepository.save(partyMember);
+		return findParty(party.getId());
 	}
 
-	private String getOpenviduSessionId(PartyCreateRequestDTO createDto, Club club) throws
+	private String getOpenviduSessionId(Club club) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
-		Map<String, Object> openviduInfo = createDto.getOpenViduSessionInfo();
-		openviduInfo.put("customSessionId", club.getId().toString()); // customSessionId 세션명을 clubId로 대체
-		log.debug("after : openviduInfo - {}", openviduInfo);
-		return openViduService.initializeSession(createDto.getOpenViduSessionInfo());
+		Map<String, Object> params = new HashMap<>();
+		params.put("customSessionId", String.valueOf(club.getId())); // customSessionId 세션명 clubId로 지정
+		return openViduService.initializeSession(params);
 	}
 
 	@Override
@@ -128,28 +135,21 @@ public class PartyServiceImpl implements PartyService {
 
 	@Override
 	@Transactional
-	public PartyMemberProjection createPartyMember(Long partyId, PartyMemberRequestDTO requestDTO) throws
+	public PartyMemberProjection createPartyMember(PrincipalDetails principalDetails, Long partyId) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
+		Member member = validatePrincipalDetails(principalDetails);
 		Party party = findPartyById(partyId);
-		Member member = memberService.findById(requestDTO.getMemberId());
 
 		// 유효성 체크
 		validateNewPartyMember(party, member); // 이미 존재하는 멤버인지 확인
 		validateParticipants(party); // 남은 자리가 있는지 확인
 
 		// openvidu 커넥션 토큰 발급
-		log.debug("openviduSessionId - {}", party.getOpenviduSessionId());
-		String openviduToken = openViduService.createConnection(party.getOpenviduSessionId(),
-			requestDTO.getOpenViduConnectionInfo());
+		String openviduToken = openViduService.createConnection(party.getOpenviduSessionId(), new HashMap<>());
 		log.debug("openviduToken - {}", openviduToken);
 
-		RoleType role = RoleType.guest;
-		if (party.getHostMember().equals(member)) { // 호스트인 경우
-			role = RoleType.host;
-		}
-
-		PartyMember partyMember = PartyMember.createPartyMember(party, member, openviduToken, role);
+		PartyMember partyMember = PartyMember.createPartyMember(party, member, openviduToken, RoleType.guest);
 		log.debug("partyMember - {}", partyMember);
 		partyMemberRepository.save(partyMember);
 		return findPartyMember(partyMember.getId(), PartyMemberProjection.class);
@@ -167,6 +167,13 @@ public class PartyServiceImpl implements PartyService {
 		PartyMember partyMember = findPartyMember(partyMemberId, PartyMember.class);
 		partyMember.softDelete();
 		return partyMember.getId();
+	}
+
+	private Member validatePrincipalDetails(PrincipalDetails principalDetails) { // 로그인 토큰 검증
+		if (principalDetails == null) {
+			throw new CustomException(UNAUTHORIZED_USER);
+		}
+		return principalDetails.getMember();
 	}
 
 	public int countPartyMembers(Long partyId) {
