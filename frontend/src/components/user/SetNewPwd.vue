@@ -5,7 +5,7 @@
         @click:outside="closeModal"
         persistent        >
         <v-card>
-            <v-card-title class="text-h4">비밀번호 재설정</v-card-title>
+            <v-card-title class="text-center">비밀번호 재설정</v-card-title>
             <v-card-text>
                 <v-form @submit.prevent="changePwd">
                     <v-text-field
