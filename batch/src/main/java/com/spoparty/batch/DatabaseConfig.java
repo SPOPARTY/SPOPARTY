@@ -1,5 +1,7 @@
 package com.spoparty.batch;
 
+import java.util.HashMap;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +19,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.spoparty.batch.util.SnakeCaseNamingStrategy;
 import com.zaxxer.hikari.HikariDataSource;
 
 @EnableTransactionManagement
@@ -64,10 +67,14 @@ public class DatabaseConfig {
 	@Primary
 	public LocalContainerEntityManagerFactoryBean contentsEntityManagerFactory(EntityManagerFactoryBuilder builder) {
 
+		HashMap<String, Object> properties = new HashMap<>();
+		properties.put("hibernate.physical_naming_strategy" , "com.spoparty.batch.util.SnakeCaseNamingStrategy");
+
 		return builder
 			.dataSource(springBatchDb())
 			.persistenceUnit("springBatchEntityManager")
 			.packages("com.spoparty.batch")
+			.properties(properties)
 			.build();
 	}
 

@@ -17,6 +17,7 @@ import com.spoparty.batch.entity.CheerFixture;
 import com.spoparty.batch.repository.CheerFixtureRepository;
 import com.spoparty.batch.scheduler.model.Fixtures;
 import com.spoparty.batch.scheduler.model.FixturesResponse;
+import com.spoparty.batch.util.FootballApiUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class Scheduler {
 
-	private final ApiRequest apiRequest;
+	private final FootballApiUtil footballApiUtil;
 	private final CheerFixtureRepository cheerFixtureRepository;
 
 	private List<Long> fixtureIdInProgress = new ArrayList<>();
@@ -46,43 +47,43 @@ public class Scheduler {
 
 	}
 
-	@Scheduled(fixedRate = 1000*60*60*24)
-	public void fixtures() {
-		log.info("Scheduler.fixtures() : {}", System.currentTimeMillis());
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		String yesterday = LocalDate.now().minusDays(1).format(formatter);
-		String tomorrow = LocalDate.now().plusDays(1).format(formatter);
-
-		for (int leagueId : leagues){
-			MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-			queryParams.add("league", leagueId+"");
-			queryParams.add("season", "2023");
-			queryParams.add("from", yesterday);
-			queryParams.add("to", tomorrow);
-			ResponseEntity<?> response = apiRequest.sendRequest("/fixtures", queryParams, FixturesResponse.class);
-			if (response.getStatusCode() == HttpStatus.OK){
-				FixturesResponse body = (FixturesResponse)response.getBody();
-				List<Fixtures> fixtures = body.getResponse();
-				log.info(fixtures.toString());
-
-				for (Fixtures data : fixtures){
-					ZonedDateTime now = ZonedDateTime.now();
-					ZonedDateTime fixtureTime = data.getFixture().getDate();
-					Duration duration = Duration.between(now, fixtureTime);
-					log.info(duration.toString());
-					if (duration.toHours() < 24){
-						CheerFixture cheerFixture = CheerFixture.builder()
-							.fixture(null)
-							.homeCount(0)
-							.awayCount(0)
-							.build();
-						cheerFixtureRepository.save(cheerFixture);
-					}
-				}
-			}
-		}
-
-	}
+	// @Scheduled(fixedRate = 1000*60*60*24)
+	// public void fixtures() {
+	// 	log.info("Scheduler.fixtures() : {}", System.currentTimeMillis());
+	// 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	// 	String yesterday = LocalDate.now().minusDays(1).format(formatter);
+	// 	String tomorrow = LocalDate.now().plusDays(1).format(formatter);
+	//
+	// 	for (int leagueId : leagues){
+	// 		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+	// 		queryParams.add("league", leagueId+"");
+	// 		queryParams.add("season", "2023");
+	// 		queryParams.add("from", yesterday);
+	// 		queryParams.add("to", tomorrow);
+	// 		ResponseEntity<?> response = footballApiUtil.sendRequest("/fixtures", queryParams, FixturesResponse.class);
+	// 		if (response.getStatusCode() == HttpStatus.OK){
+	// 			FixturesResponse body = (FixturesResponse)response.getBody();
+	// 			List<Fixtures> fixtures = body.getResponse();
+	// 			log.info(fixtures.toString());
+	//
+	// 			for (Fixtures data : fixtures){
+	// 				ZonedDateTime now = ZonedDateTime.now();
+	// 				ZonedDateTime fixtureTime = data.getFixture().getDate();
+	// 				Duration duration = Duration.between(now, fixtureTime);
+	// 				log.info(duration.toString());
+	// 				if (duration.toHours() < 24){
+	// 					CheerFixture cheerFixture = CheerFixture.builder()
+	// 						.fixture(null)
+	// 						.homeCount(0)
+	// 						.awayCount(0)
+	// 						.build();
+	// 					cheerFixtureRepository.save(cheerFixture);
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	//
+	// }
 
 
 }
