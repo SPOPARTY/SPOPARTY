@@ -190,9 +190,8 @@ public class LoadFootballData {
 
 	}
 
-	@Scheduled(fixedRate = 1000*60*60*24)
+	// @Scheduled(fixedRate = 1000*60*60*24)
 	public void loadCoatch() {
-
 
 		List<Team> list = teamRepository.findAll();
 		for (Team team  : list){
