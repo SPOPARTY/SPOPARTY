@@ -15,8 +15,9 @@ export const usePartyStore = defineStore("party",() => {
     const partyInfo = ref([]);
     const openViduSession = ref({});
     const partyMemberList = ref([]);
+    const myParticipantId = ref(null);
 
-    const getPartyInfo = (clubId,partyId) => {
+    const getPartyInfo = async (clubId,partyId) => {
         requestGetPartyInfo(
             clubId,partyId,
             (res) => {
@@ -39,14 +40,9 @@ export const usePartyStore = defineStore("party",() => {
         )
     }
 
-    const postPartyInfo = (clubId) => {
-        const data = {
-            clubId: clubId,
-            memberId: sessionStorage.getItem("id"),
-            openviduSession: openViduSession.value,
-        }
+    const postPartyInfo = async (clubId) => {
         requestPostPartyInfo(
-            data,
+            clubId,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.CREATE) {
@@ -68,7 +64,7 @@ export const usePartyStore = defineStore("party",() => {
         )
     }
 
-    const putPartyInfo = (partyId,title,fixtureUrl,fixtureId) => {
+    const putPartyInfo = (clubId,partyId,title,fixtureUrl,fixtureId) => {
         const data = {
             memberId: sessionStorage.getItem("id"),
             title: title,
@@ -76,7 +72,7 @@ export const usePartyStore = defineStore("party",() => {
             fixtureId: fixtureId,
         }
         requestPutPartyInfo(
-            partyId,data,
+            clubId,partyId,data,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
@@ -145,20 +141,16 @@ export const usePartyStore = defineStore("party",() => {
     }
 
     const postPartyMember = (clubId,partyId) => {
-        const data = {
-            memberId: sessionStorage.getItem("id"),
-            openViduConnectionInfo: {},
-        }
-        console.log(data)
         requestPostPartyMember(
-            clubId,partyId,data,
+            clubId,partyId,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.CREATE) {
                     console.log("히히 파티 멤버 추가하기 발사")
                     console.log(res.data.data)
-                    partyInfo.value = getPartyInfo(clubId,partyId);
-                    return partyInfo.value;
+                    getPartyInfo(clubId,partyId);
+                    console.log(res.data.data.participantId)
+                    myParticipantId.value = res.data.data.participantId;
                 }
             },
             (error) => {
@@ -205,6 +197,7 @@ export const usePartyStore = defineStore("party",() => {
                     console.log("히히 파티 멤버 삭제하기 발사")
                     console.log(res.data.data)
                     partyMemberList.value = res.data.data;
+                    partyInfo.value = getPartyInfo(clubId,partyId);
                     return partyMemberList.value;
                 }
             },
@@ -225,6 +218,7 @@ export const usePartyStore = defineStore("party",() => {
         partyInfo,
         openViduSession,
         partyMemberList,
+        myParticipantId,
         getPartyInfo,
         postPartyInfo,
         putPartyInfo,

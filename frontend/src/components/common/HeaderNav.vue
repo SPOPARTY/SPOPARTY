@@ -28,16 +28,20 @@
     <!-- 로그인 관련 footer -->
     <v-list-item class="sidebar-footer" align="center">
       <v-btn v-if="!isLogined" text to="/signup" class="mx-2" color="primary">
+        <v-tooltip activator="parent" location="top" theme="dark">회원가입</v-tooltip>
         <v-icon size="x-large">mdi-account-plus</v-icon>
       </v-btn>
       <v-btn v-if="isLogined" text to="/mypage" class="mx-2" color="primary">
+        <v-tooltip activator="parent" location="top" theme="dark">마이페이지</v-tooltip>
         <v-icon size="x-large">mdi-home-edit-outline</v-icon>
       </v-btn>
 
       <v-btn v-if="!isLogined" text to="/login" class="mx-2" color="primary">
+        <v-tooltip activator="parent" location="top" theme="dark">로그인</v-tooltip>
         <v-icon size="x-large">mdi-login</v-icon>
       </v-btn>
       <v-btn v-if="isLogined" @click="logout" class="mx-2" color="primary">
+        <v-tooltip activator="parent" location="top" theme="dark">로그아웃</v-tooltip>
         <v-icon size="x-large">mdi-logout</v-icon>
       </v-btn>
     </v-list-item>
@@ -163,8 +167,8 @@ watch(() => clubStore.myClubs,(newClubs) => {
 
 // 로그인 여부 감지
 const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
-console.log("로그인 됨?")
-console.log(sessionStorage.getItem("accessToken") !== null);
+// console.log("로그인 됨?")
+// console.log(sessionStorage.getItem("accessToken") !== null);
 
 // 로그아웃
 const logout = () => {

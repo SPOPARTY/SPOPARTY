@@ -1,7 +1,7 @@
 <template>
      <v-container fluid>
           <!-- 기존 비디오 및 채팅 섹션 -->
-          <v-row class="party-section mb-1">
+          <v-row class="party-section mb-6">
                <v-col class="match-section" cols="9">
                     <v-row class="match-video">
                          <v-img src="/soccer-screen.png" aspect-ratio="16/9" contain></v-img>
@@ -9,57 +9,77 @@
                     <v-row class="selector">
                          <!-- 파티 타이틀 선택 -->
                          <v-col cols="6" class="party pa-2">
-                              <v-card class="select-card">
-                                   <v-card-text>
-                                        <v-text-field v-model="titleModel" :clearable="isTitleEditing"
-                                             :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
+                              <!-- <v-card >
+                                   <v-card-text> -->
+                                        <v-text-field v-model="titleModel" class="select-field" 
+                                             :clearable="isTitleEditing" 
+                                             variant="outlined" 
+                                             :hint="!isTitleEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
                                              :readonly="!isTitleEditing" persistent-hint hide-details="auto"
-                                             :label="`타이틀  — ${isMatchEditing ? 'Editable' : 'Readonly'}`">
+                                             :label="`타이틀  — ${isTitleEditing ? 'Editable' : 'Readonly'}`">
                                              <template v-slot:append>
                                                   <v-slide-x-reverse-transition mode="out-in">
-                                                       <v-icon :key="`icon-${isTitleEditing}`"
-                                                            :color="isTitleEditing ? 'success' : 'info'"
-                                                            :icon="isTitleEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
-                                                            @click="isTitleEditing = !isTitleEditing"></v-icon>
+                                                       <v-icon size="large" :key="`icon-${isTitleEditing}`"
+                                                            :color="isTitleEditing ? 'info' : 'success'"
+                                                            :icon="isTitleEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
+                                                            @click="[(isTitleEditing = !isTitleEditing),editPartyInfo(isTitleEditing )]"></v-icon>
                                                   </v-slide-x-reverse-transition>
                                              </template>
                                         </v-text-field>
-                                   </v-card-text>
-                              </v-card>
+                                   <!-- </v-card-text>
+                              </v-card> -->
                          </v-col>
                          <!-- 경기 선택 -->
                          <v-col cols="6" class="match pa-2">
-                              <v-card class="select-card">
-                                   <!-- <v-card-title class="text-h5 font-weight-regular bg-blue-grey">
-                                   Profile
-                              </v-card-title> -->
-                                   <v-card-text>
+                              <!-- <v-card class="select-field">
+                                   <v-card-text> -->
                                         <!-- <div class="text-caption pa-3">시청 중인 경기를 선택하세요</div> -->
                                         <!-- {{ matchModel }} -->
-                                        <v-autocomplete v-model="matchModel"
-                                             :hint="!isMatchEditing ? 'Click the icon to edit' : 'Click the icon to save'"
+                                        <v-autocomplete v-model="matchModel" class="select-field"
+                                             :hint="!isMatchEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
                                              :items="matches" :item-title="getMatchTitle" item-value="fixtureId"
-                                             :readonly="!isMatchEditing"
+                                             :readonly="!isMatchEditing" :clearable="isTitleEditing"
                                              :label="`경기  — ${isMatchEditing ? 'Editable' : 'Readonly'}`" auto-select-first
-                                             clearable variant="outlined" persistent-hint prepend-icon="mdi-soccer"
+                                             variant="outlined" persistent-hint prepend-icon="mdi-soccer"
                                              @update:menu="onMatchChange">
                                              <template v-slot:append>
                                                   <v-slide-x-reverse-transition mode="out-in">
-                                                       <v-icon :key="`icon-${isMatchEditing}`"
-                                                            :color="isMatchEditing ? 'success' : 'info'"
-                                                            :icon="isMatchEditing ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
-                                                            @click="isMatchEditing = !isMatchEditing"></v-icon>
+                                                       <v-icon size="large" :key="`icon-${isMatchEditing}`"
+                                                            :color="isMatchEditing ? 'info' : 'success'"
+                                                            :icon="isMatchEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
+                                                            @click="[(isMatchEditing = !isMatchEditing),editPartyInfo(isMatchEditing)]"></v-icon>
                                                   </v-slide-x-reverse-transition>
                                              </template>
                                         </v-autocomplete>
-                                   </v-card-text>
-                              </v-card>
+                                   <!-- </v-card-text>
+                              </v-card> -->
+                         </v-col>
+                         <v-col cols="12" class="party pa-2">
+                              <!-- <v-card >
+                                   <v-card-text> -->
+                                        <v-text-field v-model="urlModel" class="select-field" 
+                                             :clearable="isUrlEditing" 
+                                             variant="outlined" 
+                                             :hint="!isUrlEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
+                                             :readonly="!isUrlEditing" persistent-hint hide-details="auto"
+                                             :label="`URL  — ${isUrlEditing ? 'Editable' : 'Readonly'}`">
+                                             <template v-slot:append>
+                                                  <v-slide-x-reverse-transition mode="out-in">
+                                                       <v-icon size="large" :key="`icon-${isUrlEditing}`"
+                                                            :color="isUrlEditing ? 'info' : 'success'"
+                                                            :icon="isUrlEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
+                                                            @click="[(isUrlEditing = !isUrlEditing),editPartyInfo(isUrlEditing)]"></v-icon>
+                                                  </v-slide-x-reverse-transition>
+                                             </template>
+                                        </v-text-field>
+                                   <!-- </v-card-text>
+                              </v-card> -->
                          </v-col>
                     </v-row>
                </v-col>
                <v-col class="chatting-section" cols="3">
                     <!-- 여기가 유저들 캠 화면 오는 영역 -->
-                    <v-row>
+                    <v-row class="cam-section">
                          <v-col cols="6" class="cam-video" v-for="member in partyMembers" :key="member.memberId">
                               {{ member.name }}
                               <!-- 여기에 캠 화면 또는 이미지 배치 -->
@@ -78,6 +98,7 @@
                                    <Chat/>
                               </div>
                          </v-col>
+                         <v-spacer></v-spacer>
                     </v-row>
                     <!-- 캠 영역 끝 -->
 
@@ -85,17 +106,26 @@
                     <!-- 버튼 영역 -->
                     <v-row class="button-section">
                          <v-col cols="3">
-                              <v-btn color="secondary" @click="dpi">
+                              <v-btn color="secondary" @click="delPartyInfo">
+                                   <v-tooltip activator="parent" location="top" theme="dark">
+                                        사진
+                                   </v-tooltip>
                                    <v-icon size="x-large">mdi-camera-outline</v-icon>
                               </v-btn>
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="secondary">
+                              <v-btn color="secondary" @click="delPartyMem">
+                                   <v-tooltip activator="parent" location="top" theme="dark">
+                                        동영상
+                                   </v-tooltip>
                                    <v-icon size="x-large">mdi-video-plus-outline</v-icon>
                               </v-btn>
                          </v-col>
                          <v-col cols="3">
                               <v-btn color="#D3AC2B">
+                                   <v-tooltip activator="parent" location="top" theme="dark">
+                                        효과음
+                                   </v-tooltip>
                                    <v-icon size="x-large" color="#333D51">mdi-bullhorn-outline</v-icon>
                               </v-btn>
                          </v-col>
@@ -112,10 +142,10 @@
                     </v-row>
                     <!-- 다음 줄 -->
                     <v-row class="button-section">
-                         <v-col cols="9">
+                         <v-col cols="8">
                               <v-btn @click="toggleChat" color="yellow" class="chat-button">채팅창</v-btn>
                          </v-col>
-                         <v-col cols="3">
+                         <v-col cols="4">
                               <v-btn color="error" @click="closeTab">파티 나가기</v-btn>
                          </v-col>
                     </v-row>
@@ -136,7 +166,7 @@
 </template>
  
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import { format, set, parseISO, addDays } from 'date-fns';
 
@@ -167,27 +197,60 @@ watch(() => partyStore.partyMemberList, (newPartyMembers) => {
      partyMemberList.value = newPartyMembers;
 }, { immediate: true, deep: true });
 
+const myId = ref(null);
+
+watch(() => partyStore.myParticipantId, (newMyId) => {
+     console.warn("myId changed", newMyId);
+     myId.value = newMyId;
+}, { immediate: true });
+
+// 사용자가 탭을 나갈 때 실행할 함수
+function handleBeforeUnload(event) {
+  // 여기에 실행하고 싶은 코드를 작성합니다.
+  // 예: 서버에 데이터를 저장하는 함수 호출 등
+  delPartyMem();
+
+  // 사용자에게 경고 메시지를 띄우기
+  // event.returnValue를 설정하면 브라우저가 사용자에게 나가기 전에 확인을 요청합니다.
+
+
+     event.preventDefault();
+     event.returnValue = "정말로 페이지를 나가시겠습니까?";
+     return message; // 다른 브라우저에서 필요
+}
+
 onMounted(() => {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
      console.log("onMounted",clubId, partyId);
      console.log(getPartyMemberList(clubId, partyId));
      postPartyMember(clubId, partyId);
+     window.addEventListener('beforeunload', handleBeforeUnload);
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
-     deletePartyMember(clubId, partyId);
+     // deletePartyMember(clubId, partyId, myId.value);
+     window.removeEventListener('beforeunload', handleBeforeUnload);
 })
 
-const dpm = () => {
-     console.log("dpm", partyMemberList.value);
-     deletePartyMember(clubId, partyId);
+const delPartyMem = () => {
+     console.log("delPartyMem", partyMemberList.value);
+     myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId).participantId;
+     console.warn("delPartyMem", clubId, partyId, myId.value);
+     deletePartyMember(clubId, partyId, myId.value);
 }
 
-const dpi = () => {
-     console.log("dpi", partyMemberList.value);
+onUnmounted(() => {
+     myId.value = partyStore.partyMemberList.find(
+          (member) => member.userId === partyStore.myUserId
+          ).participantId;
+     deletePartyMember(clubId, partyId, myId.value);
+})
+
+const delPartyInfo = () => {
+     console.log("delPartyInfo", partyMemberList.value);
      deletePartyInfo(clubId, partyId);
 }
 
@@ -258,28 +321,38 @@ const inviteToParty = () => {
 const closeTab = () => {
      // 사용자에게 확인을 요청하는 대화상자 표시
      if (confirm("파티를 나가시겠습니까?")) {
-          window.close(); // 사용자가 '예'를 선택한 경우 탭 닫기
+          delPartyMem();
+          setTimeout(() => {
+               window.close();
+          }, 300);
+           // 사용자가 '예'를 선택한 경우 탭 닫기
      }
      // '아니오'를 선택한 경우 아무 동작도 하지 않음
 }
 
 
-// let partyTitle = ref('파티 타이틀');
-// let matchName = ref('경기 이름');
+function editPartyInfo(isAsk) {
+     if (!isAsk) {
+          console.log("editPartyInfo",clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+          putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+     }
+     // console.log("editPartyInfo",clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+     // putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+}
+
 
 // 파티 정보 수정
 const isTitleEditing = ref(false);
 const titleModel = ref(null);
 
-
-// const editParty = () => {
-//      const newPartyTitle = prompt('새 파티 타이틀을 입력하세요', partyTitle.value);
-//      if (newPartyTitle !== null) partyTitle.value = newPartyTitle;
-// }
+// 영상 주소 수정
+const isUrlEditing = ref(false);
+const urlModel = ref(null);
 
 // 경기 정보 수정
 const isMatchEditing = ref(false);
 const matchModel = ref(null);
+
 const matches = ref([]);
 
 watch(() => footballStore.matchWatchable, (newVal) => {
@@ -365,7 +438,7 @@ getMatchWatchable(startDate.value, endDate.value);
 }
 
 .match-section {
-     background-color: grey;
+     /* background-color: #333D51; */
      min-width: 800px;
      /* 최소 너비 유지 */
      width: 60vw;
@@ -378,8 +451,9 @@ getMatchWatchable(startDate.value, endDate.value);
 }
 
 .selector {
-     min-height: 45px;
-     height: 12vh;
+     margin-top: 10px;
+     min-height: 110px;
+     height: 27vh;
 
 }
 
@@ -397,7 +471,7 @@ getMatchWatchable(startDate.value, endDate.value);
 }
 
 .match-video {
-     background-color: lightslategray;
+     background-color: lightgrey;
      min-height: 400px;
 }
 
@@ -410,31 +484,40 @@ getMatchWatchable(startDate.value, endDate.value);
      /* 콘텐츠를 위아래로 분산시킴 */
      background-color: #333D51;
      min-height: 100%;
+     height: 88vh;
      min-width: 320px;
      max-width: 30%;
      width: 30vw;
      /* 채팅 섹션의 높이를 브라우저 창의 높이와 맞춤 */
      /* height: 100vh;  */
+     border : 1px solid #CBD0D8;
+}
+.cam-section {
+     height: 65%;
+     /* justify-self: start; */
+     align-content: start;
 }
 
 .cam-video {
      background-color: blueviolet;
      border: 1px solid white;
      min-height: 100px;
+     height: 30%;
+     /* height: 300px; */
      text-align: center;
      /* 중앙 정렬 */
      display: flex;
      flex-direction: column;
      justify-content: center;
      align-items: center;
-
+     /* aspect-ratio: 16/16; */
 }
 
 .button-section {
      /* 나머지 콘텐츠 위에 버튼 섹션을 밀어 올림 */
      /* margin-top: auto;  */
      max-height: 60px;
-     width: 100%;
+     width: 105%;
      text-align: center;
      /* 버튼을 가운데 정렬 */
      justify-content: space-between;
@@ -480,7 +563,7 @@ getMatchWatchable(startDate.value, endDate.value);
 }
 
 .contents-section {
-     margin-top: 0px;
+     /* margin: 2%; */
      /* min-height: 100%; */
      min-width: 1280px;
      /* color: #121212; */
@@ -489,7 +572,8 @@ getMatchWatchable(startDate.value, endDate.value);
 .button-section button {
      width: 400px;
 }
-.select-card > .v-card-text {
+.select-field > .v-card-text {
+     color: #333D51;
      height: 90px;
      padding: 0;
 }
