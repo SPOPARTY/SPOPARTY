@@ -2,6 +2,7 @@ package com.spoparty.batch.dummyData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.util.MultiValueMap;
 import com.spoparty.batch.entity.Season;
 import com.spoparty.batch.repository.SeasonRepository;
 import com.spoparty.batch.util.FootballApiUtil;
+import com.spoparty.batch.util.LanguageUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class dataRequest {
 
 	public final FootballApiUtil apiRequest;
+	public final LanguageUtil languageUtil;
 	public final SeasonRepository seasonRepository;
 
 	// @Transactional(value = defaultTxManager())
@@ -43,7 +46,7 @@ public class dataRequest {
 	}
 
 
-	// @Scheduled(fixedRate=20000)
+	@Scheduled(fixedRate=20000)
 	void getAllLeague() {
 		List<Long> leagueIds = new ArrayList<>(Arrays.asList((long)1, (long)7, (long)8, (long)18,
 			(long)15, (long)532, (long)965, (long)1012, (long)17, (long)292, (long)293, (long)295, (long)294,
@@ -66,6 +69,18 @@ public class dataRequest {
 			System.out.println(league);
 			System.out.println(country);
 			System.out.println(seasons);
+			System.out.println("name " + league.get("name"));
+
+			Map<String, String> body = new HashMap<>() {
+			};
+
+			body.put("source", "en");
+			body.put("target", "ko");
+			body.put("text", league.get("name"));
+
+			Map<String, Map<String, Map<String, String>>> lang_res = languageUtil.sendRequest(body, Map.class).getBody();
+			String nameKr = lang_res.get("message").get("result").get("translatedText");
+			System.out.println(nameKr);
 
 		}
 	}

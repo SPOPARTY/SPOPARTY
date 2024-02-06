@@ -1,9 +1,12 @@
 package com.spoparty.batch.util;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -17,19 +20,18 @@ public class LanguageUtil {
 	private static String API_SECRET;
 	private static String API_ID;
 
-	public LanguageUtil(@Value("lang-base-url")String baseUrl, @Value("lang-secret") String apiSecret, @Value("lang-id") String apiId){
+	public LanguageUtil(@Value("${lang-base-url}")String baseUrl, @Value("${lang-secret}") String apiSecret, @Value("${lang-id}") String apiId){
 		BASE_URL = baseUrl;
 		API_SECRET = apiSecret;
 		API_ID = apiId;
 	}
 
 	// RestTemplate apiRequest
-	public <T> ResponseEntity<T> sendRequest(String path, MultiValueMap<String, String> queryParams, Class<T> type) {
+	public <T> ResponseEntity<T> sendRequest(Map<String, String> body, Class<T> type) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-Naver-Client-Id", API_ID);
 		headers.set("X-Naver-Client-Secret", API_SECRET);
-		headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
 
 		HttpEntity entity = new HttpEntity(headers);
@@ -41,13 +43,9 @@ public class LanguageUtil {
 		System.out.println(builder.toUriString());
 		RestTemplate restTemplate = new RestTemplate();
 
-		ResponseEntity<T> response = restTemplate.exchange(
-			builder.toUriString(),
-			HttpMethod.POST, // 요청 메서드 변경 가능
-			entity,
-			type);
 
+		RequestEntity<Map> requestEntity = RequestEntity.post(builder.toUriString()).headers(headers).body(body);
 
-		return response;
+		return restTemplate.exchange(requestEntity, type);
 	}
 }
