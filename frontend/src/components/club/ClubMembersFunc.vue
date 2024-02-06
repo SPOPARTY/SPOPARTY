@@ -25,7 +25,7 @@
 
                 
         <!-- 버튼 정보 최신화 -->
-        <v-btn v-if="count" v-bind="props" @click="goToPartyPage" block :color="isPartyExist? 'primary':'red'" dark class="mt-4" style="height:100px;">
+        <v-btn @mouseenter="newPartyInfo" v-bind="props" @click="goToPartyPage" block :color="isPartyExist? 'primary':'red'" dark class="mt-4" style="height:100px;">
             <v-tooltip v-if="isPartyExist" activator="parent" location="top">
                 <p>인원 : {{ partyInfo.currentParticipants }} / {{ partyInfo.maxParticipants }}</p>
                 <p>{{ partyInfo.fixtureInfo?.leagueName }} {{ partyInfo.fixtureInfo?.round }}</p>
@@ -34,18 +34,6 @@
             <div v-if="!isPartyExist">파티를 열어보세요!</div>
             <div v-else>
                 <p>{{ partyInfo.title }}</p>
-                <p>파티 페이지로 이동</p>
-            </div>
-        </v-btn>
-        <v-btn v-else v-bind="props" @click="goToPartyPage" block :color="isPartyExist? 'primary':'red'" dark class="mt-4" style="height:100px;">
-            <v-tooltip v-if="isPartyExist" activator="parent" location="top">
-                <p>{{ partyInfo.title }}</p>
-                <p>인원 : {{ partyInfo.currentParticipants }} / {{ partyInfo.maxParticipants }}</p>
-                <p>{{ partyInfo.fixtureInfo?.leagueName }} {{ partyInfo.fixtureInfo?.round }}</p>
-                <p v-if="partyInfo.fixtureInfo">{{ partyInfo.fixtureInfo?.homeTeam?.name }} vs {{ partyInfo.fixtureInfo?.awayTeam?.name }}</p>
-            </v-tooltip>
-            <div v-if="!isPartyExist">파티를 열어보세요!</div>
-            <div v-else>
                 <p>파티 페이지로 이동</p>
             </div>
         </v-btn>
@@ -186,8 +174,6 @@ const isPartyExist = ref(false);
 
 const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 
-const count = ref(true);
-
 // setInterval(() => {
 //     count.value = !count.value;
 // }, 1000);
@@ -291,6 +277,11 @@ const openPartyPage = (partyId) => {
     const url = router.resolve({ name: 'PartyView', params: { partyId } }).href;
     window.open(url, '_blank');
 };
+
+const newPartyInfo = () => {
+    console.log("새로운 파티 정보를 가져옵니다")
+    getPartyInfo(clubId, partyId.value);
+}
 
 // 파티 정보 예시
 // "data": {

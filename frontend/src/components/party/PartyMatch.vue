@@ -8,6 +8,7 @@
                 <!-- 새로고침 버튼 -->
                 <v-spacer></v-spacer>
                 <v-btn :loading="loading" icon @click="refreshData" variant="text">
+                    <v-tooltip activator="parent" location="top" theme="dark">새로고침</v-tooltip>
                     <v-icon>mdi-refresh</v-icon>
                 </v-btn>
             </v-tabs>

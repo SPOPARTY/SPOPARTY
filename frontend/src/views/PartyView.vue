@@ -107,16 +107,25 @@
                     <v-row class="button-section">
                          <v-col cols="3">
                               <v-btn color="secondary" @click="delPartyInfo">
+                                   <v-tooltip activator="parent" location="top" theme="dark">
+                                        사진
+                                   </v-tooltip>
                                    <v-icon size="x-large">mdi-camera-outline</v-icon>
                               </v-btn>
                          </v-col>
                          <v-col cols="3">
                               <v-btn color="secondary" @click="delPartyMem">
+                                   <v-tooltip activator="parent" location="top" theme="dark">
+                                        동영상
+                                   </v-tooltip>
                                    <v-icon size="x-large">mdi-video-plus-outline</v-icon>
                               </v-btn>
                          </v-col>
                          <v-col cols="3">
                               <v-btn color="#D3AC2B">
+                                   <v-tooltip activator="parent" location="top" theme="dark">
+                                        효과음
+                                   </v-tooltip>
                                    <v-icon size="x-large" color="#333D51">mdi-bullhorn-outline</v-icon>
                               </v-btn>
                          </v-col>
@@ -195,22 +204,35 @@ watch(() => partyStore.myParticipantId, (newMyId) => {
      myId.value = newMyId;
 }, { immediate: true });
 
+// 사용자가 탭을 나갈 때 실행할 함수
+function handleBeforeUnload(event) {
+  // 여기에 실행하고 싶은 코드를 작성합니다.
+  // 예: 서버에 데이터를 저장하는 함수 호출 등
+  delPartyMem();
+
+  // 사용자에게 경고 메시지를 띄우기
+  // event.returnValue를 설정하면 브라우저가 사용자에게 나가기 전에 확인을 요청합니다.
+
+
+     event.preventDefault();
+     event.returnValue = "정말로 페이지를 나가시겠습니까?";
+     return message; // 다른 브라우저에서 필요
+}
+
 onMounted(() => {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
      console.log("onMounted",clubId, partyId);
      console.log(getPartyMemberList(clubId, partyId));
      postPartyMember(clubId, partyId);
-     window.addEventListener('beforeunload', delPartyMem);
-     // window.addEventListener('beforeunload', d);
+     window.addEventListener('beforeunload', handleBeforeUnload);
 })
 
 onBeforeUnmount(() => {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
      // deletePartyMember(clubId, partyId, myId.value);
-     window.removeEventListener('beforeunload', delPartyMem);
-
+     window.removeEventListener('beforeunload', handleBeforeUnload);
 })
 
 const delPartyMem = () => {
@@ -219,6 +241,13 @@ const delPartyMem = () => {
      console.warn("delPartyMem", clubId, partyId, myId.value);
      deletePartyMember(clubId, partyId, myId.value);
 }
+
+onUnmounted(() => {
+     myId.value = partyStore.partyMemberList.find(
+          (member) => member.userId === partyStore.myUserId
+          ).participantId;
+     deletePartyMember(clubId, partyId, myId.value);
+})
 
 const delPartyInfo = () => {
      console.log("delPartyInfo", partyMemberList.value);
