@@ -163,8 +163,8 @@ watch(() => clubStore.myClubs,(newClubs) => {
 
 // 로그인 여부 감지
 const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
-console.log("로그인 됨?")
-console.log(sessionStorage.getItem("accessToken") !== null);
+// console.log("로그인 됨?")
+// console.log(sessionStorage.getItem("accessToken") !== null);
 
 // 로그아웃
 const logout = () => {

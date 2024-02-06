@@ -1,5 +1,7 @@
 <template>
     <v-container>
+        <v-btn @click="showVote = true">투표 보기</v-btn>
+        <VoteList v-if="showVote" @vote-close="showVote = false"/>
         <v-row justify="center">
             <v-col cols="10">
                 <h1 class="text-center" style="color:white; margin-left:100px;">그룹 게시판</h1>
@@ -50,21 +52,19 @@ import {formatDateTime} from "@/util/tools.js"
 import BoardDetail from '@/components/board/BoardDetail.vue';
 const boardStore = useBoardStore();
 
+import VoteList from "@/components/vote/VoteList.vue"
+const showVote = ref(false);
+
+
 const router = useRouter();
 const routes = useRoute();
 
 const clubId = routes.params.clubId;
 
-onMounted(() => {
-    boardStore.getBoardList(clubId);
-})
-
-
 const posts = ref([]);
 watch(() => boardStore.boardList,(newBoardList) => {
     posts.value = newBoardList;
 })
-
 
 function writeBoard() {
     router.push(`/club/${clubId}/board/write`)
@@ -86,7 +86,9 @@ const showBoardDetail = (post) => {
     isDetailVisible.value  = true;
 }
 
-
+onMounted(() => {
+    boardStore.getBoardList(clubId);
+})
 
 </script>
 

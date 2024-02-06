@@ -65,6 +65,9 @@ function localAxios() {
                             let data = response;
                             let accessToken = data["headers"]["accesstoken"];
                             let refreshToken = data["headers"]["refreshtoken"];
+                            // if (data["headers"]["refreshtoken"] !== null) {
+                            //     refreshToken = data["headers"]["refreshtoken"];
+                            // }
                             console.log("히히 새로운 access-token 발사 -> ", accessToken);
                             console.log("히히 새로운 refresh-token 발사 -> ", refreshToken)
                             let decodedToken = jwtDecode(accessToken);
@@ -72,7 +75,7 @@ function localAxios() {
 
                             // 스토리지에 각종 토큰 저장
                             sessionStorage.setItem('accessToken',accessToken);
-                            if(refreshToken !== null) {
+                            if(refreshToken !== undefined) {
                                 sessionStorage.setItem('refreshToken',refreshToken);
                             }
                             sessionStorage.setItem("id",decodedToken.id);
