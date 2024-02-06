@@ -1,14 +1,26 @@
-jpa:
-  database-platform: mariadb
-  show-sql: false
-  hibernate:
-    ddl-auto: none
 sql:
   init:
     continue-on-error: true
 
 spring:
+  config.import: application-private.yml
+  jpa:
+#    database-platform: mariadb
+    show-sql: false
+    hibernate:
+#      naming:
+#        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.CamelCaseToUnderscoresNamingStrategy
+      ddl-auto: none
   batch:
     jdbc:
       initialize-schema: never
-  config.import: application-private.yml
+  properties:
+    hibernate:
+      format_sql: true
+
+
+#로거 찍기
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
