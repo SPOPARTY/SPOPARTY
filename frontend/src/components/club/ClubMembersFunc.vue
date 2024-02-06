@@ -225,8 +225,11 @@ onMounted(() => {
 // }
 
 const goToPartyPage = async () => {
-    // partyId를 업데이트 하기 위한 임시 변수 선언
-    let tempPartyId = null;
+    let startTime = Date.now(); // 시작 시간
+    let timeoutDuration = 100; // 체크 간격: 0.1초
+    let maxWaitTime = 2000; // 최대 대기 시간: 2초
+    // let tempPartyId = null; 
+    // partyId를 임시 저장할 변수
 
     if (isPartyExist.value) {
         await getClubInfo(clubId);
@@ -237,25 +240,34 @@ const goToPartyPage = async () => {
         console.log("파티가 생성되었어요", clubInfo.value.partyId);
         isPartyExist.value = true;
     }
-    setTimeout(() => {
-        tempPartyId = clubInfo.value.partyId;
-        console.log(tempPartyId);
-        openPartyPage(tempPartyId);
-    }, 100);
-    // tempPartyId = clubInfo.value.partyId;
-    // console.log(tempPartyId);
-    // openPartyPage(tempPartyId);
-}
+
+    // partyId가 업데이트 될 때까지 기다리는 함수
+    function waitForPartyIdUpdate() {
+        let elapsedTime = Date.now() - startTime; // 경과 시간
+        if (partyId.value) {
+            console.log("업데이트된 partyId:", partyId.value);
+            openPartyPage(partyId.value);
+        } else if (elapsedTime > maxWaitTime) {
+            console.error("파티 ID 업데이트 대기 시간 초과");
+        } else {
+            console.log("파티 ID 대기 중...");
+            setTimeout(waitForPartyIdUpdate, timeoutDuration);
+        }
+    }
+
+    // partyId 업데이트를 기다림
+    waitForPartyIdUpdate();
+};
 
 const openPartyPage = (partyId) => {
-    console.log("파티 페이지로 이동합니다", partyId); // partyId 값 확인
+    console.log("파티 페이지로 이동합니다", partyId);
     if (!partyId) {
         console.error("partyId가 제공되지 않았습니다.");
         return;
     }
     const url = router.resolve({ name: 'PartyView', params: { partyId } }).href;
     window.open(url, '_blank');
-}
+};
 
 // 파티 정보 예시
 // "data": {

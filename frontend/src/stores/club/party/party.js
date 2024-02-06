@@ -205,6 +205,7 @@ export const usePartyStore = defineStore("party",() => {
                     console.log("히히 파티 멤버 삭제하기 발사")
                     console.log(res.data.data)
                     partyMemberList.value = res.data.data;
+                    partyInfo.value = getPartyInfo(clubId,partyId);
                     return partyMemberList.value;
                 }
             },
