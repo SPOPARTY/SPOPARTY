@@ -68,6 +68,7 @@ export const useClubStore = defineStore("club",() => {
                     clubInfo.value = res.data.data;
                     // console.log("지금 내가 있는 클럽~~")
                     // console.log(clubInfo.value)
+
                 }
             },
             (error) => {
