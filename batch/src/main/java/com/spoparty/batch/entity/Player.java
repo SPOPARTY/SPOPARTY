@@ -66,7 +66,6 @@ public class Player extends FootballBaseEntity {
 	List<SeasonLeagueTeamPlayer> seasonLeagueTeamPlayers = new ArrayList<>();
 
 	@Builder
-
 	public Player(long id, String nameKr, String nameEng, int age, String nationality, String height, String weight,
 		String photo, String position, boolean captain) {
 		this.id = id;
