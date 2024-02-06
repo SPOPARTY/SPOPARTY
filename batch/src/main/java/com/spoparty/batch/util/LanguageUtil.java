@@ -1,5 +1,6 @@
 package com.spoparty.batch.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +28,7 @@ public class LanguageUtil {
 	}
 
 	// RestTemplate apiRequest
-	public <T> ResponseEntity<T> sendRequest(Map<String, String> body, Class<T> type) {
+	public <T> String translate(String text, Class<T> type) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-Naver-Client-Id", API_ID);
@@ -43,9 +44,24 @@ public class LanguageUtil {
 		System.out.println(builder.toUriString());
 		RestTemplate restTemplate = new RestTemplate();
 
+		Map<String, String> body = new HashMap<>() {
+		};
+
+		body.put("source", "en");
+		body.put("target", "ko");
+		body.put("text", text);
 
 		RequestEntity<Map> requestEntity = RequestEntity.post(builder.toUriString()).headers(headers).body(body);
 
-		return restTemplate.exchange(requestEntity, type);
+		ResponseEntity<T> response = restTemplate.exchange(requestEntity, type);
+		// 예외 처리하기
+		return getResult((ResponseEntity<Map>)response);
+	}
+
+
+	private String getResult(ResponseEntity<Map> response) {
+		Map<String, Map<String, Map<String, String>>> body = response.getBody();
+		return body.get("message").get("result").get("translatedText");
+
 	}
 }

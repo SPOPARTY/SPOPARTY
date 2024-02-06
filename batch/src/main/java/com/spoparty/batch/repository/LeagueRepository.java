@@ -3,9 +3,8 @@ package com.spoparty.batch.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.spoparty.batch.entity.Season;
+import com.spoparty.batch.entity.League;
 
 @Repository
-public interface SeasonRepository extends JpaRepository<Season, Long> {
-	<T> T findByValue(String value, Class<T> type);
+public interface LeagueRepository extends JpaRepository<League, Long> {
 }
