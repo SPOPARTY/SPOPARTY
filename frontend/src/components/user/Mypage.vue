@@ -1,7 +1,7 @@
 <template>
     <v-container class="mypage-container">
         <v-card class="pa-4" outlined>
-            <v-card-title class="text-h4 mb-6">마이페이지</v-card-title>
+            <v-card-title class="text-center text-h4 mb-6">마이페이지</v-card-title>
         
             <v-row>
                 <v-col cols="12" md="8">
