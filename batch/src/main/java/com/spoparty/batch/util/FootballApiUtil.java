@@ -13,21 +13,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class FootballApiUtil {
 
-
-
 	private static String BASE_URL;
 	private static String API_KEY;
 	private static String API_HOST;
 
-
-
-	FootballApiUtil(@Value("${api-key}")String apiKey, @Value("${api-host}")String apiHost, @Value("${base-url}") String baseUrl) {
+	FootballApiUtil(@Value("${api-key}") String apiKey, @Value("${api-host}") String apiHost,
+		@Value("${base-url}") String baseUrl) {
 		this.API_KEY = apiKey;
 		this.API_HOST = apiHost;
 		this.BASE_URL = baseUrl;
 	}
-
-
 
 	// RestTemplate apiRequest
 	public <T> ResponseEntity<T> sendRequest(String path, MultiValueMap<String, String> queryParams, Class<T> type) {
@@ -36,10 +31,7 @@ public class FootballApiUtil {
 		headers.set("x-rapidapi-key", API_KEY);
 		headers.set("x-rapidapi-host", API_HOST);
 
-
 		HttpEntity entity = new HttpEntity(headers);
-
-
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(BASE_URL + path)
 			.queryParams(queryParams);
@@ -53,15 +45,8 @@ public class FootballApiUtil {
 			entity,
 			type);
 
-
 		return response;
 	}
-
-
-
-
-
-
 
 	// webClient Request
 	// Mono, Flux
@@ -87,9 +72,4 @@ public class FootballApiUtil {
 	//
 	// }
 
-
 }
-
-
-
-
