@@ -184,7 +184,7 @@ import { useFootballStore } from '@/stores/football/football'
 import { usePartyStore } from '@/stores/club/party/party'
 
 import { OpenVidu } from 'openvidu-browser'
-import UserVideo from '../components/openvidu/uservideo.vue'
+import UserVideo from '../components/openvidu/UserVideo.vue'
 
 const route = useRoute()
 const router = useRouter()
