@@ -17,7 +17,7 @@ async function requestPostPartyInfo (clubId,success,fail) {
 function requestPutPartyInfo (clubId,partyId,data,success,fail) {
     // 파티 정보 수정
     // const data = {
-    //     memberId = sessionStorage.getItem("id"),
+    //     memberId = localStorage.getItem("id"),
     //     title: title,
     //     fixtureUrl: fixtureUrl,
     //     fixtureId: fixtureId,

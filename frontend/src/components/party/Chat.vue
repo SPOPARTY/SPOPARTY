@@ -109,8 +109,8 @@ watch(
     partyMemberList.value = newPartyMembers
     partyMemberList.value.map((member) => {
       console.log(member)
-      console.log(sessionStorage.getItem('id'))
-      if (member.memberId == sessionStorage.getItem('id')) {
+      console.log(localStorage.getItem('id'))
+      if (member.memberId == localStorage.getItem('id')) {
         myMessage.value.userName = member.memberNickname
         myMessage.value.teamLogo = 'qwer'
         myMessage.value.clubId = clubId

@@ -49,7 +49,7 @@ watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
     if (newFixtureId !== null) {
         getMatchRealTimeData(newFixtureId)
     }
-}, { immediate: true }, { deep: true })
+}, { immediate: true, deep: true })
 
 // 데이터를 시간의 역순으로 정렬하는 computed 속성
 const sortedEvents = computed(() => {

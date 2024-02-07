@@ -18,7 +18,7 @@ function localAxios() {
     // 토큰이 있다면 헤더에 토큰을 넣어준다
     instance.interceptors.request.use(
         (request) => {
-            let token = sessionStorage.getItem("accessToken")
+            let token = localStorage.getItem("accessToken")
             if (token) request.headers.Authorization = token;
             return request;
         }, 
@@ -57,8 +57,8 @@ function localAxios() {
                     // 반드시 return 붙여라
                     return await instance.post(
                         "/authentication/regenerate", // 주소
-                        {refreshToken : sessionStorage.getItem("refreshToken")}, // body
-                        {Authorization : sessionStorage.getItem("accessToken")} // header
+                        {refreshToken : localStorage.getItem("refreshToken")}, // body
+                        {Authorization : localStorage.getItem("accessToken")} // header
                         )
                         .then((response) => {
                             alert("accessToken 재발급!!!")
@@ -74,16 +74,24 @@ function localAxios() {
                             console.log("히히 decoded-token 발사 -> ",decodedToken);
 
                             // 스토리지에 각종 토큰 저장
-                            sessionStorage.setItem('accessToken',accessToken);
-                            if(refreshToken !== undefined) {
-                                sessionStorage.setItem('refreshToken',refreshToken);
+                            localStorage.setItem('accessToken',accessToken);
+                            if(refreshToken != undefined) {
+                                console.log("refreshToken 다시 저장!!")
+                                localStorage.setItem('refreshToken',refreshToken);
                             }
-                            sessionStorage.setItem("id",decodedToken.id);
+                            localStorage.setItem("id",decodedToken.id);
                             isTokenRefreshing = false;
 
                             // 에러가 발생했던 원래 요청 반환
                             return instance(originalRequest);
                         })
+                        .catch(
+                            (error) => {
+                                alert("로그아웃!")
+                                localStorage.clear();
+                                window.location.reload("/")
+                            }
+                        )
                 }
             }
             else if (status === httpStatusCode.FORBIDDEN) {
