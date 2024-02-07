@@ -28,7 +28,7 @@ public class LanguageUtil {
 	}
 
 	// RestTemplate apiRequest
-	public <T> String translate(String text, Class<T> type) {
+	public String translate(String text) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-Naver-Client-Id", API_ID);
@@ -53,7 +53,7 @@ public class LanguageUtil {
 
 		RequestEntity<Map> requestEntity = RequestEntity.post(builder.toUriString()).headers(headers).body(body);
 
-		ResponseEntity<T> response = restTemplate.exchange(requestEntity, type);
+		ResponseEntity<Map> response = restTemplate.exchange(requestEntity, Map.class);
 		// 예외 처리하기
 		return getResult((ResponseEntity<Map>)response);
 	}
