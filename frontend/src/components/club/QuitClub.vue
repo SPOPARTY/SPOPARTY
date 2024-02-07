@@ -145,7 +145,7 @@ const clubMemberList = computed(() => {
 
 const clubId = route.params.clubId;
 
-const loginUser = sessionStorage.getItem("id")
+const loginUser = localStorage.getItem("id")
 const isHost = props.clubMemberList.find((member) => member.memberId == loginUser)["role"] === 'host'
 
 const modalVisible = ref(true)

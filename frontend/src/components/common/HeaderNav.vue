@@ -166,9 +166,9 @@ watch(() => clubStore.myClubs,(newClubs) => {
 
 
 // 로그인 여부 감지
-const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
 // console.log("로그인 됨?")
-// console.log(sessionStorage.getItem("accessToken") !== null);
+// console.log(localStorage.getItem("accessToken") !== null);
 
 // 로그아웃
 const logout = () => {
@@ -196,7 +196,7 @@ function openClubInNewTab(clubId) {
 const isNewClubModalVisible = ref(false)
 
 function goToNewClubPage() {
-  if (sessionStorage.getItem("accessToken")== null) {
+  if (localStorage.getItem("accessToken")== null) {
     console.log()
     if(confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?") === true) {
       window.location.replace("/login")
@@ -225,10 +225,10 @@ const exitNotificationDetail = () => {
 }
 
 onMounted(async () => {
-  if (sessionStorage.getItem("accessToken") != null) {
+  if (localStorage.getItem("accessToken") != null) {
     await clubStore.requestClub();
   }
-  const memberId = sessionStorage.getItem("id");
+  const memberId = localStorage.getItem("id");
   if(memberId) {
     await getNotificationList(memberId);
     await connect(memberId);

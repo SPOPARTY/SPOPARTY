@@ -66,7 +66,7 @@ export const usePartyStore = defineStore("party",() => {
 
     const putPartyInfo = (clubId,partyId,title,fixtureUrl,fixtureId) => {
         const data = {
-            memberId: sessionStorage.getItem("id"),
+            memberId: localStorage.getItem("id"),
             title: title,
             fixtureUrl: fixtureUrl,
             fixtureId: fixtureId,

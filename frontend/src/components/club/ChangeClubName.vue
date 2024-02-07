@@ -58,7 +58,7 @@ const clubStore = useClubStore();
 const {updateClub} = clubStore;
 
 const clubId = route.params.clubId;
-const memberId = sessionStorage.getItem("id"); // 언제까지나 sessionStorage에 넣어야하나?
+const memberId = localStorage.getItem("id"); // 언제까지나 localStorage에 넣어야하나?
 const clubName = ref(null);
 
 const modalVisible = ref(true)

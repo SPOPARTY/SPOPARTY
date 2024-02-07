@@ -1,7 +1,5 @@
 <template>
     <v-container>
-        <v-btn @click="showVote = true">투표 보기</v-btn>
-        <VoteList v-if="showVote" @vote-close="showVote = false"/>
         <v-row justify="center">
             <v-col cols="10">
                 <h1 class="text-center" style="color:white; margin-left:100px;">그룹 게시판</h1>
@@ -22,16 +20,12 @@
                     :post="currentPost"
                     @detail-close="isDetailVisible = false"
                 />
-                <v-card @click="showBoardDetail(post)" >
-                    <v-card-title>{{ post.title }}</v-card-title>
-                    <v-card-subtitle>{{ post.member.nickname }}</v-card-subtitle>
-                    <v-card-text >{{ formatDateTime(post.updatedTime) }}</v-card-text>
-                    <v-card-item v-if="post.file"> <img class="thumbnail" :src="post.file.url" :alt="post.title"></v-card-item>
-                    <v-card-text>
-                        <div>
-                            <div v-html="post.content"></div>
-                        </div>
-                    </v-card-text>
+                <v-card class="card" @click="showBoardDetail(post)" >
+                    <v-card-title class="text-center">{{ post.title }}</v-card-title>
+                    <v-img v-if="post.file" class="thumbnail" :src="post.file.url" :alt="post.title" cover height="200px"/>
+                    <v-card-subtitle class="text-right">{{ post.member.nickname }}</v-card-subtitle>
+                    <v-card-text class="text-right">{{ formatDateTime(post.updatedTime) }}</v-card-text>
+                    <div class="content" v-html="post.content"></div>
                 </v-card>
             </v-col>
         </v-row>
@@ -51,10 +45,6 @@ import {formatDateTime} from "@/util/tools.js"
 
 import BoardDetail from '@/components/board/BoardDetail.vue';
 const boardStore = useBoardStore();
-
-import VoteList from "@/components/vote/VoteList.vue"
-const showVote = ref(false);
-
 
 const router = useRouter();
 const routes = useRoute();
@@ -96,6 +86,19 @@ onMounted(() => {
 h1{
     color:black
 }
+
+.card {
+    min-height: 600px; /* 예시 높이, 필요에 따라 조정 */
+    display: flex;
+    flex-direction: column;
+}
+
+.content{
+    text-align: center;
+    margin-top:0px;
+    margin-bottom:100px;
+}
+
 .write-board{
     color:white; 
     margin-top:10px;
@@ -111,6 +114,11 @@ h1{
 .thumbnail{
     width : 100%;
     height: 100%;
+    object-fit: cover;
+}
+
+.v-card-text{
+    flex-grow: 1;
 }
 
 </style>
