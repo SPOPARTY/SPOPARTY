@@ -91,13 +91,6 @@ public class dataRequest {
 			String nameKr = languageUtil.translate(league.get("name"), Map.class);
 			String countryNameKr = languageUtil.translate(country.get("name"), Map.class);
 
-			LeagueType type = null;
-			if (league.get("type").equals("Cup")){
-				type = LeagueType.cup;
-			} else if (league.get("type").equals("League")) {
-				type = LeagueType.league;
-			}
-
 
 			League leagueEntity = League.builder()
 				.id(id)
@@ -106,7 +99,7 @@ public class dataRequest {
 				.logo(league.get("logo"))
 				.country(country.get("name"))
 				.countryLogo(country.get("flag"))
-				.type(type)
+				.type(league.get("type"))
 				.build();
 
 			// leagueRepository.save(leagueEntity);
