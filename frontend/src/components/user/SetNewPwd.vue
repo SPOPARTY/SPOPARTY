@@ -22,10 +22,9 @@
                         outlined
                         dense
                     />
-                    <v-card-actions>
-                        <v-spacer/>
-                        <v-btn color="black" type="submit">비밀번호 확인</v-btn>
-                        <v-btn color="red" text @click="closeModal">이전</v-btn>
+                    <v-card-actions class="justify-center">
+                        <v-btn class="button" color="black" type="submit">비밀번호 확인</v-btn>
+                        <v-btn class="button" color="red" text @click="closeModal">이전</v-btn>
                     </v-card-actions>
                 </v-form>
             </v-card-text>
@@ -33,25 +32,25 @@
     </v-dialog>
 
     <!-- 이전에 사용하던 비밀번호 -->
-    <v-dialog v-model="isAlreadyUsed" max-width="200px">
+    <v-dialog v-model="isAlreadyUsed" max-width="300px">
         <v-card>
             <v-card-text>
                 이전에 사용하던 비밀번호입니다!
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions class="justify-center">
                 <v-btn color="black" @click="isAlreadyUsed = false">확인</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 
     <!-- 두 비밀번호가 다름 -->
-    <v-dialog v-model="pwdNotSame" max-width="200px">
+    <v-dialog v-model="pwdNotSame" max-width="300px">
         <v-card>
-            <v-card-text>
+            <v-card-text class="text-center">
                 두 비밀번호가 다릅니다!
             </v-card-text>
-            <v-card-actions>
-                <v-btn color="black" @click="pwdNotSame=false">확인</v-btn>
+            <v-card-actions class="justify-center">
+                <v-btn class="button" color="black" @click="pwdNotSame=false">확인</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -142,5 +141,6 @@ function closeModal() {
 </script>
 
 <style>
+
 
 </style>
