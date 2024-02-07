@@ -42,7 +42,7 @@ import { ref, onMounted, watch } from 'vue'
 // const managementStore = useManagementStore()
 
 // const isLogin = ref(managementStore.isLogin)
-const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
 
 </script>
 

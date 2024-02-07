@@ -120,7 +120,7 @@ const clubMemberList = computed(() => {
     return props.clubMemberList
 })
 
-const memberId = sessionStorage.getItem("id");
+const memberId = localStorage.getItem("id");
 
 // 그룹원 보기 on/off
 const isClubMemberVisible = ref(false)

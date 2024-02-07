@@ -211,8 +211,8 @@ watch(() => partyStore.partyMemberList, (newPartyMembers) => {
      partyMemberList.value = newPartyMembers;
      partyMemberList.value.map((member) => {
           console.log(member)
-          console.log(sessionStorage.getItem("id"))
-          if (member.memberId == sessionStorage.getItem("id")) {
+          console.log(localStorage.getItem("id"))
+          if (member.memberId == localStorage.getItem("id")) {
                joinSession(member.openviduToken, member.nickName)
           }
      })
