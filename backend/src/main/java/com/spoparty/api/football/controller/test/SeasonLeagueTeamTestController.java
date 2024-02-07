@@ -40,7 +40,6 @@ public class SeasonLeagueTeamTestController {
 			.coach(coachRepository.findById((long)31).orElse(null))
 			.seasonLeague(seasonLeagueRepository.findById((long)5).orElse(null))
 			.team(teamRepository.findById((long)5).orElse(null))
-			.standing(standingsRepository.findById((long)5).orElse(null))
 			.build();
 
 

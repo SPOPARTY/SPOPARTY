@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.spoparty.api.football.entity.SeasonLeague;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
+import com.spoparty.api.football.entity.Standings;
 import com.spoparty.api.football.repository.SeasonLeagueRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 import com.spoparty.api.football.response.ResponseDTO;
@@ -86,7 +87,11 @@ public class LeagueServiceImpl implements LeagueService {
 		List<SeasonLeagueTeamStandingDTO> seasonLeagueTeamStandingDTOs = new ArrayList<>();
 
 		for (SeasonLeagueTeam t : seasonLeagueTeams) {
-			seasonLeagueTeamStandingDTOs.add(SeasonLeagueTeamStandingDTO.toDTO(t));
+			List<Standings> standings = t.getStandings();
+			for(int i = 0; i<standings.size(); i++) {
+				seasonLeagueTeamStandingDTOs.add(SeasonLeagueTeamStandingDTO.toDTO(t, standings.get(i)));
+			}
+
 		}
 
 		return seasonLeagueTeamStandingDTOs;

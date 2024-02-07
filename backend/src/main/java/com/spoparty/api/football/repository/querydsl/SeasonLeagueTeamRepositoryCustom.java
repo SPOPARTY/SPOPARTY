@@ -12,6 +12,6 @@ public interface SeasonLeagueTeamRepositoryCustom {
 
 	public List<SeasonLeagueTeam> findTeamRank(int leagueId);
 
-	public List<SeasonLeagueTeam> findTeamAllInfo(int teamId);
+	public SeasonLeagueTeam findTeamAllInfo(int teamId);
 
 }

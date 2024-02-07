@@ -128,6 +128,10 @@ public class dataRequest {
 
 
 
+
+
+
+
 	private LocalDateTime ToLocalDateTime(String date) {
 		String[] dateUnit = date.split("-");
 
@@ -136,5 +140,9 @@ public class dataRequest {
 
 		return LocalDateTime.of(localDate, LocalTime.MIN);
 	}
+
+
+
+
 
 }

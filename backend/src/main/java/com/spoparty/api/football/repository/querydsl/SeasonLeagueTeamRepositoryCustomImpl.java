@@ -56,16 +56,16 @@ public class SeasonLeagueTeamRepositoryCustomImpl implements SeasonLeagueTeamRep
 			.fetchJoin()
 			.join(seasonLeagueTeam.team, team)
 			.fetchJoin()
-			.join(seasonLeagueTeam.standing, standings)
+			.join(seasonLeagueTeam.standings, standings)
 			.fetchJoin()
 			.where(seasonLeagueTeam.seasonLeague.id.eq((long)leagueId))
-			.orderBy(standings.rank.asc())
+			.orderBy(standings.group.asc(), standings.rank.asc())
 			.fetch();
 	}
 
 
 	@Override
-	public List<SeasonLeagueTeam> findTeamAllInfo(int teamId) {
+	public SeasonLeagueTeam findTeamAllInfo(int teamId) {
 		return jpaQueryFactory.select(seasonLeagueTeam)
 			.from(seasonLeagueTeam)
 			.join(seasonLeagueTeam.seasonLeagueTeamPlayers, seasonLeagueTeamPlayer)
@@ -74,13 +74,13 @@ public class SeasonLeagueTeamRepositoryCustomImpl implements SeasonLeagueTeamRep
 			.fetchJoin()
 			.join(seasonLeagueTeam.team, team)
 			.fetchJoin()
-			.join(seasonLeagueTeam.standing, standings)
+			.join(seasonLeagueTeam.standings, standings)
 			.fetchJoin()
 			.join(seasonLeagueTeam.coach, coach)
 			.fetchJoin()
 			.join(seasonLeagueTeamPlayer.player)
 			.fetchJoin()
 			.where(seasonLeagueTeam.id.eq((long)teamId))
-			.fetch();
+			.fetchOne();
 	}
 }

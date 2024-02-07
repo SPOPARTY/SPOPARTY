@@ -48,9 +48,8 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	private Coach coach;
 
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "standings_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Standings standing;
+	@OneToMany(mappedBy = "seasonLeagueTeam")
+	private List<Standings> standings = new ArrayList<>();
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "captain_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -63,12 +62,10 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	private List<Lineup> lineups = new ArrayList<>();
 
 	@Builder
-
-	public SeasonLeagueTeam(SeasonLeague seasonLeague, Team team, Coach coach, Standings standing) {
+	public SeasonLeagueTeam(SeasonLeague seasonLeague, Team team, Coach coach) {
 		this.seasonLeague = seasonLeague;
 		this.team = team;
 		this.coach = coach;
-		this.standing = standing;
 	}
 
 }
