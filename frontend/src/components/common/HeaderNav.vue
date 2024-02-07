@@ -62,7 +62,9 @@
     <!-- 나머지 요소들 -->
     <template v-if="isLogined">
       <v-divider vertical class="mx-2"></v-divider>
-      <v-btn @click="() => isNotificationListVisible = true" class="mx-2 btn-text">알림</v-btn>
+      <v-badge dot :color="countUnread>0? '#D3AC2B':'#08042B'">
+        <v-btn @click="() => isNotificationListVisible = true" class="mx-2 btn-text">알림</v-btn>
+      </v-badge>
     </template>
     <v-divider vertical class="mx-2"></v-divider>
     <v-btn text to="/match" class="mx-2 btn-text">경기 일정</v-btn>
@@ -241,6 +243,10 @@ const notificationDetail = async (id) => {
   if(notification.value.state == 0) await readNotification(id);
   isNotificationDetailVisible.value = true;
 }
+
+const countUnread = computed(() => {
+  return notificationList.value.filter(args => args.state == 0).length;
+})
 
 </script>
 

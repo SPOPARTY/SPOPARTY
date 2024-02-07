@@ -13,7 +13,7 @@
                   <v-icon>mdi-circle-small</v-icon>
                   {{ match.fixture.league.nameKr }}
                   <v-icon>mdi-circle-small</v-icon>
-                  <v-img src="/premier_league.png" class="league-logo"></v-img>
+                  <v-img :src="match.fixture.league.logo" class="league-logo"></v-img>
                 </p>
               </div>
               <!-- 투표 상태 메시지 -->
@@ -78,6 +78,7 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue';
 import { useFootballStore } from '@/stores/football/football';
+import { set } from 'date-fns';
 
 const footballStore = useFootballStore();
 
@@ -92,6 +93,9 @@ const memberId = ref(sessionStorage.getItem("id"));
 
 const postCheers = (matchIndex, team) => {
   postCheersData(matchIndex, team);
+  setTimeout(() => {
+    getCheersData();
+  }, 100);
 };
 
 const model = ref(0);
@@ -197,6 +201,7 @@ onMounted(() => {
         resetBarAnimation(currentMatch);
       }
       // 필요한 작업을 수행한 후, 더 이상 확인이 필요 없으므로 setInterval을 정리
+      console.log("clearInterval")
       clearInterval(checkCheerLength);
     }
   }, 1000); // 1초 간격으로 확인
@@ -213,7 +218,7 @@ watch(model, async (newVal) => {
     console.log("reset")
     resetBarAnimation(currentMatch);
   }
-}, { immediate: false }, { deep: true });
+}, { immediate: true, deep: true });
 
 function resetBarAnimation(match) {
   // 막대의 높이를 0으로 초기화

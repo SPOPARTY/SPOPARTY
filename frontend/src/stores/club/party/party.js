@@ -35,7 +35,7 @@ export const usePartyStore = defineStore("party",() => {
                     console.log("***********비상***********")
                     console.error(error)
                     partyInfo.value = [];
-                    alert("파티 정보 가져오기 실패!")
+                    // alert("파티 정보 가져오기 실패!")
                     return [];
                 }
             }
