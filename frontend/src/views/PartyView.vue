@@ -136,6 +136,7 @@
                          <v-col cols="12" v-if="showChat" class="chat-window" :style="{ height: chatDivHeight }">
                               <div class="chat-content">
                                    <!-- 채팅 내용을 여기에 표시 -->
+                                   채팅 내용이 여기에 표시됩니다.
                                    <Chat/>
                               </div>
                          </v-col>
@@ -233,8 +234,7 @@ const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
      getPartyParticipant, deletePartyMember } = partyStore
 
 
-// const url = ref("https://www.coupangplay.com/home");
-const url = ref(null);
+const url = ref("https://www.coupangplay.com/home");
 const isUrlExist = ref(false);
 
 watch(() => partyStore.partyInfo, (newVal) => {
@@ -243,8 +243,7 @@ watch(() => partyStore.partyInfo, (newVal) => {
           url.value = newVal.fixtureUrl;
           isUrlExist.value = true;
      } else {
-          // url.value = "https://www.coupangplay.com/home";
-          url.value = null;
+          url.value = "https://www.coupangplay.com/home";
           isUrlExist.value = false;
      }
      console.log("isUrlExist", isUrlExist.value);
@@ -724,7 +723,6 @@ const leaveSession = () => {
      justify-content: center;
      align-items: center;
      /* aspect-ratio: 16/16; */
-     padding: 0px 2px;
 }
 
 .button-section {
