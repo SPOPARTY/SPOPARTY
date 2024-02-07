@@ -45,7 +45,7 @@ public class League extends FootballBaseEntity {
 	private String country;
 
 	@Size(min=0, max=200)
-	@Column(length=200, nullable=false)
+	@Column(length=200, nullable=true)
 	private String countryLogo;
 
 	@Enumerated(EnumType.STRING)
