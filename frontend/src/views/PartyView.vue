@@ -260,6 +260,7 @@ console.log("시작멤버리스트",partyMemberList.value);
 
 const showVote = ref(false);
 
+let isInit = false
 watch(() => partyStore.partyMemberList, (newPartyMembers) => {
      console.log("newPartyMembers",newPartyMembers);
      partyMemberList.value = newPartyMembers;
@@ -313,10 +314,12 @@ if (answer) {
 }
 
 const delPartyMem = () => {
-     console.log("delPartyMem1", partyMemberList.value);
-     myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId).participantId;
-     console.warn("delPartyMem2", clubId, partyId, myId.value);
-     deletePartyMember(clubId, partyId, myId.value);
+     console.log("delPartyMem", partyMemberList.value);
+     myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
+     if (myId.value !== undefined) {
+       console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
+       deletePartyMember(clubId, partyId, myId.value.participantId);
+     } 
 }
 
 onUnmounted(() => {
@@ -535,6 +538,11 @@ const toggleAudioState = () => {
 
 
 const joinSession = (openviduToken, nickName) => {
+     console.log("joinSession Called!!!!!!!!!!!!!!!!!!!")
+     console.log(openviduToken)
+     console.log(nickName)
+     if (!isInit) {
+          isInit = true
   OV.value = new OpenVidu()
   // --- 2) Init a session ---
   session.value = OV.value.initSession()
@@ -575,6 +583,7 @@ const joinSession = (openviduToken, nickName) => {
   // Get a token from the OpenVidu deployment
     // First param is the token. Second param can be retrieved by every user on event
     // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
+    console.log(session.value)
     session.value
       .connect(openviduToken, { clientData: nickName })
       .then(() => {
@@ -610,6 +619,7 @@ const joinSession = (openviduToken, nickName) => {
       })
   
   window.addEventListener('beforeunload', leaveSession)
+     }
 }
 
 const leaveSession = () => {
