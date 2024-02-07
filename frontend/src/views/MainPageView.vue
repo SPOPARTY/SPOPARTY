@@ -26,12 +26,6 @@
           class="my-1 mx-12">
           <MatchNear />
         </v-col>
-        <!-- 두 번째 컨텐츠 영역: 경기 일정 -->
-        <v-col
-          cols="12"
-          class="my-1 mx-12">
-          <OpenViduView />
-        </v-col>
       </v-row>
     </v-container>
   </v-app>
