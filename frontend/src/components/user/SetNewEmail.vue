@@ -24,7 +24,7 @@
                         />
                     </v-col>
                     <v-col cols="3">
-                        <v-btn color="black" @click="sendEmail">인증코드 발송</v-btn>
+                        <v-btn color="#292646" @click="sendEmail">인증코드 발송</v-btn>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -36,17 +36,17 @@
                         />
                     </v-col>
                     <v-col cols="2">
-                        4:59
+                        <span v-if="startTimer">{{ timer }}</span>
                     </v-col>
                     <v-col cols="4">
-                        <v-btn color="black" @click="checkVerifyCode">인증번호 확인</v-btn>
+                        <v-btn color="#292646" @click="checkVerifyCode">인증번호 확인</v-btn>
                     </v-col>
                 </v-row>
             </v-card-text>
             <v-card-actions>
                 <v-spacer/>
                 <v-btn color="red" @click="closeModal">닫기</v-btn>
-                <v-btn color="black" @click="confirmChange">수정</v-btn>
+                <v-btn color="#292646" @click="confirmChange">수정</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -135,6 +135,7 @@ const verifyNotDone = ref(false); // 아직 이메일 인증이 완료되지 않
 
 const emit = defineEmits(['setEmail-close','update-email'])
 
+const startTimer = ref(false);
 
 function sendEmail () {
     if(newEmailId.value === '' || newEmailDomain.value === '' ) {
@@ -149,9 +150,10 @@ function sendEmail () {
       (res) => {
         console.log(res)
         if(res.status === httpStatusCode.OK) {
-          console.log("잘 발송 되었음")
-          console.log(res.status)
-          emailSent.value = true;
+            startTimer.value = true; // 잘 발송되면 타이머 시작
+            console.log("잘 발송 되었음")
+            console.log(res.status)
+            emailSent.value = true;
         }
       },
       (error) => {
@@ -213,6 +215,25 @@ function confirmChange() {
     }
 }
 
+const timer = ref('5:00')
+
+const intervalId = setInterval(() => {
+    const currentTime = timer.value.split(":");
+    let minutes = parseInt(currentTime[0]);
+    let seconds = parseInt(currentTime[1]);
+
+    if (minutes == 0 && seconds == 0) {
+        clearInterval(intervalId);
+    } else {
+        if (seconds == 0) {
+            minutes -= 1;
+            seconds = 59;
+        } else {
+            seconds -= 1;
+        }
+        timer.value = `${minutes} : ${seconds < 10 ? '0' + seconds : seconds}`
+    }
+},1000); 
 
 
 function closeModal() {

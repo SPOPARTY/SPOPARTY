@@ -22,9 +22,8 @@
                     </template> -->
                 </v-text-field>
                 <v-card-actions>
-                    <v-spacer/>
-                    <v-btn color="green darken-1" text @click="submitName">변경</v-btn>
-                    <v-btn color="red darken -1" text @click="closeModal">취소</v-btn>
+                    <v-btn class="button" color="#292646" text @click="submitName">변경</v-btn>
+                    <v-btn class="button" color="red darken -1" text @click="closeModal">취소</v-btn>
                 </v-card-actions>
             </v-card>
         </v-container>
@@ -147,6 +146,15 @@ onMounted(() => {
     justify-content: center; 
     height: 100%; /* v-card의 높이를 부모 컨테이너(여기서는 v-dialog)에 맞춤 */
     text-align: center;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:auto;
+    box-shadow: none !important;
+    background:transparent
 }
 
 </style>

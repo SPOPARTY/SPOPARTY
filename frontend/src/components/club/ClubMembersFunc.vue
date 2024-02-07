@@ -1,9 +1,9 @@
 <template>
-    <v-card class= "ma-5" outlined>
+    <v-card class="background" outlined>
         <v-row class="pa-4" align="center" justify="start" no-gutters style="background-color: #E0E0E0;">
             <v-col cols="10">
-                <div class="headline">{{ clubInfo.name }}</div>
-                <div class="club-host-name">그룹장 : {{ clubInfo.hostName }}</div>
+                <div class="headline">그룹명 - {{ clubInfo.name }}</div>
+                <div class="club-host-name">그룹장 - {{ clubInfo.hostName }}</div>
                 <div>정원 - {{clubInfo.currentParticipants}}/{{ clubInfo.maxParticipants }}</div>
             </v-col>
             <v-col cols="2">
@@ -19,9 +19,14 @@
             </v-col>
         </v-row>
         
-        <v-btn block color="pink lighten-3" @click="showClubMembers">그룹원 보기</v-btn>
+        <v-btn block color="#81689D" @click="showClubMembers">그룹원 보기</v-btn>
 
-        <v-btn block color="blue" style="margin-top:30px;" @click="showInvite">그룹으로 초대</v-btn>
+        <div style="padding-left:50px; padding-right:50px;">
+            <v-btn class="invite-button" block color="#6C22A6" 
+                style="margin-top:30px; margin-bottom:30px;" 
+                @click="showInvite">그룹으로 초대
+            </v-btn>
+        </div>
 
                 
         <!-- 버튼 정보 최신화 -->
@@ -217,21 +222,6 @@ onMounted(() => {
     }
 })
 
-// const goToPartyPage = async () => {
-//     if (isPartyExist.value) {
-//         await getClubInfo(clubId);
-//         console.log("파티가 있어요", clubInfo.value.partyId);
-//         // partyId.value = clubInfo.value.partyId;
-//     } else {
-//         await postPartyInfo(clubId);
-//         await getClubInfo(clubId);
-//         console.log("파티가 생성되었어요", partyId.value);
-//         isPartyExist.value = true;
-//     }
-//     console.log(partyId.value)
-//     openPartyPage(partyId.value);
-// }
-
 const goToPartyPage = async () => {
     let startTime = Date.now(); // 시작 시간
     let timeoutDuration = 100; // 체크 간격: 0.1초
@@ -283,35 +273,19 @@ const newPartyInfo = () => {
     getPartyInfo(clubId, partyId.value);
 }
 
-// 파티 정보 예시
-// "data": {
-//     "partyId": 6,
-//     "sessionId": "d3e07dd8-2e2b-4476-b694-cdd922efc8b0",
-//     "title": "손흥민 폼 미쳤다이",
-//     "maxParticipants": 6,
-//     "currentParticipants": 0,
-//     "hostNickName": "김종범",
-//     "fixtureUrl": "https://www.coupangplay.com/titles/016d6d60-9a95-45ec-8e38-cd501fddb07c?type=LIVE&availability=&live=true&channel=&rowId=70bb548b-cf24-46e2-a656-040fa551d577&trackId=&src=page_discover_feed%3AMulti-Hero-Live-Event-Curation-0%3ALIVE&sourceType=&supportLive=",
-//     "fixtureInfo": {
-//       "leagueName": "챔피언십",
-//       "round": "5차전",
-//       "startTime": "2024-01-26 12:00:00.000000",
-//       "homeTeam": {
-//         "teamId": 1,
-//         "name": "마루쉐"
-//       },
-//       "awayTeam": {
-//         "teamId": 4,
-//         "name": "멍뭉"
-//       }
-//     }
-//   }
 
 </script>
 
 
 <style lang="scss" scoped>
+.background {
+    background-color : #08042B;
+    margin-top:30px;
+}
 
+.invite-button{
+    margin : auto;
+}
 
 .member-list{
     border:solid;

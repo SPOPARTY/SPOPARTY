@@ -102,7 +102,7 @@ import {useFollowStore} from '@/stores/member/follows'
 import SetNewPwd from '@/components/user/SetNewPwd.vue';
 import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
-
+import FollowList from '@/components/user/FollowList.vue';
 
 const followStore = useFollowStore();
 
@@ -256,6 +256,7 @@ function setEmblem(newEmblem) {
 // 구단 팔로우 모달
 const isFollowModalVisible = ref(false)
 function showFollowModal() {
+    console.log("구단 팔로우 모달 띄우기!!!")
     isFollowModalVisible.value = true;
 }
 
