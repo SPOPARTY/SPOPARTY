@@ -168,17 +168,18 @@ const { getPartyInfo, postPartyInfo } = partyStore;
 
 const partyId = ref(clubInfo.value.partyId);
 
-const isPartyExist = ref(clubInfo.value.partyId ? true : false);
-computed(() => {
-    if (partyStore.partyInfo.value) {
-        isPartyExist.value = true;
-        partyId.value = partyStore.partyInfo.value.partyId;
-        console.log("파티가 있어요", partyId.value)
-    } else {
-        isPartyExist.value = false;
-        console.log("파티가 없어요")
-    }
-})
+const isPartyExist = ref(false);
+// const isPartyExist = ref(clubInfo.value.partyId ? true : false);
+// computed(() => {
+//     if (partyStore.partyInfo.value) {
+//         isPartyExist.value = true;
+//         partyId.value = partyStore.partyInfo.value.partyId;
+//         console.log("파티가 있어요", partyId.value)
+//     } else {
+//         isPartyExist.value = false;
+//         console.log("파티가 없어요")
+//     }
+// })
 
 const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 
@@ -189,7 +190,7 @@ const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 watch(() => partyStore.partyInfo, (newPartyInfo) => {
     console.log("파티인포 와치", newPartyInfo)
     partyInfo.value = newPartyInfo;
-    if (newPartyInfo) {
+    if (newPartyInfo.length > 0) {
         console.log("11111",newPartyInfo)
         isPartyExist.value = true;
         partyId.value = newPartyInfo.partyId;
