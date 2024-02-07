@@ -136,7 +136,6 @@
                          <v-col cols="12" v-if="showChat" class="chat-window" :style="{ height: chatDivHeight }">
                               <div class="chat-content">
                                    <!-- 채팅 내용을 여기에 표시 -->
-                                   채팅 내용이 여기에 표시됩니다.
                                    <Chat/>
                               </div>
                          </v-col>
@@ -725,6 +724,7 @@ const leaveSession = () => {
      justify-content: center;
      align-items: center;
      /* aspect-ratio: 16/16; */
+     padding: 0px 2px;
 }
 
 .button-section {
