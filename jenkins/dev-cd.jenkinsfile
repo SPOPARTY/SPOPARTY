@@ -46,7 +46,8 @@ pipeline {
                         echo 'FE Build!'
                         dir('frontend'){
                             sh'''
-                                npm cache clean
+                                rm -rf /root/.npm/_cacache
+                                npm cache clean --force
                                 rm -rf node_modules package-lock.json
                                 npm install --save
                                 npm run build
