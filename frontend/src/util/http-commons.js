@@ -46,7 +46,7 @@ function localAxios() {
             
             // 페이지가 새로고침되어 저장된 accessToken이 없어진 경우
             // or 토큰 자체가 만료
-            if (status == httpStatusCode.UNAUTHORIZED) {
+            if (localStorage.getItem("id") && status == httpStatusCode.UNAUTHORIZED) {
                 const originalRequest = config;
                 // Token을 재발급하는 동안 다른 요청은 대기
                 // Why? -> 다른 요청이 들어오면 새로 받은 Access Token이 유효X
