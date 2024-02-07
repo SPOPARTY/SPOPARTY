@@ -234,7 +234,8 @@ const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
      getPartyParticipant, deletePartyMember } = partyStore
 
 
-const url = ref("https://www.coupangplay.com/home");
+// const url = ref("https://www.coupangplay.com/home");
+const url = ref(null);
 const isUrlExist = ref(false);
 
 watch(() => partyStore.partyInfo, (newVal) => {
@@ -243,7 +244,8 @@ watch(() => partyStore.partyInfo, (newVal) => {
           url.value = newVal.fixtureUrl;
           isUrlExist.value = true;
      } else {
-          url.value = "https://www.coupangplay.com/home";
+          // url.value = "https://www.coupangplay.com/home";
+          url.value = null;
           isUrlExist.value = false;
      }
      console.log("isUrlExist", isUrlExist.value);

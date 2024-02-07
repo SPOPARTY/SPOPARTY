@@ -1,10 +1,10 @@
 <template>
+    <p>실시간 정보 페이지. fixtureId = {{ fixtureId ? fixtureId : 'null' }}</p>
+    <p v-if="fixtureId == null">경기를 선택해주세요.</p>
     <v-container fluid class="pa-2 fill-height part-section">
-        <p>실시간 정보 페이지. fixtureId = {{ fixtureId ? fixtureId : 'null' }}</p>
-        <p v-if="fixtureId == null">경기를 선택해주세요.</p>
         <v-row justify="center">
             <v-col cols="12" class="d-flex flex-column align-center justify-center">
-                <v-carousel v-model="model" class='carousel' :show-arrows="false" height="500px" hide-delimiter
+                <v-carousel v-model="model" class='carousel' :show-arrows="false" height="500px" hide-delimiters 
                     hide-delimiter-background>
                     <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
                         <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
@@ -78,6 +78,7 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue';
 import { useFootballStore } from '@/stores/football/football';
+import { set } from 'date-fns';
 
 const footballStore = useFootballStore();
 
@@ -85,6 +86,7 @@ const { getCheerData, postCheersData } = footballStore;
 
 const fixtureId = ref(null)
 
+const cheer = ref([]);
 watch(() => footballStore.fixtureIdForParty, (newFixtureId) => {
     fixtureId.value = newFixtureId
     if (newFixtureId !== null) {
@@ -92,27 +94,25 @@ watch(() => footballStore.fixtureIdForParty, (newFixtureId) => {
     }
 }, { immediate: true, deep: true })
 
+watch(() => footballStore.oneCheerData, (newCheer) => {
+    cheer.value = newCheer;
+}, { immediate: true, deep: true })
+
 // 비동기 함수 호출
 getCheerData(fixtureId);
 
 // post 메서드 함수 관련
-const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
-const memberId = ref(sessionStorage.getItem("id"));
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
+const memberId = ref(localStorage.getItem("id"));
 
-const postCheers = (matchIndex, team) => {
-    postCheersData(matchIndex, team);
+const postCheers = (data, team) => {
+    postCheersData(data, team);
     setTimeout(() => {
-        getCheersData();
+        getCheerData(data.fixtureId);
   }, 100);
 };
 
 const model = ref(0);
-
-// cheersData가 업데이트 되면 cheer를 업데이트합니다.
-const cheer = ref([]);
-watch(footballStore.cheersData, (newVal) => {
-    cheer.value = newVal;
-}, { immediate: true, deep: true });
 
 
 function convertToBoolean(str) {
@@ -127,36 +127,36 @@ function formatDate(dateStr) {
 // 예시 응원 데이터
 // cheer
 // {
-//     "cheerFixtureId": 3,
+//     "cheerFixtureId": 10,
 //     "alreadyCheer": false,
-//     "homeCount": null,
-//     "awayCount": null,
+//     "homeCount": 0,
+//     "awayCount": 0,
 //     "cheerTeamId": null,
 //     "fixture": {
-//         "fixtureId": 2,
-//         "startTime": "2024-01-26T12:00:00",
+//         "fixtureId": 20,
+//         "startTime": "2024-02-06T08:00:00",
 //         "round": "5차전",
 //         "status": "not start",
 //         "homeTeamGoal": 0,
 //         "awayTeamGoal": 0,
 //         "league": {
 //             "leagueId": 1,
-//             "nameKr": "챔피언십",
-//             "logo": "https://media.api-sports.io/football/leagues/40.png"
+//             "nameKr": "월드컵",
+//             "logo": "https://media.api-sports.io/football/leagues/1.png"
 //         },
 //         "homeTeam": {
-//             "seasonLeagueTeamId": 1,
-//             "teamId": 1,
-//             "nameKr": "마루쉐",
-//             "nameEng": "maroche",
-//             "logo": "https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg"
-//         },
-//         "awayTeam": {
 //             "seasonLeagueTeamId": 4,
 //             "teamId": 4,
 //             "nameKr": "멍뭉",
 //             "nameEng": "cccc",
 //             "logo": "https://source.unsplash.com/random/300x300?emblem"
+//         },
+//         "awayTeam": {
+//             "seasonLeagueTeamId": 1,
+//             "teamId": 1,
+//             "nameKr": "마루쉐",
+//             "nameEng": "maroche",
+//             "logo": "https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg"
 //         }
 //     }
 // }

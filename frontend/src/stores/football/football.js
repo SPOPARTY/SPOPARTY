@@ -24,6 +24,7 @@ export const useFootballStore = defineStore("football",() => {
     const matchRealTimeData = ref([]);
     const fixtureIdForParty = ref(null);
     const teamIdsForParty = ref({home: null, homeName:null, away: null, awayName: null});
+    const oneCheerData = ref([]);
 
     const getCheersData = () => {
         requestGetCheersData(
@@ -258,7 +259,7 @@ export const useFootballStore = defineStore("football",() => {
         )
     }
 
-    const getCheerData = (fixtureId) => {
+    const getCheerData = async (fixtureId) => {
         // 단일 경기 응원 정보 가져오기
         reqeustGetOneCheerData(
             fixtureId,
@@ -267,7 +268,7 @@ export const useFootballStore = defineStore("football",() => {
                 if(res.status === httpStatusCode.OK) {
                     console.log("히히 특정 경기 응원 정보 가져오기 발사")
                     console.log(res.data.data)
-                    return res.data.data;
+                    oneCheerData.value = res.data.data;
                 }
             },
             (error) => {
@@ -276,7 +277,7 @@ export const useFootballStore = defineStore("football",() => {
                     console.log("***********비상***********")
                     console.error(error)
                     alert("특정 경기 응원 정보 가져오기 실패!")
-                    return null;
+                    oneCheerData.value = [];
                 }
             }
         )
@@ -306,5 +307,6 @@ export const useFootballStore = defineStore("football",() => {
         matchRealTimeData,
         fixtureIdForParty,
         teamIdsForParty,
+        oneCheerData,
     }
 })
