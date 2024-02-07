@@ -67,4 +67,5 @@ public class League extends FootballBaseEntity {
 		this.countryLogo = countryLogo;
 		this.type = type;
 	}
+
 }

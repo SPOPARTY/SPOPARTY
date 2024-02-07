@@ -7,4 +7,5 @@ import com.spoparty.batch.entity.Season;
 
 @Repository
 public interface SeasonRepository extends JpaRepository<Season, Long> {
+	<T> T findByValue(String value, Class<T> type);
 }
