@@ -24,11 +24,11 @@ public interface PartyService {
 
 	List<PartyMemberProjection> findAllPartyMembers(Long partyId);
 
-	PartyMemberProjection createPartyMember(PrincipalDetails principalDetails, Long partyId) throws
+	PartyMemberProjection createPartyMember(PrincipalDetails principalDetails, Long clubId, Long partyId) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException;
 
 	<T> T findPartyMember(Long partyMemberId, Class<T> type);
 
-	Long deletePartyMember(Long partyMemberId);
+	Long deletePartyMember(Long partyId, Long partyMemberId, Long clubId);
 }
