@@ -59,7 +59,7 @@ public class dataRequest {
 	}
 
 
-	@Scheduled(fixedRate=300000)
+	// @Scheduled(fixedRate=300000)
 	public void getAllLeague() {
 		System.out.println(LocalTime.MIN);
 		List<Long> leagueIds = new ArrayList<>(Arrays.asList((long)1, (long)7, (long)8, (long)18,
@@ -88,9 +88,10 @@ public class dataRequest {
 
 
 
-			String nameKr = languageUtil.translate(league.get("name"), Map.class);
-			String countryNameKr = languageUtil.translate(country.get("name"), Map.class);
-
+			String nameKr = languageUtil.translate(league.get("name"));
+			String countryNameKr = languageUtil.translate(country.get("name"));
+			System.out.println("name " + nameKr);
+			System.out.println("country "  + countryNameKr);
 
 			League leagueEntity = League.builder()
 				.id(id)
@@ -102,7 +103,7 @@ public class dataRequest {
 				.type(league.get("type"))
 				.build();
 
-			// leagueRepository.save(leagueEntity);
+			leagueRepository.save(leagueEntity);
 
 			for (Map<String, Object> season : seasons){
 
