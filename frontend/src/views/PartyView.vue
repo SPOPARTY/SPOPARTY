@@ -4,7 +4,12 @@
           <v-row class="party-section mb-6">
                <v-col class="match-section" cols="9">
                     <v-row class="match-video">
-                         <v-img src="/soccer-screen.png" aspect-ratio="16/9" contain></v-img>
+                         <iframe class="coupang-play" v-if="url" 
+                         width="100%" height="100%" :src=url allow="autoplay" 
+                         frameborder="0" allowfullscreen title="쿠팡플레이"
+                         overflow:hidden
+                         ></iframe>
+                         <v-img v-else src="/soccer-screen.png" aspect-ratio="16/9" contain></v-img>
                     </v-row>
                     <v-row class="selector">
                          <!-- 파티 타이틀 선택 -->
@@ -81,9 +86,39 @@
                     <!-- 여기가 유저들 캠 화면 오는 영역 -->
                     <v-row class="cam-section">
                          <v-col cols="6" class="cam-video">
-                         <UserVideo
-                                   :stream-manager="publisher"
-                                   @click.native="updateMainVideoStreamManager(publisher)" />
+                              <UserVideo
+                              :stream-manager="publisher"
+                              @click.native="updateMainVideoStreamManager(publisher)" />
+                              <v-menu location="center" activator="parent" open-on-hover close-delay="300"
+                                   >
+                                   <v-list>
+                                        <v-btn class="ma-2" icon variant="outlined"
+                                        @click="toggleVideoState">
+                                             <v-icon v-if="videoState">mdi-video-box</v-icon>
+                                             <v-icon v-else>mdi-video-box-off</v-icon>
+                                             <v-tooltip activator="parent" location="center">
+                                                  <p v-if="videoState">캠 끄기</p>
+                                                  <p v-else>캠 켜기</p>
+                                             </v-tooltip>
+                                        </v-btn>
+                                        <v-btn class="ma-2" icon variant="outlined"
+                                        @click="toggleAudioState">
+                                             <v-icon v-if="audioState">mdi-volume-high</v-icon>
+                                             <v-icon v-else>mdi-volume-off</v-icon>
+                                             <v-tooltip activator="parent" location="center">
+                                                  <p v-if="audioState">마이크 끄기</p>
+                                                  <p v-else>마이크 켜기</p>
+                                             </v-tooltip>
+                                        </v-btn>
+                                        <!-- <v-list-item
+                                        v-for="n in 3"
+                                        :key="n"
+                                        :title="'Item ' + n"
+                                        >
+                                             <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                        </v-list-item> -->
+                                   </v-list>
+                              </v-menu>
                          </v-col>
                          <v-col cols="6" class="cam-video" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
                               
@@ -174,7 +209,7 @@
 </template>
  
 <script setup>
-import { ref, watch, onMounted, onUnmounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import { format, set, parseISO, addDays } from 'date-fns';
 
@@ -199,15 +234,34 @@ const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
      getPartyParticipant, deletePartyMember } = partyStore
 
 
+const url = ref("https://www.coupangplay.com/home");
+const isUrlExist = ref(false);
+
+watch(() => partyStore.partyInfo, (newVal) => {
+     console.log(newVal)
+     if (newVal?.fixtureUrl != null) {
+          url.value = newVal.fixtureUrl;
+          isUrlExist.value = true;
+     } else {
+          url.value = "https://www.coupangplay.com/home";
+          isUrlExist.value = false;
+     }
+     console.log("isUrlExist", isUrlExist.value);
+     console.log("url", url.value);
+}, { immediate: true, deep: true })
+
 //// 파티 정보 수정 로직
 // 파티 입장 및 퇴장
 const clubId = route.params.clubId;
 const partyId = route.params.partyId;
-const partyMemberList = ref(partyStore.partyMemberList);
+const partyMemberList = ref(getPartyMemberList(clubId, partyId));
+
+console.log("시작멤버리스트",partyMemberList.value);
 
 const showVote = ref(false);
 
 watch(() => partyStore.partyMemberList, (newPartyMembers) => {
+     console.log("newPartyMembers",newPartyMembers);
      partyMemberList.value = newPartyMembers;
      partyMemberList.value.map((member) => {
           console.log(member)
@@ -225,16 +279,12 @@ watch(() => partyStore.myParticipantId, (newMyId) => {
      myId.value = newMyId;
 }, { immediate: true });
 
+
 // 사용자가 탭을 나갈 때 실행할 함수
 function handleBeforeUnload(event) {
-  // 여기에 실행하고 싶은 코드를 작성합니다.
-  // 예: 서버에 데이터를 저장하는 함수 호출 등
   delPartyMem();
-
   // 사용자에게 경고 메시지를 띄우기
   // event.returnValue를 설정하면 브라우저가 사용자에게 나가기 전에 확인을 요청합니다.
-
-
      event.preventDefault();
      event.returnValue = "정말로 페이지를 나가시겠습니까?";
      return message; // 다른 브라우저에서 필요
@@ -256,10 +306,16 @@ onBeforeUnmount(() => {
      window.removeEventListener('beforeunload', handleBeforeUnload);
 })
 
+const answer = window.confirm('쿠팡 플레이 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?');
+if (answer) {
+     const url = "https://www.coupangplay.com/login";
+     window.open(url, '_blank');
+}
+
 const delPartyMem = () => {
-     console.log("delPartyMem", partyMemberList.value);
+     console.log("delPartyMem1", partyMemberList.value);
      myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId).participantId;
-     console.warn("delPartyMem", clubId, partyId, myId.value);
+     console.warn("delPartyMem2", clubId, partyId, myId.value);
      deletePartyMember(clubId, partyId, myId.value);
 }
 
@@ -353,6 +409,11 @@ const closeTab = () => {
 
 
 function editPartyInfo(isAsk) {
+     isEditing.value = isAsk;
+     isMatchEditing.value = isAsk;
+     isTitleEditing.value = isAsk;
+     isUrlEditing.value = isAsk;
+
      if (!isAsk) {
           console.log("editPartyInfo",clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
           putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
@@ -361,6 +422,8 @@ function editPartyInfo(isAsk) {
      // putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
 }
 
+// 수정 여부 전체 관리
+const isEditing = ref(false);
 
 // 파티 정보 수정
 const isTitleEditing = ref(false);
@@ -609,6 +672,8 @@ const leaveSession = () => {
 
 .match-video {
      background-color: lightgrey;
+     height: 75vh;
+     /* aspect-ratio: 16/9; */
      min-height: 400px;
 }
 
@@ -630,7 +695,7 @@ const leaveSession = () => {
      border : 1px solid #CBD0D8;
 }
 .cam-section {
-     height: 65%;
+     height: 70%;
      /* justify-self: start; */
      align-content: start;
 }
@@ -639,7 +704,7 @@ const leaveSession = () => {
      background-color: blueviolet;
      border: 1px solid white;
      min-height: 100px;
-     height: 30%;
+     height: 33%;
      /* height: 300px; */
      text-align: center;
      /* 중앙 정렬 */
@@ -714,5 +779,19 @@ const leaveSession = () => {
      height: 90px;
      padding: 0;
 }
+/* Chrome, Edge, Safari */
+.match-video::-webkit-scrollbar {
+  display: none; /* 스크롤바 영역을 숨깁니다 */
+}
 
+/* Firefox */
+.match-video {
+  scrollbar-width: none; /* Firefox에서 스크롤바를 숨깁니다 */
+}
+
+/* IE and Edge */
+.match-video {
+  -ms-overflow-style: none; /* Internet Explorer 및 Edge에서 스크롤바를 숨깁니다 */
+  overscroll-behavior: contain;
+}
 </style> 

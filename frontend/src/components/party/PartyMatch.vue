@@ -5,6 +5,7 @@
                 <v-tab value="one">실시간 정보</v-tab>
                 <v-tab value="two">경기 내역</v-tab>
                 <v-tab value="three">팀 플레이어들</v-tab>
+                <v-tab value="four">응원하기</v-tab>
                 <!-- 새로고침 버튼 -->
                 <v-spacer></v-spacer>
                 <v-btn :loading="loading" icon @click="refreshData" variant="text">
@@ -24,6 +25,9 @@
                     <v-window-item value="three">
                         <PartyTeamPlayers/>
                     </v-window-item>
+                    <v-window-item value="four">
+                        <PartyCheer/>
+                    </v-window-item>
                 </v-window>
             </v-card-text>
         </v-card>
@@ -35,6 +39,7 @@ import { ref, watch } from 'vue'
 import PartyMatchHistory from '@/components/party/PartyMatchHistory.vue'
 import PartyRealTimeInfo from '@/components/party/PartyRealTimeInfo.vue'
 import PartyTeamPlayers from '@/components/party/PartyTeamPlayers.vue'
+import PartyCheer from '@/components/party/PartyCheer.vue'
 
 import { useFootballStore } from '@/stores/football/football'
 
