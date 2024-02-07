@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.member.service.NotificationService;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
 import com.spoparty.api.party.dto.response.PartyResponseDTO;
 import com.spoparty.api.party.entity.PartyMemberProjection;
