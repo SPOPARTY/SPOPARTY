@@ -16,19 +16,20 @@
       </v-list-item>
     </v-list>
   </v-container>
-  <v-form>
+  <v-form @submit.prevent>
     <v-container>
       <v-row>
         <v-col cols="12">
           <v-text-field
             class="chat-input"
             v-model="myMessage.message"
-            :append-icon="myMessage.message ? 'mdi-send' : 'mdi-microphone'"
+            :append-icon="myMessage.message ? 'mdi-send' : 'mdi-send'"
             variant="filled"
             clear-icon="mdi-close-circle"
             clearable
             label="Message"
             type="text"
+            @keyup.enter="sendMessage"
             @click:append="sendMessage"
             @click:clear="clearMessage"></v-text-field>
         </v-col>

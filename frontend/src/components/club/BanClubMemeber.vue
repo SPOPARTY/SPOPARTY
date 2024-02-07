@@ -27,7 +27,7 @@
         </v-card>
         <v-card v-else>
             <br><br>
-            <v-card-title>아직 멤버가 없습니다!</v-card-title>
+            <v-card-title class="text-center">아직 멤버가 없습니다!</v-card-title>
             <br><br>
         </v-card>
     </v-dialog>
