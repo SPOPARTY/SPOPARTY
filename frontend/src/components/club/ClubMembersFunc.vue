@@ -1,35 +1,36 @@
 <template>
-    <v-card class= "ma-5" outlined>
+    <v-card class="background" outlined>
         <v-row class="pa-4" align="center" justify="start" no-gutters style="background-color: #E0E0E0;">
             <v-col cols="10">
-                <div class="headline">{{ clubInfo.name }}</div>
-                <div class="club-host-name">그룹장 : {{ clubInfo.hostName }}</div>
+                <div class="headline">그룹명 - {{ clubInfo.name }}</div>
+                <div class="club-host-name">그룹장 - {{ clubInfo.hostName }}</div>
                 <div>정원 - {{clubInfo.currentParticipants}}/{{ clubInfo.maxParticipants }}</div>
             </v-col>
             <v-col cols="2">
                 <v-icon large @click="showClubMemberFunc">mdi-cog</v-icon>
-                <ClubLeader 
-                    v-if="isClubMemberFuncVisible && clubInfo.hostId == memberId"
-                    @club-leader-close="closeClubMemberFunc"
-                    />
-                <ClubMember 
-                    v-if="isClubMemberFuncVisible && clubInfo.hostId != memberId"
-                    @club-member-close="closeClubMemberFunc"
-                    />
+                <ClubLeader v-if="isClubMemberFuncVisible && clubInfo.hostId == memberId"
+                    @club-leader-close="closeClubMemberFunc" />
+                <ClubMember v-if="isClubMemberFuncVisible && clubInfo.hostId != memberId"
+                    @club-member-close="closeClubMemberFunc" />
             </v-col>
         </v-row>
         
-        <v-btn block color="pink lighten-3" @click="showClubMembers">그룹원 보기</v-btn>
+        <v-btn block color="#81689D" @click="showClubMembers">그룹원 보기</v-btn>
 
-        <v-btn block color="blue" style="margin-top:30px;" @click="showInvite">그룹으로 초대</v-btn>
+        <div style="padding-left:50px; padding-right:50px;">
+            <v-btn class="invite-button" block color="#6C22A6" 
+                style="margin-top:30px; margin-bottom:30px;" 
+                @click="showInvite">그룹으로 초대
+            </v-btn>
+        </div>
 
-                
-        <!-- 버튼 정보 최신화 -->
-        <v-btn @mouseenter="newPartyInfo" v-bind="props" @click="goToPartyPage" block :color="isPartyExist? 'primary':'red'" dark class="mt-4" style="height:100px;">
+        <v-btn @mouseenter="newPartyInfo" v-bind="props" @click="goToPartyPage" block :color="isPartyExist ? 'primary' : 'red'"
+            dark class="mt-4" style="height:100px;">
             <v-tooltip v-if="isPartyExist" activator="parent" location="top">
                 <p>인원 : {{ partyInfo.currentParticipants }} / {{ partyInfo.maxParticipants }}</p>
                 <p>{{ partyInfo.fixtureInfo?.leagueName }} {{ partyInfo.fixtureInfo?.round }}</p>
-                <p v-if="partyInfo.fixtureInfo">{{ partyInfo.fixtureInfo?.homeTeam?.name }} vs {{ partyInfo.fixtureInfo?.awayTeam?.name }}</p>
+                <p v-if="partyInfo.fixtureInfo">{{ partyInfo.fixtureInfo?.homeTeam?.name }} vs {{
+                    partyInfo.fixtureInfo?.awayTeam?.name }}</p>
             </v-tooltip>
             <div v-if="!isPartyExist">파티를 열어보세요!</div>
             <div v-else>
@@ -40,29 +41,21 @@
     </v-card>
 
     <!-- 그룹원 보기 -->
-    <v-dialog 
-        v-model="isClubMemberVisible"
-        max-width="400px"
-        max-height="400px"
-        >
+    <v-dialog v-model="isClubMemberVisible" max-width="400px" max-height="400px">
         <v-card class="member-list">
             <v-card-title>그룹원 목록</v-card-title>
             <div v-for="(member, index) in clubMemberList" :key="index" class="member">
                 <v-card-text>
-                    {{ member.memberNickName}}
+                    {{ member.memberNickName }}
                     <v-icon v-if="member.role == 'host'" class="star">mdi-star</v-icon>
                 </v-card-text>
             </div>
         </v-card>
-        
+
     </v-dialog>
 
     <!-- 그룹으로 초대 -->
-    <v-dialog
-        v-model="isInviteVisible"
-        max-width="400px"
-        max-height="200px"
-    >   
+    <v-dialog v-model="isInviteVisible" max-width="400px" max-height="200px">
         <v-card class="align-items-center">
             <v-card-title>초대 링크를 복사하세요!</v-card-title>
             <div class="text-to-copy">
@@ -76,22 +69,22 @@
         </v-card>
 
     </v-dialog>
-  </template>
+</template>
 
 <script setup>
-import {ref,onMounted,computed, watch} from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 
-import {useClubStore} from '@/stores/club/clubs';
+import { useClubStore } from '@/stores/club/clubs';
 import { usePartyStore } from '@/stores/club/party/party';
 
 import ClubLeader from '@/components/club/ClubLeader.vue';
 import ClubMember from '@/components/club/ClubMember.vue';
-import { set } from 'date-fns';
+import { nextDay, set } from 'date-fns';
 
 const props = defineProps({
-    clubInfo:Object,
-    clubMemberList:Object
+    clubInfo: Object,
+    clubMemberList: Object
 })
 
 const clubStore = useClubStore();
@@ -115,7 +108,7 @@ const clubMemberList = computed(() => {
     return props.clubMemberList
 })
 
-const memberId = sessionStorage.getItem("id");
+const memberId = localStorage.getItem("id");
 
 // 그룹원 보기 on/off
 const isClubMemberVisible = ref(false)
@@ -140,12 +133,12 @@ async function showInvite() {
 
 
 // 그룹 초대 링크 복사
-const copyText = async() => {
+const copyText = async () => {
     try {
         await navigator.clipboard.writeText(inviteURL.value);
         alert("텍스트가 클립보드에 복사되었습니다.")
     } catch (err) {
-        console.error('복사 실패 : ',err);
+        console.error('복사 실패 : ', err);
         alert('텍스트 복사에 실패했습니다.')
     }
 }
@@ -171,6 +164,17 @@ const { getPartyInfo, postPartyInfo } = partyStore;
 const partyId = ref(clubInfo.value.partyId);
 
 const isPartyExist = ref(false);
+// const isPartyExist = ref(clubInfo.value.partyId ? true : false);
+// computed(() => {
+//     if (partyStore.partyInfo.value) {
+//         isPartyExist.value = true;
+//         partyId.value = partyStore.partyInfo.value.partyId;
+//         console.log("파티가 있어요", partyId.value)
+//     } else {
+//         isPartyExist.value = false;
+//         console.log("파티가 없어요")
+//     }
+// })
 
 const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 
@@ -181,8 +185,9 @@ const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 watch(() => partyStore.partyInfo, (newPartyInfo) => {
     console.log("파티인포 와치", newPartyInfo)
     partyInfo.value = newPartyInfo;
-    if (newPartyInfo) {
-        console.log("11111",newPartyInfo)
+    if (newPartyInfo && Object.keys(newPartyInfo).length > 0) {
+        // if (newPartyInfo?.partyId) {
+        console.log("11111", newPartyInfo)
         isPartyExist.value = true;
         partyId.value = newPartyInfo.partyId;
     } else {
@@ -216,21 +221,6 @@ onMounted(() => {
         console.log("파티가 없어요")
     }
 })
-
-// const goToPartyPage = async () => {
-//     if (isPartyExist.value) {
-//         await getClubInfo(clubId);
-//         console.log("파티가 있어요", clubInfo.value.partyId);
-//         // partyId.value = clubInfo.value.partyId;
-//     } else {
-//         await postPartyInfo(clubId);
-//         await getClubInfo(clubId);
-//         console.log("파티가 생성되었어요", partyId.value);
-//         isPartyExist.value = true;
-//     }
-//     console.log(partyId.value)
-//     openPartyPage(partyId.value);
-// }
 
 const goToPartyPage = async () => {
     let startTime = Date.now(); // 시작 시간
@@ -278,49 +268,50 @@ const openPartyPage = (partyId) => {
     window.open(url, '_blank');
 };
 
-const newPartyInfo = () => {
-    console.log("새로운 파티 정보를 가져옵니다")
-    getPartyInfo(clubId, partyId.value);
+const newPartyInfo = async () => {
+    console.log("버튼을 호버해 새 파티 정보를 가져옵니다.")
+    const tempInfo = await getPartyInfo(clubId, partyId.value);
+    setTimeout(() => {
+        console.log("새 파티 정보", tempInfo)
+    }, 500)
+    // if (tempInfo) {
+    //     console.log("파티가 있습니다.")
+    //     if (!isPartyExist.value) {
+    //         isPartyExist.value = true;
+    //     }
+    //     return
+    // } else {
+    //     console.log("파티가 없습니다.")
+    //     if (isPartyExist.value) {
+    //         isPartyExist.value = false;
+    //     }
+    // }
 }
 
-// 파티 정보 예시
-// "data": {
-//     "partyId": 6,
-//     "sessionId": "d3e07dd8-2e2b-4476-b694-cdd922efc8b0",
-//     "title": "손흥민 폼 미쳤다이",
-//     "maxParticipants": 6,
-//     "currentParticipants": 0,
-//     "hostNickName": "김종범",
-//     "fixtureUrl": "https://www.coupangplay.com/titles/016d6d60-9a95-45ec-8e38-cd501fddb07c?type=LIVE&availability=&live=true&channel=&rowId=70bb548b-cf24-46e2-a656-040fa551d577&trackId=&src=page_discover_feed%3AMulti-Hero-Live-Event-Curation-0%3ALIVE&sourceType=&supportLive=",
-//     "fixtureInfo": {
-//       "leagueName": "챔피언십",
-//       "round": "5차전",
-//       "startTime": "2024-01-26 12:00:00.000000",
-//       "homeTeam": {
-//         "teamId": 1,
-//         "name": "마루쉐"
-//       },
-//       "awayTeam": {
-//         "teamId": 4,
-//         "name": "멍뭉"
-//       }
-//     }
-//   }
 
 </script>
 
 
 <style lang="scss" scoped>
+.background {
+    background-color : #08042B;
+    margin-top:30px;
+}
 
+.invite-button{
+    margin : auto;
+}
 
 .member-list{
     border:solid;
     border-radius: 40px;
+
     & .member {
-        transform:translateX(150px)  
+        transform: translateX(150px)
     }
+
     & .star {
-        transform:translateY(-3px) translateX(-80px) !important
+        transform: translateY(-3px) translateX(-80px) !important
     }
 }
 
@@ -330,21 +321,22 @@ const newPartyInfo = () => {
 
 div.text-to-copy {
     text-align: center;
-    margin-left:10px;
-    transform:translateY(-10px) translateX(10px);
+    margin-left: 10px;
+    transform: translateY(-10px) translateX(10px);
 
 }
 
 .copy-btn {
     box-shadow: none !important;
-    background:none;
+    background: none;
+
     & hover {
-        background-color : transparent !important
+        background-color: transparent !important
     }
 }
 
 .party-title {
-    margin : 5px;
+    margin: 5px;
     font-size: 1rem;
     font-weight: bold;
 }

@@ -5,7 +5,8 @@ import axios from 'axios'
 
 import { requestGetCheersData, requestPostCheersData, requestGetNextMatches, 
     requestGetDateMatches, requestGetLeagueList, requestGetLeagueRanking, 
-    requestGetTeamDetail, requestGetMatchWatchable, requestGetMatchRealTimeData } from "@/api/football"
+    requestGetTeamDetail, requestGetMatchWatchable, requestGetMatchRealTimeData, 
+    requestGetMatchHistory, reqeustGetOneCheerData } from "@/api/football"
 
 import {httpStatusCode} from "@/util/http-status"
 
@@ -234,6 +235,54 @@ export const useFootballStore = defineStore("football",() => {
         } return "not found";
     }
     
+    const getMatchHistory = (Id,type="팀") => {
+        requestGetMatchHistory(
+            Id,type,
+            (res) => {
+                console.log(res)
+                if(res.status === httpStatusCode.OK) {
+                    console.log("히히 경기 기록 정보 가져오기 발사")
+                    console.log(res.data.data)
+                    return res.data.data;
+                }
+            },
+            (error) => {
+                console.log("경기 기록 정보 가져오는데 에러")
+                if(error.response.status === httpStatusCode.NOTFOUND) {
+                    console.log("***********비상***********")
+                    console.error(error)
+                    alert("경기 기록 정보 가져오기 실패!")
+                    return null;
+                }
+            }
+        )
+    }
+
+    const getCheerData = (fixtureId) => {
+        // 단일 경기 응원 정보 가져오기
+        reqeustGetOneCheerData(
+            fixtureId,
+            (res) => {
+                console.log(res)
+                if(res.status === httpStatusCode.OK) {
+                    console.log("히히 특정 경기 응원 정보 가져오기 발사")
+                    console.log(res.data.data)
+                    return res.data.data;
+                }
+            },
+            (error) => {
+                console.log("특정 경기 응원 정보 가져오는데 에러")
+                if(error.response.status === httpStatusCode.NOTFOUND) {
+                    console.log("***********비상***********")
+                    console.error(error)
+                    alert("특정 경기 응원 정보 가져오기 실패!")
+                    return null;
+                }
+            }
+        )
+    }
+
+
     return {
         getCheersData,
         postCheersData,
@@ -245,6 +294,8 @@ export const useFootballStore = defineStore("football",() => {
         getMatchWatchable,
         getMatchRealTimeData,
         findTeamIdsByFixtureId,
+        getMatchHistory,
+        getCheerData,
         cheersData,
         nextMatches,
         dateMatches,

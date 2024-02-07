@@ -47,7 +47,7 @@ const archiveStore = useArchiveStore();
 
 const route = useRoute();
 
-const memberId = sessionStorage.getItem("id")
+const memberId = localStorage.getItem("id")
 const clubId = route.params.clubId;
 
 // Detail on/off

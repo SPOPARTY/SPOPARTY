@@ -62,7 +62,9 @@
     <!-- 나머지 요소들 -->
     <template v-if="isLogined">
       <v-divider vertical class="mx-2"></v-divider>
-      <v-btn @click="() => isNotificationListVisible = true" class="mx-2 btn-text">알림</v-btn>
+      <v-badge dot :color="countUnread>0? '#D3AC2B':'#08042B'">
+        <v-btn @click="() => isNotificationListVisible = true" class="mx-2 btn-text">알림</v-btn>
+      </v-badge>
     </template>
     <v-divider vertical class="mx-2"></v-divider>
     <v-btn text to="/match" class="mx-2 btn-text">경기 일정</v-btn>
@@ -166,9 +168,9 @@ watch(() => clubStore.myClubs,(newClubs) => {
 
 
 // 로그인 여부 감지
-const isLogined = ref(sessionStorage.getItem("accessToken") !== null);
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
 // console.log("로그인 됨?")
-// console.log(sessionStorage.getItem("accessToken") !== null);
+// console.log(localStorage.getItem("accessToken") !== null);
 
 // 로그아웃
 const logout = () => {
@@ -196,7 +198,7 @@ function openClubInNewTab(clubId) {
 const isNewClubModalVisible = ref(false)
 
 function goToNewClubPage() {
-  if (sessionStorage.getItem("accessToken")== null) {
+  if (localStorage.getItem("accessToken")== null) {
     console.log()
     if(confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?") === true) {
       window.location.replace("/login")
@@ -225,10 +227,10 @@ const exitNotificationDetail = () => {
 }
 
 onMounted(async () => {
-  if (sessionStorage.getItem("accessToken") != null) {
+  if (localStorage.getItem("accessToken") != null) {
     await clubStore.requestClub();
   }
-  const memberId = sessionStorage.getItem("id");
+  const memberId = localStorage.getItem("id");
   if(memberId) {
     await getNotificationList(memberId);
     await connect(memberId);
@@ -241,6 +243,10 @@ const notificationDetail = async (id) => {
   if(notification.value.state == 0) await readNotification(id);
   isNotificationDetailVisible.value = true;
 }
+
+const countUnread = computed(() => {
+  return notificationList.value.filter(args => args.state == 0).length;
+})
 
 </script>
 

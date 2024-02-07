@@ -135,7 +135,7 @@ const emit = defineEmits([
     'vote-close'
 ])
 
-const memberId = sessionStorage.getItem("id");
+const memberId = localStorage.getItem("id");
 
 const isModalVisible = ref(true);
 

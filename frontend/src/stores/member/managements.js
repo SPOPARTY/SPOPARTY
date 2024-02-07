@@ -26,22 +26,22 @@ export const useManagementStore = defineStore("management",() => {
             loginMember,
             (response) => {
                 if(response.status === httpStatusCode.OK) {
-                    console.log("여기까지 잘 왔나")
-                    console.log(response)
+                    // console.log("여기까지 잘 왔나")
+                    // console.log(response)
                     let data = response;
                     let accessToken = data["headers"]["accesstoken"];
                     let refreshToken = data["headers"]["refreshtoken"];
-                    console.log("히히 access-token 발사 -> ", accessToken);
-                    console.log("히히 refresh-token 발사 -> ", refreshToken)
+                    // console.log("히히 access-token 발사 -> ", accessToken);
+                    // console.log("히히 refresh-token 발사 -> ", refreshToken)
                     isLogin.value = true;
                     isLoginError.value = false;
                     isValidToken.value = true;
                     let decodedToken = jwtDecode(accessToken);
-                    console.log("히히 decoded-token 발사 -> ",decodedToken);
-                    sessionStorage.setItem('accessToken',accessToken);
-                    sessionStorage.setItem('refreshToken',refreshToken);
-                    sessionStorage.setItem("id",decodedToken.id);
-                    memberId.value = sessionStorage.getItem("id");
+                    // console.log("히히 decoded-token 발사 -> ",decodedToken);
+                    localStorage.setItem('accessToken',accessToken);
+                    localStorage.setItem('refreshToken',refreshToken);
+                    localStorage.setItem("id",decodedToken.id);
+                    memberId.value = localStorage.getItem("id");
                     // window.location.replace(document.referrer) // 이전에 갔던 페이지로 돌아가는 함수인데 잘 안됨 
                     window.location.replace("/")
                     // getMemberInfo(accessToken)
@@ -58,7 +58,7 @@ export const useManagementStore = defineStore("management",() => {
                 console.log(error)
                 console.log(error.response.status);
                 if (error.response.status === httpStatusCode.UNAUTHORIZED) {
-                    alert("등록되지 않은 회원입니다!")
+                    alert("관련 회원정보가 존재하지 않습니다!")
                 }
             }
         )
@@ -90,15 +90,15 @@ export const useManagementStore = defineStore("management",() => {
     }
 
     const logout = async () => {
-        console.log("히히 logout발사")
+        // console.log("히히 logout발사")
         await memberLogout(
             (response) => {
                 console.log("로그아웃 성공!")
                 console.log(response)
                 if(response.status === httpStatusCode.OK) {
-                    sessionStorage.removeItem("accessToken");
-                    sessionStorage.removeItem("refreshToken");
-                    sessionStorage.removeItem("id")
+                    localStorage.removeItem("accessToken");
+                    localStorage.removeItem("refreshToken");
+                    localStorage.removeItem("id")
                     isLogin.value = false;
                     memberInfo.value = null;
                     isValidToken.value = null;

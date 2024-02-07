@@ -34,7 +34,9 @@ export const usePartyStore = defineStore("party",() => {
                 if(error.response.status === httpStatusCode.NOTFOUND) {
                     console.log("***********비상***********")
                     console.error(error)
-                    alert("파티 정보 가져오기 실패!")
+                    partyInfo.value = [];
+                    // alert("파티 정보 가져오기 실패!")
+                    return [];
                 }
             }
         )
@@ -66,7 +68,7 @@ export const usePartyStore = defineStore("party",() => {
 
     const putPartyInfo = (clubId,partyId,title,fixtureUrl,fixtureId) => {
         const data = {
-            memberId: sessionStorage.getItem("id"),
+            memberId: localStorage.getItem("id"),
             title: title,
             fixtureUrl: fixtureUrl,
             fixtureId: fixtureId,

@@ -27,7 +27,7 @@
 import {ref} from 'vue';
 import {useClubStore} from '@/stores/club/clubs'
 
-const memberId = sessionStorage.getItem("id");
+const memberId = localStorage.getItem("id");
 const clubName = ref("");
 
 const clubStore = useClubStore();
