@@ -89,7 +89,7 @@ function localAxios() {
                             (error) => {
                                 alert("로그아웃!")
                                 localStorage.clear();
-                                window.location.reload("/")
+                                window.location.replace("/")
                             }
                         )
                 }
