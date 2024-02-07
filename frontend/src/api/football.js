@@ -50,6 +50,18 @@ function requestGetMatchRealTimeData(fixtureId,success,fail) {
     local.get(`/${API_URL}/fixtures/events?fixtureId=${fixtureId}`).then(success).catch(fail);
 }
 
+function requestGetMatchHistory(Id,type,success,fail) {
+    // 경기 기록 정보 조회
+    // Id: 팀 ID, 리그 ID
+    // type: 팀, 리그
+    local.get(`/${API_URL}/fixtures?keyword=${Id}&type=${type}`).then(success).catch(fail);
+}
+
+function reqeustGetOneCheerData(fixtureId,success,fail) {
+    // 특정 경기 응원 정보 조회
+    local.get(`/${API_URL}/cheers?fixtureId=${fixtureId}`).then(success).catch(fail);
+}
+
 export {
     requestGetCheersData,
     requestPostCheersData,
@@ -60,4 +72,6 @@ export {
     requestGetTeamDetail,
     requestGetMatchRealTimeData,
     requestGetMatchWatchable,
+    requestGetMatchHistory,
+    reqeustGetOneCheerData,
 }

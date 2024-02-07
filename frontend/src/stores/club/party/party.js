@@ -34,7 +34,9 @@ export const usePartyStore = defineStore("party",() => {
                 if(error.response.status === httpStatusCode.NOTFOUND) {
                     console.log("***********비상***********")
                     console.error(error)
-                    alert("파티 정보 가져오기 실패!")
+                    partyInfo.value = [];
+                    // alert("파티 정보 가져오기 실패!")
+                    return [];
                 }
             }
         )
