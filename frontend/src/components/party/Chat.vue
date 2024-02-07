@@ -22,8 +22,8 @@
         <v-col cols="12">
           <v-text-field
             class="chat-input"
-            v-model="connectMessage.message"
-            :append-icon="connectMessage.message ? 'mdi-send' : 'mdi-microphone'"
+            v-model="myMessage.message"
+            :append-icon="myMessage.message ? 'mdi-send' : 'mdi-microphone'"
             variant="filled"
             clear-icon="mdi-close-circle"
             clearable
@@ -40,49 +40,97 @@
 <script setup>
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { usePartyStore } from '@/stores/club/party/party'
 
 const serverURL = 'https://i10a802.p.ssafy.io/api/ws-stomp'
 
 let stompClient = undefined
 
-const chats = reactive([
-{userName: "test",
-  teamLogo: "test",
-  message: "잘하네"},
-  {userName: "maru",
-  teamLogo: "test",
-  message: "달려라 마루쎄"},
-  {userName: "제라드",
-  teamLogo: "test",
-  message: "훔바훔바링"},
+const route = useRoute()
+const router = useRouter()
 
-])
+const partyStore = usePartyStore()
+
+const chats = reactive([])
 
 const message = ref('')
 
-const connectMessage = ref({
-  userName: "maru",
-  teamLogo: 'test',
-  partyId: '125',
-  clubId: '125',
-  message: "",
+onMounted(() => {})
+
+//// 파티 정보 수정 로직
+// 파티 입장 및 퇴장
+const clubId = route.params.clubId
+const partyId = route.params.partyId
+const partyMemberList = ref(partyStore.partyMemberList)
+
+const myMessage = ref({
+  userName: '',
+  teamLogo: '',
+  partyId: '',
+  clubId: '',
+  message: '',
 })
 
-onMounted(() => {
-  connect()
-})
+const connect = () => {
+  const socket = new SockJS(serverURL)
+  stompClient = Stomp.over(socket)
+
+  stompClient.connect(
+    {},
+    (frame) => {
+      console.log('stomp client connected.')
+      myMessage.value.message = `${myMessage.value.userName} 님이 입장했습니다.`
+      send('/chat/enter', myMessage.value, myMessage.value)
+      myMessage.value.message = ''
+      stompClient.subscribe(`/sub/chat`, (response) => {
+        console.log(response)
+        chats.push(JSON.parse(response.body))
+      })
+      stompClient.subscribe(
+        `/user/${myMessage.value.userName}/sub/chat`,
+        (response) => {
+          chats.push(...JSON.parse(response.body))
+          console.log(chats)
+        },
+      )
+    },
+    (error) => {
+      console.error(`stomp client connect error : ${error}`)
+    },
+  )
+}
+
+watch(
+  () => partyStore.partyMemberList,
+  (newPartyMembers) => {
+    partyMemberList.value = newPartyMembers
+    partyMemberList.value.map((member) => {
+      console.log(member)
+      console.log(sessionStorage.getItem('id'))
+      if (member.memberId == sessionStorage.getItem('id')) {
+        myMessage.value.userName = member.memberNickname
+        myMessage.value.teamLogo = 'qwer'
+        myMessage.value.clubId = clubId
+        myMessage.value.partyId = partyId
+        connect()
+      }
+    })
+  },
+  { immediate: true, deep: true },
+)
 
 const clearMessage = () => {
-  connectMessage.value.message = ''
+  myMessage.value.message = ''
 }
 
 const sendMessage = () => {
-  console.log("sendMessage")
-  if (connectMessage.value.userName !== '' && connectMessage.value.message !== '') {
-    console.log("sendMessage rrrr")
-    send('/chat/send', connectMessage.value, connectMessage.value)
-    connectMessage.value.message = ''
+  console.log('sendMessage')
+  if (myMessage.value.userName !== '' && myMessage.value.message !== '') {
+    console.log('sendMessage rrrr')
+    send('/chat/send', myMessage.value, myMessage.value)
+    myMessage.value.message = ''
   }
 }
 
@@ -99,38 +147,9 @@ const send = (destination, body, header) => {
   }
 }
 
-const connect = () => {
-  const socket = new SockJS(serverURL)
-  stompClient = Stomp.over(socket)
-
-  stompClient.connect(
-    {},
-    (frame) => {
-      console.log('stomp client connected.')
-      connectMessage.value.message = `${connectMessage.value.userName} 님이 입장했습니다.`
-      send('/chat/enter', connectMessage.value, connectMessage.value)
-      connectMessage.value.message = ""
-      stompClient.subscribe(`/sub/chat`, (response) => {
-        console.log(response)
-        chats.push(JSON.parse(response.body))
-      })
-      stompClient.subscribe(
-        `/user/${connectMessage.value.userName}/sub/chat`,
-        (response) => {
-          chats.push(...JSON.parse(response.body))
-          console.log(chats)
-        },
-      )
-    },
-    (error) => {
-      console.error(`stomp client connect error : ${error}`)
-    },
-  )
-}
-
 const disconnect = () => {
-  connectMessage.value.message = `${connectMessage.value.userName} 님이 퇴장했습니다.`
-  send('/sub/chat/out', connectMessage.value, connectMessage.value)
+  myMessage.value.message = `${myMessage.value.userName} 님이 퇴장했습니다.`
+  send('/sub/chat/out', myMessage.value, myMessage.value)
   stompClient.disconnect(() => {
     console.log('stomp client disconnected.')
   })
