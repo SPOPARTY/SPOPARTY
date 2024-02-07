@@ -126,8 +126,10 @@ public class dataRequest {
 		System.out.println("end");
 	}
 
+	@Scheduled(fixedRate=300000)
+	public void getStandings() {
 
-
+	}
 
 
 

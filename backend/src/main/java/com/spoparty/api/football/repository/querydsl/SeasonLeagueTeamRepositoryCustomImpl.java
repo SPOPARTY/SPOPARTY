@@ -56,7 +56,7 @@ public class SeasonLeagueTeamRepositoryCustomImpl implements SeasonLeagueTeamRep
 			.fetchJoin()
 			.join(seasonLeagueTeam.team, team)
 			.fetchJoin()
-			.join(seasonLeagueTeam.standings, standings)
+			.leftJoin(seasonLeagueTeam.standings, standings)
 			.fetchJoin()
 			.where(seasonLeagueTeam.seasonLeague.id.eq((long)leagueId))
 			.orderBy(standings.group.asc(), standings.rank.asc())
