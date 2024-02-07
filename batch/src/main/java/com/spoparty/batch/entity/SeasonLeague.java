@@ -60,7 +60,6 @@ public class SeasonLeague extends FootballBaseEntity {
 
 
 	@Builder
-
 	public SeasonLeague(LocalDateTime seasonStartDate, LocalDateTime seasonEndDate, Season season, League league) {
 		this.seasonStartDate = seasonStartDate;
 		this.seasonEndDate = seasonEndDate;
