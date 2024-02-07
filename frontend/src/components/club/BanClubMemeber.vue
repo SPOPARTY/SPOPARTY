@@ -8,7 +8,7 @@
         >
         <v-card v-if="clubMemberList.length !== 1">
             <br>
-            <v-card-title class="member-list-title"><h2>넌 너가라</h2></v-card-title>
+            <v-card-title class="member-list-title"><h2>넌 나가라</h2></v-card-title>
             <br>
             <div class="selected" v-if="bannedMember.memberNickName !== ''">
                 <b>강퇴 후보</b> : <b><u>{{ bannedMember.memberNickName }}</u></b> <br>
