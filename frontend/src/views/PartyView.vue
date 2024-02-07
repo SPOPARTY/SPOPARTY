@@ -172,9 +172,10 @@
                               </v-btn>
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="#CBD0D8">
+                              <v-btn @click="showVote = true" color="#CBD0D8">
                                    투표
                               </v-btn>
+                              <VoteList v-if="showVote" @vote-close="showVote = false"/>
                          </v-col>
                          <!-- <v-col cols="2">
                               <v-btn color="yellow" class="chat-button">
@@ -214,12 +215,13 @@ import { format, set, parseISO, addDays } from 'date-fns';
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
 import Chat from '../components/party/Chat.vue';
+import VoteList from "@/components/vote/VoteList.vue"
 
 import { useFootballStore } from '@/stores/football/football'
 import { usePartyStore } from '@/stores/club/party/party'
 
 import { OpenVidu } from 'openvidu-browser'
-import UserVideo from '../components/openvidu/uservideo.vue'
+import UserVideo from '../components/openvidu/UserVideo.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -256,13 +258,15 @@ const partyMemberList = ref(getPartyMemberList(clubId, partyId));
 
 console.log("시작멤버리스트",partyMemberList.value);
 
+const showVote = ref(false);
+
 watch(() => partyStore.partyMemberList, (newPartyMembers) => {
      console.log("newPartyMembers",newPartyMembers);
      partyMemberList.value = newPartyMembers;
      partyMemberList.value.map((member) => {
           console.log(member)
-          console.log(sessionStorage.getItem("id"))
-          if (member.memberId == sessionStorage.getItem("id")) {
+          console.log(localStorage.getItem("id"))
+          if (member.memberId == localStorage.getItem("id")) {
                joinSession(member.openviduToken, member.nickName)
           }
      })

@@ -79,7 +79,7 @@ const changeFollowing = (item) => {
         return;
     }
     const oldVal = item.following;
-    const memberId = sessionStorage.getItem("id");
+    const memberId = localStorage.getItem("id");
     if (item.following) {
         doUnFollow(memberId, item.teamId);
     } else {

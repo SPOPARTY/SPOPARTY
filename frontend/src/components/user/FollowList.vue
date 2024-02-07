@@ -6,29 +6,28 @@
         persistent      >
         <v-card>
           <v-row>
-              <v-col cols="10" >
-                  <v-card-title>팔로우 리스트</v-card-title>
-              </v-col>
-              <v-col cols="2" style="margin-top:5px;">
-                  <v-btn :ripple="false" @click="closeModal" class="no-background-hover">
-                      <v-icon>mdi-close</v-icon>
-                  </v-btn>
-              </v-col>
-          </v-row>  
-          
+            <v-col>
+              <v-card-title style="margin-left:330px;">팔로우 리스트</v-card-title>
+            </v-col>
+            <v-col class="text-right">
+              <v-btn :ripple="false" @click="closeModal" class="no-background-hover">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
 
-          <v-row>
-              <v-col cols="6">
+          <v-row justify="center">
+              <v-col cols="5">
                   <v-btn 
-                      color="orange" 
+                      color="#333D51" 
                       style="width:100%"
                       @click="showAllClubs">
                       전체
                   </v-btn>
               </v-col>   
-              <v-col cols="6">
+              <v-col cols="5">
                   <v-btn 
-                      color="purple" 
+                      color="#333D51" 
                       style="width:100%"
                       @click="showFollwingClubs">
                       내가 팔로우 한 구단
@@ -69,12 +68,12 @@
                       </v-col>
                       <v-col cols="3">
                         <v-list-item-action>
-                          <v-btn icon v-if="!clubData.following.some(followedClub => followedClub.id === item.id)" @click="followClub(item)">
-                            <v-icon color="green">mdi-plus</v-icon>
+                          <v-btn class="button" icon v-if="!clubData.following.some(followedClub => followedClub.id === item.id)" @click="followClub(item)">
+                            <v-icon>mdi-plus</v-icon>
                           </v-btn>
 
-                          <v-btn icon v-if="clubData.following.some(followedClub => followedClub.id === item.id) && clubData.current == clubData.following" @click="unfollowClub(item.id)">
-                            <v-icon color="red">mdi-delete</v-icon>
+                          <v-btn class="button" icon v-if="clubData.following.some(followedClub => followedClub.id === item.id) && clubData.current == clubData.following" @click="unfollowClub(item.id)">
+                            <v-icon>mdi-delete</v-icon>
                           </v-btn>
         
 
@@ -206,11 +205,17 @@
 
   <style scoped lang="scss">
   .no-background-hover {
-  box-shadow: none !important;
+    box-shadow: none !important;
 
     &:hover {
       background-color: transparent !important;
     }
+  }
+
+  .button {
+      color : #292646;
+      box-shadow: none !important;
+      background : transparent !important;
   }
 
   </style>

@@ -1,7 +1,7 @@
 <template>
     <v-container class="mypage-container">
-        <v-card class="pa-4" outlined>
-            <v-card-title class="text-h4 mb-6">마이페이지</v-card-title>
+        <v-card class="inner-card pa-4" outlined>
+            <h1>마이페이지</h1>
         
             <v-row>
                 <v-col cols="12" md="8">
@@ -102,7 +102,7 @@ import {useFollowStore} from '@/stores/member/follows'
 import SetNewPwd from '@/components/user/SetNewPwd.vue';
 import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
-
+import FollowList from '@/components/user/FollowList.vue';
 
 const followStore = useFollowStore();
 
@@ -112,8 +112,8 @@ const teamList = ref(null);
 const followList = ref(null);
 
 onMounted(() => {
-    const id = sessionStorage.getItem("id")
-    memberId.value = sessionStorage.getItem("id");
+    const id = localStorage.getItem("id")
+    memberId.value = localStorage.getItem("id");
     teamList.value = followStore.getTeamList();
     followStore.getFollowList(memberId.value);
     getMemberInfo();
@@ -191,9 +191,9 @@ const Withdraw = () => {
     (res) => {
         if (res.status === httpStatusCode.OK) {
             console.log(res)
-            sessionStorage.removeItem("accessToken");
-            sessionStorage.removeItem("refreshToken");
-            sessionStorage.removeItem("id")
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("id")
             alert("함께해서 더러웠고 다신 만나지 말자")
             router.push("/")
         } 
@@ -256,6 +256,7 @@ function setEmblem(newEmblem) {
 // 구단 팔로우 모달
 const isFollowModalVisible = ref(false)
 function showFollowModal() {
+    console.log("구단 팔로우 모달 띄우기!!!")
     isFollowModalVisible.value = true;
 }
 
@@ -283,6 +284,16 @@ function goBack() {
 </script>
 
 <style scoped>
+h1 {
+    text-align: center;
+    margin-top:10px;
+    margin-bottom:10px;
+    /* color : #D3AC2B; */
+}
+
+.inner-card{
+    
+}
 .mypage-container{
     max-width: 600px;
 }

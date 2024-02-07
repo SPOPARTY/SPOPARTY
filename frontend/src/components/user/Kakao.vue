@@ -10,7 +10,7 @@ import {useManagementStore} from '@/stores/member/managements'
 const {login} = useManagementStore();
 
 onMounted(() => {
-    alert("카카오 로그인!!!!!!")
+    // alert("카카오 로그인!!!!!!")
     const path = new URL(document.location).searchParams.get("path");
     const loginId = path;
     const loginPwd = path.split("_")[1];

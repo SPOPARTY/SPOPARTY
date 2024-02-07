@@ -15,7 +15,7 @@ export const useClubStore = defineStore("club",() => {
     const clubInfo = ref({});
     const clubInviteLink = ref(null);
     const clubMemberList = ref([]);
-    const memberId = ref(sessionStorage.getItem("id"));
+    const memberId = ref(localStorage.getItem("id"));
 
     // 최근 활동 그룹 목록 조회
     const requestClub = () => {
@@ -165,25 +165,31 @@ export const useClubStore = defineStore("club",() => {
         requestClubInvite(
             data,
             (res) => {
-                if (memberId === null) {
-                    alert("동료가 되기 전 로그인부터 해라!")
-                    window.location.replace("/login") // 로그인으로 보낸 다음에 다시 원래 요청으로 돌아오고 싶다.
-                    return;
-                }
                 // console.log(res)
                 if (res.data.status === httpStatusCode.CREATE) {
                     // console.log("******히히 그룹원 초대 후 생성*********")
                     const clubId = res.data.data.clubId
-                    alert("너, 동료가 되었다!")
+                    // alert("너, 동료가 되었다!")
                     setTimeout(() => {
                         window.location.replace(`/club/${clubId}`)
                     }, 1000);
                 }
             },
             (error) => {
+                console.log("여기는 그룹 초대")
+                console.log(error.response.status)
                 if (error.response.status === httpStatusCode.BAD_REQUEST){
                     console.log(error)
-                    reject("그룹원 초대 실패!")
+                    // alert(error.response)
+                    // setTimeout(() => {
+                    //     window.location.replace(`/`)
+                    // }, 1000);
+                }
+
+                if (error.response.status === 500) {
+                    // alert("동료가 되기 전 로그인부터 해라!")
+                    window.location.replace("/login") // 로그인으로 보낸 다음에 다시 원래 요청으로 돌아오고 싶다.
+                    return;
                 }
             }
         )
