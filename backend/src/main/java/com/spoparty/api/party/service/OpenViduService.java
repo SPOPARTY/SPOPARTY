@@ -36,6 +36,7 @@ public class OpenViduService {
 
 	public String initializeSession(Map<String, Object> params) throws
 		OpenViduJavaClientException, OpenViduHttpException {
+		log.debug("initializeSession 시작 - {}", params);
 		SessionProperties properties = SessionProperties.fromJson(params).build();
 		Session session = openvidu.createSession(properties);
 
@@ -44,6 +45,7 @@ public class OpenViduService {
 
 	public String createConnection(String sessionId, Map<String, Object> params) throws
 		OpenViduJavaClientException, OpenViduHttpException {
+		log.debug("createConnection 시작 - {}", params);
 		Session session = openvidu.getActiveSession(sessionId);
 		if (session == null) {
 			log.debug("session is null");

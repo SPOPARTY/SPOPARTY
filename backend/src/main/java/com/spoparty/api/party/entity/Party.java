@@ -36,7 +36,7 @@ public class Party extends BaseEntity {
 	@Column(name = "party_id")
 	private Long id;
 
-	@Column(nullable = false) // openVidu sessionId
+	@Setter
 	private String openviduSessionId;
 
 	@Setter
@@ -58,10 +58,9 @@ public class Party extends BaseEntity {
 	@JoinColumn(name = "member_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member hostMember;
 
-	public static Party createParty(Member hostMember, Club club, String openviduSessionId) {
+	public static Party createParty(Member hostMember, Club club) {
 		Party party = new Party();
 		party.hostMember = hostMember;
-		party.openviduSessionId = openviduSessionId;
 		club.setParty(party);
 		return party;
 	}
