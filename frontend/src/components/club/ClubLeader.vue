@@ -17,7 +17,7 @@
                     </v-btn>
                 </div>
             </div>
-            <div class="feature-container" @click.native="showChangeClubName">
+            <div class="feature-container" @click="showChangeClubName">
                 <v-img class="img" src="/change_club_name.png" alt="그룹명 바꾸기"/>
                 <v-card-text class="feature-text">그룹명 바꾸기</v-card-text>
             </div>
