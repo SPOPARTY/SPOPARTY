@@ -24,7 +24,7 @@
                         />
                     </v-col>
                     <v-col cols="3">
-                        <v-btn color="#292646" @click="sendEmail">인증코드 발송</v-btn>
+                        <v-btn color="#292646" @click="sendEmail"  style="margin-top:10px">인증코드 발송</v-btn>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -35,11 +35,11 @@
                             outlined
                         />
                     </v-col>
+                    <v-col cols="4">
+                        <v-btn color="#292646" @click="checkVerifyCode" style="margin-top:10px">인증번호 확인</v-btn>
+                    </v-col>
                     <v-col cols="2">
                         <span v-if="startTimer">{{ timer }}</span>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-btn color="#292646" @click="checkVerifyCode">인증번호 확인</v-btn>
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -106,7 +106,7 @@
             <v-card-text>
                 이메일을 인증하세요.
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions class="justify-center">
                 <v-btn color="black" @click="verifyNotDone = false">확인</v-btn>
             </v-card-actions>
         </v-card>

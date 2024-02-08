@@ -162,6 +162,7 @@ export const useClubStore = defineStore("club",() => {
 
     // 그룹원 초대
     const clubInvite = (data,memberId) => {
+        let clubId;
         requestClubInvite(
             data,
             (res) => {
@@ -186,10 +187,15 @@ export const useClubStore = defineStore("club",() => {
                     // }, 1000);
                 }
 
-                if (error.response.status === 500) {
-                    // alert("동료가 되기 전 로그인부터 해라!")
+                if (error.response.status === httpStatusCode.UNAUTHORIZED) {
+                    alert("동료가 되기 전 로그인부터 해라!")
                     window.location.replace("/login") // 로그인으로 보낸 다음에 다시 원래 요청으로 돌아오고 싶다.
                     return;
+                }
+
+                if (error.response.status === httpStatusCode.BAD_REQUEST) {
+                    alert("넌 이미 동료다!")
+                    window.location.replace("/")
                 }
             }
         )

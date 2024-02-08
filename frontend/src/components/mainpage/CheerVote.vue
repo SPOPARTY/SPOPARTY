@@ -91,8 +91,8 @@ getCheersData();
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
 const memberId = ref(localStorage.getItem("id"));
 
-const postCheers = (matchIndex, team) => {
-  postCheersData(matchIndex, team);
+const postCheers = (data) => {
+  postCheersData(data);
   setTimeout(() => {
     getCheersData();
   }, 100);

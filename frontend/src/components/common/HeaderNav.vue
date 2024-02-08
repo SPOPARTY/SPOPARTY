@@ -62,7 +62,7 @@
     <!-- 나머지 요소들 -->
     <template v-if="isLogined">
       <v-divider vertical class="mx-2"></v-divider>
-      <v-badge dot :color="countUnread>0? '#D3AC2B':'#08042B'">
+      <v-badge :content="countUnread>0? countUnread:null" :color="countUnread>0? '#D3AC2B':'#08042B'">
         <v-btn @click="() => isNotificationListVisible = true" class="mx-2 btn-text">알림</v-btn>
       </v-badge>
     </template>

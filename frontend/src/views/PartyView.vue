@@ -136,8 +136,8 @@
                          <v-col cols="12" v-if="showChat" class="chat-window" :style="{ height: chatDivHeight }">
                               <div class="chat-content">
                                    <!-- 채팅 내용을 여기에 표시 -->
-                                   채팅 내용이 여기에 표시됩니다.
-                                   <Chat/>
+                                   <!-- {{ chatDivHeightProp }} -->
+                                   <Chat :chat-div-height-prop="chatDivHeightProp"/>
                               </div>
                          </v-col>
                          <v-spacer></v-spacer>
@@ -347,6 +347,7 @@ function toggleChat() {
 
 // 채팅창 높이 동적 설정
 const chatDivHeight = ref('300px'); // 초기값 설정
+const chatDivHeightProp = ref(300); // 초기값 설정
 
 const updatechatDivHeight = () => {
   const chattingSection = document.querySelector('.chatting-section');
@@ -355,6 +356,7 @@ const updatechatDivHeight = () => {
   if (chattingSection && buttonSection) {
     // 버튼 섹션을 제외한 높이 계산
     const height = chattingSection.offsetHeight - 2*buttonSection.offsetHeight;
+    chatDivHeightProp.value = height;
     chatDivHeight.value = `${height}px`;
   }
 };
