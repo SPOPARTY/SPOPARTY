@@ -1,6 +1,7 @@
 package com.spoparty.batch.scheduler.model;
 
 import java.time.ZonedDateTime;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -11,13 +12,10 @@ public class Fixture {
 	private int id;
 	private String referee;
 	private String timezone;
-
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
-	private ZonedDateTime date;
-
+	private String date;
 	private long timestamp;
 	private Periods periods;
 	private Venue venue;
-	private Status status;
+	private Map<String, String> status;
 
 }

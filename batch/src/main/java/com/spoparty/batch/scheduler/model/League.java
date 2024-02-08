@@ -6,7 +6,7 @@ import lombok.Data;
 public class League {
 	private int id;
 	private String name;
-	private Country country;
+	private String country;
 	private String logo;
 	private String flag;
 	private String season;

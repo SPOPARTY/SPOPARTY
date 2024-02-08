@@ -61,9 +61,6 @@ public class Standings extends FootballBaseEntity {
 	@Column(nullable=false)
 	private int goalsAgainst;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "standing")
-	private SeasonLeagueTeam seasonLeagueTeam;
-
 
 	@Builder
 

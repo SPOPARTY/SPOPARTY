@@ -20,15 +20,15 @@ public class Team extends FootballBaseEntity {
 
 	@Size(min = 0, max = 100)
 	@Column(length = 100, nullable = false)
-	private String nameKr;
+	private String nameKr = "";
 
 	@Size(min = 0, max = 200)
 	@Column(length = 200, nullable = false)
-	private String nameEng;
+	private String nameEng = "";
 
 	@Size(min = 0, max = 200)
 	@Column(length = 200, nullable = false)
-	private String logo;
+	private String logo = "";
 
 	@Builder
 	public Team(long id, String nameKr, String nameEng, String logo) {
