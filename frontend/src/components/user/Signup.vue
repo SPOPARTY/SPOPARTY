@@ -218,23 +218,29 @@
     if(id.value === '') {
       blankId.value = true;
     }
-
+    idDuplicatedChecked.value = false;
+    console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
     idCheck(
       id.value,
       (res) => {
-        if (res.status === httpStatusCode.OK) {
+        // console.log(res);
+        if (res.data.status === httpStatusCode.OK) {
           console.log("히히 아이디 중복 검사 발사")
           idDuplicatedChecked.value = true; // 아이디 중복 검사 완료
+          console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
           validId.value = true // 아이디 검사 완료 모달
         }
       },
       (error) => {
+        // console.error("*******비상*******")
         if (error.response.status === httpStatusCode.CONFLICT) {
           console.log("히히 이미 있는 아이디 발사")
           inValidId.value = true; // 아이디 중복 모달 
         }
-        console.error("*******비상*******")
-        console.error(error)
+        if (error.response.status === 500) {
+          console.log("중복체크를 하지 않음!!")
+          // console.error(error)
+        }
       }
     )
   }
