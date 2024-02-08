@@ -322,7 +322,7 @@ public class LoadFootballData {
 
 
 	// 경기로 [경기 이벤트] 테이블 생성
-	@Scheduled(fixedRate = 1000*60*60*24)
+	// @Scheduled(fixedRate = 1000*60*60*24)
 	public void loadEvents() {
 
 		List<Fixture> fix = new ArrayList<>();
