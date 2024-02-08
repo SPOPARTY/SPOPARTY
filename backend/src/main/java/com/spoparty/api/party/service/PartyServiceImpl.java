@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spoparty.api.club.entity.Club;
+import com.spoparty.api.club.entity.ClubMember;
+import com.spoparty.api.club.repository.ClubMemberRepository;
+import com.spoparty.api.club.repository.ClubRepository;
+import com.spoparty.api.club.service.ClubMemberServiceImpl;
 import com.spoparty.api.club.service.ClubServiceImpl;
 import com.spoparty.api.common.constants.NotificationMessage;
 import com.spoparty.api.common.entity.RoleType;
@@ -47,6 +51,7 @@ public class PartyServiceImpl implements PartyService {
 	private final PartyMemberRepository partyMemberRepository;
 	private final FixtureRepository fixtureRepository;
 	private final ClubServiceImpl clubService;
+	private final ClubMemberRepository clubMemberRepository;
 	private final OpenViduService openViduService;
 	private final FixtureServiceImpl fixtureService;
 	private final NotificationService notificationService;
@@ -72,24 +77,27 @@ public class PartyServiceImpl implements PartyService {
 		partyMemberRepository.save(partyMember);
 
 		// 알림 생성
-		sendNotification(party.getId(), member.getId(), club, START_PARTY);
+		sendNotification(member.getId(), club, START_PARTY);
 		return findParty(party.getId());
 	}
 
-	private void sendNotification(Long partyId, Long myMemberId, Club club, NotificationMessage message) {
-		List<PartyMemberProjection> partyMembers = findAllPartyMembers(partyId);
-		for (PartyMemberProjection partyMember : partyMembers) {
-			Long memberId = partyMember.getMember_Id();
+	private void sendNotification(Long myMemberId, Club club, NotificationMessage message) {
+		log.debug("알림 생성!!!");
+		List<ClubMember> clubMembers = clubMemberRepository.findAllByClub_Id(club.getId());
+		for (ClubMember clubMember : clubMembers) {
+			Long memberId = clubMember.getMember().getId();
 			if (myMemberId.equals(memberId)) {
 				continue;
 			}
 			Member member = new Member();
+			log.debug("member - {}", member);
 			member.setId(memberId);
 
 			Notification notification = new Notification();
 			notification.setMember(member);
 			notification.setTitle("[" + club.getName() + "] " + message.getTitle());
-			notification.setContent("[" + club.getName() + "] " + message.getContent());
+			notification.setContent(message.getContent());
+			log.debug("notification - {}", notification);
 			notificationService.registerNotification(notification);
 		}
 	}
