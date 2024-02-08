@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.member.service.NotificationService;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
 import com.spoparty.api.party.dto.response.PartyResponseDTO;
 import com.spoparty.api.party.entity.PartyMemberProjection;
@@ -40,14 +41,25 @@ public class PartyController {
 		OpenViduJavaClientException,
 		OpenViduHttpException {
 		log.debug("파티 생성 API 시작");
-		log.debug("요청 - principalDetails:{}, partyId: {}", principalDetails, clubId);
+		log.debug("요청 - principalDetails:{}, clubId: {}", principalDetails, clubId);
 		PartyResponseDTO response = partyService.createParty(principalDetails, clubId);
 		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_CREATE_SUCCESS, response);
 	}
 
+	@PostMapping("/{partyId}/participants")
+	public ResponseEntity<?> createParticipant(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long clubId, @PathVariable Long partyId) throws
+		OpenViduJavaClientException,
+		OpenViduHttpException {
+		log.debug("파티원 추가 API 시작");
+		log.debug("요청 - principalDetails: {}, clubId: {}, partyId: {}", principalDetails, clubId, partyId);
+		PartyMemberProjection response = partyService.createPartyMember(principalDetails, clubId, partyId);
+		log.debug("응답 - {}", response);
+		return ApiResponse.success(PARTY_MEMBER_CREATE_SUCCESS, response);
+	}
+
 	@GetMapping("/{partyId}")
-	public ResponseEntity<?> getParty(@PathVariable Long partyId, @PathVariable String clubId) {
+	public ResponseEntity<?> getParty(@PathVariable Long partyId, @PathVariable Long clubId) {
 		log.debug("파티 조회 API 시작");
 		log.debug("요청 - partyId: {}, clubId: {}", partyId, clubId);
 		PartyResponseDTO response = partyService.findParty(partyId);
@@ -58,7 +70,7 @@ public class PartyController {
 	@PutMapping("/{partyId}")
 	public ResponseEntity<?> updateParty(@PathVariable Long partyId,
 		@RequestBody @Valid PartyUpdateRequestDto partyUpdateRequestDto,
-		@PathVariable String clubId) {
+		@PathVariable Long clubId) {
 		log.debug("파티 수정 API 시작");
 		log.debug("요청 - partyUpdateRequestDto: {}, clubId: {}", partyUpdateRequestDto, clubId);
 		PartyResponseDTO response = partyService.updateParty(partyId, partyUpdateRequestDto);
@@ -76,7 +88,7 @@ public class PartyController {
 	}
 
 	@GetMapping("/{partyId}/participants")
-	public ResponseEntity<?> getAllParticipants(@PathVariable Long partyId, @PathVariable String clubId) {
+	public ResponseEntity<?> getAllParticipants(@PathVariable Long partyId, @PathVariable Long clubId) {
 		log.debug("파티원 목록 조회 API 시작");
 		log.debug("요청 - partyId: {}, clubId: {}", partyId, clubId);
 		List<PartyMemberProjection> response = partyService.findAllPartyMembers(partyId);
@@ -84,20 +96,9 @@ public class PartyController {
 		return ApiResponse.success(PARTY_MEMBERS_READ_SUCCESS, response);
 	}
 
-	@PostMapping("/{partyId}/participants")
-	public ResponseEntity<?> createParticipant(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable String clubId, @PathVariable Long partyId) throws
-		OpenViduJavaClientException,
-		OpenViduHttpException {
-		log.debug("파티원 추가 API 시작");
-		log.debug("요청 - principalDetails: {}, clubId: {}, partyId: {}", principalDetails, clubId, partyId);
-		PartyMemberProjection response = partyService.createPartyMember(principalDetails, partyId);
-		log.debug("응답 - {}", response);
-		return ApiResponse.success(PARTY_MEMBER_CREATE_SUCCESS, response);
-	}
-
 	@GetMapping("/{partyId}/participants/{participantId}")
 	public ResponseEntity<?> getParticipant(@PathVariable Long partyId, @PathVariable Long participantId,
-		@PathVariable String clubId) {
+		@PathVariable Long clubId) {
 		log.debug("파티원 조회 API 시작");
 		log.debug("요청 - partyId: {}, participantId: {}, clubId: {}", partyId, participantId, clubId);
 		PartyMemberProjection response = partyService.findPartyMember(participantId, PartyMemberProjection.class);
@@ -107,10 +108,10 @@ public class PartyController {
 
 	@DeleteMapping("/{partyId}/participants/{participantId}")
 	public ResponseEntity<?> deleteParticipant(@PathVariable Long partyId, @PathVariable Long participantId,
-		@PathVariable String clubId) {
+		@PathVariable Long clubId) {
 		log.debug("파티원 삭제 API 시작");
-		log.debug("요청 - partyId: {}, participantId: {}", partyId, participantId);
-		Long response = partyService.deletePartyMember(participantId);
+		log.debug("요청 - partyId: {}, participantId: {}, clubId: {}", partyId, participantId, clubId);
+		Long response = partyService.deletePartyMember(partyId, participantId, clubId);
 		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_MEMBER_DELETE_SUCCESS, response);
 	}
