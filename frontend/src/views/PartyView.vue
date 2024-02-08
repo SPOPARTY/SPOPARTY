@@ -148,7 +148,7 @@
                     <!-- 버튼 영역 -->
                     <v-row class="button-section">
                          <v-col cols="3">
-                              <v-btn color="secondary" @click="delPartyInfo">
+                              <v-btn color="secondary">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         사진
                                    </v-tooltip>
@@ -156,7 +156,7 @@
                               </v-btn>
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="secondary" @click="delPartyMem">
+                              <v-btn color="secondary">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         동영상
                                    </v-tooltip>
@@ -234,7 +234,7 @@ const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
      getPartyParticipant, deletePartyMember } = partyStore
 
 
-const url = ref("https://www.coupangplay.com/home");
+const url = ref("https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu");
 const isUrlExist = ref(false);
 
 watch(() => partyStore.partyInfo, (newVal) => {
@@ -243,7 +243,7 @@ watch(() => partyStore.partyInfo, (newVal) => {
           url.value = newVal.fixtureUrl;
           isUrlExist.value = true;
      } else {
-          url.value = "https://www.coupangplay.com/home";
+          url.value = "https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu";
           isUrlExist.value = false;
      }
      console.log("isUrlExist", isUrlExist.value);
@@ -314,12 +314,12 @@ if (answer) {
 }
 
 const delPartyMem = () => {
-     console.log("delPartyMem", partyMemberList.value);
-     myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
-     if (myId.value !== undefined) {
-       console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
-       deletePartyMember(clubId, partyId, myId.value.participantId);
-     } 
+     // console.log("delPartyMem", partyMemberList.value);
+     // myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
+     // if (myId.value !== undefined) {
+     //   console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
+     //   deletePartyMember(clubId, partyId, myId.value.participantId);
+     // } 
 }
 
 onUnmounted(() => {

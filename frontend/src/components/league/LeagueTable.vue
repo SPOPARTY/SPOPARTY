@@ -22,8 +22,8 @@
                     </v-row>
                     <br>
                 </v-card-title>
-
-                <v-data-table :headers="headers" :items="teams" :search="search" :items-per-page="-1" 
+                
+                <v-data-table v-if="teams" :headers="headers" :items="teams" :search="search" :items-per-page="-1" 
                     class="elevation-1"
                     hide-default-footer>
                     <template v-slot:item.logo="{ item }">
@@ -48,6 +48,7 @@
                     </template>
                     <template #bottom><hr><br></template>
                 </v-data-table>
+                <h1 v-else>데이터가 없습니다.</h1>
             </v-card>
         </v-row>
     </v-container>
