@@ -35,9 +35,11 @@ public class NotificationService {
 	}
 
 	public NotificationProjection registerNotification(Notification notification) {
+		log.debug("registerNotification 시작");
 		Member member = memberRepository.findById(notification.getMember().getId(), Member.class)
 			.orElseThrow(() -> new CustomException(
 				DATA_NOT_FOUND));
+		log.debug("Member - {}", member);
 		notification.setMember(member);
 		Notification tmp = notificationRepository.save(notification);
 		push(notification);

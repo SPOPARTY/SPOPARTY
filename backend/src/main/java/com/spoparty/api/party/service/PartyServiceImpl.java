@@ -1,6 +1,7 @@
 package com.spoparty.api.party.service;
 
 import static com.spoparty.api.common.constants.ErrorCode.*;
+import static com.spoparty.api.common.constants.NotificationMessage.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spoparty.api.club.entity.Club;
+import com.spoparty.api.club.entity.ClubMember;
+import com.spoparty.api.club.repository.ClubMemberRepository;
+import com.spoparty.api.club.repository.ClubRepository;
+import com.spoparty.api.club.service.ClubMemberServiceImpl;
 import com.spoparty.api.club.service.ClubServiceImpl;
+import com.spoparty.api.common.constants.NotificationMessage;
 import com.spoparty.api.common.entity.RoleType;
 import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Fixture;
@@ -19,7 +25,9 @@ import com.spoparty.api.football.repository.FixtureRepository;
 import com.spoparty.api.football.response.PartyFixtureDTO;
 import com.spoparty.api.football.service.FixtureServiceImpl;
 import com.spoparty.api.member.entity.Member;
+import com.spoparty.api.member.entity.Notification;
 import com.spoparty.api.member.service.MemberService;
+import com.spoparty.api.member.service.NotificationService;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
 import com.spoparty.api.party.dto.response.PartyResponseDTO;
 import com.spoparty.api.party.entity.Party;
@@ -43,9 +51,10 @@ public class PartyServiceImpl implements PartyService {
 	private final PartyMemberRepository partyMemberRepository;
 	private final FixtureRepository fixtureRepository;
 	private final ClubServiceImpl clubService;
-	private final MemberService memberService;
+	private final ClubMemberRepository clubMemberRepository;
 	private final OpenViduService openViduService;
 	private final FixtureServiceImpl fixtureService;
+	private final NotificationService notificationService;
 
 	@Override
 	@Transactional
@@ -66,7 +75,31 @@ public class PartyServiceImpl implements PartyService {
 		// partyMember 엔티티 생성
 		PartyMember partyMember = PartyMember.createPartyMember(party, member, openviduToken, RoleType.host);
 		partyMemberRepository.save(partyMember);
+
+		// 알림 생성
+		sendNotification(member.getId(), club, START_PARTY);
 		return findParty(party.getId());
+	}
+
+	private void sendNotification(Long myMemberId, Club club, NotificationMessage message) {
+		log.debug("알림 생성!!!");
+		List<ClubMember> clubMembers = clubMemberRepository.findAllByClub_Id(club.getId());
+		for (ClubMember clubMember : clubMembers) {
+			Long memberId = clubMember.getMember().getId();
+			if (myMemberId.equals(memberId)) {
+				continue;
+			}
+			Member member = new Member();
+			log.debug("member - {}", member);
+			member.setId(memberId);
+
+			Notification notification = new Notification();
+			notification.setMember(member);
+			notification.setTitle("[" + club.getName() + "] " + message.getTitle());
+			notification.setContent(message.getContent());
+			log.debug("notification - {}", notification);
+			notificationService.registerNotification(notification);
+		}
 	}
 
 	private String createOpenviduSessionAndToken(Long clubId, Party party) throws
