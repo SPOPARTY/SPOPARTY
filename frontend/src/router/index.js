@@ -83,11 +83,11 @@ const router = createRouter({
       // component : () => import("@/components/club/ClubMain.vue"),
       props:true,
       children : [
-        {
-          path : "",
-          name : "ClubMain",
-          component : () => import("@/components/club/ClubMain.vue")
-        },
+        // {
+        //   path : "",
+        //   name : "ClubMain",
+        //   component : () => import("@/components/club/ClubMain.vue")
+        // },
         {
           path : "archive",
           name : "ArchiveList",

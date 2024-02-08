@@ -264,8 +264,7 @@ const openPartyPage = (partyId) => {
         return;
     }
     getPartyInfo(clubId, partyId);
-    const url = router.resolve({ name: 'PartyView', params: { partyId } }).href;
-    window.open(url, '_blank');
+    router.push({ name: 'PartyView', params: { partyId } });
 };
 
 const newPartyInfo = async () => {
