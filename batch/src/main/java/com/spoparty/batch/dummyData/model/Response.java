@@ -9,12 +9,12 @@ import com.spoparty.batch.scheduler.model.Players;
 import lombok.Data;
 
 @Data
-public class Response<T> {
+public class Response {
 	private String get;
 	private Map<String, String> parameters;
 	private List<String> errors;
 	private int results;
 	private Paging paging;
-	private List<T> response;
+	private List<StandingResponse> response;
 
 }

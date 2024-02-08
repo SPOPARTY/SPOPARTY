@@ -79,7 +79,7 @@ public class Standings extends FootballBaseEntity {
 	public Standings(int rank, int points, int goalDiff, String form, int played, int win, int draw, int lose,
 		int goalsFor,
 		int goalsAgainst,
-		String group) {
+		String group, SeasonLeagueTeam seasonLeagueTeam) {
 		this.rank = rank;
 		this.points = points;
 		this.goalDiff = goalDiff;
@@ -91,6 +91,7 @@ public class Standings extends FootballBaseEntity {
 		this.goalsFor = goalsFor;
 		this.goalsAgainst = goalsAgainst;
 		this.group = group;
+		this.seasonLeagueTeam = seasonLeagueTeam;
 	}
 }
 
