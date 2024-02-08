@@ -26,8 +26,6 @@ public class PlayerDTO {
 
 	private String photo;
 
-	private boolean captain;
-
 	public static PlayerDTO toDTO(SeasonLeagueTeamPlayer entity) {
 		Player player = entity.getPlayer();
 
@@ -39,7 +37,6 @@ public class PlayerDTO {
 			.height(player.getHeight())
 			.weight(player.getWeight())
 			.photo(player.getPhoto())
-			// .captain(entity.isCaptain())
 			.build();
 	}
 }
