@@ -114,6 +114,9 @@ a:hover {
 .contents-section, .title-section {
   background-color: #333D51;
   min-width: 900px;
+  /* max-width: 1400px; */
+  /* justify-content: center;
+  align-items: center; */
 }
 
 .contents-section, .part-section{
