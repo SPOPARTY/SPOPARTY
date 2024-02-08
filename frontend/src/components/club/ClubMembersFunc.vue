@@ -195,6 +195,7 @@ watch(() => partyStore.partyInfo, (newPartyInfo) => {
     }
     console.log("파티id", partyId.value)
     console.log("파티유무", isPartyExist.value)
+    // getClubInfo(clubId);
 }, { immediate: true, deep: true });
 
 watch(() => clubInfo.value, (newClubInfo) => {
@@ -223,6 +224,7 @@ onMounted(() => {
 })
 
 const goToPartyPage = async () => {
+    console.log("#########파티 페이지로 이동합니다#######")
     let startTime = Date.now(); // 시작 시간
     let timeoutDuration = 100; // 체크 간격: 0.1초
     let maxWaitTime = 2000; // 최대 대기 시간: 2초
@@ -264,8 +266,8 @@ const openPartyPage = (partyId) => {
         return;
     }
     getPartyInfo(clubId, partyId);
-    const url = router.resolve({ name: 'PartyView', params: { partyId } }).href;
-    window.open(url, '_blank');
+    router.push({ name: 'PartyView', params: { clubId, partyId } });
+    console.log("########종료########")
 };
 
 const newPartyInfo = async () => {
@@ -273,6 +275,16 @@ const newPartyInfo = async () => {
     const tempInfo = await getPartyInfo(clubId, partyId.value);
     setTimeout(() => {
         console.log("새 파티 정보", tempInfo)
+        if (tempInfo == undefined) {
+            console.log("#새 파티# 파티가 없습니다.")
+            isPartyExist.value = false;
+            partyId.value = null;
+            clubInfo.value.partyId = null;
+            console.log(clubInfo.value)
+        } else {
+            console.log("파티가 있습니다.")
+            isPartyExist.value = true;
+        }
     }, 500)
     // if (tempInfo) {
     //     console.log("파티가 있습니다.")

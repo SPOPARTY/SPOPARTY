@@ -1,12 +1,13 @@
 <template>
   <v-container class="signup-container">
-    <v-card class="mx-auto" outlined>
-      <v-card-title class="justify-center">회원 가입</v-card-title>
+    <v-card class="signup-card mx-auto" outlined>
+      <v-card-title class="title justify-center"><h2>회원 가입</h2></v-card-title>
       <v-card-text>
         <v-form @submit.prevent="submitSignup">
           <v-row>
             <v-col cols="9">
               <v-text-field
+                class="input"
                 label="아이디"
                 v-model="id"
                 outlined
@@ -16,7 +17,7 @@
             <v-col cols="3">
               <v-btn
                 class="id-check"
-                color="blue lighten-1"
+                color="#333D51"
                 @click="checkId"
               >
                 아이디 중복확인
@@ -25,6 +26,7 @@
           </v-row>
           
           <v-text-field
+            class="input"
             label="닉네임"
             v-model="nickname"
             outlined
@@ -32,6 +34,7 @@
           ></v-text-field>
           
           <v-text-field
+            class="input" 
             label="비밀번호"
             v-model="password"
             :type="'password'"
@@ -40,6 +43,7 @@
           ></v-text-field>
           
           <v-text-field
+            class="input"
             label="비밀번호 확인"
             v-model="password2"
             :type="'password'"
@@ -50,6 +54,7 @@
           <v-row align="center">
             <v-col cols="12" md="4" sm="4" xs="4">
               <v-text-field
+                class="input"
                 label="이메일"
                 v-model="emailId"
                 outlined
@@ -60,6 +65,7 @@
             <v-col cols="12" md="1" sm="1" xs="1" class="text-center">@</v-col>
             <v-col cols="12" md="4" sm="4" xs="4">
               <v-text-field
+                class="input"
                 label="도메인"
                 v-model="emailDomain"
                 outlined
@@ -69,7 +75,7 @@
             </v-col>
             <v-col cols="12" md="3" sm="3" xs="3">
               <v-btn class="email-verify"
-                color="primary"
+                color="#333D51"
                 @click="showEmailVerify"
                 >이메일 인증</v-btn>
               <!-- <EmailVerify v-if="isEmailVerifyVisible" @close="isEmailVerifyVisible=false"/> -->
@@ -78,6 +84,7 @@
           </v-row>
 
           <v-select
+            class="input"
             :items="teamIds"
             item-text="logo"
             item-value="teamId"
@@ -90,7 +97,7 @@
           
           <v-row>
             <v-col>
-              <v-btn color="success" type="submit" block>회원가입</v-btn>
+              <v-btn color="#333D51" type="submit" block>회원가입</v-btn>
             </v-col>
             <v-col>
               <v-btn color="grey" @click="goBack" block>이전</v-btn>
@@ -130,7 +137,7 @@
         사용 가능한 아이디입니다.
       </v-card-text>
       <v-card-actions class="justify-center">
-        <v-btn color="blue" @click="validId = false">확인</v-btn>
+        <v-btn class="button" @click="validId = false">확인</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -171,7 +178,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="checkVerifyCode">인증</v-btn>
+        <v-btn class="button"  @click="checkVerifyCode">인증</v-btn>
         <v-btn color="grey" @click="isEmailVerifyVisible = false">취소</v-btn>
       </v-card-actions>
     </v-card>
@@ -218,23 +225,29 @@
     if(id.value === '') {
       blankId.value = true;
     }
-
+    idDuplicatedChecked.value = false;
+    console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
     idCheck(
       id.value,
       (res) => {
-        if (res.status === httpStatusCode.OK) {
+        // console.log(res);
+        if (res.data.status === httpStatusCode.OK) {
           console.log("히히 아이디 중복 검사 발사")
           idDuplicatedChecked.value = true; // 아이디 중복 검사 완료
+          console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
           validId.value = true // 아이디 검사 완료 모달
         }
       },
       (error) => {
+        // console.error("*******비상*******")
         if (error.response.status === httpStatusCode.CONFLICT) {
           console.log("히히 이미 있는 아이디 발사")
           inValidId.value = true; // 아이디 중복 모달 
         }
-        console.error("*******비상*******")
-        console.error(error)
+        if (error.response.status === 500) {
+          console.log("중복체크를 하지 않음!!")
+          // console.error(error)
+        }
       }
     )
   }
@@ -401,6 +414,25 @@
 <style scoped lang="scss">
 .signup-container {
   max-width: 600px;
+  background-color: #08042B;
+}
+
+.v-card {
+  background-color: #292646; 
+}
+
+.input {
+  background-color : #CBD0D8;
+  height:60px;
+  margin-top:10px;
+  margin-bottom:10px;
+  border-radius: 5px;
+}
+
+.title {
+  margin-top:10px;
+  margin-bottom : 10px;
+  color:#D3AC2B;
 }
 
 .justify-center{
@@ -408,7 +440,7 @@
 } 
 
 .id-check{
-  margin-top : 10px;
+  margin-top : 20px;
 }
 
 .idCheckModal {
@@ -417,7 +449,7 @@
 }
 
 .email-verify{
-  margin-bottom:20px;
+  margin-bottom:3px;
 }
 
 </style>

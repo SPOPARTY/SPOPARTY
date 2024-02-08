@@ -10,7 +10,7 @@
     <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
     <v-list dense class="club-list" v-if="clubs"> 
       <v-list-item v-for="(club, index) in clubs"  :key="index" class="mb-1">
-        <div @click="openClubInNewTab(club.clubId)" class="d-flex justify-start align-center club-item"
+        <div @click="goToOneClubPage(club.clubId)" class="d-flex justify-start align-center club-item"
           style="text-transform: none; padding: 16px; cursor: pointer;">
           <v-list-item-title class="align-start">{{ club.name }}<br>{{ 'ID: ' + club.clubId }}</v-list-item-title>
         </div>
@@ -188,9 +188,11 @@ function goHome() {
 
 
 // 클럽 페이지를 새 탭에서 열기
-function openClubInNewTab(clubId) {
-  const url = router.resolve({ name: 'ClubView', params: { clubId } }).href;
-  window.open(url, '_blank');
+function goToOneClubPage(clubId) {
+  // const url = router.resolve({ name: 'ClubView', params: { clubId } }).href;
+  // window.open(url, '_blank');
+  console.log("클럽 페이지로 이동")
+  router.push({ name: 'ClubMain', params: { clubId } });
 }
 
 

@@ -1,12 +1,10 @@
 <template>
-     <!-- <h1>클럽뷰</h1> -->
-     <RouterView/>
-     <!-- <ClubMain/> -->
+     <RouterView :club-id="clubId"/>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-// import { ClubMain } from '@/components/club/ClubMain.vue';
+import { ref, onMounted, watch } from 'vue';
+
 
 const props = defineProps({
     clubId: {
@@ -16,7 +14,6 @@ const props = defineProps({
     }
 })
 
-// const clubId = ref(props.clubId)
 
 </script>
 

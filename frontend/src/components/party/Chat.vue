@@ -1,42 +1,33 @@
 <template>
-  <v-container
-    fluid
-    class="pa-1">
-    <v-list lines="one">
-      <v-list-item
-        v-for="(item, i) in chats"
-        :key="i"
-        :value="item"
-        color="primary">
-        <template v-slot:prepend>
-          <v-icon :icon="item.icon"></v-icon>
-        </template>
-        <v-list-item-title v-text="item.userName"></v-list-item-title>
-        <v-list-item-title v-text="item.message"></v-list-item-title>
-      </v-list-item>
-    </v-list>
+  <v-container fluid class="pa-0 chat-container" ref="chatContainer" @scroll="handleScroll"
+    :style="{ height: `${chatDivHeightProp - 10}px` }">
+    <div class="chat-messages" ref="chatMessages">
+      <v-list lines="one">
+        <v-list-item v-for="(item, i) in chats" :key="i" :value="item" color="primary">
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.userName"></v-list-item-title>
+            <v-list-item-subtitle v-text="item.message"></v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </div>
+    <!-- 새 메시지 알림 (사용자가 스크롤을 맨 아래에 두지 않았을 때 표시) -->
+    <div v-if="showNewMessageAlert" class="new-message-alert" @click="scrollToBottom">
+      새 메시지가 도착했습니다.
+    </div>
+
+    <!-- 입력창 -->
+    <v-form @submit.prevent class="chat-form">
+      <v-text-field class="chat-input" v-model="myMessage.message" append-icon="mdi-send" variant="outlined"
+        clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="sendMessage"
+        @click:append="sendMessage" @click:clear="clearMessage"></v-text-field>
+    </v-form>
   </v-container>
-  <v-form @submit.prevent>
-    <v-container>
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            class="chat-input"
-            v-model="myMessage.message"
-            :append-icon="myMessage.message ? 'mdi-send' : 'mdi-send'"
-            variant="filled"
-            clear-icon="mdi-close-circle"
-            clearable
-            label="Message"
-            type="text"
-            @keyup.enter="sendMessage"
-            @click:append="sendMessage"
-            @click:clear="clearMessage"></v-text-field>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-form>
 </template>
+
 
 <script setup>
 import Stomp from 'webstomp-client'
@@ -58,7 +49,7 @@ const chats = reactive([])
 
 const message = ref('')
 
-onMounted(() => {})
+onMounted(() => { })
 
 //// 파티 정보 수정 로직
 // 파티 입장 및 퇴장
@@ -155,9 +146,73 @@ const disconnect = () => {
     console.log('stomp client disconnected.')
   })
 }
+
+////// 그 외 로직
+const props = defineProps({
+  chatDivHeightProp: {
+    type: String,
+    required: true,
+    default: '300'
+  }
+})
+
+// 채팅창 스크롤 관련 로직 // 테스트 필요 (에러 시 주석 처리할 것)
+const chatContainer = ref(null);
+const showNewMessageAlert = ref(false);
+
+const handleScroll = () => {
+  const isAtBottom = isScrolledToBottom();
+  showNewMessageAlert.value = !isAtBottom;
+};
+
+const scrollToBottom = () => {
+  if (chatContainer.value) {
+    chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+    showNewMessageAlert.value = false;
+  }
+};
+
+const isScrolledToBottom = () => {
+  if (!chatContainer.value) return false;
+  const { scrollTop, scrollHeight, clientHeight } = chatContainer.value;
+  return scrollTop + clientHeight === scrollHeight;
+};
+
+watch(chats, () => {
+  if (isScrolledToBottom()) {
+    scrollToBottom();
+  }
+});
+
 </script>
-<style>
+
+<style scoped>
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  /* height: {chatDivHeightProp}; */
+}
+
+.chat-messages {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding: 10px;
+  margin-bottom: 10px;
+  /* 입력창과의 간격 */
+  background-color: #F4F3EA;
+}
+
+.chat-form {
+  padding: 10px 10px 0px 10px;
+  /* 입력창과의 간격 */
+  background-color: #f4f4f4;
+  /* 채팅 입력창 배경색 */
+  width: 100%;
+}
+
 .chat-input {
-  background-color: aliceblue;
+  background-color: #ffffff;
+  /* 입력창 배경색 */
+  padding: 0;
 }
 </style>

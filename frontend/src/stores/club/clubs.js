@@ -21,7 +21,7 @@ export const useClubStore = defineStore("club",() => {
     const requestClub = () => {
         requestRecentClubs(
             (res) => {
-                // console.log("히히 최근 활동 그룹 발사")
+                console.log("히히 최근 활동 그룹 발사")
                 // console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     myClubs.value = res.data.data;
@@ -31,7 +31,12 @@ export const useClubStore = defineStore("club",() => {
                 }
             },
             (error) => {
-                console.log(error);
+                if (error.response.status === httpStatusCode.NOTFOUND) {
+                    console.log("*******해당 그룹 접근 불가!********")
+                    // alert("해당 그룹에 접근할 수 없습니다!")
+                    console.log(error);
+                    // window.location.replace("/")
+                }
             }
         )
     }
@@ -46,7 +51,8 @@ export const useClubStore = defineStore("club",() => {
                     // console.log("히히 그룹 생성!"); 
                     createdClub.value = res.data.data;
                     // console.log("내가 만든 클럽~")
-                    // console.log(createdClub.value)
+                    console.log(createdClub.value)
+                    console.log("clubId ->" , res.data.data)
                     requestClub();
                     window.location.replace("/");
                 }
@@ -72,7 +78,12 @@ export const useClubStore = defineStore("club",() => {
                 }
             },
             (error) => {
-                console.log(error)
+                if (error.response.status === httpStatusCode.NOTFOUND) {
+                    console.log("*******해당 그룹 접근 불가!********")
+                    alert("해당 그룹에 접근할 수 없습니다!")
+                    console.log(error);
+                    window.location.replace("/")
+                }
             }
         )
     }
@@ -88,6 +99,7 @@ export const useClubStore = defineStore("club",() => {
                         // console.log("******히히 그룹 정보 수정~*********");
                         resolve(true); // 성공 시 true를 리턴 -> 비동기 콜백함수에서 값을 처리하도록...
                         getClubInfo(clubId);
+                        requestClub();
                     } else {
                         reject("그룹 정보 수정 실패"); 
                     }
@@ -111,7 +123,6 @@ export const useClubStore = defineStore("club",() => {
                     if (res.data.status === httpStatusCode.OK) {
                         // console.log("******히히 그룹 삭제*********")
                         resolve(true)
-                        // window.location.replace("/"); // 삭제되면 메인으로 이동
                     }
                 },
                 (error) => {

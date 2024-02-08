@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainPageView from "@/views/MainPageView.vue";
 import MatchView from "@/views/MatchView.vue";
 import LeagueView from "@/views/LeagueView.vue";
+import ClubView from "@/views/ClubView.vue";
 import Signup from "@/components/user/Signup.vue";
 import Login from "@/components/user/Login.vue";
 import MyPage from "@/components/user/Mypage.vue";
@@ -76,8 +77,8 @@ const router = createRouter({
     },
     {
       path: "/club/:clubId",
-      name: "ClubView",
-      component: () => import("@/views/ClubView.vue"),
+      // name: "ClubView",
+      component: ClubView,
       // path : "",
       // name : "ClubMain",
       // component : () => import("@/components/club/ClubMain.vue"),
