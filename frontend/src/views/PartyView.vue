@@ -314,12 +314,12 @@ if (answer) {
 }
 
 const delPartyMem = () => {
-     // console.log("delPartyMem", partyMemberList.value);
-     // myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
-     // if (myId.value !== undefined) {
-     //   console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
-     //   deletePartyMember(clubId, partyId, myId.value.participantId);
-     // } 
+     console.log("delPartyMem", partyMemberList.value);
+     myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
+     if (myId.value !== undefined) {
+       console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
+       deletePartyMember(clubId, partyId, myId.value.participantId);
+     } 
 }
 
 onUnmounted(() => {
