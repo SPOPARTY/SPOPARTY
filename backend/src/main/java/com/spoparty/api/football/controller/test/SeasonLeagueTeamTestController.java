@@ -1,6 +1,5 @@
 package com.spoparty.api.football.controller.test;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -12,10 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
 import com.spoparty.api.football.repository.CoachRepository;
-import com.spoparty.api.football.repository.LeagueRepository;
 import com.spoparty.api.football.repository.SeasonLeagueRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
-import com.spoparty.api.football.repository.SeasonRepository;
 import com.spoparty.api.football.repository.StandingsRepository;
 import com.spoparty.api.football.repository.TeamRepository;
 
@@ -32,7 +29,6 @@ public class SeasonLeagueTeamTestController {
 	private final TeamRepository teamRepository;
 	private final StandingsRepository standingsRepository;
 
-
 	@GetMapping("/save")
 	public ResponseEntity<SeasonLeagueTeam> save() {
 
@@ -40,9 +36,7 @@ public class SeasonLeagueTeamTestController {
 			.coach(coachRepository.findById((long)31).orElse(null))
 			.seasonLeague(seasonLeagueRepository.findById((long)5).orElse(null))
 			.team(teamRepository.findById((long)5).orElse(null))
-			.standing(standingsRepository.findById((long)5).orElse(null))
 			.build();
-
 
 		SeasonLeagueTeam seasonLeagueTeam2 = seasonLeagueTeamRepository.save(seasonLeagueTeam);
 		// log.info(seasonLeagueTeam.getId());

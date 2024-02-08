@@ -46,9 +46,9 @@ public class CheerFixture extends BaseEntity {
 	private List<Cheer> cheers = new ArrayList<>();
 
 	@Builder
-	public CheerFixture(long homeCount, long awayCount) {
+	public CheerFixture(Fixture fixture, long homeCount, long awayCount) {
+		this.fixture = fixture;
 		this.homeCount = homeCount;
 		this.awayCount = awayCount;
-		// this.fixture = fixture;
 	}
 }

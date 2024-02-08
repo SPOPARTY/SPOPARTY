@@ -24,14 +24,13 @@ public class SeasonLeagueTeamStandingDTO {
 
 	private StandingDTO standing;
 
-	public void switchFollowing(){
+	public void switchFollowing() {
 		following = true;
 	}
 
-
 	public static SeasonLeagueTeamStandingDTO toDTO(SeasonLeagueTeam entity) {
 
-		StandingDTO standing = StandingDTO.toDTO(entity.getStanding());
+		// StandingDTO standing = StandingDTO.toDTO(entity.getStanding());
 
 		return SeasonLeagueTeamStandingDTO.builder()
 			.seasonLeagueTeamId(entity.getId())
@@ -39,7 +38,7 @@ public class SeasonLeagueTeamStandingDTO {
 			.nameKr(entity.getTeam().getNameKr())
 			.nameEng(entity.getTeam().getNameEng())
 			.logo(entity.getTeam().getLogo())
-			.standing(standing)
+			// .standing(standing)
 			.build();
 	}
 }

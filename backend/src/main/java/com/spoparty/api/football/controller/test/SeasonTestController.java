@@ -21,10 +21,10 @@ import lombok.RequiredArgsConstructor;
 public class SeasonTestController {
 
 	private final SeasonRepository seasonRepository;
+
 	@GetMapping("/save")
 	public ResponseEntity<Season> save(String value) {
-		Season season = new Season();
-		season.setValue(value);
+		Season season = new Season(value);
 		Season season2 = seasonRepository.save(season);
 		// log.info(season.getId());
 		// log.info(season2.getId());

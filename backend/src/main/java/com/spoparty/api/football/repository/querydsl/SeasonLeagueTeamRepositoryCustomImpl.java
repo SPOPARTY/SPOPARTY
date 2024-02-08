@@ -4,10 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spoparty.api.football.entity.QCoach;
 import com.spoparty.api.football.entity.QPlayer;
@@ -17,9 +13,6 @@ import com.spoparty.api.football.entity.QSeasonLeagueTeamPlayer;
 import com.spoparty.api.football.entity.QStandings;
 import com.spoparty.api.football.entity.QTeam;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
-import com.spoparty.api.football.entity.Team;
-import com.spoparty.api.football.response.EmblemDTO;
-import com.spoparty.api.football.response.QEmblemDTO;
 import com.spoparty.api.member.entity.QMember;
 
 import lombok.RequiredArgsConstructor;
@@ -56,13 +49,12 @@ public class SeasonLeagueTeamRepositoryCustomImpl implements SeasonLeagueTeamRep
 			.fetchJoin()
 			.join(seasonLeagueTeam.team, team)
 			.fetchJoin()
-			.join(seasonLeagueTeam.standing, standings)
+			// .join(seasonLeagueTeam.standing, standings)
 			.fetchJoin()
 			.where(seasonLeagueTeam.seasonLeague.id.eq((long)leagueId))
 			.orderBy(standings.rank.asc())
 			.fetch();
 	}
-
 
 	@Override
 	public List<SeasonLeagueTeam> findTeamAllInfo(int teamId) {
@@ -74,7 +66,7 @@ public class SeasonLeagueTeamRepositoryCustomImpl implements SeasonLeagueTeamRep
 			.fetchJoin()
 			.join(seasonLeagueTeam.team, team)
 			.fetchJoin()
-			.join(seasonLeagueTeam.standing, standings)
+			// .join(seasonLeagueTeam.standing, standings)
 			.fetchJoin()
 			.join(seasonLeagueTeam.coach, coach)
 			.fetchJoin()

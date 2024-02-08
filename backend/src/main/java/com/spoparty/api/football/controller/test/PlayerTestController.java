@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spoparty.api.football.entity.Player;
 import com.spoparty.api.football.repository.PlayerRepository;
 
-
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,19 +22,18 @@ import lombok.extern.slf4j.Slf4j;
 public class PlayerTestController {
 
 	private final PlayerRepository playerRepository;
+
 	@GetMapping("/save")
 	public ResponseEntity<Player> save() {
 
 		Player player = Player.builder()
 			.id(3)
 			.age(22)
-			.captain(false)
 			.height("178")
 			.photo("https://source.unsplash.com/random/300x300?person")
 			.nationality("England")
 			.nameKr("이효성")
 			.nameEng("Yohan Kim")
-			.position("수비수")
 			.weight("85")
 			.build();
 
@@ -48,9 +45,7 @@ public class PlayerTestController {
 			.nationality("Korea")
 			.nameKr("이교환")
 			.nameEng("llll")
-			.position("골키퍼")
 			.weight("80")
-			.captain(false)
 			.build();
 		Player player2 = playerRepository.save(player);
 		playerRepository.save(player3);
