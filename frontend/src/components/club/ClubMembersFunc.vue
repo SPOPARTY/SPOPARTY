@@ -223,6 +223,7 @@ onMounted(() => {
 })
 
 const goToPartyPage = async () => {
+    console.log("#########파티 페이지로 이동합니다#######")
     let startTime = Date.now(); // 시작 시간
     let timeoutDuration = 100; // 체크 간격: 0.1초
     let maxWaitTime = 2000; // 최대 대기 시간: 2초
@@ -264,7 +265,8 @@ const openPartyPage = (partyId) => {
         return;
     }
     getPartyInfo(clubId, partyId);
-    router.push({ name: 'PartyView', params: { partyId } });
+    router.push({ name: 'PartyView', params: { clubId, partyId } });
+    console.log("########종료########")
 };
 
 const newPartyInfo = async () => {
