@@ -195,6 +195,7 @@ watch(() => partyStore.partyInfo, (newPartyInfo) => {
     }
     console.log("파티id", partyId.value)
     console.log("파티유무", isPartyExist.value)
+    // getClubInfo(clubId);
 }, { immediate: true, deep: true });
 
 watch(() => clubInfo.value, (newClubInfo) => {
@@ -274,6 +275,16 @@ const newPartyInfo = async () => {
     const tempInfo = await getPartyInfo(clubId, partyId.value);
     setTimeout(() => {
         console.log("새 파티 정보", tempInfo)
+        if (tempInfo == undefined) {
+            console.log("#새 파티# 파티가 없습니다.")
+            isPartyExist.value = false;
+            partyId.value = null;
+            clubInfo.value.partyId = null;
+            console.log(clubInfo.value)
+        } else {
+            console.log("파티가 있습니다.")
+            isPartyExist.value = true;
+        }
     }, 500)
     // if (tempInfo) {
     //     console.log("파티가 있습니다.")

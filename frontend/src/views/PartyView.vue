@@ -133,7 +133,7 @@
                               <span>파티 초대</span>
                          </v-col>
                          <!-- 채팅창 -->
-                         <v-col cols="12" v-if="showChat" class="chat-window" :style="{ height: chatDivHeight }">
+                         <v-col cols="12" v-show="showChat" class="chat-window" :style="{ height: chatDivHeight }">
                               <div class="chat-content">
                                    <!-- 채팅 내용을 여기에 표시 -->
                                    <!-- {{ chatDivHeightProp }} -->
@@ -189,7 +189,7 @@
                               <v-btn @click="toggleChat" color="yellow" class="chat-button">채팅창</v-btn>
                          </v-col>
                          <v-col cols="4">
-                              <v-btn color="error" @click="closeTab">파티 나가기</v-btn>
+                              <v-btn color="error" @click="exitParty">파티 나가기</v-btn>
                          </v-col>
                     </v-row>
                </v-col>
@@ -400,14 +400,18 @@ const inviteToParty = () => {
 }
 
 // 파티 나가기
-const closeTab = () => {
+const exitParty = () => {
      // 사용자에게 확인을 요청하는 대화상자 표시
      if (confirm("파티를 나가시겠습니까?")) {
           delPartyMem();
           setTimeout(() => {
-               window.close();
-          }, 300);
-           // 사용자가 '예'를 선택한 경우 탭 닫기
+               // confirm 후 200ms 지나서 클럽 페이지로 이동
+               router.push({ name: 'ClubMain', params: { clubId } }).then(() => {
+                    // router.push 프로미스 완료 후 페이지 새로고침
+                    // window.location.reload();
+                    router.go();
+               });
+          }, 200);
      }
      // '아니오'를 선택한 경우 아무 동작도 하지 않음
 }
@@ -725,6 +729,7 @@ const leaveSession = () => {
      justify-content: center;
      align-items: center;
      /* aspect-ratio: 16/16; */
+     padding: 0;
 }
 
 .button-section {
@@ -761,6 +766,7 @@ const leaveSession = () => {
      /* 내용이 많을 경우 스크롤 */
      /* z-index: 10;  */
      /* 다른 요소 위에 채팅창이 나타나도록 z-index 설정 */
+     padding: 0;
 }
 
 .chat-content {
