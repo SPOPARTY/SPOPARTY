@@ -17,5 +17,5 @@ public class Standing {
 	StandingScore all;
 	StandingScore home;
 	StandingScore away;
-	LocalDateTime update;
+	String update;
 }

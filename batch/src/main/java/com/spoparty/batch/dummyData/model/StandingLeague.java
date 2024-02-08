@@ -12,5 +12,5 @@ public class StandingLeague {
 	String logo;
 	String flag;
 	String season;
-	List<OuterStanding> standings;
+	List<List<Standing>> standings;
 }
