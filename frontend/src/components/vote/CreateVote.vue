@@ -1,12 +1,12 @@
 <template>
     <v-dialog
         v-model="isModalVisible"
-        max-width="600px"
-        max-height="500px"
+        max-width="400px"
+        max-height="700px"
         @click:outside="closeModal"
         persistent
     >
-        <v-card>
+        <v-card class="outer-card">
             <v-card-title class="text-center">투표 생성 </v-card-title>
             <v-row>
                 <v-col>
@@ -18,24 +18,26 @@
                 </v-col>
             </v-row>
 
-            <v-row v-for="(choice, index) in choices" :key="index">
-                <v-col cols="10">
-                    <v-text-field
-                    class="choice-text"
-                    v-model="choice.text"
-                    label="선택지 내용"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="2">
-                    <v-btn class="button" @click="removeChoice(index)" icon>
-                        <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                </v-col>
-            </v-row>
-
+            <v-card class="inner-card">
+                <v-row v-for="(option, index) in options" :key="index">
+                    <v-col cols="10">
+                        <v-text-field
+                        class="option-text"
+                        v-model="option.text"
+                        label="선택지 내용"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="2">
+                        <v-btn class="button" @click="removeOption(index)" icon>
+                            <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card>
+            
             <v-row >
                 <v-col>
-                    <v-btn class="button" @click="addChoice">+</v-btn>
+                    <v-btn class="button" @click="addOption">+</v-btn>
                 </v-col>
             </v-row>
 
@@ -72,7 +74,7 @@ const emit = defineEmits([
 ])
 
 const voteTitle = ref('');
-const choices = ref([{ text: '' }]);
+const options = ref([{ text: '' }]);
 const selectedPenalty = ref(null);
 
 const penalties = [
@@ -82,11 +84,14 @@ const penalties = [
   // 다른 벌칙 항목을 여기에 추가
 ];
 
-const addChoice = () => {
-    choices.value.push({ text: '' });
+const addOption = () => {
+    if(options.value.length > 4){
+        return;
+    }
+    options.value.push({ text: '' });
 };
 
-const removeChoice = (index) => {
+const removeOption = (index) => {
     if (choices.value.length > 1) {
         choices.value.splice(index, 1);
     }
@@ -106,7 +111,19 @@ function closeModal() {
     margin-right:50px;
 }
 
-.choice-text{
+.outer-card {
+    padding:0px;
+}
+
+.inner-card {
+    text-align: center;
+    margin : 20px;
+    border: 1px solid black;
+    height:300px;
+    overflow-y:auto;
+}
+
+.option-text{
     margin-left:50px;
 }
 
@@ -116,6 +133,6 @@ function closeModal() {
     align-items: center;
     margin:auto;
     box-shadow: none !important;
-    background:transparent
+    background:transparent;
 }
 </style>

@@ -116,7 +116,7 @@
     class="idCheckModal"
     persistent
   >
-    <v-card>
+    <v-card class="modals">
       <v-card-text>
         아이디를 입력하세요!
       </v-card-text>
@@ -132,7 +132,7 @@
     class="idCheckModal"
     persistent
   >
-    <v-card>
+    <v-card class="modals">
       <v-card-text>
         사용 가능한 아이디입니다.
       </v-card-text>
@@ -148,7 +148,7 @@
     class="idCheckModal"
     persistent
   >
-    <v-card>
+    <v-card class="modals">
       <v-card-text>
         중복된 아이디입니다!
       </v-card-text>
@@ -164,7 +164,7 @@
     width="400"
     persistent
   >
-    <v-card class="justify-center">
+    <v-card class="modals justify-center">
       <v-card-title class="text-h5">이메일 인증</v-card-title>
       <v-card-text>
         <p>인증 코드가 이메일 주소로 전송되었습니다.</p>
@@ -446,6 +446,10 @@
 .idCheckModal {
   max-width:400px;
   text-align: center;
+}
+
+.modals {
+  background-color:#CBD0D8
 }
 
 .email-verify{

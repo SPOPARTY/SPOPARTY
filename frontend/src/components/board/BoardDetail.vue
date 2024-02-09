@@ -114,4 +114,7 @@ h1{
     height:100%;
 }
 
+.board-detail {
+    background-color: #F4F3EA ;
+}
 </style>

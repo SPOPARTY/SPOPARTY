@@ -23,9 +23,7 @@
                     <v-card-subtitle class="text-right"> {{detail.partyTitle}} </v-card-subtitle>
                     <v-card-text class="text-right"> {{ detail.member.nickname }} </v-card-text>
                     <v-card-text class="text-right"> {{formatDateTime(detail.createdTime)}} </v-card-text>
-                    <v-card-item v-if="detail.file !== null">
-                        <v-img :src="detail.file.url" :alt="detail.file.url" class="thumb_img"/>
-                    </v-card-item>
+                    <v-img v-if="detail.file !== null" :src="detail.file.url" :alt="detail.file.url" class="thumb_img" cover height="200px"/>
                 </v-card>
                 <ArchiveDetail 
                     v-if="isDetailVisible && currentDetail.id === detail.id"
@@ -45,15 +43,15 @@ import {useArchiveStore} from '@/stores/club/archives'
 
 import {formatDateTime} from "@/util/tools.js"
 
-import ArchiveDetail from '@/components/archieve/ArchiveDetail.vue';
+import ArchiveDetail from '@/components/archive/ArchiveDetail.vue';
 
-const archieveStore = useArchiveStore();
+const archiveStore = useArchiveStore();
 
 const routes = useRoute();
 const clubId = routes.params.clubId;
 
 const archiveList = ref([]);
-watch(() => archieveStore.archiveList,(newArchiveList) => {
+watch(() => archiveStore.archiveList,(newArchiveList) => {
     archiveList.value = newArchiveList;
 },{immediate:true})
 
@@ -70,7 +68,7 @@ const showDetailModal = (detail) => {
 }
 
 onMounted(() => {
-    archieveStore.getArchiveList(clubId);
+    archiveStore.getArchiveList(clubId);
 })
 
 </script>
