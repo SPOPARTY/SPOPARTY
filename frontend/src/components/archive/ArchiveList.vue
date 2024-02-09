@@ -72,9 +72,9 @@ import {useRouter, useRoute} from 'vue-router'
 import {useArchiveStore} from '@/stores/club/archives';
 import {formatDateTime} from "@/util/tools.js"
 
-import ArchiveDetail from '@/components/archieve/ArchiveDetail.vue';
+import ArchiveDetail from '@/components/archive/ArchiveDetail.vue';
 
-const archieveStore = useArchiveStore();
+const archiveStore = useArchiveStore();
 
 const router = useRouter();
 const routes = useRoute();
@@ -82,7 +82,7 @@ const clubId = routes.params.clubId;
 
 
 const archiveList = ref([]);
-watch(() => archieveStore.archiveList,(newArchiveList) => {
+watch(() => archiveStore.archiveList,(newArchiveList) => {
     archiveList.value = newArchiveList;
     archiveList.value.forEach((archive) => {
         archive.selected = false;
@@ -130,7 +130,7 @@ function goBack() {
 }
 
 onMounted(() => {
-    archieveStore.getArchiveList(clubId);
+    archiveStore.getArchiveList(clubId);
 })
 
 </script>

@@ -7,7 +7,7 @@
         persistent
     >
         <v-card>
-            <v-card-title class="text-center">투표합시다</v-card-title>
+            <v-card-title class="modal-title text-center">투표합시다</v-card-title>
             <v-row class="votes">
                 <v-col cols="12" lg="4" md="4" sm="4">
                     <v-btn @click="chooseVoteType('ongoing')">진행 중인 투표</v-btn>
