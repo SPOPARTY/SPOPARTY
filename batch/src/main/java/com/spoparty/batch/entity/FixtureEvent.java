@@ -1,6 +1,8 @@
 package com.spoparty.batch.entity;
 
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -18,24 +20,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(
-	name = "fixture_event",
-	uniqueConstraints = @UniqueConstraint(
-		columnNames = {
-			"detail",
-			"type",
-			"fixture_id",
-			"season_league_team_id",
-			"player_id",
-			"assist_id",
-			"time"
-		}
-	)
-)
 public class FixtureEvent extends FootballBaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,4 +70,28 @@ public class FixtureEvent extends FootballBaseEntity {
 		this.player = player;
 		this.assist = assist;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		FixtureEvent that = (FixtureEvent) o;
+		return time == that.time &&
+			Objects.equals(type, that.type) &&
+			Objects.equals(detail, that.detail) &&
+			(fixture == null ? that.fixture == null : Objects.equals(fixture.getId(), that.fixture.getId())) &&
+			(seasonLeagueTeam == null ? that.seasonLeagueTeam == null : Objects.equals(seasonLeagueTeam.getId(), that.seasonLeagueTeam.getId())) &&
+			(player == null ? that.player == null : Objects.equals(player.getId(), that.player.getId())) &&
+			(assist == null ? that.assist == null : Objects.equals(assist.getId(), that.assist.getId()));
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(time, type, detail,
+			(fixture == null ? 0 : fixture.getId()),
+			(seasonLeagueTeam == null ? 0 : seasonLeagueTeam.getId()),
+			(player == null ? 0 : player.getId()),
+			(assist == null ? 0 : assist.getId()));
+	}
+
 }

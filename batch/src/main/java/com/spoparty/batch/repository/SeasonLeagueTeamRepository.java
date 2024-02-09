@@ -11,4 +11,6 @@ import com.spoparty.batch.entity.Team;
 @Repository
 public interface SeasonLeagueTeamRepository extends JpaRepository<SeasonLeagueTeam, Long> {
 	SeasonLeagueTeam findByTeam(Team team);
+
+	SeasonLeagueTeam findByTeam_Id(Long id);
 }

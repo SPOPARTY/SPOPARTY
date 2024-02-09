@@ -325,7 +325,7 @@ public class LoadFootballData {
 
 
 	// 경기로 [경기 이벤트] 테이블 생성
-	@Scheduled(fixedRate = 1000*15)
+	@Scheduled(fixedRate = 1000*60)
 	public void loadEvents() {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -344,7 +344,7 @@ public class LoadFootballData {
 				EventResponse body = (EventResponse)response.getBody();
 				List<Events> list = body.getResponse();
 
-				for (Events data : list){
+				outer : for (Events data : list){
 
 					try {
 						SeasonLeagueTeam team = null;
@@ -369,6 +369,12 @@ public class LoadFootballData {
 							.type(data.getType())
 							.detail(data.getDetail())
 							.build();
+						List<FixtureEvent> events = fixtureEventRepository.findByFixture_IdAndTime(fixture.getId(), Long.parseLong(data.getTime().get("elapsed")));
+						for (FixtureEvent ddddd : events){
+							if ( ddddd.equals(fixtureEvent)){
+								continue outer;
+							}
+						}
 						fixtureEventRepository.save(fixtureEvent);
 						log.info("fixtureEvent: {}", fixtureEvent);
 					}catch (Exception e){
@@ -380,14 +386,14 @@ public class LoadFootballData {
 		}
 	}
 
-	// 시즌 리그
-	// @Scheduled(fixedRate = 1000*60*60*24)
+	// 응원 테이블 관리
+	@Scheduled(fixedRate = 1000*60*60)
 	public void registerCheer() {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 		LocalDateTime current = LocalDateTime.now(ZoneId.of("Europe/London"));
-		LocalDateTime yesterday = current.minusDays(2);
-		LocalDateTime tomorrow = current.plusDays(2);
+		LocalDateTime yesterday = current.minusDays(1);
+		LocalDateTime tomorrow = current.plusDays(1);
 
 		// 응원경기 테이블에서 지난 응원들 삭제처리
 		List<CheerFixture> cheerList = cheerFixtureRepository.findAll();
