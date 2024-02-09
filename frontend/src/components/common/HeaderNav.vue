@@ -182,6 +182,8 @@ const drawer = ref(false);
 
 function goHome() {
   router.push('/');
+  // 이동 후 새로고침
+  router.go(0);
 }
 
 // 예시 클럽 데이터
