@@ -3,7 +3,10 @@ package com.spoparty.api.football.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.spoparty.api.common.entity.FootballBaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -16,15 +19,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SeasonLeagueTeam extends FootballBaseEntity {
 	@Id
@@ -33,19 +35,28 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	private long id;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "season_league_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "season_league_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeague seasonLeague;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "team_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Team team;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "coach_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "coach_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Coach coach;
+
+	@JsonIgnore
+	@BatchSize(size = 1)
+	@OneToMany(mappedBy = "seasonLeagueTeam")
+	private List<Standings> standings = new ArrayList<>();
+
+	// @OneToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "captain_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	// private SeasonLeagueTeamPlayer captain;
 
 	@OneToMany(mappedBy = "seasonLeagueTeam")
 	private List<SeasonLeagueTeamPlayer> seasonLeagueTeamPlayers = new ArrayList<>();
@@ -54,7 +65,6 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	private List<Lineup> lineups = new ArrayList<>();
 
 	@Builder
-
 	public SeasonLeagueTeam(SeasonLeague seasonLeague, Team team, Coach coach) {
 		this.seasonLeague = seasonLeague;
 		this.team = team;

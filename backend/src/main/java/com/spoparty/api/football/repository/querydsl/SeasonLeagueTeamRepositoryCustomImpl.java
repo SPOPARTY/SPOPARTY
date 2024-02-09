@@ -4,6 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spoparty.api.football.entity.QCoach;
 import com.spoparty.api.football.entity.QPlayer;
@@ -13,6 +17,9 @@ import com.spoparty.api.football.entity.QSeasonLeagueTeamPlayer;
 import com.spoparty.api.football.entity.QStandings;
 import com.spoparty.api.football.entity.QTeam;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
+import com.spoparty.api.football.entity.Team;
+import com.spoparty.api.football.response.EmblemDTO;
+import com.spoparty.api.football.response.QEmblemDTO;
 import com.spoparty.api.member.entity.QMember;
 
 import lombok.RequiredArgsConstructor;
@@ -49,30 +56,27 @@ public class SeasonLeagueTeamRepositoryCustomImpl implements SeasonLeagueTeamRep
 			.fetchJoin()
 			.join(seasonLeagueTeam.team, team)
 			.fetchJoin()
-			// .join(seasonLeagueTeam.standing, standings)
+			.leftJoin(seasonLeagueTeam.standings, standings)
 			.fetchJoin()
 			.where(seasonLeagueTeam.seasonLeague.id.eq((long)leagueId))
-			.orderBy(standings.rank.asc())
 			.fetch();
 	}
 
+
 	@Override
-	public List<SeasonLeagueTeam> findTeamAllInfo(int teamId) {
+	public SeasonLeagueTeam findTeamAllInfo(int teamId) {
 		return jpaQueryFactory.select(seasonLeagueTeam)
 			.from(seasonLeagueTeam)
-			.join(seasonLeagueTeam.seasonLeagueTeamPlayers, seasonLeagueTeamPlayer)
+			.leftJoin(seasonLeagueTeam.seasonLeagueTeamPlayers, seasonLeagueTeamPlayer)
 			.fetchJoin()
 			.join(seasonLeagueTeamPlayer.player, player)
 			.fetchJoin()
 			.join(seasonLeagueTeam.team, team)
 			.fetchJoin()
-			// .join(seasonLeagueTeam.standing, standings)
-			.fetchJoin()
+			.leftJoin(seasonLeagueTeam.standings, standings)
 			.join(seasonLeagueTeam.coach, coach)
 			.fetchJoin()
-			.join(seasonLeagueTeamPlayer.player)
-			.fetchJoin()
 			.where(seasonLeagueTeam.id.eq((long)teamId))
-			.fetch();
+			.fetchOne();
 	}
 }

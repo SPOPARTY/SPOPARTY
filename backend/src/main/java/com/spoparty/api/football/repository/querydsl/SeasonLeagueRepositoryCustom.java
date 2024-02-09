@@ -9,4 +9,5 @@ public interface SeasonLeagueRepositoryCustom {
 	public List<SeasonLeague> findLeagueByKeyword(String keyword);
 
 	public List<SeasonLeague> findAllLeague();
+
 }

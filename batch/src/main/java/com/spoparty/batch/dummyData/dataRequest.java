@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,21 +17,34 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.spoparty.batch.dto.SeasonId;
+import com.spoparty.batch.dummyData.model.OuterStanding;
+import com.spoparty.batch.dummyData.model.Response;
+import com.spoparty.batch.dummyData.model.Standing;
+import com.spoparty.batch.dummyData.model.StandingLeague;
+import com.spoparty.batch.dummyData.model.StandingResponse;
+import com.spoparty.batch.dummyData.model.StandingScore;
 import com.spoparty.batch.entity.League;
 import com.spoparty.batch.entity.LeagueType;
 import com.spoparty.batch.entity.Season;
 import com.spoparty.batch.entity.SeasonLeague;
+import com.spoparty.batch.entity.SeasonLeagueTeam;
+import com.spoparty.batch.entity.Standings;
+import com.spoparty.batch.entity.Team;
 import com.spoparty.batch.repository.LeagueRepository;
 import com.spoparty.batch.repository.SeasonLeagueRepository;
+import com.spoparty.batch.repository.SeasonLeagueTeamRepository;
 import com.spoparty.batch.repository.SeasonRepository;
+import com.spoparty.batch.repository.StandingRepository;
+import com.spoparty.batch.repository.TeamRepository;
 import com.spoparty.batch.util.FootballApiUtil;
 import com.spoparty.batch.util.LanguageUtil;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
-
+@Slf4j
 public class dataRequest {
 
 	public final FootballApiUtil apiRequest;
@@ -38,7 +52,9 @@ public class dataRequest {
 	public final SeasonRepository seasonRepository;
 	public final LeagueRepository leagueRepository;
 	public final SeasonLeagueRepository seasonLeagueRepository;
-
+	public final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
+	public final TeamRepository teamRepository;
+	public final StandingRepository standingRepository;
 	// @Transactional(value = defaultTxManager())
 
 	// @Scheduled(fixedRate=200000)
@@ -80,10 +96,7 @@ public class dataRequest {
 			Map<String, String> league = (Map)data.get(0).get("league");
 			Map<String, String> country = (Map)data.get(0).get("country");
 			List<Map<String, Object>> seasons = (List)data.get(0).get("seasons");
-			// System.out.println(league);
-			// System.out.println(country);
-			// System.out.println(seasons);
-			// System.out.println("name " + league.get("name"));
+
 
 
 
@@ -119,12 +132,76 @@ public class dataRequest {
 
 				seasonLeagueRepository.save(seasonLeague);
 			}
-			// System.out.println(seasons);
 
 		}
 
 		System.out.println("end");
 	}
+
+	// @Scheduled(fixedRate=300000)
+	public void getStandings() {
+
+
+		String[] leagueIds = new String[]{"140", "78", "292"};
+
+		for (String leagueId : leagueIds) {
+
+			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+			params.add("season", "2023");
+			params.add("league", leagueId);
+
+
+			ResponseEntity<Response> response = apiRequest.sendRequest("/standings", params, Response.class);
+
+			if (response.getStatusCode() != HttpStatus.OK) {
+				log.info("제대로 된 응답이 오지 않음");
+				return;
+			}
+
+			Response standingResponses= (Response)response.getBody();
+
+			StandingLeague standingLeague = standingResponses.getResponse().get(0).getLeague();
+			List<List<Standing>> standingList = standingLeague.getStandings();
+			log.info("standingList size " + standingList.size());
+
+			for (int i = 0; i < standingList.size(); i++) {
+				List<Standing> standings = standingList.get(i);
+
+				for (Standing standing: standings){
+
+
+					Team team = teamRepository.findById(standing.getTeam().getId()).orElse(null);
+					SeasonLeagueTeam seasonLeagueTeam = seasonLeagueTeamRepository.findByTeam(team);
+
+					StandingScore score = standing.getAll();
+					Standings entity = Standings.builder()
+						.rank(standing.getRank())
+						.points(standing.getPoints())
+						.goalDiff(standing.getGoalsDiff())
+						.group(standing.getGroup())
+						.form(standing.getForm())
+						.played(score.getPlayed())
+						.win(score.getWin())
+						.draw(score.getDraw())
+						.lose(score.getLose())
+						.goalsFor(score.getGoals().get("for"))
+						.goalsAgainst(score.getGoals().get("against"))
+						.seasonLeagueTeam(seasonLeagueTeam)
+						.build();
+
+
+					standingRepository.save(entity);
+					log.info(String.valueOf(entity.getRank()));
+				}
+			}
+
+
+			log.info("저장완료");
+		}
+
+
+	}
+
 
 
 
@@ -136,5 +213,9 @@ public class dataRequest {
 
 		return LocalDateTime.of(localDate, LocalTime.MIN);
 	}
+
+
+
+
 
 }
