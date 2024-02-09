@@ -67,7 +67,17 @@ pipeline {
                             '''
                         }
                     }
-                     steps {
+                    post{
+                        success {
+                            echo 'BE - Success Build'
+                        }
+                        failure{
+                            error 'BE - Fail Build'
+                        }
+                    }              
+                }
+                stage ('Batch Build') {
+                    steps {
                         echo 'BE - Build batch start'
                         dir ('backend/batch') {
                             sh'''
@@ -78,10 +88,10 @@ pipeline {
                     }
                     post{
                         success {
-                            echo 'BE - Success Build'
+                            echo 'Batch - Success Build'
                         }
                         failure{
-                            error 'BE - Fail Build'
+                            error 'Batch - Fail Build'
                         }
                     }              
                 }
