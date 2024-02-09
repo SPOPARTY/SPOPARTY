@@ -6,7 +6,7 @@
         @click:outside="closeModal"
         persistent
     >
-        <v-card class>
+        <v-card>
             <v-card-title class="text-center">투표합시다</v-card-title>
             <v-row class="votes">
                 <v-col cols="12" lg="4" md="4" sm="4">
@@ -146,7 +146,7 @@ const votes = ref([
     {voteId : 4, content : "미안하다 이거 보여줄려고 어그로 끌었다", ongoing : false, partyMemberId : 12 }
 ])
 
-const choices = ref([
+const Options = ref([
     {choiceId : 1, content:"제라드", count : 0, voteId : 1, isAnswer : true},
     {choiceId : 2, content:"램파드", count : 0, voteId : 1, isAnswer : true},
     {choiceId : 3, content:"스콜스", count : 0, voteId : 1, isAnswer : true},
@@ -283,12 +283,17 @@ function closeModal() {
     text-align: center;
     margin : 20px;
     border: 1px solid black;
-    max-height:300px;
+    height:150px;
     overflow-y:auto; /* 내용이 넘칠 경우 스크롤 허용 */
 }
 
 .vote-title {
     cursor: pointer;
+}
+
+.vote-types {
+    height:500px;
+    overflow-y:auto;
 }
 
 .choice {

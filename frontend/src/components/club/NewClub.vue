@@ -44,6 +44,12 @@ function generateClub() {
         alert("클럽 이름은 빈칸이어서 안됩니다!")
         return;
     }
+    if (clubName.value.length > 20) {
+        alert("클럽 이름은 20자 이상을 넘기면 안됩니다!")
+        clubName.value = clubName.value.substring(0,20);
+        return;
+    }
+
     if(confirm(`${clubName.value}로 새 클럽을 창단하시겠습니까?`) === true) {
         clubStore.createClubs(data);
     }

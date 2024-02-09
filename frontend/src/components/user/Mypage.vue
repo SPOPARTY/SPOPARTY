@@ -197,7 +197,7 @@ const Withdraw = () => {
             localStorage.removeItem("refreshToken");
             localStorage.removeItem("id")
             alert("함께해서 더러웠고 다신 만나지 말자")
-            router.push("/")
+            window.location.replace("/")
         } 
     },
     (error) => {

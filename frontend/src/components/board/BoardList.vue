@@ -21,10 +21,10 @@
                     @detail-close="isDetailVisible = false"
                 />
                 <v-card class="card" @click="showBoardDetail(post)" >
-                    <v-img v-if="post.file" class="thumbnail" :src="post.file.url" :alt="post.title" cover height="200px"/>
                     <v-card-title class="text-center">{{ post.title }}</v-card-title>
                     <v-card-subtitle class="text-right">{{ post.member.nickname }}</v-card-subtitle>
                     <v-card-text class="text-right">{{ formatDateTime(post.updatedTime) }}</v-card-text>
+                    <v-img v-if="post.file" class="thumbnail" :src="post.file.url" :alt="post.title" cover height="200px"/>
                     <!-- <div class="content" v-html="post.content"></div> -->
                 </v-card>
             </v-col>
