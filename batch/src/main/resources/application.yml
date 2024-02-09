@@ -1,3 +1,4 @@
+server.port: 9091
 sql:
   init:
     continue-on-error: true
