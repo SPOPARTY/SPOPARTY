@@ -21,4 +21,6 @@ public interface FixtureRepository extends JpaRepository<Fixture, Long> {
 	@Query("SELECT f FROM Fixture f WHERE f.id >= :id")
 	List<Fixture> findAllWithIdGreaterThanEqual(@Param("id") Long id);
 
+	List<Fixture> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
+
 }

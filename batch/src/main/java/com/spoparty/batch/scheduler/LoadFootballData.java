@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.spoparty.batch.entity.CheerFixture;
 import com.spoparty.batch.entity.Coach;
 import com.spoparty.batch.entity.Fixture;
 import com.spoparty.batch.entity.FixtureEvent;
@@ -322,16 +325,20 @@ public class LoadFootballData {
 
 
 	// 경기로 [경기 이벤트] 테이블 생성
-	// @Scheduled(fixedRate = 1000*60*60*24)
+	@Scheduled(fixedRate = 1000*15)
 	public void loadEvents() {
 
-		List<Fixture> fix = new ArrayList<>();
-		fix.add(fixtureRepository.findById(1038175L).orElse(null));
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+		LocalDateTime t1 = LocalDateTime.now(ZoneId.of("Europe/London"));
+		LocalDateTime t2 = t1.minusHours(300);
+		List<CheerFixture> cheerFixtures = cheerFixtureRepository.findAll();
 
-		for (Fixture fff : fix){
+		for (CheerFixture cheers : cheerFixtures){
+			Fixture fixture = cheers.getFixture();
+			if(fixture.getStartTime().compareTo(t1) * fixture.getStartTime().compareTo(t2) > 0) continue;
 
 			MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-			queryParams.add("fixture", fff.getId()+"");
+			queryParams.add("fixture", fixture.getId()+"");
 			ResponseEntity<?> response = footballApiUtil.sendRequest("/fixtures/events", queryParams, EventResponse.class);
 			if (response.getStatusCode() == HttpStatus.OK){
 				EventResponse body = (EventResponse)response.getBody();
@@ -354,7 +361,7 @@ public class LoadFootballData {
 						}
 
 						FixtureEvent fixtureEvent = FixtureEvent.builder()
-							.fixture(fff)
+							.fixture(fixture)
 							.seasonLeagueTeam(team)
 							.player(p1)
 							.assist(p2)
@@ -362,7 +369,6 @@ public class LoadFootballData {
 							.type(data.getType())
 							.detail(data.getDetail())
 							.build();
-
 						fixtureEventRepository.save(fixtureEvent);
 						log.info("fixtureEvent: {}", fixtureEvent);
 					}catch (Exception e){
@@ -374,5 +380,41 @@ public class LoadFootballData {
 		}
 	}
 
+	// 시즌 리그
+	// @Scheduled(fixedRate = 1000*60*60*24)
+	public void registerCheer() {
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+		LocalDateTime current = LocalDateTime.now(ZoneId.of("Europe/London"));
+		LocalDateTime yesterday = current.minusDays(2);
+		LocalDateTime tomorrow = current.plusDays(2);
+
+		// 응원경기 테이블에서 지난 응원들 삭제처리
+		List<CheerFixture> cheerList = cheerFixtureRepository.findAll();
+		for (CheerFixture cheerFixture :cheerList){
+			LocalDateTime fixtureTime = cheerFixture.getFixture().getStartTime();
+			if (fixtureTime.compareTo(yesterday) * fixtureTime.compareTo(tomorrow) >= 0){
+				cheerFixture.softDelete();
+				cheerFixtureRepository.save(cheerFixture);
+				log.info("delete cheerFixture : {}", cheerFixture);
+			}
+		}
+
+		// 경기목록에서 24시간 전후의 경기를 응원경기 테이블에 추가
+		List<Fixture> fixtures = fixtureRepository.findByStartTimeBetween(yesterday, tomorrow);
+		for(Fixture fixture : fixtures){
+			CheerFixture tmp = cheerFixtureRepository.findByFixture_Id(fixture.getId());
+			if (tmp == null){
+				CheerFixture saveData = CheerFixture.builder()
+					.fixture(fixture)
+					.homeCount(0)
+					.awayCount(0)
+					.build();
+
+				cheerFixtureRepository.save(saveData);
+				log.info("save cheerFixture : {}", saveData);
+			}
+		}
+	}
 
 }

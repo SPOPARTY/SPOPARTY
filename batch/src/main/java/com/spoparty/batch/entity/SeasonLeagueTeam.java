@@ -48,11 +48,6 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	@JoinColumn(name = "coach_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Coach coach;
 
-
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "captain_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private SeasonLeagueTeamPlayer captain;
-
 	@OneToMany(mappedBy = "seasonLeagueTeam")
 	private List<SeasonLeagueTeamPlayer> seasonLeagueTeamPlayers = new ArrayList<>();
 

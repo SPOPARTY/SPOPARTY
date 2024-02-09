@@ -1,5 +1,7 @@
 package com.spoparty.api.football.entity;
 
+import org.hibernate.annotations.Where;
+
 import com.spoparty.api.common.entity.BaseEntity;
 import com.spoparty.api.member.entity.Member;
 
@@ -21,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "is_deleted = 0")
 public class Cheer extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

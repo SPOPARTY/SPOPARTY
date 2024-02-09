@@ -11,6 +11,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,6 +22,20 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+	name = "fixture_event",
+	uniqueConstraints = @UniqueConstraint(
+		columnNames = {
+			"detail",
+			"type",
+			"fixture_id",
+			"season_league_team_id",
+			"player_id",
+			"assist_id",
+			"time"
+		}
+	)
+)
 public class FixtureEvent extends FootballBaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -28,9 +28,6 @@ public class LineupPlayer extends FootballBaseEntity {
 	@Column(name = "lineup_player_id")
 	private long id;
 
-	@Column(nullable = true, columnDefinition = "TINYINT")
-	private boolean mainPlayer;
-
 	// 등번호
 	@Size(min=0, max=3)
 	@Column(nullable = true, length=3)
@@ -56,15 +53,11 @@ public class LineupPlayer extends FootballBaseEntity {
 	@Column(nullable=true, length=50)
 	private String name;
 
-
-
-
 	@Builder
 
-	public LineupPlayer(Long id, boolean mainPlayer, String number, String position, String grid, Lineup lineup,
+	public LineupPlayer(Long id, String number, String position, String grid, Lineup lineup,
 		String name) {
 		this.id = id;
-		this.mainPlayer = mainPlayer;
 		this.number = number;
 		this.position = position;
 		this.grid = grid;
