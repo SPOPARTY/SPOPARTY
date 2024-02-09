@@ -25,7 +25,7 @@ export const useClubStore = defineStore("club",() => {
                 // console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     myClubs.value = res.data.data;
-                    // console.log("*******최근 활동이 있는클럽 목록*******")
+                    console.log("*******최근 활동이 있는클럽 목록*******")
                     // console.log(myClubs.value)
                     // console.log(myClubs.value);
                 }
