@@ -19,7 +19,6 @@ import com.spoparty.api.football.repository.FixtureRepository;
 import com.spoparty.api.football.response.PartyFixtureDTO;
 import com.spoparty.api.football.service.FixtureServiceImpl;
 import com.spoparty.api.member.entity.Member;
-import com.spoparty.api.member.service.MemberService;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
 import com.spoparty.api.party.dto.response.PartyResponseDTO;
 import com.spoparty.api.party.entity.Party;
@@ -43,7 +42,6 @@ public class PartyServiceImpl implements PartyService {
 	private final PartyMemberRepository partyMemberRepository;
 	private final FixtureRepository fixtureRepository;
 	private final ClubServiceImpl clubService;
-	private final MemberService memberService;
 	private final OpenViduService openViduService;
 	private final FixtureServiceImpl fixtureService;
 
