@@ -6,8 +6,8 @@
         @click:outside="closeModal"
         persistent
     >
-        <v-card class>
-            <v-card-title class="text-center">투표합시다</v-card-title>
+        <v-card>
+            <v-card-title class="modal-title text-center">투표합시다</v-card-title>
             <v-row class="votes">
                 <v-col cols="12" lg="4" md="4" sm="4">
                     <v-btn @click="chooseVoteType('ongoing')">진행 중인 투표</v-btn>
@@ -52,9 +52,9 @@
         <v-card class="vote-detail">
             <v-card-title class="text-center">진행 중인 투표</v-card-title>
             <v-card-text>Q : {{ voteDetail.content }}</v-card-text>
-            <v-card-text class="choice" v-for="(choice, index) in voteDetail.choices" :key="index"
-                        @click="selectAnswer(choice)">
-                {{ choice.content }}
+            <v-card-text class="option" v-for="(option, index) in voteDetail.options" :key="index"
+                        @click="selectAnswer(option)">
+                {{ option.content }}
             </v-card-text>
             <v-card-text v-if="selectedAnswer.content !== ''">
                 당신의 선택 : <b>{{ selectedAnswer.content }}</b>
@@ -68,10 +68,8 @@
     </v-dialog>
 
     <v-dialog v-model="confirmSubmit" max-width="300px">
-        <v-card>
-            <br><br><br>
+        <v-card class="submit-vote">
             <v-card-title class="text-center">투표가 제출되었습니다!</v-card-title>
-            <br><br><br>
         </v-card>
     </v-dialog>
 
@@ -92,7 +90,7 @@
 
     <v-dialog v-model="confirmFinish" max-width="300px">
         <v-card>
-            <v-card-title class="text-center">투표를 마감하시겠습니까?</v-card-title>
+            <v-card-title class="close-vote text-center">투표를 마감하시겠습니까?</v-card-title>
             <v-card-actions class="buttons" style="transform:translateX(-70px)">
                 <v-spacer></v-spacer>
                 <v-btn color="green" @click="finishVote(selectAnswer)"><h4>확인</h4></v-btn>
@@ -146,18 +144,18 @@ const votes = ref([
     {voteId : 4, content : "미안하다 이거 보여줄려고 어그로 끌었다", ongoing : false, partyMemberId : 12 }
 ])
 
-const choices = ref([
-    {choiceId : 1, content:"제라드", count : 0, voteId : 1, isAnswer : true},
-    {choiceId : 2, content:"램파드", count : 0, voteId : 1, isAnswer : true},
-    {choiceId : 3, content:"스콜스", count : 0, voteId : 1, isAnswer : true},
-    {choiceId : 4, content:"피자", count : 0, voteId : 2, isAnswer : true},
-    {choiceId : 5, content:"치킨", count : 0, voteId : 2, isAnswer : true},
-    {choiceId : 6, content:"파스타", count : 0, voteId : 2, isAnswer : true},
-    {choiceId : 7, content:"한국", count : 0, voteId : 3, isAnswer : true},
-    {choiceId : 8, content:"요르단", count : 0, voteId : 3, isAnswer : true},
-    {choiceId : 9, content:"히히", count : 0, voteId : 4, isAnswer : true},
-    {choiceId : 10, content:"투표", count : 0, voteId : 4, isAnswer : true},
-    {choiceId : 11, content:"발사", count : 0, voteId : 4, isAnswer : true},
+const options = ref([
+    {optionId : 1, content:"제라드", count : 0, voteId : 1, isAnswer : true},
+    {optionId : 2, content:"램파드", count : 0, voteId : 1, isAnswer : true},
+    {optionId : 3, content:"스콜스", count : 0, voteId : 1, isAnswer : true},
+    {optionId : 4, content:"피자", count : 0, voteId : 2, isAnswer : true},
+    {optionId : 5, content:"치킨", count : 0, voteId : 2, isAnswer : true},
+    {optionId : 6, content:"파스타", count : 0, voteId : 2, isAnswer : true},
+    {optionId : 7, content:"한국", count : 0, voteId : 3, isAnswer : true},
+    {optionId : 8, content:"요르단", count : 0, voteId : 3, isAnswer : true},
+    {optionId : 9, content:"히히", count : 0, voteId : 4, isAnswer : true},
+    {optionId : 10, content:"투표", count : 0, voteId : 4, isAnswer : true},
+    {optionId : 11, content:"발사", count : 0, voteId : 4, isAnswer : true},
 ])
 
 // 투표 참여 프로세스
@@ -166,7 +164,7 @@ const voteDetail = ref({
     content : '',
     ongoing : null,
     partyMemberId : '',
-    choices : [],
+    options : [],
 })
 
 
@@ -196,20 +194,20 @@ let selectedAnswer;
 
 function showDetailVote(vote) {
     selectedAnswer = ref({
-    choiceId : '',
+    optionId : '',
     content : '',
     voteId : '',
     })
     isDetailVoteVisible.value = true;
     voteDetail.value = vote;
-    voteDetail.value.choices = choices.value.filter(choice => choice.voteId === vote.voteId)
+    voteDetail.value.options = options.value.filter(option => option.voteId === vote.voteId)
 }
 
 // 투표 고르기
-function selectAnswer(choice) {
-    selectedAnswer.value.choiceId = choice.choiceId;
-    selectedAnswer.value.content = choice.content;
-    selectedAnswer.value.voteId = choice.voteId;
+function selectAnswer(option) {
+    selectedAnswer.value.optionId = option.optionId;
+    selectedAnswer.value.content = option.content;
+    selectedAnswer.value.voteId = option.voteId;
 }
 
 // 제출
@@ -234,7 +232,7 @@ const myVoteDetail = ref({
     content : '',
     ongoing : null,
     partyMemberId : '',
-    choices : [],
+    options : [],
 })
 
 function showMyVote(vote) {
@@ -267,6 +265,28 @@ function closeModal() {
 </script>
 
 <style scoped>
+
+
+.inner-card {
+    text-align: center;
+    margin : 20px;
+    border: 1px solid black;
+    height:150px;
+    overflow-y:auto; /* 내용이 넘칠 경우 스크롤 허용 */
+}
+
+.submit-vote {
+    height:200px;
+    display: flex;
+    justify-content: center;
+}
+
+.close-vote{
+    height:200px;
+    display: flex;
+    justify-content: center;
+}
+
 .vote-list {
     max-height : 500p;
 }
@@ -279,19 +299,17 @@ function closeModal() {
     padding:10px;
 }
 
-.inner-card {
-    text-align: center;
-    margin : 20px;
-    border: 1px solid black;
-    max-height:300px;
-    overflow-y:auto; /* 내용이 넘칠 경우 스크롤 허용 */
-}
 
 .vote-title {
     cursor: pointer;
 }
 
-.choice {
+.vote-types {
+    height:500px;
+    overflow-y:auto;
+}
+
+.option {
     cursor:pointer;
 }
 

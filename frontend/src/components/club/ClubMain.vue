@@ -1,7 +1,7 @@
 <template>
     <v-container>
         {{ props.clubId }}
-         <v-row>
+         <v-row style="padding:15px;">
               <v-col cols="12" md="8">
                    <ArchivePreview />
               </v-col>
@@ -19,7 +19,7 @@ import { useRoute } from 'vue-router';
 
 import { useClubStore } from '@/stores/club/clubs';
 
-import ArchivePreview from '@/components/archieve/ArchivePreview.vue';
+import ArchivePreview from '@/components/archive/ArchivePreview.vue';
 import ClubMembersFunc from '@/components/club/ClubMembersFunc.vue';
 import BoardPreview from '@/components/board/BoardPreview.vue';
 

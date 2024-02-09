@@ -1,84 +1,82 @@
 <template>
-     <v-container fluid>
+     <v-container fluid class="px-4 py-2">
           <!-- 기존 비디오 및 채팅 섹션 -->
           <v-row class="party-section mb-6">
                <v-col class="match-section" cols="9">
                     <v-row class="match-video">
-                         <iframe class="coupang-play" v-if="url" 
-                         width="100%" height="100%" :src=url allow="autoplay" 
-                         frameborder="0" allowfullscreen title="쿠팡플레이"
-                         overflow:hidden
-                         ></iframe>
+                         <iframe class="coupang-play" v-if="url" width="100%" height="100%" :src=url allow="autoplay"
+                              frameborder="0" allowfullscreen title="쿠팡플레이" overflow:hidden></iframe>
                          <v-img v-else src="/soccer-screen.png" aspect-ratio="16/9" contain></v-img>
                     </v-row>
                     <v-row class="selector">
                          <!-- 파티 타이틀 선택 -->
-                         <v-col cols="6" class="party pa-2">
+                         <v-col cols="8" class="party pa-2">
                               <!-- <v-card >
                                    <v-card-text> -->
-                                        <v-text-field v-model="titleModel" class="select-field" 
-                                             :clearable="isTitleEditing" 
-                                             variant="outlined" 
-                                             :hint="!isTitleEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
-                                             :readonly="!isTitleEditing" persistent-hint hide-details="auto"
-                                             :label="`타이틀  — ${isTitleEditing ? 'Editable' : 'Readonly'}`">
-                                             <template v-slot:append>
-                                                  <v-slide-x-reverse-transition mode="out-in">
-                                                       <v-icon size="large" :key="`icon-${isTitleEditing}`"
-                                                            :color="isTitleEditing ? 'info' : 'success'"
-                                                            :icon="isTitleEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
-                                                            @click="[(isTitleEditing = !isTitleEditing),editPartyInfo(isTitleEditing )]"></v-icon>
-                                                  </v-slide-x-reverse-transition>
-                                             </template>
-                                        </v-text-field>
-                                   <!-- </v-card-text>
+                              <v-text-field v-model="titleModel" class="select-field" :clearable="isTitleEditing"
+                                   variant="outlined"
+                                   :hint="!isTitleEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
+                                   :readonly="!isTitleEditing" persistent-hint hide-details="auto"
+                                   :label="`타이틀  — ${isTitleEditing ? 'Editable' : 'Readonly'}`">
+                                   <template v-slot:append>
+                                        <v-slide-x-reverse-transition mode="out-in">
+                                             <v-icon size="large" :key="`icon-${isTitleEditing}`"
+                                                  :color="isTitleEditing ? 'info' : 'success'"
+                                                  :icon="isTitleEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
+                                                  @click="[(isTitleEditing = !isTitleEditing), editPartyInfo(isTitleEditing)]"></v-icon>
+                                        </v-slide-x-reverse-transition>
+                                   </template>
+                              </v-text-field>
+                              <!-- </v-card-text>
                               </v-card> -->
                          </v-col>
                          <!-- 경기 선택 -->
-                         <v-col cols="6" class="match pa-2">
-                              <!-- <v-card class="select-field">
-                                   <v-card-text> -->
-                                        <!-- <div class="text-caption pa-3">시청 중인 경기를 선택하세요</div> -->
-                                        <!-- {{ matchModel }} -->
-                                        <v-autocomplete v-model="matchModel" class="select-field"
-                                             :hint="!isMatchEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
-                                             :items="matches" :item-title="getMatchTitle" item-value="fixtureId"
-                                             :readonly="!isMatchEditing" :clearable="isTitleEditing"
-                                             :label="`경기  — ${isMatchEditing ? 'Editable' : 'Readonly'}`" auto-select-first
-                                             variant="outlined" persistent-hint prepend-icon="mdi-soccer"
-                                             @update:menu="onMatchChange">
-                                             <template v-slot:append>
-                                                  <v-slide-x-reverse-transition mode="out-in">
-                                                       <v-icon size="large" :key="`icon-${isMatchEditing}`"
-                                                            :color="isMatchEditing ? 'info' : 'success'"
-                                                            :icon="isMatchEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
-                                                            @click="[(isMatchEditing = !isMatchEditing),editPartyInfo(isMatchEditing)]"></v-icon>
-                                                  </v-slide-x-reverse-transition>
-                                             </template>
-                                        </v-autocomplete>
-                                   <!-- </v-card-text>
-                              </v-card> -->
-                         </v-col>
-                         <v-col cols="12" class="party pa-2">
-                              <!-- <v-card >
-                                   <v-card-text> -->
-                                        <v-text-field v-model="urlModel" class="select-field" 
-                                             :clearable="isUrlEditing" 
-                                             variant="outlined" 
-                                             :hint="!isUrlEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
-                                             :readonly="!isUrlEditing" persistent-hint hide-details="auto"
-                                             :label="`URL  — ${isUrlEditing ? 'Editable' : 'Readonly'}`">
-                                             <template v-slot:append>
-                                                  <v-slide-x-reverse-transition mode="out-in">
-                                                       <v-icon size="large" :key="`icon-${isUrlEditing}`"
-                                                            :color="isUrlEditing ? 'info' : 'success'"
-                                                            :icon="isUrlEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
-                                                            @click="[(isUrlEditing = !isUrlEditing),editPartyInfo(isUrlEditing)]"></v-icon>
-                                                  </v-slide-x-reverse-transition>
-                                             </template>
-                                        </v-text-field>
-                                   <!-- </v-card-text>
-                              </v-card> -->
+                         <v-col cols="4" class="match pa-2">
+                              <!-- {{ dialog }} -->
+                              <v-btn @click="dialog = true" block variant="outlined" size="x-large">
+                                   {{ matchName.find((item) => item.fixtureId === matchModel)?.text || '경기 선택'}}
+                              </v-btn>
+                              <v-dialog v-model="dialog" max-width="600">
+                                   <v-card>
+                                        <v-card-title>항목 선택</v-card-title>
+                                        <v-card-text>
+                                             <v-autocomplete v-model="matchModel" class="select-field"
+                                                  :hint="!isMatchEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
+                                                  :items="matches" :item-title="getMatchTitle" item-value="fixtureId"
+                                                  :readonly="!isMatchEditing" :clearable="isTitleEditing"
+                                                  :label="`경기  — ${isMatchEditing ? 'Editable' : 'Readonly'}`"
+                                                  auto-select-first variant="outlined" persistent-hint
+                                                  prepend-icon="mdi-soccer" @update:menu="onMatchChange">
+                                                  <template v-slot:append>
+                                                       <v-slide-x-reverse-transition mode="out-in">
+                                                            <v-icon size="large" :key="`icon-${isMatchEditing}`"
+                                                                 :color="isMatchEditing ? 'info' : 'success'"
+                                                                 :icon="isMatchEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
+                                                                 @click="[(isMatchEditing = !isMatchEditing), editPartyInfo(isMatchEditing)]"></v-icon>
+                                                       </v-slide-x-reverse-transition>
+                                                  </template>
+                                             </v-autocomplete>
+                                             <br>
+                                             <v-text-field v-model="urlModel" class="select-field" :clearable="isUrlEditing"
+                                                  variant="outlined"
+                                                  :hint="!isUrlEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
+                                                  :readonly="!isUrlEditing" persistent-hint hide-details="auto"
+                                                  :label="`URL  — ${isUrlEditing ? 'Editable' : 'Readonly'}`">
+                                                  <template v-slot:append>
+                                                       <v-slide-x-reverse-transition mode="out-in">
+                                                            <v-icon size="large" :key="`icon-${isUrlEditing}`"
+                                                                 :color="isUrlEditing ? 'info' : 'success'"
+                                                                 :icon="isUrlEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
+                                                                 @click="[(isUrlEditing = !isUrlEditing), editPartyInfo(isUrlEditing)]"></v-icon>
+                                                       </v-slide-x-reverse-transition>
+                                                  </template>
+                                             </v-text-field>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                             <v-btn color="blue darken-1" text block @click="clickCheck(isUrlEditing)">확인</v-btn>
+                                        </v-card-actions>
+                                   </v-card>
+                              </v-dialog>
                          </v-col>
                     </v-row>
                </v-col>
@@ -86,14 +84,11 @@
                     <!-- 여기가 유저들 캠 화면 오는 영역 -->
                     <v-row class="cam-section">
                          <v-col cols="6" class="cam-video">
-                              <UserVideo
-                              :stream-manager="publisher"
-                              @click.native="updateMainVideoStreamManager(publisher)" />
-                              <v-menu location="center" activator="parent" open-on-hover close-delay="300"
-                                   >
+                              <UserVideo :stream-manager="publisher"
+                                   @click.native="updateMainVideoStreamManager(publisher)" />
+                              <v-menu location="center" activator="parent" open-on-hover close-delay="300">
                                    <v-list>
-                                        <v-btn class="ma-2" icon variant="outlined"
-                                        @click="toggleVideoState">
+                                        <v-btn class="ma-2" icon variant="outlined" @click="toggleVideoState">
                                              <v-icon v-if="videoState">mdi-video-box</v-icon>
                                              <v-icon v-else>mdi-video-box-off</v-icon>
                                              <v-tooltip activator="parent" location="center">
@@ -101,8 +96,7 @@
                                                   <p v-else>캠 켜기</p>
                                              </v-tooltip>
                                         </v-btn>
-                                        <v-btn class="ma-2" icon variant="outlined"
-                                        @click="toggleAudioState">
+                                        <v-btn class="ma-2" icon variant="outlined" @click="toggleAudioState">
                                              <v-icon v-if="audioState">mdi-volume-high</v-icon>
                                              <v-icon v-else>mdi-volume-off</v-icon>
                                              <v-tooltip activator="parent" location="center">
@@ -120,11 +114,10 @@
                                    </v-list>
                               </v-menu>
                          </v-col>
-                         <v-col cols="6" class="cam-video" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
-                              
-                              <UserVideo 
-                                   :stream-manager="sub"
-                                   />
+                         <v-col cols="6" class="cam-video" v-for="sub in subscribers"
+                              :key="sub.stream.connection.connectionId">
+
+                              <UserVideo :stream-manager="sub" />
                          </v-col>
                          <!-- 파티 초대 -->
                          <v-col cols="6" class="cam-video" v-if="partyMembers.length < maxMembers" @click="inviteToParty"
@@ -137,7 +130,7 @@
                               <div class="chat-content">
                                    <!-- 채팅 내용을 여기에 표시 -->
                                    <!-- {{ chatDivHeightProp }} -->
-                                   <Chat :chat-div-height-prop="chatDivHeightProp"/>
+                                   <Chat :chat-div-height-prop="chatDivHeightProp" />
                               </div>
                          </v-col>
                          <v-spacer></v-spacer>
@@ -175,7 +168,7 @@
                               <v-btn @click="showVote = true" color="#CBD0D8">
                                    투표
                               </v-btn>
-                              <VoteList v-if="showVote" @vote-close="showVote = false"/>
+                              <VoteList v-if="showVote" @vote-close="showVote = false" />
                          </v-col>
                          <!-- <v-col cols="2">
                               <v-btn color="yellow" class="chat-button">
@@ -230,7 +223,7 @@ const footballStore = useFootballStore()
 const partyStore = usePartyStore()
 
 const { getMatchWatchable, findTeamIdsByFixtureId } = footballStore
-const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember, 
+const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
      getPartyParticipant, deletePartyMember } = partyStore
 
 
@@ -256,13 +249,13 @@ const clubId = route.params.clubId;
 const partyId = route.params.partyId;
 const partyMemberList = ref(getPartyMemberList(clubId, partyId));
 
-console.log("시작멤버리스트",partyMemberList.value);
+console.log("시작멤버리스트", partyMemberList.value);
 
 const showVote = ref(false);
 
 let isInit = false
 watch(() => partyStore.partyMemberList, (newPartyMembers) => {
-     console.log("newPartyMembers",newPartyMembers);
+     console.log("newPartyMembers", newPartyMembers);
      partyMemberList.value = newPartyMembers;
      partyMemberList.value.map((member) => {
           console.log(member)
@@ -283,9 +276,9 @@ watch(() => partyStore.myParticipantId, (newMyId) => {
 
 // 사용자가 탭을 나갈 때 실행할 함수
 function handleBeforeUnload(event) {
-  delPartyMem();
-  // 사용자에게 경고 메시지를 띄우기
-  // event.returnValue를 설정하면 브라우저가 사용자에게 나가기 전에 확인을 요청합니다.
+     delPartyMem();
+     // 사용자에게 경고 메시지를 띄우기
+     // event.returnValue를 설정하면 브라우저가 사용자에게 나가기 전에 확인을 요청합니다.
      event.preventDefault();
      event.returnValue = "정말로 페이지를 나가시겠습니까?";
      return message; // 다른 브라우저에서 필요
@@ -294,7 +287,7 @@ function handleBeforeUnload(event) {
 onMounted(() => {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
-     console.log("onMounted",clubId, partyId);
+     console.log("onMounted", clubId, partyId);
      console.log(getPartyMemberList(clubId, partyId));
      postPartyMember(clubId, partyId);
      window.addEventListener('beforeunload', handleBeforeUnload);
@@ -317,15 +310,15 @@ const delPartyMem = () => {
      console.log("delPartyMem", partyMemberList.value);
      myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
      if (myId.value !== undefined) {
-       console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
-       deletePartyMember(clubId, partyId, myId.value.participantId);
-     } 
+          console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
+          deletePartyMember(clubId, partyId, myId.value.participantId);
+     }
 }
 
 onUnmounted(() => {
      myId.value = partyStore.partyMemberList.find(
           (member) => member.userId === partyStore.myUserId
-          ).participantId;
+     ).participantId;
      deletePartyMember(clubId, partyId, myId.value);
 })
 
@@ -350,15 +343,15 @@ const chatDivHeight = ref('300px'); // 초기값 설정
 const chatDivHeightProp = ref(300); // 초기값 설정
 
 const updatechatDivHeight = () => {
-  const chattingSection = document.querySelector('.chatting-section');
-  const buttonSection = document.querySelector('.button-section');
-  
-  if (chattingSection && buttonSection) {
-    // 버튼 섹션을 제외한 높이 계산
-    const height = chattingSection.offsetHeight - 2*buttonSection.offsetHeight;
-    chatDivHeightProp.value = height;
-    chatDivHeight.value = `${height}px`;
-  }
+     const chattingSection = document.querySelector('.chatting-section');
+     const buttonSection = document.querySelector('.button-section');
+
+     if (chattingSection && buttonSection) {
+          // 버튼 섹션을 제외한 높이 계산
+          const height = chattingSection.offsetHeight - 2 * buttonSection.offsetHeight;
+          chatDivHeightProp.value = height;
+          chatDivHeight.value = `${height}px`;
+     }
 };
 
 // 0.2초 후에 채팅창 높이를 다시 계산
@@ -424,11 +417,19 @@ function editPartyInfo(isAsk) {
      isUrlEditing.value = isAsk;
 
      if (!isAsk) {
-          console.log("editPartyInfo",clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+          console.log("editPartyInfo", clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
           putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
      }
      // console.log("editPartyInfo",clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
      // putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+}
+
+function clickCheck(isAsk) {
+     dialog.value = false;
+     if (isAsk) {
+          isAsk = false;
+          editPartyInfo(isAsk);
+     }
 }
 
 // 수정 여부 전체 관리
@@ -445,6 +446,10 @@ const urlModel = ref(null);
 // 경기 정보 수정
 const isMatchEditing = ref(false);
 const matchModel = ref(null);
+
+const dialog = ref(false);
+const matchName = ref([]);
+
 
 const matches = ref([]);
 
@@ -468,6 +473,10 @@ const getMatchTitle = (item) => {
      } else {
           status.value = "경기 중";
      }
+     matchName.value.push({
+          fixtureId: item.fixtureId,
+          text:`${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`
+     });
      return `${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`;
 };
 
@@ -549,98 +558,98 @@ const joinSession = (openviduToken, nickName) => {
      console.log(nickName)
      if (!isInit) {
           isInit = true
-  OV.value = new OpenVidu()
-  // --- 2) Init a session ---
-  session.value = OV.value.initSession()
+          OV.value = new OpenVidu()
+          // --- 2) Init a session ---
+          session.value = OV.value.initSession()
 
-  // --- 3) Specify the actions when events take place in the session ---
+          // --- 3) Specify the actions when events take place in the session ---
 
-  // On every new Stream received...
-  session.value.on('streamCreated', ({ stream }) => {
-    const subscriber = session.value.subscribe(stream)
-    subscribers.value.push(subscriber) 
-    console.log("subscriber added")
-    console.log(subscribers.value)
-  })
+          // On every new Stream received...
+          session.value.on('streamCreated', ({ stream }) => {
+               const subscriber = session.value.subscribe(stream)
+               subscribers.value.push(subscriber)
+               console.log("subscriber added")
+               console.log(subscribers.value)
+          })
 
-  // On every Stream destroyed...
-  session.value.on('streamDestroyed', ({ stream }) => {
-     console.log("subscriber removed")
-    const index = subscribers.value.indexOf(stream.streamManager, 0)
-    if (index >= 0) {
-      subscribers.value.splice(index, 1)
-    }
-  })
+          // On every Stream destroyed...
+          session.value.on('streamDestroyed', ({ stream }) => {
+               console.log("subscriber removed")
+               const index = subscribers.value.indexOf(stream.streamManager, 0)
+               if (index >= 0) {
+                    subscribers.value.splice(index, 1)
+               }
+          })
 
-  // On every asynchronous exception...
-  session.value.on('exception', ({ exception }) => {
-     console.log("exception occured")
-    console.warn(exception)
-  })
+          // On every asynchronous exception...
+          session.value.on('exception', ({ exception }) => {
+               console.log("exception occured")
+               console.warn(exception)
+          })
 
-  session.value.on('signal', (event) => {
-    console.log(event.data) // Message
-    console.log(event.from) // Connection object of the sender
-    console.log(event.type) // The type of message
-  })
+          session.value.on('signal', (event) => {
+               console.log(event.data) // Message
+               console.log(event.from) // Connection object of the sender
+               console.log(event.type) // The type of message
+          })
 
-  // --- 4) Connect to the session with a valid user token ---
+          // --- 4) Connect to the session with a valid user token ---
 
-  // Get a token from the OpenVidu deployment
-    // First param is the token. Second param can be retrieved by every user on event
-    // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
-    console.log(session.value)
-    session.value
-      .connect(openviduToken, { clientData: nickName })
-      .then(() => {
-        // --- 5) Get your own camera stream with the desired properties ---
-          
-        // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
-        // element: we will manage it on our own) and with the desired properties
-        let initPublisher = OV.value.initPublisher(undefined, {
-          audioSource: undefined, // The source of audio. If undefined default microphone
-          videoSource: undefined, // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
-          publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-          publishVideo: true, // Whether you want to start publishing with your video enabled or not
-          resolution: '640x480', // The resolution of your video
-          frameRate: 30, // The frame rate of your video
-          insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-          mirror: true, // Whether to mirror your local video or not
-        })
+          // Get a token from the OpenVidu deployment
+          // First param is the token. Second param can be retrieved by every user on event
+          // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
+          console.log(session.value)
+          session.value
+               .connect(openviduToken, { clientData: nickName })
+               .then(() => {
+                    // --- 5) Get your own camera stream with the desired properties ---
 
-        // Set the main video in the page to display our webcam and store our Publisher
-     //    mainStreamManager.value = initPublisher
-        publisher.value = initPublisher
+                    // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
+                    // element: we will manage it on our own) and with the desired properties
+                    let initPublisher = OV.value.initPublisher(undefined, {
+                         audioSource: undefined, // The source of audio. If undefined default microphone
+                         videoSource: undefined, // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
+                         publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+                         publishVideo: true, // Whether you want to start publishing with your video enabled or not
+                         resolution: '640x480', // The resolution of your video
+                         frameRate: 30, // The frame rate of your video
+                         insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+                         mirror: true, // Whether to mirror your local video or not
+                    })
 
-        // --- 6) Publish your stream ---
+                    // Set the main video in the page to display our webcam and store our Publisher
+                    //    mainStreamManager.value = initPublisher
+                    publisher.value = initPublisher
 
-        session.value.publish(publisher.value)
-      })
-      .catch((error) => {
-        console.log(
-          'There was an error connecting to the session:',
-          error.code,
-          error.message,
-        )
-      })
-  
-  window.addEventListener('beforeunload', leaveSession)
+                    // --- 6) Publish your stream ---
+
+                    session.value.publish(publisher.value)
+               })
+               .catch((error) => {
+                    console.log(
+                         'There was an error connecting to the session:',
+                         error.code,
+                         error.message,
+                    )
+               })
+
+          window.addEventListener('beforeunload', leaveSession)
      }
 }
 
 const leaveSession = () => {
-  // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
-  if (session.value) session.value.disconnect()
+     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
+     if (session.value) session.value.disconnect()
 
-  // Empty all properties...
-  session.value = undefined
-//   mainStreamManager.value = undefined
-  publisher.value = undefined
-  subscribers.value = []
-  OV.value = undefined
+     // Empty all properties...
+     session.value = undefined
+     //   mainStreamManager.value = undefined
+     publisher.value = undefined
+     subscribers.value = []
+     OV.value = undefined
 
-  // Remove beforeunload listener
-  window.removeEventListener('beforeunload', leaveSession)
+     // Remove beforeunload listener
+     window.removeEventListener('beforeunload', leaveSession)
 }
 
 </script>
@@ -670,7 +679,7 @@ const leaveSession = () => {
      margin-top: 10px;
      min-height: 110px;
      height: 27vh;
-
+     max-height: 200px;
 }
 
 .party {
@@ -708,8 +717,9 @@ const leaveSession = () => {
      width: 30vw;
      /* 채팅 섹션의 높이를 브라우저 창의 높이와 맞춤 */
      /* height: 100vh;  */
-     border : 1px solid #CBD0D8;
+     border: 1px solid #CBD0D8;
 }
+
 .cam-section {
      height: 70%;
      /* justify-self: start; */
@@ -785,31 +795,39 @@ const leaveSession = () => {
 .contents-section {
      /* margin: 2%; */
      /* min-height: 100%; */
-     min-width: 1280px;
+     min-width: 1200px;
      /* color: #121212; */
+     /* 내용물 가운데 정렬하기 */
+     text-align: center;
 }
+
 
 .button-section button {
      width: 400px;
 }
-.select-field > .v-card-text {
+
+.select-field>.v-card-text {
      color: #333D51;
      height: 90px;
      padding: 0;
 }
+
 /* Chrome, Edge, Safari */
 .match-video::-webkit-scrollbar {
-  display: none; /* 스크롤바 영역을 숨깁니다 */
+     display: none;
+     /* 스크롤바 영역을 숨깁니다 */
 }
 
 /* Firefox */
 .match-video {
-  scrollbar-width: none; /* Firefox에서 스크롤바를 숨깁니다 */
+     scrollbar-width: none;
+     /* Firefox에서 스크롤바를 숨깁니다 */
 }
 
 /* IE and Edge */
 .match-video {
-  -ms-overflow-style: none; /* Internet Explorer 및 Edge에서 스크롤바를 숨깁니다 */
-  overscroll-behavior: contain;
+     -ms-overflow-style: none;
+     /* Internet Explorer 및 Edge에서 스크롤바를 숨깁니다 */
+     overscroll-behavior: contain;
 }
 </style> 

@@ -1,8 +1,10 @@
 <template>
-  <v-container fluid class="pa-0 chat-container" ref="chatContainer" @scroll="handleScroll"
+  <v-container fluid class="pa-0 chat-container"
     :style="{ height: `${chatDivHeightProp - 10}px` }">
     <div class="chat-messages" ref="chatMessages">
       <v-list lines="one">
+        <!-- chatsMock 은 ui 테스트용 -->
+        <!-- <v-list-item v-for="(item, i) in chatsMock" :key="i" :value="item" color="primary"> -->
         <v-list-item v-for="(item, i) in chats" :key="i" :value="item" color="primary">
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
@@ -14,16 +16,12 @@
         </v-list-item>
       </v-list>
     </div>
-    <!-- 새 메시지 알림 (사용자가 스크롤을 맨 아래에 두지 않았을 때 표시) -->
-    <div v-if="showNewMessageAlert" class="new-message-alert" @click="scrollToBottom">
-      새 메시지가 도착했습니다.
-    </div>
 
     <!-- 입력창 -->
     <v-form @submit.prevent class="chat-form">
       <v-text-field class="chat-input" v-model="myMessage.message" append-icon="mdi-send" variant="outlined"
         clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="sendMessage"
-        @click:append="sendMessage" @click:clear="clearMessage"></v-text-field>
+        @click:append="sendMessage" @click:clear="clearMessage" @click="addChatMock"></v-text-field>
     </v-form>
   </v-container>
 </template>
@@ -32,7 +30,7 @@
 <script setup>
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePartyStore } from '@/stores/club/party/party'
 
@@ -156,33 +154,21 @@ const props = defineProps({
   }
 })
 
-// 채팅창 스크롤 관련 로직 // 테스트 필요 (에러 시 주석 처리할 것)
-const chatContainer = ref(null);
-const showNewMessageAlert = ref(false);
+// // 로컬에서 테스트할 때 쓸 코드 (테스트할 때만 true로 변경) 
+const chatsMock = ref([
+  { userName: 'Alice', message: '안녕하세요!' },
+  { userName: 'Bob', message: '오늘 날씨가 좋네요.' },
+  { userName: 'Son', message: '저도 그렇게 생각해요.' },
+  { userName: 'Alice', message: '그럼 다음에 또 봐요!' },
+  { userName: 'Son', message: '네, 안녕히가세요!' }
+]);
 
-const handleScroll = () => {
-  const isAtBottom = isScrolledToBottom();
-  showNewMessageAlert.value = !isAtBottom;
+// 채팅 추가 함수
+// 채팅 메시지 추가 시 스크롤 처리
+const addChatMock = () => {
+  chatsMock.value.push({ userName: 'TEST', message: '새 채팅 추가' });
 };
 
-const scrollToBottom = () => {
-  if (chatContainer.value) {
-    chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
-    showNewMessageAlert.value = false;
-  }
-};
-
-const isScrolledToBottom = () => {
-  if (!chatContainer.value) return false;
-  const { scrollTop, scrollHeight, clientHeight } = chatContainer.value;
-  return scrollTop + clientHeight === scrollHeight;
-};
-
-watch(chats, () => {
-  if (isScrolledToBottom()) {
-    scrollToBottom();
-  }
-});
 
 </script>
 

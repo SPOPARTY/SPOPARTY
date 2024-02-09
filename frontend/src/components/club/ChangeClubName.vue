@@ -69,6 +69,12 @@ const submitName = () =>  {
         return;
     }
 
+    if (clubName.value.length > 20) {
+        alert("클럽 이름은 20자 이상을 넘기면 안됩니다!")
+        clubName.value = clubName.value.substring(0,20);
+        return;
+    }
+
     let data = {
         memberId : memberId,
         name : clubName.value

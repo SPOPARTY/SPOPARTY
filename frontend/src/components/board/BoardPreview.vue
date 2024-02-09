@@ -27,14 +27,7 @@
                     <v-card-title class="text-center">{{ post.title }}</v-card-title>
                     <v-card-subtitle class=text-right>{{ post.member.nickname }}</v-card-subtitle>
                     <v-card-text class="text-right">{{formatDateTime(post.updatedTime)}}</v-card-text>
-                    <v-card-item v-if="post.file">
-                        <v-img :src="post.file.url" class="thumb_img"/>
-                    </v-card-item>
-                    <v-card-text>
-                        <div>
-                            <div v-html="post.content"></div>
-                        </div>
-                    </v-card-text>
+                    <v-img class="thumb_img" v-if="post.file" :src="post.file.url" cover height="200px" />
                 </v-card>
             </v-col>
         </v-row>
@@ -103,6 +96,7 @@ h1{
 
 .thumbnail {
     height:100%;
+    background-color: #F4F3EA ;
 }
 
 .thumb_img{

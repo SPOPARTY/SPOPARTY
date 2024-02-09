@@ -26,7 +26,7 @@
                 <v-col cols="4" md="4">
                     <v-text-field class="input" label="이메일 아이디" v-model="memberInfo.email.split('@')[0]" outlined dense readonly></v-text-field>
                 </v-col>
-                <v-col cols="1" md="1" class="text-center">@</v-col>
+                <v-col cols="1" md="1" class="text-center" style="color:white; margin-top:10px;"><h4>@</h4></v-col>
                 <v-col cols="4" md="4">
                     <v-text-field class="input" label="도메인" v-model="memberInfo.email.split('@')[1]" outlined dense readonly></v-text-field>
                 </v-col>
@@ -197,7 +197,7 @@ const Withdraw = () => {
             localStorage.removeItem("refreshToken");
             localStorage.removeItem("id")
             alert("함께해서 더러웠고 다신 만나지 말자")
-            router.push("/")
+            window.location.replace("/")
         } 
     },
     (error) => {
