@@ -35,22 +35,22 @@ public class CheerServiceImpl implements CheerService {
 	private final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
 	private final FixtureRepository fixtureRepository;
 
-	@Transactional
-	@Override
+	// @Transactional
+	// @Override
 	// 경기가 끝나면 경기 응원을 내림. -> deleted 처리
-	public void deleteEndCheerFixture() {
-		List<CheerFixture> cheerFixtures = cheerFixtureRepository.findEndCheerFixture();
-
-		if (cheerFixtures == null)
-			return;
-
-		for (CheerFixture cheerFixture : cheerFixtures) {
-			cheerFixture.softDelete();
-			for (Cheer cheer : cheerFixture.getCheers()) {
-				cheer.softDelete();
-			}
-		}
-	}
+	// public void deleteEndCheerFixture() {
+	// 	List<CheerFixture> cheerFixtures = cheerFixtureRepository.findEndCheerFixture();
+	//
+	// 	if (cheerFixtures == null)
+	// 		return;
+	//
+	// 	for (CheerFixture cheerFixture : cheerFixtures) {
+	// 		cheerFixture.softDelete();
+	// 		for (Cheer cheer : cheerFixture.getCheers()) {
+	// 			cheer.softDelete();
+	// 		}
+	// 	}
+	// }
 
 	@Override
 	public ResponseDTO findCheerFixture(PrincipalDetails principalDetails, Long fixtureId) {
@@ -136,9 +136,11 @@ public class CheerServiceImpl implements CheerService {
 
 
 
-		if (homeOrAway.getHomeId() == teamId){
+		if (homeOrAway.getHomeId().equals(teamId)){
+			System.out.println("home!");
 			cheerFixture.cheerHome();
-		} else if (homeOrAway.getAwayId() == teamId){
+		} else if (homeOrAway.getAwayId().equals(teamId)){
+			System.out.println("away!");
 			cheerFixture.cheerAway();
 		}
 
