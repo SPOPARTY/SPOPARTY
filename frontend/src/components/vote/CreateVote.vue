@@ -133,6 +133,6 @@ function closeModal() {
     align-items: center;
     margin:auto;
     box-shadow: none !important;
-    background:transparent
+    background:transparent;
 }
 </style>
