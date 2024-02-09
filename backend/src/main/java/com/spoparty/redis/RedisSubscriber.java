@@ -1,5 +1,7 @@
 package com.spoparty.redis;
 
+import java.util.List;
+
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.ListOperations;
@@ -12,8 +14,6 @@ import com.spoparty.api.party.dto.request.ChatRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -23,12 +23,13 @@ public class RedisSubscriber implements MessageListener {
 	private final SimpMessagingTemplate messagingTemplate;
 
 	private final String SUBSCRIBE_DESTINATION = "/sub/chat";
+
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
 		try {
-			log.debug("redis 발행 데이터 : {}",message);
+			log.debug("redis 발행 데이터 : {}", message);
 			String channel = redisTemplate.getStringSerializer().deserialize(message.getChannel());
-			ChatRequestDto request = (ChatRequestDto) redisTemplate.getValueSerializer().deserialize(message.getBody());
+			ChatRequestDto request = (ChatRequestDto)redisTemplate.getValueSerializer().deserialize(message.getBody());
 			ListOperations<String, ChatRequestDto> operations = redisTemplate.opsForList();
 
 			operations.rightPush(channel, request);
