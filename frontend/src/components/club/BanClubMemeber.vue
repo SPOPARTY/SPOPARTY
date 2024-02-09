@@ -105,6 +105,9 @@ function selectMember(member) {
 const isBanConfirm = ref(false);
 
 function showBanConfirm() {
+    if (bannedMember.value.memberId === '') {
+        return;
+    }
     modalVisible.value = false;
     isBanConfirm.value = true;
 }
