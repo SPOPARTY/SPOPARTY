@@ -48,7 +48,7 @@ pipeline {
                 stage ('Batch') {
                     steps {
                         echo 'BE - Build batch start'
-                        dir ('backend/batch') {
+                        dir ('batch') {
                             sh'''
                                 chmod +x gradlew
                                 ./gradlew clean build
