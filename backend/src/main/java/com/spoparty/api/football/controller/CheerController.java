@@ -30,7 +30,7 @@ public class CheerController {
 
 	@GetMapping
 	public ResponseEntity findCheerFixture(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-		cheerServiceImpl.deleteEndCheerFixture();
+		// cheerServiceImpl.deleteEndCheerFixture();
 
 		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails, null);
 
@@ -57,7 +57,7 @@ public class CheerController {
 
 		cheerServiceImpl.makeCheer(data.get("memberId"), data.get("teamId"), data.get("cheerFixtureId"));
 
-		cheerServiceImpl.deleteEndCheerFixture();
+		// cheerServiceImpl.deleteEndCheerFixture();
 
 		ResponseDTO responseDTO = cheerServiceImpl.findCheerFixture(principalDetails, data.get("fixtureId"));
 
