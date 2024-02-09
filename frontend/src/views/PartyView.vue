@@ -71,11 +71,12 @@
                               <span>파티 초대</span>
                          </v-col>
                          <!-- 채팅창 -->
-                         <v-col cols="12" v-if="showChat" class="chat-window" :style="{ height: camVideoHeight }">
-                              <div class="chat-content">
+                         <v-col cols="12" v-if="showChat" class="chat-window" :style="{ height: chatDivHeight }">
+                              <!-- <div class="chat-content"> -->
                                    <!-- 채팅 내용을 여기에 표시 -->
-                                   채팅 내용이 여기에 표시됩니다.
-                              </div>
+                                   <!-- {{ chatDivHeightProp }} -->
+                                   <Chat class="chat-content" :chat-div-height-prop="chatDivHeightProp"/>
+                              <!-- </div> -->
                          </v-col>
                     </v-row>
                     <!-- 캠 영역 끝 -->
@@ -413,7 +414,7 @@ getMatchWatchable(startDate.value, endDate.value);
      /* min-height: 450px; */
      background-color: #CBD0D8;
      /* 채팅창 배경색 */
-     overflow-y: auto;
+     /* overflow-y: auto; */
      /* 내용이 많을 경우 스크롤 */
      /* z-index: 10;  */
      /* 다른 요소 위에 채팅창이 나타나도록 z-index 설정 */
