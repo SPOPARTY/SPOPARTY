@@ -1,8 +1,8 @@
 <template>
     <v-container>
-        <v-row justify="center">
+        <v-row justify="center" style="padding-right:15px;">
             <v-col cols="10">
-                <h1 class="text-center" style="color:white; margin-left:100px;">그룹 게시판</h1>
+                <h1 class="text-center" style="color:white; margin-left:150px;">그룹 게시판</h1>
             </v-col>
             <v-col cols="2">
                 <v-btn class="write-board" variant="outlined" @click="writeBoard">글쓰기</v-btn>
@@ -21,11 +21,11 @@
                     @detail-close="isDetailVisible = false"
                 />
                 <v-card class="card" @click="showBoardDetail(post)" >
-                    <v-card-title class="text-center">{{ post.title }}</v-card-title>
                     <v-img v-if="post.file" class="thumbnail" :src="post.file.url" :alt="post.title" cover height="200px"/>
+                    <v-card-title class="text-center">{{ post.title }}</v-card-title>
                     <v-card-subtitle class="text-right">{{ post.member.nickname }}</v-card-subtitle>
                     <v-card-text class="text-right">{{ formatDateTime(post.updatedTime) }}</v-card-text>
-                    <div class="content" v-html="post.content"></div>
+                    <!-- <div class="content" v-html="post.content"></div> -->
                 </v-card>
             </v-col>
         </v-row>
@@ -88,15 +88,15 @@ h1{
 }
 
 .card {
-    min-height: 600px; /* 예시 높이, 필요에 따라 조정 */
+    min-height: 300px; /* 예시 높이, 필요에 따라 조정 */
     display: flex;
     flex-direction: column;
+    background-color: #F4F3EA ;
 }
 
 .content{
     text-align: center;
-    margin-top:0px;
-    margin-bottom:100px;
+    padding:0px;
 }
 
 .write-board{
