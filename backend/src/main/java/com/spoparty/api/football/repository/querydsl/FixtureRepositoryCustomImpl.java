@@ -12,7 +12,9 @@ import com.spoparty.api.football.entity.QLeague;
 import com.spoparty.api.football.entity.QSeasonLeague;
 import com.spoparty.api.football.entity.QSeasonLeagueTeam;
 import com.spoparty.api.football.entity.QTeam;
+import com.spoparty.api.football.response.HomeOrAway;
 import com.spoparty.api.football.response.PartyFixtureDTO;
+import com.spoparty.api.football.response.QHomeOrAway;
 import com.spoparty.api.football.response.QKeywordSeasonLeagueTeamDTO;
 import com.spoparty.api.football.response.QPartyFixtureDTO;
 
@@ -140,4 +142,13 @@ public class FixtureRepositoryCustomImpl implements FixtureRepositoryCustom {
 			.fetchOne();
 	}
 
+
+	public HomeOrAway whichTeamCheer(long fixtureId){
+		return jpaQueryFactory.select(new QHomeOrAway(homeSeasonLeagueTeam.id, awaySeasonLeagueTeam.id))
+			.from(fixture)
+			.join(fixture.homeTeam, homeSeasonLeagueTeam)
+			.join(fixture.awayTeam, awaySeasonLeagueTeam)
+			.where(fixture.id.eq(fixtureId))
+			.fetchOne();
+	}
 }

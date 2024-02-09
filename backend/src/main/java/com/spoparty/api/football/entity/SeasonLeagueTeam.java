@@ -3,6 +3,8 @@ package com.spoparty.api.football.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spoparty.api.common.entity.FootballBaseEntity;
 
@@ -48,13 +50,13 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	private Coach coach;
 
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "standings_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Standings standing;
+	@BatchSize(size = 1)
+	@OneToMany(mappedBy = "seasonLeagueTeam")
+	private List<Standings> standings = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "captain_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private SeasonLeagueTeamPlayer captain;
+	// @OneToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "captain_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	// private SeasonLeagueTeamPlayer captain;
 
 	@OneToMany(mappedBy = "seasonLeagueTeam")
 	private List<SeasonLeagueTeamPlayer> seasonLeagueTeamPlayers = new ArrayList<>();
@@ -63,12 +65,10 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	private List<Lineup> lineups = new ArrayList<>();
 
 	@Builder
-
-	public SeasonLeagueTeam(SeasonLeague seasonLeague, Team team, Coach coach, Standings standing) {
+	public SeasonLeagueTeam(SeasonLeague seasonLeague, Team team, Coach coach) {
 		this.seasonLeague = seasonLeague;
 		this.team = team;
 		this.coach = coach;
-		this.standing = standing;
 	}
 
 }

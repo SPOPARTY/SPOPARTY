@@ -1,12 +1,7 @@
 package com.spoparty.api.football.entity;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.checkerframework.checker.units.qual.Length;
-
-import com.spoparty.api.common.entity.FootballBaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,14 +10,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "season")
 public class Season extends FootballBaseEntity {
 
 	@Id
@@ -37,7 +37,8 @@ public class Season extends FootballBaseEntity {
 	@OneToMany(mappedBy = "season", fetch = FetchType.LAZY)
 	List<SeasonLeague> seasonLeagues = new ArrayList<>();
 
-	public void setValue(String value) {
+	@Builder
+	public Season(String value) {
 		this.value = value;
 	}
 }

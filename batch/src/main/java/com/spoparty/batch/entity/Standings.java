@@ -2,17 +2,22 @@ package com.spoparty.batch.entity;
 
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @Getter
@@ -53,6 +58,10 @@ public class Standings extends FootballBaseEntity {
 	@Column(nullable=false)
 	private int lose;
 
+	@Size(min=0, max=100)
+	@Column(name="groups", nullable=false, length=100)
+	private String group;
+
 	// 득점 수
 	@Column(nullable=false)
 	private int goalsFor;
@@ -61,15 +70,16 @@ public class Standings extends FootballBaseEntity {
 	@Column(nullable=false)
 	private int goalsAgainst;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "standing")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "season_league_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam seasonLeagueTeam;
 
 
 	@Builder
-
 	public Standings(int rank, int points, int goalDiff, String form, int played, int win, int draw, int lose,
 		int goalsFor,
-		int goalsAgainst) {
+		int goalsAgainst,
+		String group, SeasonLeagueTeam seasonLeagueTeam) {
 		this.rank = rank;
 		this.points = points;
 		this.goalDiff = goalDiff;
@@ -80,6 +90,8 @@ public class Standings extends FootballBaseEntity {
 		this.lose = lose;
 		this.goalsFor = goalsFor;
 		this.goalsAgainst = goalsAgainst;
+		this.group = group;
+		this.seasonLeagueTeam = seasonLeagueTeam;
 	}
 }
 

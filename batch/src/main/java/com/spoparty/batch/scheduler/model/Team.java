@@ -12,5 +12,6 @@ public class Team {
 	private String winner;
 	private int founded;
 	private boolean national;
+	private Object colors;
 
 }

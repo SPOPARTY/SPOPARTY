@@ -6,4 +6,5 @@ import com.spoparty.batch.entity.Team;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
+
 }
