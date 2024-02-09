@@ -1,6 +1,7 @@
 package com.spoparty.api.football.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.football.response.SeasonLeagueDTO;
 import com.spoparty.api.football.response.SeasonLeagueTeamStandingDTO;
+import com.spoparty.api.football.response.comparator.SeasonLeagueTeamStandingDTOCompare;
 import com.spoparty.api.member.entity.FollowingTeamProjection;
 import com.spoparty.api.member.service.MemberService;
 import com.spoparty.security.model.PrincipalDetails;
@@ -93,7 +95,7 @@ public class LeagueServiceImpl implements LeagueService {
 			}
 
 		}
-
+		Collections.sort(seasonLeagueTeamStandingDTOs, new SeasonLeagueTeamStandingDTOCompare());
 		return seasonLeagueTeamStandingDTOs;
 	}
 

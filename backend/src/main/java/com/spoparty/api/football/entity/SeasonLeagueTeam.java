@@ -3,6 +3,8 @@ package com.spoparty.api.football.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spoparty.api.common.entity.FootballBaseEntity;
 
@@ -48,12 +50,13 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	private Coach coach;
 
 	@JsonIgnore
+	@BatchSize(size = 1)
 	@OneToMany(mappedBy = "seasonLeagueTeam")
 	private List<Standings> standings = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "captain_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private SeasonLeagueTeamPlayer captain;
+	// @OneToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "captain_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	// private SeasonLeagueTeamPlayer captain;
 
 	@OneToMany(mappedBy = "seasonLeagueTeam")
 	private List<SeasonLeagueTeamPlayer> seasonLeagueTeamPlayers = new ArrayList<>();
