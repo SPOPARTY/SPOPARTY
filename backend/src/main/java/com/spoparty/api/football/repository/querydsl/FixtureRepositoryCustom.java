@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.spoparty.api.football.entity.Fixture;
+import com.spoparty.api.football.response.HomeOrAway;
 import com.spoparty.api.football.response.PartyFixtureDTO;
 
 public interface FixtureRepositoryCustom {
@@ -17,5 +18,7 @@ public interface FixtureRepositoryCustom {
 	public List<Fixture> findFixtureByTeam(String keyword);
 
 	public PartyFixtureDTO findPartyFixture(long fixtureId);
+
+	public HomeOrAway whichTeamCheer(long fixtureId);
 
 }

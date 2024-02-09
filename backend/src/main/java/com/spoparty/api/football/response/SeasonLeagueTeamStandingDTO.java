@@ -1,6 +1,7 @@
 package com.spoparty.api.football.response;
 
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
+import com.spoparty.api.football.entity.Standings;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -24,13 +25,18 @@ public class SeasonLeagueTeamStandingDTO {
 
 	private StandingDTO standing;
 
-	public void switchFollowing() {
+	public void switchFollowing(){
 		following = true;
 	}
 
-	public static SeasonLeagueTeamStandingDTO toDTO(SeasonLeagueTeam entity) {
 
-		// StandingDTO standing = StandingDTO.toDTO(entity.getStanding());
+	public static SeasonLeagueTeamStandingDTO toDTO(SeasonLeagueTeam entity, Standings standingEntity) {
+
+		StandingDTO standingDTO = null;
+		if (standingEntity != null) {
+			standingDTO = StandingDTO.toDTO(standingEntity);
+		}
+
 
 		return SeasonLeagueTeamStandingDTO.builder()
 			.seasonLeagueTeamId(entity.getId())
@@ -38,7 +44,7 @@ public class SeasonLeagueTeamStandingDTO {
 			.nameKr(entity.getTeam().getNameKr())
 			.nameEng(entity.getTeam().getNameEng())
 			.logo(entity.getTeam().getLogo())
-			// .standing(standing)
+			.standing(standingDTO)
 			.build();
 	}
 }

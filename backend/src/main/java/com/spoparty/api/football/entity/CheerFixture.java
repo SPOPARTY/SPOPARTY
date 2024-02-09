@@ -45,6 +45,14 @@ public class CheerFixture extends BaseEntity {
 	@OneToMany(mappedBy = "cheerFixture")
 	private List<Cheer> cheers = new ArrayList<>();
 
+
+	public void cheerHome(){
+		homeCount++;
+	}
+
+	public void cheerAway() {
+		awayCount++;
+	}
 	@Builder
 	public CheerFixture(Fixture fixture, long homeCount, long awayCount) {
 		this.fixture = fixture;

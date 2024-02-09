@@ -12,8 +12,10 @@ import com.spoparty.api.football.entity.CheerFixture;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
 import com.spoparty.api.football.repository.CheerFixtureRepository;
 import com.spoparty.api.football.repository.CheerRepository;
+import com.spoparty.api.football.repository.FixtureRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 import com.spoparty.api.football.response.CheerFixtureDTO;
+import com.spoparty.api.football.response.HomeOrAway;
 import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.repository.MemberRepository;
@@ -31,6 +33,7 @@ public class CheerServiceImpl implements CheerService {
 	private final CheerRepository cheerRepository;
 	private final MemberRepository memberRepository;
 	private final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
+	private final FixtureRepository fixtureRepository;
 
 	@Transactional
 	@Override
@@ -98,6 +101,7 @@ public class CheerServiceImpl implements CheerService {
 	}
 
 	@Override
+	@Transactional
 	public void makeCheer(Long memberId, Long teamId, Long cheerFixtureId) {
 		// return cheerRepository.makeCheer(memberId, cheerFixtureId, teamId);
 
@@ -125,7 +129,19 @@ public class CheerServiceImpl implements CheerService {
 		if (!emptyCheckCheer(cheer)) {
 			throw new IllegalArgumentException(ErrorCode.CANNOT_CREATE_CHEER.getMessage());
 		}
-		;
+
+		HomeOrAway homeOrAway = fixtureRepository.whichTeamCheer(cheerFixture.getFixture().getId());
+
+
+
+
+
+		if (homeOrAway.getHomeId() == teamId){
+			cheerFixture.cheerHome();
+		} else if (homeOrAway.getAwayId() == teamId){
+			cheerFixture.cheerAway();
+		}
+
 
 		return;
 	}
