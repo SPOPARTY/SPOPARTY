@@ -10,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -38,12 +36,6 @@ public class NotificationController {
 	public ResponseEntity<?> getNotificationList(@PathVariable("memberId") Long memberId) {
 		List<NotificationProjection> list = notificationService.getNotificationList(memberId);
 		return ApiResponse.success(GET_SUCCESS, list);
-	}
-
-	@PostMapping
-	public ResponseEntity<?> registerNotification(@RequestBody Notification notification) {
-		NotificationProjection data = notificationService.registerNotification(notification);
-		return ApiResponse.success(CREATE_SUCCESS, data);
 	}
 
 	@PutMapping("/{notificationId}")

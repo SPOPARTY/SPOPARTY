@@ -23,8 +23,10 @@ import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.member.entity.FollowingTeamProjection;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.MemberProjection;
+import com.spoparty.api.member.entity.Notification;
+import com.spoparty.api.member.entity.NotificationProjection;
 import com.spoparty.api.member.service.MemberService;
-import com.spoparty.common.util.CustomEncryptor;
+import com.spoparty.api.member.service.NotificationService;
 import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 
 	private final MemberService memberService;
-	private final CustomEncryptor customEncryptor;
+	private final NotificationService notificationService;
 
 	// Member 기능
 	@GetMapping("/{memberId}")
@@ -105,6 +107,12 @@ public class MemberController {
 	public ResponseEntity<?> getTeamList() {
 		List<Team> list = memberService.getTeamList();
 		return ApiResponse.success(GET_SUCCESS, list);
+	}
+
+	@PostMapping("/alert")
+	public ResponseEntity<?> registerNotification(@RequestBody Notification notification) {
+		NotificationProjection data = notificationService.registerNotification(notification);
+		return ApiResponse.success(CREATE_SUCCESS, data);
 	}
 
 }

@@ -31,7 +31,7 @@ public class NotificationService {
 	private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
 	public List<NotificationProjection> getNotificationList(Long memberId) {
-		return notificationRepository.findByMember_id(memberId, NotificationProjection.class);
+		return notificationRepository.findByMember_idOrderByState(memberId, NotificationProjection.class);
 	}
 
 	public NotificationProjection registerNotification(Notification notification) {
