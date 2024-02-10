@@ -76,6 +76,10 @@ public class MemberService {
 			data.setEmail(member.getEmail());
 		if (member.getNickname() != null)
 			data.setNickname(member.getNickname());
+		if (member.getTeam() != null) {
+			Team team = teamRepository.findById(member.getTeam().getId(), Team.class).orElse(null);
+			data.setTeam(team);
+		}
 		return memberRepository.findById(member.getId(), MemberProjection.class)
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 	}
