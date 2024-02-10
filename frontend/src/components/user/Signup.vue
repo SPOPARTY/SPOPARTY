@@ -286,6 +286,11 @@
     )
   }
 
+  // 만약 아이디 인증 후 다른 아이디로 바꾸면 다시 체크하도록 해야한다.
+  watch(() => id.value,() => {
+    idDuplicatedChecked.value = false;
+  })
+
   // 이메일 인증 모달
   const isEmailVerifyVisible = ref(false);
   
@@ -406,6 +411,7 @@
     }
 
     if(emblem.value.emblemId === '') {
+      console.log(emblem.value.emblemId == '')
       alert("엠블럼은 반드시 골라야 합니다!!");
       return;
     }
