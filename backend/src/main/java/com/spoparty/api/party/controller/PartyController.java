@@ -2,8 +2,22 @@ package com.spoparty.api.party.controller;
 
 import static com.spoparty.api.common.constants.SuccessCode.*;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
+import com.spoparty.api.member.entity.File;
+import com.spoparty.api.member.service.FileService;
+import com.spoparty.common.util.CustomMultipartFile;
+import io.openvidu.java.client.Recording;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +48,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/clubs/{clubId}/party")
 public class PartyController {
+	private final FileService fileService;
+
 	private final PartyServiceImpl partyService;
 
 	@PostMapping()
@@ -114,5 +130,34 @@ public class PartyController {
 		Long response = partyService.deletePartyMember(partyId, participantId, clubId);
 		log.debug("응답 - {}", response);
 		return ApiResponse.success(PARTY_MEMBER_DELETE_SUCCESS, response);
+	}
+
+	@PostMapping("/recording/start")
+	public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) throws
+			OpenViduJavaClientException,
+			OpenViduHttpException {
+		String sessionId = (String) params.get("session");
+
+		Recording recording = partyService.startRecording(sessionId, params);
+
+		return ApiResponse.success(RECORD_START_REQUEST_SUCCESS, recording);
+	}
+
+	@PostMapping("/recording/stop")
+	public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) throws
+			OpenViduJavaClientException,
+			OpenViduHttpException, IOException {
+		String recordingId = (String) params.get("recording");
+
+		// 녹화 종료
+		partyService.stopRecording(recordingId);
+
+		// 녹화된 영상 S3 업로드, DB 저장
+		File file = partyService.uploadRecording(recordingId);
+
+		// 서버에 저장된 영상 제거
+		partyService.deleteRecording(recordingId);
+
+		return ApiResponse.success(RECORD_STOP_REQUEST_SUCCESS, file);
 	}
 }

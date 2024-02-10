@@ -1,24 +1,28 @@
 package com.spoparty.api.party.service;
 
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import com.spoparty.api.member.entity.File;
+import com.spoparty.api.member.service.FileService;
+import com.spoparty.common.util.CustomMultipartFile;
+import io.openvidu.java.client.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import io.openvidu.java.client.Connection;
-import io.openvidu.java.client.ConnectionProperties;
-import io.openvidu.java.client.OpenVidu;
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
-import io.openvidu.java.client.Session;
-import io.openvidu.java.client.SessionProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OpenViduService {
 
 	@Value("${openvidu.url}")
@@ -29,6 +33,11 @@ public class OpenViduService {
 
 	private OpenVidu openvidu;
 
+	private Map<String, Boolean> sessionRecordings = new ConcurrentHashMap<>();
+
+	private final String RECORDINGS_PATH = "/opt/openvidu/recordings/";
+
+	private final FileService fileService;
 	@PostConstruct
 	public void init() {
 		this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
@@ -55,5 +64,49 @@ public class OpenViduService {
 		Connection connection = session.createConnection(properties);
 
 		return connection.getToken();
+	}
+	public Recording startRecording(String sessionId, Map<String, Object> params) throws
+			OpenViduJavaClientException, OpenViduHttpException {
+
+		Recording.OutputMode outputMode = Recording.OutputMode.valueOf((String) params.get("outputMode"));
+		boolean hasAudio = (boolean) params.get("hasAudio");
+		boolean hasVideo = (boolean) params.get("hasVideo");
+
+		RecordingProperties properties = new RecordingProperties.Builder().outputMode(outputMode).hasAudio(hasAudio)
+				.hasVideo(hasVideo).build();
+
+		log.info("Starting recording for session {} with properties outputMode= {}, hasAudio= {}, hasVideo={}", sessionId, outputMode, hasAudio, hasVideo);
+
+		Recording recording = openvidu.startRecording(sessionId, properties);
+
+		sessionRecordings.put(sessionId, true);
+		return recording;
+	}
+
+	public void stopRecording(String recordingId) throws
+			OpenViduJavaClientException, OpenViduHttpException {
+
+		log.info("Stoping recording | {}", recordingId);
+
+		Recording recording = openvidu.stopRecording(recordingId);
+		sessionRecordings.remove(recording.getSessionId());
+	}
+
+	public File uploadRecording(String recordingId) throws InvalidPathException {
+		Path videoPath = Paths.get(String.format("%s\\%s\\%s.mp4", RECORDINGS_PATH, recordingId, recordingId));
+		Path thumbnailPath = Paths.get(String.format("%s\\%s\\%s.jpg", RECORDINGS_PATH, recordingId, recordingId));
+
+		CustomMultipartFile videoFile = new CustomMultipartFile(videoPath.toFile());
+		CustomMultipartFile thumbnailFile = new CustomMultipartFile(thumbnailPath.toFile());
+		File uploadedVideoFile = fileService.uploadFile(videoFile);
+		File uploadedThumbnailFile = fileService.uploadFile(thumbnailFile);
+		uploadedVideoFile.setThumbnailUrl(uploadedThumbnailFile.getUrl());
+		return uploadedVideoFile;
+	}
+	public void deleteRecording(String recordingId) throws IOException {
+		Path path = Paths.get(String.format("%s\\%s", RECORDINGS_PATH, recordingId));
+
+		path.toFile().delete();
+		log.info("file deleted : {}", path);
 	}
 }
