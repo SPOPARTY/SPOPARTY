@@ -54,17 +54,6 @@ const serverURL = 'http://localhost:9090/api/ws-stomp'
 
 let stompClient = undefined
 
-const chats = reactive([
-{userName: "test",
-  teamLogo: "test",
-  message: "잘하네"},
-  {userName: "maru",
-  teamLogo: "test",
-  message: "달려라 마루쎄"},
-  {userName: "제라드",
-  teamLogo: "test",
-  message: "훔바훔바링"},
-
 const partyStore = usePartyStore()
 
 const chats = reactive([
@@ -161,32 +150,34 @@ const send = (destination, body, header) => {
 }
 
 const connect = () => {
-  const socket = new SockJS(serverURL)
-  stompClient = Stomp.over(socket)
+  if (stompClient === undefined) {
+    const socket = new SockJS(serverURL)
+    stompClient = Stomp.over(socket)
 
-  stompClient.connect(
-    {},
-    (frame) => {
-      console.log('stomp client connected.')
-      connectMessage.value.message = `${connectMessage.value.userName} 님이 입장했습니다.`
-      send('/chat/enter', connectMessage.value, connectMessage.value)
-      connectMessage.value.message = ""
-      stompClient.subscribe(`/sub/chat`, (response) => {
-        console.log(response)
-        chats.push(JSON.parse(response.body))
-      })
-      stompClient.subscribe(
-        `/user/${connectMessage.value.userName}/sub/chat`,
-        (response) => {
-          chats.push(...JSON.parse(response.body))
-          console.log(chats)
-        },
-      )
-    },
-    (error) => {
-      console.error(`stomp client connect error : ${error}`)
-    },
-  )
+    stompClient.connect(
+      {},
+      (frame) => {
+        console.log('stomp client connected.')
+        myMessage.value.message = `${myMessage.value.userName} 님이 입장했습니다.`
+        send('/chat/enter', myMessage.value, myMessage.value)
+        myMessage.value.message = ''
+        stompClient.subscribe(`/sub/chat${clubId}-${partyId}`, (response) => {
+          console.log(response)
+          chats.push(JSON.parse(response.body))
+        })
+        stompClient.subscribe(
+          `/user/${myMessage.value.userName}/sub/chat${clubId}-${partyId}`,
+          (response) => {
+            chats.push(...JSON.parse(response.body))
+            console.log(chats)
+          },
+        )
+      },
+      (error) => {
+        console.error(`stomp client connect error : ${error}`)
+      },
+    )
+  }
 }
 
 const disconnect = () => {
