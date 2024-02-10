@@ -1,48 +1,40 @@
 <template>
-  <v-row width="100%">
-  <v-container class="pa-0 ma-0 test">
-    <v-col cols="auto" class="pa-0 ma-0">
-      <v-responsive class="overflow-y-hidden fill-height">
-        <v-card flat class="d-flex flex-column">
-          <v-card-text class="overflow-y-auto">
-            <template v-for="(msg, i) in chats">
-              <div :class="{ 'd-flex flex-row-reverse': msg.me }">
-                <v-menu >
-                  <template v-slot:activator="{ on }">
-                      <v-chip
-                          :color="msg.me ? 'primary' : ''"
-                          dark
-                          style="height:auto;white-space: normal;"
-                          class="pa-4 mb-2"
-                          v-on="on"
-                      >
-                        {{ msg.message }}
-                      </v-chip>
-                  </template>
-                </v-menu>
-              </div>
-            </template>
-          </v-card-text>
-        </v-card>
-      </v-responsive>
-    </v-col>
+  <v-container
+    fluid
+    class="pa-1">
+    <v-list lines="one">
+      <v-list-item
+        v-for="(item, i) in chats"
+        :key="i"
+        :value="item"
+        color="primary">
+        <template v-slot:prepend>
+          <v-icon :icon="item.icon"></v-icon>
+        </template>
+        <v-list-item-title v-text="item.userName"></v-list-item-title>
+        <v-list-item-title v-text="item.message"></v-list-item-title>
+      </v-list-item>
+    </v-list>
   </v-container>
-  <v-row rows='2'>
-    <v-card-text>
-      <v-text-field
-        variant="solo"
-        label="Search templates"
-        :append-icon="mdi-send"
-        single-line
-        hide-details
-        @keyup.enter="sendMessage"
-        @click:append="sendMessage"
-        @click:clear="clearMessage">
-      </v-text-field>
-    </v-card-text>
-  </v-row>
-
-</v-row>
+  <v-form>
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            class="chat-input"
+            v-model="connectMessage.message"
+            :append-icon="connectMessage.message ? 'mdi-send' : 'mdi-microphone'"
+            variant="filled"
+            clear-icon="mdi-close-circle"
+            clearable
+            label="Message"
+            type="text"
+            @click:append="sendMessage"
+            @click:clear="clearMessage"></v-text-field>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script setup>
@@ -56,53 +48,7 @@ let stompClient = undefined
 
 const partyStore = usePartyStore()
 
-const chats = reactive([
-  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": true
-  },
-  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": false
-  },
-  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": false
-  },
-  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": false
-  },
-  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": true
-  },
-  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": false
-  },
-  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": true
-  },
-  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": false
-  },
-  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": true
-  }
-])
+const chats = reactive([])
 
 const message = ref('')
 
@@ -123,16 +69,11 @@ const clearMessage = () => {
 }
 
 const sendMessage = () => {
-  chats.push(  {
-    "userName" : "test",
-    "message" : "test message",
-    "me": false
-  })
-  console.log('sendMessage')
-  if (myMessage.value.userName !== '' && myMessage.value.message !== '') {
-    console.log('sendMessage rrrr')
-    send('/chat/send', myMessage.value, myMessage.value)
-    myMessage.value.message = ''
+  console.log("sendMessage")
+  if (connectMessage.value.userName !== '' && connectMessage.value.message !== '') {
+    console.log("sendMessage rrrr")
+    send('/chat/send', connectMessage.value, connectMessage.value)
+    connectMessage.value.message = ''
   }
 }
 
