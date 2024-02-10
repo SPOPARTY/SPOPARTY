@@ -92,13 +92,16 @@ public class OpenViduService {
 		sessionRecordings.remove(recording.getSessionId());
 	}
 
-	public File uploadRecording() throws InvalidPathException {
-		Path path = Paths.get(String.format("%s\\%s\\%s.mp4", RECORDINGS_PATH, recordingId, recordingId));
+	public File uploadRecording(String recordingId) throws InvalidPathException {
+		Path videoPath = Paths.get(String.format("%s\\%s\\%s.mp4", RECORDINGS_PATH, recordingId, recordingId));
+		Path thumbnailPath = Paths.get(String.format("%s\\%s\\%s.jpg", RECORDINGS_PATH, recordingId, recordingId));
 
-		CustomMultipartFile file = new CustomMultipartFile(path.toFile());
-		File uploadedFile = fileService.uploadFile(file);
-
-		return uploadedFile;
+		CustomMultipartFile videoFile = new CustomMultipartFile(videoPath.toFile());
+		CustomMultipartFile thumbnailFile = new CustomMultipartFile(thumbnailPath.toFile());
+		File uploadedVideoFile = fileService.uploadFile(videoFile);
+		File uploadedThumbnailFile = fileService.uploadFile(thumbnailFile);
+		uploadedVideoFile.setThumbnailUrl(uploadedThumbnailFile.getUrl());
+		return uploadedVideoFile;
 	}
 	public void deleteRecording(String recordingId) throws IOException {
 		Path path = Paths.get(String.format("%s\\%s", RECORDINGS_PATH, recordingId));

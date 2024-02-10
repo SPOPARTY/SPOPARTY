@@ -274,7 +274,7 @@ public class PartyServiceImpl implements PartyService {
 
 	@Override
 	public File uploadRecording(String recordingId) throws InvalidPathException {
-		return openViduService.uploadRecording();
+		return openViduService.uploadRecording(recordingId);
 	}
 
 	@Override
