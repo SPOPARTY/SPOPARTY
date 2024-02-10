@@ -2,13 +2,13 @@
     <v-dialog 
         v-model="isModalVisible" 
         max-width="800px" 
-        max-height="400px"
+        max-height="650px"
         @click:outside="closeModal"
-        persistent        >
-        <v-card>
+        persistent>
+        <v-card class="outer-card">
             <v-row>
                 <v-col class="text-left">
-                    <v-card-title>
+                    <v-card-title style="transform: translateX(330px);">
                         엠블럼 목록
                     </v-card-title>
                 </v-col>
@@ -20,16 +20,20 @@
                 </v-col>
             </v-row>
             
-            <v-row>
-                <v-col col="8">
+            <v-row justify="center" align="center">
+                <v-col cols="4" class="d-flex justify-center align-center pa-0" style="transform: translateX(100px);">
                     <v-card-text>
-                        현재 엠블럼 : {{currEmblemName}}
+                        <h3>현재 엠블럼 : {{currEmblemName}}</h3>
                     </v-card-text>
                 </v-col>
-                <v-col col="4">
-                    <v-btn color="green" @click="closeModal" style="width:80%">확인</v-btn>
+                <v-col cols="4" class="d-flex justify-center align-center pa-0" style="transform: translateX(30px);">
+                    <v-img :src="currEmblemIcon" :alt="currEmblemName" class="mx-2" style="width: 100px; height: 100px;"></v-img>
+                </v-col>
+                <v-col cols="4" class="d-flex justify-center align-center pa-0" style="transform: translateX(-10px);">
+                    <v-btn color="green" @click="confirmEmblem" style="width:80%">확인</v-btn>
                 </v-col>
             </v-row>
+
             <v-card-text>
             <v-text-field
             v-model="search"
@@ -40,46 +44,44 @@
 
             <v-divider></v-divider>
 
-            <v-container>
-            <v-row style="align-items: center;">
-                <v-col v-for="(emblem, index) in filteredEmblems" :key="index" cols="4" >
-                    <v-btn 
-                        text 
-                        :key="index" 
-                        class="d-flex flex-column align-center ma-2" 
-                        style="width: 100%; height:150px;"
-                        @click="selectEmblem(emblem)">
-                        <v-avatar 
-                            size="64" 
-                            class="ma-2" 
-                        >
-                            <img :src="emblem.src" :alt="emblem.name" style="width:100%; height:100%;">
-                        </v-avatar>
-                        <div class="club-name">
-                            {{ emblem.name }}  
-                        </div>
-                    </v-btn>
-                </v-col>
-            </v-row>
-            </v-container>
+            <v-card class="emblem-list">
+                <v-row style="align-items: center;">
+                    <v-col v-for="(emblem, index) in filteredEmblems" :key="index" cols="4" >
+                        <v-btn 
+                            text 
+                            :key="index" 
+                            class="d-flex flex-column align-center ma-2" 
+                            style="width: 100%; height:150px;"
+                            @click="selectEmblem(emblem)">
+                            <v-avatar 
+                                size="64" 
+                                class="ma-2" 
+                            >
+                                <v-img :src="emblem.logo" :alt="emblem.nameKr" style="width:100%; height:100%;"></v-img>
+                            </v-avatar> <hr>
+                        </v-btn>
+                        <h5 style="text-align: center;">{{ emblem.nameKr }}</h5>  
+                    </v-col>
+                </v-row>
+            </v-card>
         </v-card-text>
         </v-card>
     </v-dialog>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const props = defineProps({
-    emblemIcon : String,
-    emblemName : String
+    teamList : Object,
+    emblemId : String,
 })
 
+console.log("emblemId -> ",props.emblemId)
 
-console.log("emblemIcon -> ",props.emblemIcon)
-
-const currEmblemIcon = ref(props.emblemIcon);
-const currEmblemName = ref(props.emblemName);
+const currentEmblemId = ref(props.emblemId);
+const currEmblemIcon = ref(props.teamList.filter(team => team.id === currentEmblemId.value).map(team => team.logo)[0]);
+const currEmblemName = ref( props.teamList.filter(team => team.id === currentEmblemId.value).map(team => team.nameKr)[0]);
 
 const emit = defineEmits([
     'emblem-list-close',
@@ -96,36 +98,39 @@ function closeModal() {
 
 
 const search = ref('');
-const emblems = ref([
-  { name: '맨체스터 유나이티드', src: '/manutd.png' },
-  { name: '첼시', src: '/chelsea.png' },
-  { name: '토트넘 홋스퍼', src: '/tottenham.png' },
-  { name: '토리노FC', src: '/torinoFC.png' },
-  { name: '토론토FC', src: '/torontoFC.png' },
-  { name: '맨체스터 시티', src: '/mancity.png' },
-  { name: '아스날', src: '/arsenal.png' },
-  { name: '바이에른 뮌헨', src: '/bayernMunich.png' },
-]);
+const emblems = props.teamList;
+
 
 // 검색어에 따라 엠블럼을 필터링합니다.
 const filteredEmblems = computed(() => {
     if (!search.value) {
-        return emblems.value;
+        return emblems;
     }
-    return emblems.value.filter((emblem) => emblem.name.includes(search.value));
+    return emblems.filter((emblem) => emblem.nameKr.toLowerCase().includes(search.value.toLowerCase()));
 });
 
-function selectEmblem(emblem) {
-    currEmblemIcon.value = emblem.src;
-    currEmblemName.value = emblem.name;
+const newEmblem = ref({
+    emblemId : "",
+    emblemIcon : "",
+    emblemName : "",
+})
 
-    const newEmblem = {
-        newEmblemIcon : emblem.src,
-        newEmblemName : emblem.name
-    }
-    emit('select-emblem',newEmblem);
-    console.log(newEmblem)
+function selectEmblem(emblem) {
+    currentEmblemId.value = emblem.id;
+    currEmblemIcon.value = emblem.logo;
+    currEmblemName.value = emblem.nameKr;
+    console.log("선택된 emblemid -> ",currentEmblemId.value)
 }
+
+function confirmEmblem() {
+    newEmblem.value.emblemId = currentEmblemId.value;
+    newEmblem.value.emblemIcon = currEmblemIcon.value;
+    newEmblem.value.emblemName = currEmblemName.value;
+    console.log("나중에 바뀔 emblemId -> ", newEmblem.value.emblemId)
+    emit('select-emblem',newEmblem.value);
+    closeModal();
+}
+
 
 </script>
 
@@ -142,6 +147,15 @@ function selectEmblem(emblem) {
   &:hover {
     background-color: transparent !important;
   }
+}
+
+.outer-card{
+    overflow-y:hidden
+}
+
+.emblem-list {
+    height:400px;
+    overflow-y:auto;
 }
 
 </style>

@@ -46,8 +46,8 @@
             <v-row>
                 <v-col cols="8">
                     <v-btn style="width:100%; height:100%;" @click="showEmblemModal">
-                        <img :src="emblemIcon" :alt="emblemName" style="width:64px; height:64px;">
-                        {{ emblemName }}
+                        <!-- <v-img :src="emblemIcon" :alt="emblemName" style="width:64px; height:64px;"></v-img> -->
+                        {{ memberInfo.team.id }}
                     </v-btn>
                 </v-col>
                 <v-col cols="4" md="4">
@@ -56,8 +56,8 @@
             </v-row>
             <EmblemList 
                 v-if="isEmblemModalVisible"
-                :emblem-icon="emblemIcon"
-                :emblem-name="emblemName"
+                :team-list="teamList"
+                :emblem-id="memberInfo.team.id"
                 @emblem-list-close="isEmblemModalVisible = false"
                 @select-emblem="setEmblem($event)"
                 />
@@ -87,7 +87,6 @@
                 @follow-club="setFollowClubNumber($event)"
                 @unfollow-club="setFollowClubNumber($event)"
             />
-
         </v-card>
     </v-container>
 </template>
@@ -110,8 +109,8 @@ const followStore = useFollowStore();
 
 const router = useRouter();
 const memberId = ref("");
-const teamList = ref(null);
-const followList = ref(null);
+const teamList = ref([]);
+const followList = ref([]);
 
 onMounted(() => {
     const id = localStorage.getItem("id")
@@ -143,7 +142,6 @@ const memberInfo = ref({
     email : "",
     team : {
         id : "",
-        logo : "",
     },
     status : "",
 })
@@ -151,11 +149,16 @@ const memberInfo = ref({
 const emailId = ref(memberInfo.value.email.split("@")[0]);
 const emailDomain = ref(memberInfo.value.email.split("@")[1]);
 
+const emblemId = ref(memberInfo.value.team.id);
+const emblemName = ref('')
+const emblemIcon = ref('')
+
+
 const getMemberInfo = () => {
     getMember(
         memberId.value,
         ({data,status}) => {
-        // console.log("data ==> ",data);
+        console.log("data ==> ",data);
         // console.log("message ==> ",data.message);
         // console.log("status ==> ",status);
         memberInfo.value.id = data.data.id;
@@ -163,8 +166,7 @@ const getMemberInfo = () => {
         memberInfo.value.loginPwd = data.data.loginPwd;
         memberInfo.value.nickname = data.data.nickname;
         memberInfo.value.email = data.data.email;
-        memberInfo.value.team.id = data.data.team.id;
-        memberInfo.value.team.logo = data.data.team.logo;
+        memberInfo.value.team.id = data.data.team === null? emblemId.value : data.data.team.id;
         memberInfo.value.team.status = data.data.status;
         },
         (error) => {
@@ -237,7 +239,6 @@ function updateEmail(newEmail) {
     console.log(newEmail.value)
     emailId.value = newEmail.value.split("@")[0];
     emailDomain.value = newEmail.value.split("@")[1];
-
     memberInfo.value.email = newEmail.value;
 }
 
@@ -247,12 +248,14 @@ function showEmblemModal() {
     isEmblemModalVisible.value = true;
 }
 
-const emblemIcon = ref('/spo-icon.png');
-const emblemName = ref('맨체스터 시티');
 
 function setEmblem(newEmblem) {
-    emblemIcon.value = newEmblem.newEmblemIcon;
-    emblemName.value = newEmblem.newEmblemName;
+    console.log("새로운 emblemId ->",newEmblem.emblemId)
+    emblemId.value = newEmblem.emblemId
+    memberInfo.value.team.id = emblemId.value;
+    console.log("잘 바뀌었나? emblemId ->",memberInfo.value.team.id)
+    emblemIcon.value = newEmblem.emblemIcon;
+    emblemName.value = newEmblem.emblemName;
 }
 
 // 구단 팔로우 모달
