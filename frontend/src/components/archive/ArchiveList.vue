@@ -21,7 +21,7 @@
                     :detail="currentDetail" 
                     @detail-close="isDetailVisible = false"
                 />
-                <v-card @click="showDetailModal(detail)">
+                <v-card class="card" @click="showDetailModal(detail)">
 
                     <v-row>
                         <v-col cols="10">
@@ -36,12 +36,10 @@
                             />
                         </v-col>
                     </v-row>
-                    <v-card-item v-if="detail.file">
-                        <v-img :src="detail.file.url" :alt="detail.fixtureTitle"/>
-                    </v-card-item>
                     <v-card-subtitle class="text-right">파티명 : {{ detail.partyTitle }}</v-card-subtitle>
                     <v-card-text class="text-right">작성자 : {{ detail.member.nickname }}</v-card-text>
                     <v-card-subtitle class="text-right">생성 날짜 : {{ formatDateTime(detail.createdTime) }}</v-card-subtitle>
+                    <v-img v-if="detail.file" :src="detail.file.url" :alt="detail.fixtureTitle" cover height="200px"/>
                 </v-card>
             </v-col>
         </v-row>
@@ -74,9 +72,9 @@ import {useRouter, useRoute} from 'vue-router'
 import {useArchiveStore} from '@/stores/club/archives';
 import {formatDateTime} from "@/util/tools.js"
 
-import ArchiveDetail from '@/components/archieve/ArchiveDetail.vue';
+import ArchiveDetail from '@/components/archive/ArchiveDetail.vue';
 
-const archieveStore = useArchiveStore();
+const archiveStore = useArchiveStore();
 
 const router = useRouter();
 const routes = useRoute();
@@ -84,7 +82,7 @@ const clubId = routes.params.clubId;
 
 
 const archiveList = ref([]);
-watch(() => archieveStore.archiveList,(newArchiveList) => {
+watch(() => archiveStore.archiveList,(newArchiveList) => {
     archiveList.value = newArchiveList;
     archiveList.value.forEach((archive) => {
         archive.selected = false;
@@ -132,12 +130,16 @@ function goBack() {
 }
 
 onMounted(() => {
-    archieveStore.getArchiveList(clubId);
+    archiveStore.getArchiveList(clubId);
 })
 
 </script>
 
 <style lang="scss" scoped>
+.card {
+    min-height: 300px;
+}
+
 .download-button{
     color:white; 
     margin-top:10px;

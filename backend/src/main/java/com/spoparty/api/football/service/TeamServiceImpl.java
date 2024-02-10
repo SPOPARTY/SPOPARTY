@@ -6,6 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
+import com.spoparty.api.football.entity.SeasonLeagueTeamPlayer;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 import com.spoparty.api.football.response.ResponseDTO;
 import com.spoparty.api.football.response.SeasonLeagueTeamAllInfoDTO;
@@ -35,6 +36,8 @@ public class TeamServiceImpl implements TeamService {
 
 		SeasonLeagueTeamAllInfoDTO seasonLeagueTeamAllInfoDTO = null;
 		if (seasonLeagueTeam.getStandings().size() > 1) {
+			log.info("하나이상!");
+			List<SeasonLeagueTeamPlayer> tmp =  seasonLeagueTeam.getSeasonLeagueTeamPlayers();
 			seasonLeagueTeamAllInfoDTO = SeasonLeagueTeamAllInfoDTO.toDTO(
 				seasonLeagueTeam, seasonLeagueTeam.getStandings().get(1));
 		} else if (seasonLeagueTeam.getStandings().size() == 1) {

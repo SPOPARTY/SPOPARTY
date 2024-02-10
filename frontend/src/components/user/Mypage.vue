@@ -1,14 +1,14 @@
 <template>
     <v-container class="mypage-container">
-        <v-card class="pa-4" outlined>
-            <v-card-title class="text-h4 mb-6">마이페이지</v-card-title>
+        <v-card class="inner-card pa-4" outlined>
+            <h1>마이페이지</h1>
         
             <v-row>
                 <v-col cols="12" md="8">
-                    <v-text-field label="아이디" v-model="memberInfo.loginId" outlined dense readonly></v-text-field>
+                    <v-text-field class="input" label="아이디" v-model="memberInfo.loginId" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                    <v-btn color="#393646" style="margin-top:10px" @click="showChangePwdModal" block>비밀번호 수정</v-btn>
+                    <v-btn class="input" color="#393646" @click="showChangePwdModal" block>비밀번호 수정</v-btn>
                 </v-col>
             </v-row>
             <SetNewPwd 
@@ -18,20 +18,20 @@
             
             <v-row>
                 <v-col cols="12">
-                    <v-text-field label="닉네임" v-model="memberInfo.nickname" outlined dense></v-text-field>
+                    <v-text-field class="input" label="닉네임" v-model="memberInfo.nickname" outlined dense></v-text-field>
                 </v-col>
             </v-row>
             
             <v-row>
                 <v-col cols="4" md="4">
-                    <v-text-field label="이메일 아이디" v-model="memberInfo.email.split('@')[0]" outlined dense readonly></v-text-field>
+                    <v-text-field class="input" label="이메일 아이디" v-model="memberInfo.email.split('@')[0]" outlined dense readonly></v-text-field>
                 </v-col>
-                <v-col cols="1" md="1" class="text-center">@</v-col>
+                <v-col cols="1" md="1" class="text-center" style="color:white; margin-top:10px;"><h4>@</h4></v-col>
                 <v-col cols="4" md="4">
-                    <v-text-field label="도메인" v-model="memberInfo.email.split('@')[1]" outlined dense readonly></v-text-field>
+                    <v-text-field class="input" label="도메인" v-model="memberInfo.email.split('@')[1]" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="3" md="3">
-                    <v-btn color="#123421" style="margin-top:10px;" @click="showChangeEmailModal">이메일 수정</v-btn>
+                    <v-btn color="#393646" style="margin-top:10px;" @click="showChangeEmailModal">이메일 수정</v-btn>
                 </v-col>
             </v-row>
             <SetNewEmail 
@@ -51,7 +51,7 @@
                     </v-btn>
                 </v-col>
                 <v-col cols="4" md="4">
-                    <v-btn color="#4F4557" style="margin-top:10px;" @click="showEmblemModal">엠블럼 목록</v-btn>
+                    <v-btn color="#393646" style="margin-top:12px;" @click="showEmblemModal">엠블럼 목록</v-btn>
                 </v-col>
             </v-row>
             <EmblemList 
@@ -62,12 +62,20 @@
                 @select-emblem="setEmblem($event)"
                 />
             
-            <v-row>
-                <v-col cols="8">
+            <v-row class="justify-center">
+                <v-col cols="6">
                     <v-btn 
                         style="width:100% "
                         @click="showFollowModal"
                     >팔로우 중인 구단 수 : {{followingClubNum}}</v-btn>
+                </v-col>
+                <v-col cols="6">
+                    <v-card-actions class="justify-center">
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey" @click="goBack">이전</v-btn>
+                        <v-btn color="primary" @click="updateChanges">수정</v-btn>
+                        <v-btn color="red" @click="Withdraw">회원 탈퇴</v-btn>
+                    </v-card-actions>
                 </v-col>
             </v-row>
             <FollowList
@@ -80,12 +88,6 @@
                 @unfollow-club="setFollowClubNumber($event)"
             />
 
-            <v-card-actions class="text-center">
-                <v-spacer></v-spacer>
-                <v-btn color="grey" @click="goBack">이전</v-btn>
-                <v-btn color="primary" @click="updateChanges">수정</v-btn>
-                <v-btn color="red" @click="Withdraw">회원 탈퇴</v-btn>
-            </v-card-actions>
         </v-card>
     </v-container>
 </template>
@@ -102,7 +104,7 @@ import {useFollowStore} from '@/stores/member/follows'
 import SetNewPwd from '@/components/user/SetNewPwd.vue';
 import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
-
+import FollowList from '@/components/user/FollowList.vue';
 
 const followStore = useFollowStore();
 
@@ -112,8 +114,8 @@ const teamList = ref(null);
 const followList = ref(null);
 
 onMounted(() => {
-    const id = sessionStorage.getItem("id")
-    memberId.value = sessionStorage.getItem("id");
+    const id = localStorage.getItem("id")
+    memberId.value = localStorage.getItem("id");
     teamList.value = followStore.getTeamList();
     followStore.getFollowList(memberId.value);
     getMemberInfo();
@@ -191,11 +193,11 @@ const Withdraw = () => {
     (res) => {
         if (res.status === httpStatusCode.OK) {
             console.log(res)
-            sessionStorage.removeItem("accessToken");
-            sessionStorage.removeItem("refreshToken");
-            sessionStorage.removeItem("id")
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("id")
             alert("함께해서 더러웠고 다신 만나지 말자")
-            router.push("/")
+            window.location.replace("/")
         } 
     },
     (error) => {
@@ -256,6 +258,7 @@ function setEmblem(newEmblem) {
 // 구단 팔로우 모달
 const isFollowModalVisible = ref(false)
 function showFollowModal() {
+    console.log("구단 팔로우 모달 띄우기!!!")
     isFollowModalVisible.value = true;
 }
 
@@ -283,7 +286,24 @@ function goBack() {
 </script>
 
 <style scoped>
+h1 {
+    text-align: center;
+    margin-top:10px;
+    margin-bottom:20px;
+    color : #D3AC2B;
+}
+
+.inner-card{
+    background-color: #292646
+}
+
+.input {
+    border-radius: 5px;
+    background-color:#F4F3EA ;
+    height:50px;
+}
 .mypage-container{
+    margin-top:40px;
     max-width: 600px;
 }
 

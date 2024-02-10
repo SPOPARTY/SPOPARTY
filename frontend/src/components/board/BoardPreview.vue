@@ -1,42 +1,37 @@
 <template>
-    <v-toolbar flat class="preview-toolbar">
-        <v-toolbar-title>그룹 게시판</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-toolbar-items>
-            <RouterLink :to="`/club/${clubId}/board`">
-                <v-btn icon>
-                    <v-icon class="plus-btn">mdi-plus</v-icon>
-                </v-btn>
-            </RouterLink>
-        </v-toolbar-items>
-    </v-toolbar>
-    <v-row>
-        <v-col
-            cols="12" sm="6" md="4" lg="4" 
-            v-for="(post, index) in posts.slice(0,6)"
-            :key="index"
-            >
-            <BoardDetail
-                    v-if="isDetailVisible && currentPost.id === post.id" 
-                    :post="currentPost"
-                    @detail-close="isDetailVisible = false"
-                    @delete-post="deletePost"
-            />
-            <v-card class="thumbnail" @click="showBoardDetail(post)">
-                <v-card-title class="text-center">{{ post.title }}</v-card-title>
-                <v-card-subtitle class=text-right>{{ post.member.nickname }}</v-card-subtitle>
-                <v-card-text class="text-right">{{formatDateTime(post.updatedTime)}}</v-card-text>
-                <v-card-item v-if="post.file">
-                    <v-img :src="post.file.url" class="thumb_img"/>
-                </v-card-item>
-                <v-card-text>
-                    <div>
-                        <div v-html="post.content"></div>
-                    </div>
-                </v-card-text>
-            </v-card>
-        </v-col>
-    </v-row>
+    <v-container>
+        <v-toolbar flat class="preview-toolbar">
+            <v-toolbar-title class="group-title">그룹 게시판</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+                <RouterLink :to="`/club/${clubId}/board`">
+                    <v-btn icon>
+                        <v-icon class="plus-btn">mdi-plus</v-icon>
+                    </v-btn>
+                </RouterLink>
+            </v-toolbar-items>
+        </v-toolbar>
+        <v-row>
+            <v-col
+                cols="12" sm="6" md="4" lg="4" 
+                v-for="(post, index) in posts.slice(0,6)"
+                :key="index"
+                >
+                <BoardDetail
+                        v-if="isDetailVisible && currentPost.id === post.id" 
+                        :post="currentPost"
+                        @detail-close="isDetailVisible = false"
+                        @delete-post="deletePost"
+                />
+                <v-card class="thumbnail" @click="showBoardDetail(post)">
+                    <v-card-title class="text-center">{{ post.title }}</v-card-title>
+                    <v-card-subtitle class=text-right>{{ post.member.nickname }}</v-card-subtitle>
+                    <v-card-text class="text-right">{{formatDateTime(post.updatedTime)}}</v-card-text>
+                    <v-img class="thumb_img" v-if="post.file" :src="post.file.url" cover height="200px" />
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script setup>
@@ -83,12 +78,16 @@ const deletePost = (postId) => {
 
 
 <style>
+.v-container {
+    padding-left:0px;
+}
+
 h1{
     color:black
 }
-
-.v-toolbar-title{
+.group-title{
     color:white;
+    margin-left:0;
 }
 
 .preview-toolbar{
@@ -97,6 +96,7 @@ h1{
 
 .thumbnail {
     height:100%;
+    background-color: #F4F3EA ;
 }
 
 .thumb_img{

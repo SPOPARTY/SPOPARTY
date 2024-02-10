@@ -130,6 +130,7 @@ public class CheerServiceImpl implements CheerService {
 			throw new IllegalArgumentException(ErrorCode.CANNOT_CREATE_CHEER.getMessage());
 		}
 
+
 		HomeOrAway homeOrAway = fixtureRepository.whichTeamCheer(cheerFixture.getFixture().getId());
 
 
@@ -137,10 +138,10 @@ public class CheerServiceImpl implements CheerService {
 
 
 		if (homeOrAway.getHomeId().equals(teamId)){
-			System.out.println("home!");
+			log.info("home!");
 			cheerFixture.cheerHome();
 		} else if (homeOrAway.getAwayId().equals(teamId)){
-			System.out.println("away!");
+			log.info("away!");
 			cheerFixture.cheerAway();
 		}
 
