@@ -23,21 +23,21 @@
               </v-col>
             </v-row>
             <v-row class="team-vs-team">
-              <v-col cols="2" class="team-name" @click="toTDP(match.homeTeam.teamId)">
+              <v-col cols="3" class="team-name" @click="toTDP(match.homeTeam.teamId)">
                 <h3>{{ match.homeTeam.nameKr }}</h3>
               </v-col>
               <v-col cols="2" align="center">
                 <v-img :src="match.homeTeam.logo" class="team-logo team-name"
                   @click="toTDP(match.homeTeam.teamId)"></v-img>
               </v-col>
-              <v-col cols="2" class="pa-0">
+              <v-col cols="1" class="pa-0">
                 <span class="vs">VS</span>
               </v-col>
               <v-col cols="2" align="center">
                 <v-img :src="match.awayTeam.logo" class="team-logo team-name"
                   @click="toTDP(match.awayTeam.teamId)"></v-img>
               </v-col>
-              <v-col cols="2" class="team-name" @click="toTDP(match.awayTeam.teamId)">
+              <v-col cols="3" class="team-name" @click="toTDP(match.awayTeam.teamId)">
                 <h3>{{ match.awayTeam.nameKr }}</h3>
               </v-col>
             </v-row>
@@ -198,8 +198,8 @@ const toTDP = (teamId) => {
 }
 
 .team-logo {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   margin: 0 10px;
 }
 
@@ -215,8 +215,10 @@ const toTDP = (teamId) => {
   font-size: 24px;
   font-weight: bold;
   margin: 0 10px;
+  min-width: 70px;
 }
 .team-name {
   cursor: pointer;
+  padding: 0;
 }
 </style>

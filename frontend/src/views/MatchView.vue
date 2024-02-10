@@ -5,8 +5,8 @@
                     <v-btn icon @click="changeDate(-1)" class="mx-12" :style="{ fontSize: '1.5rem' }">
                          <v-icon size="large">mdi-chevron-left</v-icon>
                     </v-btn>
-                    <v-btn v-for="day in displayedDates" :key="day.date" :class="dateClass(day.date)"
-                         @click="selectDate(day.date)" :style="{ fontSize: '1.5rem', minWidth: '120px' }">
+                    <v-btn v-for="day in displayedDates" :key="day.date" :class="dateClass(day.date)" class="ma-1"
+                         @click="selectDate(day.date)" :style="{ fontSize: '1.5rem', minWidth: '120px', minHeight: '45px'}">
                          <div class="d-day" v-if="day.dDay">{{ day.dDay }}</div>
                          <div>{{ day.display }}</div>
                     </v-btn>
@@ -15,12 +15,13 @@
                     </v-btn>
                </v-col>
                <v-col cols="12" class="text-center">
-                    <v-btn @click="resetDate" class="mx-2">오늘</v-btn>
+                    <v-btn @click="resetDate" class="mx-2" 
+                    :style="{ fontSize: '1.2rem', minWidth: '100px', minHeight: '40px'}">오늘</v-btn>
                     <v-menu v-model="showDatePicker" :close-on-content-click="false" :nudge-bottom="10" offset-y
                          attach=".date-picker-button">
                          <template v-slot:activator="{ on, attrs }">
-                              <v-btn class="date-picker-button mx-2" v-bind="attrs" v-on="on"
-                                   @mousedown="showDatePicker = true">날짜 선택</v-btn>
+                              <v-btn class="date-picker-button mx-2" v-bind="attrs" v-on="on" @mousedown="showDatePicker = true" 
+                              :style="{ fontSize: '1.2rem', minWidth: '100px', minHeight: '40px'}">날짜 선택</v-btn>
                          </template>
                          <v-date-picker v-model="selectedDate" show-adjacent-months no-title></v-date-picker>
                     </v-menu>
@@ -86,6 +87,7 @@ function dateClass(date) {
      const isSelected = format(date, 'yyyy-MM-dd') === format(selectedDate.value, 'yyyy-MM-dd');
      return {
           'red--text': format(date, 'yyyy-MM-dd') === today,
+          'sel-height': isSelected,
           'blue-border': isSelected,
      };
 }
@@ -111,21 +113,26 @@ function datePickerSelected() {
 }
 
 .d-day {
-     font-size: 0.75rem;
+     font-size: 0.8rem;
      /* 작은 글씨 크기 */
-     color: violet;
+     color: plum;
      /* 옅은 보라 색 */
      margin-bottom: 4px;
      /* 날짜와의 간격 */
 }
 
 .red--text {
-     color: red !important;
+     color: tomato !important;
 }
 
 .blue-border {
-     border: 2px solid blue !important;
-     border-radius: 4px;
+     border: 4px solid #D3AC2B !important;
+     border-radius: 8px;
+}
+
+.sel-height {
+     height: 55px;
+     /* 오늘 날짜의 높이 */
 }
 </style>
 
