@@ -101,7 +101,7 @@
   const props = defineProps({
       teamList : Object,
       followList : Object,
-      memberId : String,
+      memberId : Number,
 
   })
 
