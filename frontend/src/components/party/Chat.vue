@@ -66,35 +66,6 @@ const myMessage = ref({
   message: '',
 })
 
-const connect = () => {
-  const socket = new SockJS(serverURL)
-  stompClient = Stomp.over(socket)
-
-  stompClient.connect(
-    {},
-    (frame) => {
-      console.log('stomp client connected.')
-      myMessage.value.message = `${myMessage.value.userName} 님이 입장했습니다.`
-      send('/chat/enter', myMessage.value, myMessage.value)
-      myMessage.value.message = ''
-      stompClient.subscribe(`/sub/chat`, (response) => {
-        console.log(response)
-        chats.push(JSON.parse(response.body))
-      })
-      stompClient.subscribe(
-        `/user/${myMessage.value.userName}/sub/chat`,
-        (response) => {
-          chats.push(...JSON.parse(response.body))
-          console.log(chats)
-        },
-      )
-    },
-    (error) => {
-      console.error(`stomp client connect error : ${error}`)
-    },
-  )
-}
-
 watch(
   () => partyStore.partyMemberList,
   (newPartyMembers) => {
