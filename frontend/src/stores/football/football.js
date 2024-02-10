@@ -47,27 +47,33 @@ export const useFootballStore = defineStore("football",() => {
         )
     }
 
-    const postCheersData = (data) => {
-        requestPostCheersData(
-            data,
-            (res) => {
-                console.log(res)
-                if(res.status === httpStatusCode.OK) {
-                    console.log("히히 응원 정보 등록하기 발사")
-                    console.log(res.data.data)
-                    cheersData.value = res.data.data;
+    const postCheersData = async (data) => {
+        return new Promise((resolve, reject) => {
+            requestPostCheersData(
+                data,
+                (res) => {
+                    console.log(res);
+                    if (res.status === httpStatusCode.CREATE) {
+                        console.log("히히 응원 정보 등록하기 발사");
+                        console.log(res.data.data);
+                        cheersData.value = res.data.data;
+                        resolve(res.data.data); // 성공한 경우, 결과 데이터를 resolve로 반환
+                    } else {
+                        reject(new Error("응답 상태가 CREATE가 아님")); // CREATE 상태 코드가 아니면 reject
+                    }
+                },
+                (error) => {
+                    console.log("응원 정보 등록하는데 에러");
+                    if (error.response.status === httpStatusCode.NOTFOUND) {
+                        console.log("***********비상***********");
+                        console.error(error);
+                        alert("응원 정보 등록하기 실패!");
+                    }
+                    reject(error); // 에러 발생 시 reject로 에러 객체 반환
                 }
-            },
-            (error) => {
-                console.log("응원 정보 등록하는데 에러")
-                if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
-                    console.error(error)
-                    alert("응원 정보 등록하기 실패!")
-                }
-            }
-        )
-    }
+            );
+        });
+    };
 
     const getNextMatches = () => {
         requestGetNextMatches(
@@ -227,9 +233,9 @@ export const useFootballStore = defineStore("football",() => {
         for(let i=0; i<matches.length; i++) {
             if(matches[i].fixtureId === fixtureId) {
                 const match = matches[i];
-                teamIdsForParty.value.home = match.homeTeam.teamId;
+                teamIdsForParty.value.home = match.homeTeam.seasonLeagueTeamId;
                 teamIdsForParty.value.homeName = match.homeTeam.nameKr;
-                teamIdsForParty.value.away = match.awayTeam.teamId;
+                teamIdsForParty.value.away = match.awayTeam.seasonLeagueTeamId;
                 teamIdsForParty.value.awayName = match.awayTeam.nameKr;
                 return teamIdsForParty.value;
             }

@@ -10,7 +10,7 @@
                     </v-row>
                     <v-row class="selector">
                          <!-- 파티 타이틀 선택 -->
-                         <v-col cols="8" class="party pa-2">
+                         <v-col cols="7" class="party pa-2">
                               <!-- <v-card >
                                    <v-card-text> -->
                               <v-text-field v-model="titleModel" class="select-field" :clearable="isTitleEditing"
@@ -31,7 +31,7 @@
                               </v-card> -->
                          </v-col>
                          <!-- 경기 선택 -->
-                         <v-col cols="4" class="match pa-2">
+                         <v-col cols="5" class="match pa-2">
                               <!-- {{ dialog }} -->
                               <v-btn @click="dialog = true" block variant="outlined" size="x-large">
                                    {{ matchName.find((item) => item.fixtureId === matchModel)?.text || '경기 선택'}}
@@ -475,7 +475,8 @@ const getMatchTitle = (item) => {
      }
      matchName.value.push({
           fixtureId: item.fixtureId,
-          text:`${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`
+          text:`${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr}`
+          // text:`${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`
      });
      return `${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`;
 };
