@@ -1,5 +1,7 @@
 package com.spoparty.batch.scheduler.model;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -15,5 +17,5 @@ public class Coaches {
 	private String weight;
 	private String photo;
 	private Team team;
-	private Object career;
+	private List<Career> career;
 }
