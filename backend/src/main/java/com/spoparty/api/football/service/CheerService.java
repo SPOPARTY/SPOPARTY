@@ -5,10 +5,10 @@ import com.spoparty.security.model.PrincipalDetails;
 
 public interface CheerService {
 
-	public void deleteEndCheerFixture();
+	// public void deleteEndCheerFixture();
 
 	public ResponseDTO findCheerFixture(PrincipalDetails principalDetails, Long fixtureId);
 
-	public void makeCheer(int memberId, int cheerFixtureId, int teamId);
+	public void makeCheer(Long memberId, Long cheerFixtureId, Long teamId);
 
 }

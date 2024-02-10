@@ -27,12 +27,18 @@ public class CheerRepositoryCustomImpl implements CheerRepositoryCustom {
 	}
 
 	@Transactional
-	public long makeCheer(int memberId, int teamId, int cheerFixtureId) {
+	public long makeCheer(Long memberId, Long teamId, Long cheerFixtureId) {
 		return jpaQueryFactory.insert(cheer)
-			.set(cheer.member.id, (long)memberId)
-			.set(cheer.seasonLeagueTeam.id, (long)teamId)
-			.set(cheer.cheerFixture.id, (long)cheerFixtureId)
+			.set(cheer.member.id, memberId)
+			.set(cheer.seasonLeagueTeam.id, teamId)
+			.set(cheer.cheerFixture.id, cheerFixtureId)
 			.execute();
+	}
 
+	public Long checkAlreadyCheer(Long memberId, Long cheerFixtureId) {
+		return jpaQueryFactory.select(cheer.count())
+			.from(cheer)
+			.where(cheer.member.id.eq(memberId).and(cheer.cheerFixture.id.eq(cheerFixtureId)))
+			.fetchOne();
 	}
 }

@@ -1,99 +1,390 @@
 <template>
-     <v-container fluid>
+     <v-container fluid class="px-4 py-2">
           <!-- 기존 비디오 및 채팅 섹션 -->
-          <v-row class="party-section mb-1">
-               <v-col class="match-section">
+          <v-row class="party-section mb-6">
+               <v-col class="match-section" cols="9">
                     <v-row class="match-video">
-                         <v-img src="/soccer-screen.png" aspect-ratio="16/9"></v-img>
+                         <iframe class="coupang-play" v-if="url" width="100%" height="100%" :src=url allow="autoplay"
+                              frameborder="0" allowfullscreen title="쿠팡플레이" overflow:hidden></iframe>
+                         <v-img v-else src="/soccer-screen.png" aspect-ratio="16/9" contain></v-img>
                     </v-row>
-                    <v-row>
-                         <v-col cols="7" class="party pa-1 px-4">
-                              {{ partyTitle }}
-                              <v-icon @click="editParty" size="x-small" class="pa-6">mdi-pencil</v-icon>
+                    <v-row class="selector">
+                         <!-- 파티 타이틀 선택 -->
+                         <v-col cols="7" class="party pa-2">
+                              <!-- <v-card >
+                                   <v-card-text> -->
+                              <v-text-field v-model="titleModel" class="select-field" :clearable="isTitleEditing"
+                                   variant="outlined"
+                                   :hint="!isTitleEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
+                                   :readonly="!isTitleEditing" persistent-hint hide-details="auto"
+                                   :label="`타이틀  — ${isTitleEditing ? 'Editable' : 'Readonly'}`">
+                                   <template v-slot:append>
+                                        <v-slide-x-reverse-transition mode="out-in">
+                                             <v-icon size="large" :key="`icon-${isTitleEditing}`"
+                                                  :color="isTitleEditing ? 'info' : 'success'"
+                                                  :icon="isTitleEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
+                                                  @click="[(isTitleEditing = !isTitleEditing), editPartyInfo(isTitleEditing)]"></v-icon>
+                                        </v-slide-x-reverse-transition>
+                                   </template>
+                              </v-text-field>
+                              <!-- </v-card-text>
+                              </v-card> -->
                          </v-col>
-                         <v-col cols="5" class="match pa-1">
-                              {{ matchName }}
-                              <v-icon @click="editMatch" size="x-small" class="pa-6">mdi-pencil</v-icon>
+                         <!-- 경기 선택 -->
+                         <v-col cols="5" class="match pa-2">
+                              <!-- {{ dialog }} -->
+                              <v-btn @click="dialog = true" block variant="outlined" size="x-large">
+                                   {{ matchName.find((item) => item.fixtureId === matchModel)?.text || '경기 선택'}}
+                              </v-btn>
+                              <v-dialog v-model="dialog" max-width="600">
+                                   <v-card>
+                                        <v-card-title>항목 선택</v-card-title>
+                                        <v-card-text>
+                                             <v-autocomplete v-model="matchModel" class="select-field"
+                                                  :hint="!isMatchEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
+                                                  :items="matches" :item-title="getMatchTitle" item-value="fixtureId"
+                                                  :readonly="!isMatchEditing" :clearable="isTitleEditing"
+                                                  :label="`경기  — ${isMatchEditing ? 'Editable' : 'Readonly'}`"
+                                                  auto-select-first variant="outlined" persistent-hint
+                                                  prepend-icon="mdi-soccer" @update:menu="onMatchChange">
+                                                  <template v-slot:append>
+                                                       <v-slide-x-reverse-transition mode="out-in">
+                                                            <v-icon size="large" :key="`icon-${isMatchEditing}`"
+                                                                 :color="isMatchEditing ? 'info' : 'success'"
+                                                                 :icon="isMatchEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
+                                                                 @click="[(isMatchEditing = !isMatchEditing), editPartyInfo(isMatchEditing)]"></v-icon>
+                                                       </v-slide-x-reverse-transition>
+                                                  </template>
+                                             </v-autocomplete>
+                                             <br>
+                                             <v-text-field v-model="urlModel" class="select-field" :clearable="isUrlEditing"
+                                                  variant="outlined"
+                                                  :hint="!isUrlEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
+                                                  :readonly="!isUrlEditing" persistent-hint hide-details="auto"
+                                                  :label="`URL  — ${isUrlEditing ? 'Editable' : 'Readonly'}`">
+                                                  <template v-slot:append>
+                                                       <v-slide-x-reverse-transition mode="out-in">
+                                                            <v-icon size="large" :key="`icon-${isUrlEditing}`"
+                                                                 :color="isUrlEditing ? 'info' : 'success'"
+                                                                 :icon="isUrlEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
+                                                                 @click="[(isUrlEditing = !isUrlEditing), editPartyInfo(isUrlEditing)]"></v-icon>
+                                                       </v-slide-x-reverse-transition>
+                                                  </template>
+                                             </v-text-field>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                             <v-btn color="blue darken-1" text block @click="clickCheck(isUrlEditing)">확인</v-btn>
+                                        </v-card-actions>
+                                   </v-card>
+                              </v-dialog>
                          </v-col>
                     </v-row>
                </v-col>
-               <v-col class="chatting-section">
-                    <v-row>
-                         <v-col cols="6" class="cam-video" v-for="member in partyMembers" :key="member.memberId">
-                              {{ member.name }}
-                              {{ member.role }}
-                              <!-- 여기에 캠 화면 또는 이미지 배치 -->
+               <v-col class="chatting-section" cols="3">
+                    <!-- 여기가 유저들 캠 화면 오는 영역 -->
+                    <v-row class="cam-section">
+                         <v-col cols="6" class="cam-video">
+                              <UserVideo :stream-manager="publisher"
+                                   @click.native="updateMainVideoStreamManager(publisher)" />
+                              <v-menu location="center" activator="parent" open-on-hover close-delay="300">
+                                   <v-list>
+                                        <v-btn class="ma-2" icon variant="outlined" @click="toggleVideoState">
+                                             <v-icon v-if="videoState">mdi-video-box</v-icon>
+                                             <v-icon v-else>mdi-video-box-off</v-icon>
+                                             <v-tooltip activator="parent" location="center">
+                                                  <p v-if="videoState">캠 끄기</p>
+                                                  <p v-else>캠 켜기</p>
+                                             </v-tooltip>
+                                        </v-btn>
+                                        <v-btn class="ma-2" icon variant="outlined" @click="toggleAudioState">
+                                             <v-icon v-if="audioState">mdi-volume-high</v-icon>
+                                             <v-icon v-else>mdi-volume-off</v-icon>
+                                             <v-tooltip activator="parent" location="center">
+                                                  <p v-if="audioState">마이크 끄기</p>
+                                                  <p v-else>마이크 켜기</p>
+                                             </v-tooltip>
+                                        </v-btn>
+                                        <!-- <v-list-item
+                                        v-for="n in 3"
+                                        :key="n"
+                                        :title="'Item ' + n"
+                                        >
+                                             <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                        </v-list-item> -->
+                                   </v-list>
+                              </v-menu>
+                         </v-col>
+                         <v-col cols="6" class="cam-video" v-for="sub in subscribers"
+                              :key="sub.stream.connection.connectionId">
+
+                              <UserVideo :stream-manager="sub" />
                          </v-col>
                          <!-- 파티 초대 -->
                          <v-col cols="6" class="cam-video" v-if="partyMembers.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
-                              <v-icon class="invite-icon">mdi-account-plus</v-icon>
+                              <v-icon class="invite-icon">mdi-human-greeting</v-icon>
                               <span>파티 초대</span>
                          </v-col>
+                         <!-- 채팅창 -->
+                         <v-col cols="12" v-show="showChat" class="chat-window" :style="{ height: chatDivHeight }">
+                              <div class="chat-content">
+                                   <!-- 채팅 내용을 여기에 표시 -->
+                                   <!-- {{ chatDivHeightProp }} -->
+                                   <Chat :chat-div-height-prop="chatDivHeightProp" />
+                              </div>
+                         </v-col>
+                         <v-spacer></v-spacer>
                     </v-row>
+                    <!-- 캠 영역 끝 -->
+
+                    <v-spacer></v-spacer>
                     <!-- 버튼 영역 -->
                     <v-row class="button-section">
-                         <v-col cols="2" class="mx-1">
+                         <v-col cols="3">
                               <v-btn color="secondary">
+                                   <v-tooltip activator="parent" location="top" theme="dark">
+                                        사진
+                                   </v-tooltip>
                                    <v-icon size="x-large">mdi-camera-outline</v-icon>
                               </v-btn>
                          </v-col>
-                         <v-col cols="2" class="mx-1">
+                         <v-col cols="3">
                               <v-btn color="secondary">
+                                   <v-tooltip activator="parent" location="top" theme="dark">
+                                        동영상
+                                   </v-tooltip>
                                    <v-icon size="x-large">mdi-video-plus-outline</v-icon>
                               </v-btn>
                          </v-col>
-                         <v-col cols="2" class="mx-1">
+                         <v-col cols="3">
                               <v-btn color="#D3AC2B">
+                                   <v-tooltip activator="parent" location="top" theme="dark">
+                                        효과음
+                                   </v-tooltip>
                                    <v-icon size="x-large" color="#333D51">mdi-bullhorn-outline</v-icon>
                               </v-btn>
                          </v-col>
-                         <v-col cols="2" class="mx-1">
-                              <v-btn color="#CBD0D8">
+                         <v-col cols="3">
+                              <v-btn @click="showVote = true" color="#CBD0D8">
                                    투표
                               </v-btn>
+                              <VoteList v-if="showVote" @vote-close="showVote = false" />
                          </v-col>
-                         <v-col cols="2" class="mx-1">
+                         <!-- <v-col cols="2">
                               <v-btn color="yellow" class="chat-button">
                                    <v-icon color="#08042B">mdi-chat</v-icon>
                               </v-btn>
+                         </v-col> -->
+                    </v-row>
+                    <!-- 다음 줄 -->
+                    <v-row class="button-section">
+                         <v-col cols="8">
+                              <v-btn @click="toggleChat" color="yellow" class="chat-button">채팅창</v-btn>
                          </v-col>
-                         <!-- 다음 줄 -->
-                         <v-col cols="6">
-                              <v-btn color="primary">추가 버튼</v-btn>
-                         </v-col>
-                         <v-col cols="6">
-                              <v-btn color="error" @click="closeTab">파티 나가기</v-btn>
+                         <v-col cols="4">
+                              <v-btn color="error" @click="exitParty">파티 나가기</v-btn>
                          </v-col>
                     </v-row>
                </v-col>
           </v-row>
           <!-- 경기정보영역 -->
+          <!-- <v-row>
+               <v-col cols="12">
+                    <Chat></Chat>
+               </v-col>
+          </v-row> -->
           <v-row class="contents-section pa-3">
                <v-col cols="12">
-                    <PartyMatch :match-id="matchId"/>
+                    <PartyMatch />
                </v-col>
           </v-row>
      </v-container>
 </template>
  
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, onBeforeUnmount } from 'vue'
+import { useRoute, useRouter } from 'vue-router';
+import { format, set, parseISO, addDays } from 'date-fns';
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
+import Chat from '../components/party/Chat.vue';
+import VoteList from "@/components/vote/VoteList.vue"
+
+import { useFootballStore } from '@/stores/football/football'
+import { usePartyStore } from '@/stores/club/party/party'
+
+import { OpenVidu } from 'openvidu-browser'
+import UserVideo from '../components/openvidu/UserVideo.vue'
+
+const route = useRoute()
+const router = useRouter()
+
+const footballStore = useFootballStore()
+const partyStore = usePartyStore()
+
+const { getMatchWatchable, findTeamIdsByFixtureId } = footballStore
+const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
+     getPartyParticipant, deletePartyMember } = partyStore
+
+
+const url = ref("https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu");
+const isUrlExist = ref(false);
+
+watch(() => partyStore.partyInfo, (newVal) => {
+     console.log(newVal)
+     if (newVal?.fixtureUrl != null) {
+          url.value = newVal.fixtureUrl;
+          isUrlExist.value = true;
+     } else {
+          url.value = "https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu";
+          isUrlExist.value = false;
+     }
+     console.log("isUrlExist", isUrlExist.value);
+     console.log("url", url.value);
+}, { immediate: true, deep: true })
+
+//// 파티 정보 수정 로직
+// 파티 입장 및 퇴장
+const clubId = route.params.clubId;
+const partyId = route.params.partyId;
+const partyMemberList = ref(getPartyMemberList(clubId, partyId));
+
+console.log("시작멤버리스트", partyMemberList.value);
+
+const showVote = ref(false);
+
+let isInit = false
+watch(() => partyStore.partyMemberList, (newPartyMembers) => {
+     console.log("newPartyMembers", newPartyMembers);
+     partyMemberList.value = newPartyMembers;
+     partyMemberList.value.map((member) => {
+          console.log(member)
+          console.log(localStorage.getItem("id"))
+          if (member.memberId == localStorage.getItem("id")) {
+               joinSession(member.openviduToken, member.nickName)
+          }
+     })
+}, { immediate: true, deep: true });
+
+const myId = ref(null);
+
+watch(() => partyStore.myParticipantId, (newMyId) => {
+     console.warn("myId changed", newMyId);
+     myId.value = newMyId;
+}, { immediate: true });
+
+
+// 사용자가 탭을 나갈 때 실행할 함수
+function handleBeforeUnload(event) {
+     delPartyMem();
+     // 사용자에게 경고 메시지를 띄우기
+     // event.returnValue를 설정하면 브라우저가 사용자에게 나가기 전에 확인을 요청합니다.
+     event.preventDefault();
+     event.returnValue = "정말로 페이지를 나가시겠습니까?";
+     return message; // 다른 브라우저에서 필요
+}
+
+onMounted(() => {
+     // const clubId = route.params.clubId;
+     // const partyId = route.params.partyId;
+     console.log("onMounted", clubId, partyId);
+     console.log(getPartyMemberList(clubId, partyId));
+     postPartyMember(clubId, partyId);
+     window.addEventListener('beforeunload', handleBeforeUnload);
+})
+
+onBeforeUnmount(() => {
+     // const clubId = route.params.clubId;
+     // const partyId = route.params.partyId;
+     // deletePartyMember(clubId, partyId, myId.value);
+     window.removeEventListener('beforeunload', handleBeforeUnload);
+})
+
+const answer = window.confirm('쿠팡 플레이 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?');
+if (answer) {
+     const url = "https://www.coupangplay.com/login";
+     window.open(url, '_blank');
+}
+
+const delPartyMem = () => {
+     console.log("delPartyMem", partyMemberList.value);
+     myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
+     if (myId.value !== undefined) {
+          console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
+          deletePartyMember(clubId, partyId, myId.value.participantId);
+     }
+}
+
+onUnmounted(() => {
+     myId.value = partyStore.partyMemberList.find(
+          (member) => member.userId === partyStore.myUserId
+     ).participantId;
+     deletePartyMember(clubId, partyId, myId.value);
+})
+
+const delPartyInfo = () => {
+     console.log("delPartyInfo", partyMemberList.value);
+     deletePartyInfo(clubId, partyId);
+}
+
+console.log(clubId, partyId);
+console.log(getPartyMemberList(clubId, partyId));
+
+// 채팅창 표시 여부를 제어할 상태 변수
+const showChat = ref(false);
+
+// 채팅창 토글 함수
+function toggleChat() {
+     showChat.value = !showChat.value;
+}
+
+// 채팅창 높이 동적 설정
+const chatDivHeight = ref('300px'); // 초기값 설정
+const chatDivHeightProp = ref(300); // 초기값 설정
+
+const updatechatDivHeight = () => {
+     const chattingSection = document.querySelector('.chatting-section');
+     const buttonSection = document.querySelector('.button-section');
+
+     if (chattingSection && buttonSection) {
+          // 버튼 섹션을 제외한 높이 계산
+          const height = chattingSection.offsetHeight - 2 * buttonSection.offsetHeight;
+          chatDivHeightProp.value = height;
+          chatDivHeight.value = `${height}px`;
+     }
+};
+
+// 0.2초 후에 채팅창 높이를 다시 계산
+setTimeout(() => {
+     updatechatDivHeight();
+}, 200);
+
+watch(chatDivHeight, (newVal) => {
+     console.log('chatDivHeight changed', newVal);
+});
+
+onMounted(() => {
+     updatechatDivHeight();
+     window.addEventListener('resize', updatechatDivHeight);
+});
+
+onUnmounted(() => {
+     window.removeEventListener('resize', updatechatDivHeight);
+});
+
 
 // 임시 경기 id
-const matchId = ref("1")
+const fixtureId = ref(null);
 
 // 파티 최대 인원 수
 const maxMembers = 6
 
 const partyMembers = ref([
-     { memberId: 1, name: "실버스타", role: "그룹원" },
-     { memberId: 2, name: "제라드", role: "그룹장" },
-     { memberId: 3, name: "벨타이거", role: "그룹원" },
-     { memberId: 4, name: "램파드", role: "그룹원" },
-     { memberId: 5, name: "별명별명", role: "그룹원" },
+     { memberId: 1, name: "실버스타" },
+     { memberId: 2, name: "제라드" },
+     { memberId: 3, name: "벨타이거" },
+     { memberId: 4, name: "램파드" },
+     { memberId: 5, name: "별명별명" },
 ])
 
 // 파티 초대
@@ -102,28 +393,264 @@ const inviteToParty = () => {
 }
 
 // 파티 나가기
-const closeTab = () => {
-    // 사용자에게 확인을 요청하는 대화상자 표시
-    if (confirm("파티를 나가시겠습니까?")) {
-        window.close(); // 사용자가 '예'를 선택한 경우 탭 닫기
-    }
-    // '아니오'를 선택한 경우 아무 동작도 하지 않음
+const exitParty = () => {
+     // 사용자에게 확인을 요청하는 대화상자 표시
+     if (confirm("파티를 나가시겠습니까?")) {
+          delPartyMem();
+          setTimeout(() => {
+               // confirm 후 200ms 지나서 클럽 페이지로 이동
+               router.push({ name: 'ClubMain', params: { clubId } }).then(() => {
+                    // router.push 프로미스 완료 후 페이지 새로고침
+                    // window.location.reload();
+                    router.go();
+               });
+          }, 200);
+     }
+     // '아니오'를 선택한 경우 아무 동작도 하지 않음
 }
 
 
-let partyTitle = ref('파티 타이틀');
-let matchName = ref('경기 이름');
+function editPartyInfo(isAsk) {
+     isEditing.value = isAsk;
+     isMatchEditing.value = isAsk;
+     isTitleEditing.value = isAsk;
+     isUrlEditing.value = isAsk;
+
+     if (!isAsk) {
+          console.log("editPartyInfo", clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+          putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+     }
+     // console.log("editPartyInfo",clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+     // putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+}
+
+function clickCheck(isAsk) {
+     dialog.value = false;
+     if (isAsk) {
+          isAsk = false;
+          editPartyInfo(isAsk);
+     }
+}
+
+// 수정 여부 전체 관리
+const isEditing = ref(false);
 
 // 파티 정보 수정
-const editParty = () => {
-     const newPartyTitle = prompt('새 파티 타이틀을 입력하세요', partyTitle.value);
-     if (newPartyTitle !== null) partyTitle.value = newPartyTitle;
-}
+const isTitleEditing = ref(false);
+const titleModel = ref(null);
+
+// 영상 주소 수정
+const isUrlEditing = ref(false);
+const urlModel = ref(null);
 
 // 경기 정보 수정
-const editMatch = () => {
-     const newMatchName = prompt('새 경기 이름을 입력하세요', matchName.value);
-     if (newMatchName !== null) matchName.value = newMatchName;
+const isMatchEditing = ref(false);
+const matchModel = ref(null);
+
+const dialog = ref(false);
+const matchName = ref([]);
+
+
+const matches = ref([]);
+
+watch(() => footballStore.matchWatchable, (newVal) => {
+     console.log(newVal);
+     matches.value = newVal;
+}, { immediate: true }), { deep: true };
+
+// 시청 가능 경기 목록
+const today = ref(new Date());
+const startDate = ref(format(addDays(today.value, -1), 'yyyy-MM-dd'));
+const endDate = ref(format(addDays(today.value, 7), 'yyyy-MM-dd'));
+
+// console.log(today.value)
+// console.log(format(addDays(today.value, -1), 'yyyy-MM-dd'))
+// console.log(format(addDays(today.value, 7), 'yyyy-MM-dd'))
+const getMatchTitle = (item) => {
+     const status = ref("");
+     if (item.status === "not start") {
+          status.value = "예정";
+     } else {
+          status.value = "경기 중";
+     }
+     matchName.value.push({
+          fixtureId: item.fixtureId,
+          text:`${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr}`
+          // text:`${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`
+     });
+     return `${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`;
+};
+
+const teamIds = ref({ home: null, homeName: null, away: null, awayName: null });
+const onMatchChange = () => {
+     // console.log("onMatchChange")
+     fixtureId.value = matchModel.value;
+     footballStore.fixtureIdForParty = matchModel.value;
+     if (matchModel.value !== null) {
+          teamIds.value = findTeamIdsByFixtureId(matchModel.value);
+          console.log(teamIds.value);
+     }
+}
+
+getMatchWatchable(startDate.value, endDate.value);
+
+// matches
+// {
+//     "fixtureId": 15,
+//     "startTime": "2024-02-02T08:00:00",
+//     "round": "5차전",
+//     "status": "not start",
+//     "homeTeamGoal": 0,
+//     "awayTeamGoal": 0,
+//     "league": {
+//         "leagueId": 1,
+//         "nameKr": "챔피언십",
+//         "logo": "https://media.api-sports.io/football/leagues/40.png"
+//     },
+//     "homeTeam": {
+//         "seasonLeagueTeamId": 4,
+//         "teamId": 4,
+//         "nameKr": "멍뭉",
+//         "nameEng": "cccc",
+//         "logo": "https://source.unsplash.com/random/300x300?emblem"
+//     },
+//     "awayTeam": {
+//         "seasonLeagueTeamId": 1,
+//         "teamId": 1,
+//         "nameKr": "마루쉐",
+//         "nameEng": "maroche",
+//         "logo": "https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg"
+//     }
+// }
+
+
+
+// const editMatch = () => {
+//      const newMatchName = prompt('새 경기 이름을 입력하세요', matchName.value);
+//      if (newMatchName !== null) matchName.value = newMatchName;
+// }
+
+
+const OV = ref(undefined)
+const session = ref(undefined)
+// const mainStreamManager = ref(undefined) // 우리는 main Streamer가 없음.
+const publisher = ref(undefined)
+const subscribers = ref([])
+
+const videoState = ref(true)
+const audioState = ref(true)
+
+const toggleVideoState = () => {
+     console.log("call toggle video state")
+     videoState.value = !videoState.value
+     publisher.value.publishVideo(videoState.value);
+}
+
+const toggleAudioState = () => {
+     console.log("call toggle audio state")
+     audioState.value = !audioState.value
+     publisher.value.publishAudio(audioState.value)
+}
+
+
+const joinSession = (openviduToken, nickName) => {
+     console.log("joinSession Called!!!!!!!!!!!!!!!!!!!")
+     console.log(openviduToken)
+     console.log(nickName)
+     if (!isInit) {
+          isInit = true
+          OV.value = new OpenVidu()
+          // --- 2) Init a session ---
+          session.value = OV.value.initSession()
+
+          // --- 3) Specify the actions when events take place in the session ---
+
+          // On every new Stream received...
+          session.value.on('streamCreated', ({ stream }) => {
+               const subscriber = session.value.subscribe(stream)
+               subscribers.value.push(subscriber)
+               console.log("subscriber added")
+               console.log(subscribers.value)
+          })
+
+          // On every Stream destroyed...
+          session.value.on('streamDestroyed', ({ stream }) => {
+               console.log("subscriber removed")
+               const index = subscribers.value.indexOf(stream.streamManager, 0)
+               if (index >= 0) {
+                    subscribers.value.splice(index, 1)
+               }
+          })
+
+          // On every asynchronous exception...
+          session.value.on('exception', ({ exception }) => {
+               console.log("exception occured")
+               console.warn(exception)
+          })
+
+          session.value.on('signal', (event) => {
+               console.log(event.data) // Message
+               console.log(event.from) // Connection object of the sender
+               console.log(event.type) // The type of message
+          })
+
+          // --- 4) Connect to the session with a valid user token ---
+
+          // Get a token from the OpenVidu deployment
+          // First param is the token. Second param can be retrieved by every user on event
+          // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
+          console.log(session.value)
+          session.value
+               .connect(openviduToken, { clientData: nickName })
+               .then(() => {
+                    // --- 5) Get your own camera stream with the desired properties ---
+
+                    // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
+                    // element: we will manage it on our own) and with the desired properties
+                    let initPublisher = OV.value.initPublisher(undefined, {
+                         audioSource: undefined, // The source of audio. If undefined default microphone
+                         videoSource: undefined, // The source of video. If undefined default webcam, screen 선택 시 화면 공유 가능
+                         publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+                         publishVideo: true, // Whether you want to start publishing with your video enabled or not
+                         resolution: '640x480', // The resolution of your video
+                         frameRate: 30, // The frame rate of your video
+                         insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+                         mirror: true, // Whether to mirror your local video or not
+                    })
+
+                    // Set the main video in the page to display our webcam and store our Publisher
+                    //    mainStreamManager.value = initPublisher
+                    publisher.value = initPublisher
+
+                    // --- 6) Publish your stream ---
+
+                    session.value.publish(publisher.value)
+               })
+               .catch((error) => {
+                    console.log(
+                         'There was an error connecting to the session:',
+                         error.code,
+                         error.message,
+                    )
+               })
+
+          window.addEventListener('beforeunload', leaveSession)
+     }
+}
+
+const leaveSession = () => {
+     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
+     if (session.value) session.value.disconnect()
+
+     // Empty all properties...
+     session.value = undefined
+     //   mainStreamManager.value = undefined
+     publisher.value = undefined
+     subscribers.value = []
+     OV.value = undefined
+
+     // Remove beforeunload listener
+     window.removeEventListener('beforeunload', leaveSession)
 }
 
 </script>
@@ -137,62 +664,125 @@ const editMatch = () => {
 }
 
 .match-section {
-     background-color: grey;
-     /* 화면 크기 960*540 고려 */
-     /* 1080p 의 50% 크기 */
-     min-width: 960px;
+     /* background-color: #333D51; */
+     min-width: 800px;
+     /* 최소 너비 유지 */
+     width: 60vw;
+     /* 화면 너비에 따라 조정 */
+     max-width: 70%;
+     /* 최대 너비 제한, 필요에 따라 조정 */
      min-height: 540px;
-     max-width: 960px;
-     height: 590px;
+     margin: auto;
+     /* 중앙 정렬 */
 }
 
-.match-section .party {
+.selector {
+     margin-top: 10px;
+     min-height: 110px;
+     height: 27vh;
+     max-height: 200px;
+}
+
+.party {
      /* background-color: #333D51; */
      height: 45px;
      font-size: 1.5rem;
 }
 
-.match-section .match {
+.match {
      /* background-color: #333D51; */
-     padding-top: 5px;
+     padding: auto;
      height: 40px;
      font-size: 1.25rem;
 }
 
 .match-video {
-     background-color: lightslategray;
-     min-height: 500px;
+     background-color: lightgrey;
+     height: 75vh;
+     /* aspect-ratio: 16/9; */
+     min-height: 400px;
 }
 
 .chatting-section {
+     position: relative;
+     display: flex;
+     flex: 0 0 30%;
+     flex-direction: column;
+     justify-content: space-between;
+     /* 콘텐츠를 위아래로 분산시킴 */
      background-color: #333D51;
      min-height: 100%;
+     height: 88vh;
      min-width: 320px;
+     max-width: 30%;
+     width: 30vw;
+     /* 채팅 섹션의 높이를 브라우저 창의 높이와 맞춤 */
+     /* height: 100vh;  */
+     border: 1px solid #CBD0D8;
+}
+
+.cam-section {
+     height: 70%;
+     /* justify-self: start; */
+     align-content: start;
 }
 
 .cam-video {
      background-color: blueviolet;
      border: 1px solid white;
-     min-height: 150px;
+     min-height: 100px;
+     height: 33%;
+     /* height: 300px; */
      text-align: center;
      /* 중앙 정렬 */
      display: flex;
      flex-direction: column;
      justify-content: center;
      align-items: center;
-
+     /* aspect-ratio: 16/16; */
+     padding: 0;
 }
 
 .button-section {
-     padding-top: 20px;
-     /* 버튼 영역과 위의 콘텐츠 사이에 간격 추가 */
+     /* 나머지 콘텐츠 위에 버튼 섹션을 밀어 올림 */
+     /* margin-top: auto;  */
+     max-height: 60px;
+     width: 105%;
      text-align: center;
+     /* 버튼을 가운데 정렬 */
+     justify-content: space-between;
 }
 
 .chat-button {
      background-color: yellow;
      /* width: 150px; */
      /* 채팅창 버튼의 너비 조정 */
+}
+
+.chat-window {
+     border: 2px solid black;
+     position: absolute;
+     /* bottom: 0;  */
+     /* 채팅창을 하단에 위치시킵니다. */
+     left: 0;
+     /* 채팅창을 왼쪽에 위치시킵니다. */
+     width: 100%;
+     /* 채팅창 너비를 chatting-section에 맞춥니다. */
+     /* height: 50%; */
+     /* 채팅창 높이를 조정합니다. */
+     /* min-height: 450px; */
+     background-color: #CBD0D8;
+     /* 채팅창 배경색 */
+     overflow-y: auto;
+     /* 내용이 많을 경우 스크롤 */
+     /* z-index: 10;  */
+     /* 다른 요소 위에 채팅창이 나타나도록 z-index 설정 */
+     padding: 0;
+}
+
+.chat-content {
+     font-size: 2rem;
+     color: #333D51;
 }
 
 .invite-icon {
@@ -204,9 +794,41 @@ const editMatch = () => {
 }
 
 .contents-section {
-     margin-top: 0px;
+     /* margin: 2%; */
      /* min-height: 100%; */
-     min-width: 1280px;
+     min-width: 1200px;
      /* color: #121212; */
+     /* 내용물 가운데 정렬하기 */
+     text-align: center;
 }
-</style>
+
+
+.button-section button {
+     width: 400px;
+}
+
+.select-field>.v-card-text {
+     color: #333D51;
+     height: 90px;
+     padding: 0;
+}
+
+/* Chrome, Edge, Safari */
+.match-video::-webkit-scrollbar {
+     display: none;
+     /* 스크롤바 영역을 숨깁니다 */
+}
+
+/* Firefox */
+.match-video {
+     scrollbar-width: none;
+     /* Firefox에서 스크롤바를 숨깁니다 */
+}
+
+/* IE and Edge */
+.match-video {
+     -ms-overflow-style: none;
+     /* Internet Explorer 및 Edge에서 스크롤바를 숨깁니다 */
+     overscroll-behavior: contain;
+}
+</style> 

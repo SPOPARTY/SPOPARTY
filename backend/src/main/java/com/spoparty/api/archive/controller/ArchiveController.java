@@ -3,7 +3,6 @@ package com.spoparty.api.archive.controller;
 import static com.spoparty.api.common.constants.ErrorCode.*;
 import static com.spoparty.api.common.constants.SuccessCode.*;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -21,6 +20,7 @@ import com.spoparty.api.archive.entity.ArchiveProjection;
 import com.spoparty.api.archive.service.ArchiveService;
 import com.spoparty.api.club.repository.ClubRepository;
 import com.spoparty.api.common.dto.ApiResponse;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.service.FileService;
 import com.spoparty.api.member.service.MemberService;
 
@@ -47,10 +47,7 @@ public class ArchiveController {
 	@GetMapping("/{archiveId}")
 	public ResponseEntity<?> getArchive(@PathVariable("archiveId") Long archiveId) {
 		ArchiveProjection archive = archiveService.getArchive(archiveId);
-		if (archive == null)
-			return ApiResponse.error(DATA_NOT_FOUND);
-		else
-			return ApiResponse.success(GET_SUCCESS, archive);
+		return ApiResponse.success(GET_SUCCESS, archive);
 	}
 
 	@PostMapping
@@ -58,13 +55,11 @@ public class ArchiveController {
 		MultipartFile file) {
 		Archive archive = new Archive();
 		archive.setMember(memberService.findById(memberId));
-		archive.setClub(clubRepository.findById(clubId).orElse(null));
+		archive.setClub(clubRepository.findById(clubId).orElseThrow(() -> new CustomException(DATA_NOT_FOUND)));
 		archive.setPartyTitle(partyTitle);
 		archive.setFixtureTitle(fixtureTitle);
-		try {
+		if (file != null) {
 			archive.setFile(fileService.uploadFile(file));
-		} catch (IOException e) {
-			return ApiResponse.error(EXAMPLE_ERROR);
 		}
 		ArchiveProjection data = archiveService.registerArchive(archive);
 		return ApiResponse.success(CREATE_SUCCESS, data);
@@ -76,27 +71,17 @@ public class ArchiveController {
 		archive.setId(archiveId);
 		archive.setPartyTitle(partyTitle);
 		archive.setFixtureTitle(fixtureTitle);
-		try {
-			if (file != null) {
-				archive.setFile(fileService.uploadFile(file));
-			}
-		} catch (IOException e) {
-			return ApiResponse.error(EXAMPLE_ERROR);
+		if (file != null) {
+			archive.setFile(fileService.uploadFile(file));
 		}
 		ArchiveProjection data = archiveService.updateArchive(archive);
-		if (data == null)
-			return ApiResponse.error(EXAMPLE_ERROR);
-		else
-			return ApiResponse.success(UPDATE_SUCCESS, data);
+		return ApiResponse.success(UPDATE_SUCCESS, data);
 	}
 
 	@DeleteMapping("/{archiveId}")
 	public ResponseEntity<?> deleteArchive(@PathVariable("archiveId") Long archiveId) {
-		ArchiveProjection archive = archiveService.deleteArchive(archiveId);
-		if (archive == null)
-			return ApiResponse.success(DELETE_SUCCESS, null);
-		else
-			return ApiResponse.error(EXAMPLE_ERROR);
+		archiveService.deleteArchive(archiveId);
+		return ApiResponse.success(DELETE_SUCCESS);
 	}
 
 }

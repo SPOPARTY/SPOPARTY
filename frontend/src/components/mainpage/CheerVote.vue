@@ -2,7 +2,8 @@
   <v-container fluid class="pa-2 fill-height part-section">
     <v-row justify="center">
       <v-col cols="12" class="d-flex flex-column align-center justify-center">
-        <v-carousel class='carousel' cycle interval="7000" height="450px" hide-delimiter-background color="red">
+        <v-carousel v-model="model" class='carousel' cycle interval="6000" height="500px" 
+          hide-delimiter-background progress="primary" color="red" :key="carouselKey">
           <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
             <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
               <!-- 경기 기본 정보 -->
@@ -12,35 +13,58 @@
                   <v-icon>mdi-circle-small</v-icon>
                   {{ match.fixture.league.nameKr }}
                   <v-icon>mdi-circle-small</v-icon>
-                  <v-img src="/premier_league.png" class="league-logo"></v-img>
+                  <v-img :src="match.fixture.league.logo" class="league-logo"></v-img>
                 </p>
               </div>
               <!-- 투표 상태 메시지 -->
               <div class="vote-message">
-                <h1>{{ convertToBoolean(match.already_cheer) ? '이미 투표하셨습니다' : '팀을 선택해주세요!' }}</h1>
+                <h1>{{ match.alreadyCheer ? '이미 투표하셨습니다' : '팀을 선택해주세요!' }}</h1>
               </div>
               <!-- 투표 버튼 및 득표율 -->
-              <div class="d-flex justify-center align-center">
+              <div class="d-flex justify-center align-center pb-12">
                 <!-- 투표 버튼 -->
                 <!-- 홈 팀 카드 -->
-                <v-card :disabled="convertToBoolean(match.already_cheer)" class="team-card"
-                  @click="() => voteForTeam(index, 'home')">
+                <div class="wrapper pb-1">
+                <div v-if="match.alreadyCheer"
+                  :class="{ 'barWin': votePercentage(match, 'home') > 50, 
+                            'barLose': votePercentage(match, 'home') < 50,
+                            'barSame':votePercentage(match, 'home') == 50, }"
+                  :style="{ height: homePercentage*2.5 + 'px' }"
+                  class="bar"></div>
+                </div>
+                <!-- 여기까지 득표율에 따른 막대기 -->
+                <v-card :disabled="match.alreadyCheer" class="team-card text-center"
+                  @click="() => voteForTeam(match, 'home')">
                   <v-img :src="match.fixture.homeTeam.logo" class="team-logo"></v-img>
-                  <v-card-title :class="{ chosen: match.fixture.chosenTeam == 'home' }">{{ match.fixture.homeTeam.nameKr
-                  }}</v-card-title>
-                  <v-card-text v-if="convertToBoolean(match.already_cheer)">{{ votePercentage(match, 'home')
-                  }}</v-card-text>
+                  <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.homeTeam.teamId }">
+                    {{ match.fixture.homeTeam.nameKr }}
+                  </v-card-title>
+                  <v-card-text v-if="match.alreadyCheer">
+                    <p>득표 : {{ votePercentage(match, 'home') }}%</p>
+                  </v-card-text>
                 </v-card>
                 <span class="VS">VS</span>
                 <!-- 원정 팀 카드 -->
-                <v-card :disabled="convertToBoolean(match.already_cheer)" class="team-card"
-                  @click="() => voteForTeam(index, 'away')">
+                <v-card :disabled="match.alreadyCheer" class="team-card text-center"
+                  @click="() => voteForTeam(match, 'away')">
                   <v-img :src="match.fixture.awayTeam.logo" class="team-logo"></v-img>
-                  <v-card-title :class="{ chosen: match.fixture.chosenTeam == 'away' }">{{ match.fixture.awayTeam.nameKr
-                  }}</v-card-title>
-                  <v-card-text v-if="convertToBoolean(match.already_cheer)">{{ votePercentage(match, 'away')
-                  }}</v-card-text>
+                  <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.teamId }">
+                    {{ match.fixture.awayTeam.nameKr }}
+                  </v-card-title>
+                  <v-card-text v-if="match.alreadyCheer">
+                    <p>득표 : {{ votePercentage(match, 'away') }}%</p>
+                  </v-card-text>
                 </v-card>
+                <!-- 득표율에 따른 막대기 -->
+                <div class="wrapper pb-1">
+                <div v-if="match.alreadyCheer"
+                :class="{ 'barWin': votePercentage(match, 'away') > 50, 
+                          'barLose': votePercentage(match, 'away') < 50,
+                          'barSame':votePercentage(match, 'away') == 50 }"
+                  :style="{ height: awayPercentage*2.5 + 'px' }"
+                  class="bar"></div>
+                </div>
+                <!-- 여기까지 득표율에 따른 막대기 -->
               </div>
             </div>
           </v-carousel-item>
@@ -52,7 +76,36 @@
 
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue';
+import { useFootballStore } from '@/stores/football/football';
+import { set } from 'date-fns';
+
+const footballStore = useFootballStore();
+
+const { getCheersData, postCheersData } = footballStore;
+
+// 비동기 함수 호출
+getCheersData();
+
+// post 메서드 함수 관련
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
+const memberId = ref(localStorage.getItem("id"));
+
+const postCheers = (data) => {
+  postCheersData(data);
+  setTimeout(() => {
+    getCheersData();
+  }, 100);
+};
+
+const model = ref(0);
+
+// cheersData가 업데이트 되면 cheer를 업데이트합니다.
+const cheer = ref([]);
+watch(() => footballStore.cheersData, (newVal) => {
+  cheer.value = newVal;
+}, { immediate: true, deep: true});
+
 
 function convertToBoolean(str) {
   return str === "true";
@@ -64,95 +117,155 @@ function formatDate(dateStr) {
 }
 
 // 예시 응원 데이터
-const cheer = ref(
-  [
-    {
-      "cheerFixtureId": 1,
-      "already_cheer": "true",
-      "homeTeamCount": 123,
-      "awayTeamCount": 133,
-      "fixture": {
-        "fixtureId": "1",
-        "startTime": "YYYY-MM-DD hh:mm:ss.000000",
-        "round": "32강",
-        "status": "경기 시작 상태",
-        "homeTeamGoal": 1,
-        "awayTeamGoal": 1,
-        "chosenTeam": "home",
-        "league": {
-          "leagueId": "1",
-          "nameKr": "프리미어 리그",
-          "logo": "/premier_league.png"
-        },
-        "homeTeam": {
-          "seasonLeagueTeamId": "1",
-          "teamId": "1",
-          "nameKr": "맨유",
-          "logo": "/spo-icon.png",
-        },
-        "awayTeam": {
-          "seasonaLeagueTeamId": "1",
-          "teamId": "2",
-          "nameKr": "토트넘",
-          "logo": "/spo-icon.png",
-        }
-      }
-    },
-    {
-      "cheerFixtureId": 2,
-      "already_cheer": "false",
-      "homeTeamCount": 280,
-      "awayTeamCount": 72,
-      "fixture": {
-        "fixtureId": 3,
-        "startTime": "2023-01-17 15:00",
-        "chosenTeam": "null",
-        "league": {
-          "leagueId": "1",
-          "nameKr": "프리미어 리그",
-          "logo": "/premier_league.png"
-        },
-        "homeTeam": {
-          "teamId": 1,
-          "nameKr": "맨체스터 유나이티드",
-          "nameEng": "manchester united",
-          "logo": "/spo-icon.png",
-        },
-        "awayTeam": {
-          "teamId": 4,
-          "nameKr": "맨체스터 시티",
-          "nameEng": "manchester city",
-          "logo": "/spo-icon.png",
-        }
-      }
-    }
-  ]
-)
+// cheer
+// {
+//     "cheerFixtureId": 3,
+//     "alreadyCheer": false,
+//     "homeCount": null,
+//     "awayCount": null,
+//     "cheerTeamId": null,
+//     "fixture": {
+//         "fixtureId": 2,
+//         "startTime": "2024-01-26T12:00:00",
+//         "round": "5차전",
+//         "status": "not start",
+//         "homeTeamGoal": 0,
+//         "awayTeamGoal": 0,
+//         "league": {
+//             "leagueId": 1,
+//             "nameKr": "챔피언십",
+//             "logo": "https://media.api-sports.io/football/leagues/40.png"
+//         },
+//         "homeTeam": {
+//             "seasonLeagueTeamId": 1,
+//             "teamId": 1,
+//             "nameKr": "마루쉐",
+//             "nameEng": "maroche",
+//             "logo": "https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg"
+//         },
+//         "awayTeam": {
+//             "seasonLeagueTeamId": 4,
+//             "teamId": 4,
+//             "nameKr": "멍뭉",
+//             "nameEng": "cccc",
+//             "logo": "https://source.unsplash.com/random/300x300?emblem"
+//         }
+//     }
+// }
 
-function voteForTeam(matchIndex, team) {
-  const match = cheer.value[matchIndex];
-  if (team === 'home') {
-    match.homeTeamCount++;
-    match.fixture.chosenTeam = 'home';
-  } else {
-    match.awayTeamCount++;
-    match.fixture.chosenTeam = 'away';
+async function voteForTeam(match, team) {
+  if (match.alreadyCheer === 'true') return;
+  if (isLogined.value === false || memberId === null) {
+    alert("로그인이 필요한 서비스입니다.");
+    return;
   }
-  match.already_cheer = 'true';
+
+  const cheerFixtureId = match.cheerFixtureId;
+  const teamId = team === 'home' ? match.fixture.homeTeam.seasonLeagueTeamId : match.fixture.awayTeam.seasonLeagueTeamId;
+  const fixtureId = match.fixture.fixtureId;
+  // memberId.value = Number(memberId.value)
+
+  const data = {
+    memberId: memberId.value,
+    teamId: teamId,
+    cheerFixtureId: cheerFixtureId,
+    fixtureId: fixtureId
+  } 
+
+  console.log("data=",data);
+  postCheers(data).then(() => {
+      carouselKey.value++; // 강제 리렌더링을 위한 key 값 변경
+      resetBarAnimation(match); // 득표율 바 업데이트
+  });
 }
 
+const homePercentage = ref(0);
+const awayPercentage = ref(0);
+
 const votePercentage = (match, team) => {
-  const totalVotes = match.homeTeamCount + match.awayTeamCount;
-  if (totalVotes === 0) return "0%";
+  const totalVotes = match.homeCount + match.awayCount;
+  const result1 = ((match.homeCount / totalVotes) * 100).toFixed(0);
+  const result2 = 100 - result1;
+  if (totalVotes === 0) return 0;
   return team === 'home'
-    ? ((match.homeTeamCount / totalVotes) * 100).toFixed(0) + "%"
-    : ((match.awayTeamCount / totalVotes) * 100).toFixed(0) + "%";
+    ? result1
+    : result2;
 };
+
+//// 응원 득표율을 Bar로 표현하기 위한 로직
+
+const carouselKey = ref(0);
+
+onMounted(() => {
+  // setInterval을 사용하여 cheer.value.length가 0보다 큰지 확인
+  const checkCheerLength = setInterval(() => {
+    if (cheer.value.length > 0) {
+      // cheer.value.length가 0보다 크면 초기화 로직을 실행
+      const currentMatch = cheer.value[model.value];
+      if (currentMatch && currentMatch.alreadyCheer) {
+        resetBarAnimation(currentMatch);
+      }
+      // 필요한 작업을 수행한 후, 더 이상 확인이 필요 없으므로 setInterval을 정리
+      console.log("clearInterval")
+      clearInterval(checkCheerLength);
+    }
+  }, 1000); // 1초 간격으로 확인
+});
+
+// 캐러셀의 현재 항목이 변경될 때 호출되는 함수
+watch(model, async (newVal) => {
+  // 캐러셀 항목 변경 후 DOM 업데이트를 기다림
+  // await nextTick(); 
+  const currentMatch = cheer.value[newVal];
+  console.log("nextTick", newVal)
+  if (currentMatch && currentMatch.alreadyCheer) {
+    // 막대 애니메이션 초기화
+    // 여기서 막대의 높이를 0으로 설정한 후 실제 높이로 변경
+    console.log("reset")
+    resetBarAnimation(currentMatch);
+  }
+}, { immediate: true, deep: true });
+
+function resetBarAnimation(match) {
+  // 막대의 높이를 0으로 초기화
+  // homePercentage.value = 0;
+  // awayPercentage.value = 0;
+
+  // 약간의 지연 후 막대의 높이를 원래 값으로 설정하여 애니메이션을 생성합니다.
+  nextTick(() => {
+    homePercentage.value = votePercentage(match, 'home');
+    awayPercentage.value = votePercentage(match, 'away');
+  });
+    // {homePercentage * 2.5}px;
+    // {awayPercentage * 2.5}px;
+  // 200ms의 지연은 애니메이션을 생성하기 위한 시간
+  // 필요에 따라 수정 가능, 아래 .bar 스타일의 transition 속성도 함께 수정 가능
+}
+
 
 </script>
 
 <style scoped>
-.carousel {}
+/* .carousel {} */
+.wrapper {
+  margin-top: auto;
+  width: 20px; /* 래퍼 너비 조정 */
+}
+.bar {
+  width: 20px;
+  /* background-color: rgb(61, 172, 186); */
+  transition: height 1.0s ease; /* 애니메이션 효과 */
+  bottom: 0;
+}
+.barWin {
+  background-color: rgb(232, 20, 20);
+}
+.barLose {
+  background-color: #333D51;
+}
+.barSame {
+  background-color: #D3AC2B;
+}
 
 .vote-container {
   display: flex;
@@ -164,6 +277,7 @@ const votePercentage = (match, team) => {
   margin-bottom: 20px;
   text-align: center;
   font-size: 2rem;
+  color: #292646;
 }
 
 .team-card {

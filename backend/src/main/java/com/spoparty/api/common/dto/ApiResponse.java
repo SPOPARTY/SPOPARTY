@@ -28,6 +28,11 @@ public class ApiResponse<T> {
 		this.message = message;
 	}
 
+	public static ResponseEntity<?> success(SuccessCode code) {
+		return ResponseEntity.status(code.getStatus().value())
+			.body(new ApiResponse<>(code.getStatus().value(), code.getMessage()));
+	}
+
 	public static <T> ResponseEntity<?> success(SuccessCode code, T data) {
 		return ResponseEntity.status(code.getStatus().value())
 			.body(new ApiResponse<>(code.getStatus().value(), code.getMessage(), data));
@@ -43,6 +48,11 @@ public class ApiResponse<T> {
 	public static ResponseEntity<?> error(ErrorCode code) {
 		return ResponseEntity.status(code.getStatus().value())
 			.body(new ApiResponse<>(code.getStatus().value(), code.getMessage()));
+	}
+
+	public static ResponseEntity<?> error(ErrorCode code, String message) {
+		return ResponseEntity.status(code.getStatus().value())
+			.body(new ApiResponse<>(code.getStatus().value(), "[" + code.getMessage() + "]" + message));
 	}
 
 	public static ResponseEntity<?> error(HttpStatus status, String message) {

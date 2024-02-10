@@ -3,6 +3,8 @@ package com.spoparty.api.football.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.Where;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spoparty.api.common.entity.BaseEntity;
 
@@ -25,6 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "is_deleted = 0")
 public class CheerFixture extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,10 +48,18 @@ public class CheerFixture extends BaseEntity {
 	@OneToMany(mappedBy = "cheerFixture")
 	private List<Cheer> cheers = new ArrayList<>();
 
+
+	public void cheerHome(){
+		homeCount++;
+	}
+
+	public void cheerAway() {
+		awayCount++;
+	}
 	@Builder
-	public CheerFixture(long homeCount, long awayCount) {
+	public CheerFixture(Fixture fixture, long homeCount, long awayCount) {
+		this.fixture = fixture;
 		this.homeCount = homeCount;
 		this.awayCount = awayCount;
-		// this.fixture = fixture;
 	}
 }

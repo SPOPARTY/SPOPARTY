@@ -1,6 +1,7 @@
 package com.spoparty.api.party.entity;
 
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Where;
 
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.common.entity.BaseEntity;
@@ -17,7 +18,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,36 +25,43 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter @Setter
-@ToString
+@Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
+@Where(clause = "is_deleted = 0")
 public class Party extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "party_id")
-	private long id;
+	private Long id;
 
-	@Column(nullable = false)
+	@Setter
+	private String openviduSessionId;
+
+	@Setter
+	@Column(length = 30)
 	private String title;
 
-	@ColumnDefault("6")
-	private int maxParticipants;
-
-	@ColumnDefault("1")
-	private int currentParticipants;
-
 	@Column(nullable = false)
+	private Integer maxParticipants = 6;
+
+	@Setter
 	private String fixtureUrl;
 
+	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Member host;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fixture_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "fixture_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Fixture fixture;
 
-	@OneToOne(mappedBy = "party", fetch = FetchType.LAZY)
-	@JoinColumn(name = "club_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Club club;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Member hostMember;
+
+	public static Party createParty(Member hostMember, Club club) {
+		Party party = new Party();
+		party.hostMember = hostMember;
+		club.setParty(party);
+		return party;
+	}
 }

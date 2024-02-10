@@ -1,5 +1,7 @@
 package com.spoparty.api.board.service;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.spoparty.api.board.entity.Board;
 import com.spoparty.api.board.entity.BoardProjection;
 import com.spoparty.api.board.repository.BoardRepository;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.service.FileService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,40 +25,40 @@ public class BoardService {
 	private final FileService fileService;
 
 	public List<BoardProjection> findByClubId(Long clubId) {
-		return boardRepository.findByClub_id(clubId, BoardProjection.class);
+		return boardRepository.findByClub_idOrderByCreatedTimeDesc(clubId, BoardProjection.class);
 	}
 
 	public BoardProjection findById(Long id) {
-		return boardRepository.findById(id, BoardProjection.class).orElse(null);
+		return boardRepository.findById(id, BoardProjection.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 	}
 
-	public Board registerBoard(Board board) {
-		return boardRepository.save(board);
+	public void registerBoard(Board board) {
+		boardRepository.save(board);
 	}
 
 	@Transactional
-	public Board updateBoard(Board board) {
-		Board data = boardRepository.findById(board.getId()).orElse(null);
-		if (data == null)
-			return null;
-		if (data.getFile() != null)
-			fileService.findById(data.getFile().getId()).softDelete();
-		if (!board.getTitle().equals(""))
+	public BoardProjection updateBoard(Board board) {
+		Board data = boardRepository.findById(board.getId()).orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		if (data.getFile() != null && board.getFile() != null)
+			fileService.deleteFile(data.getFile().getId());
+		if (!board.getTitle().isEmpty())
 			data.setTitle(board.getTitle());
-		if (!board.getContent().equals(""))
+		if (!board.getContent().isEmpty())
 			data.setContent(board.getContent());
 		if (board.getFile() != null)
 			data.setFile(board.getFile());
-		return data;
+		return boardRepository.findById(data.getId(), BoardProjection.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 	}
 
 	@Transactional
-	public Board deleteBoard(Long id) {
-		Board board = boardRepository.findById(id).orElse(null);
-		if (board == null || board.isDeleted())
-			return null;
+	public void deleteBoard(Long id) {
+		Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		if (board.getFile() != null) {
+			fileService.deleteFile(board.getFile().getId());
+		}
 		board.softDelete();
-		return board;
 	}
 
 }

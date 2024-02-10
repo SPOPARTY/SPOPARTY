@@ -1,10 +1,10 @@
 <template>
-     <RouterView/>
-     <!-- <ClubMain :club-id=clunId/> -->
+     <RouterView :club-id="clubId"/>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+
 
 const props = defineProps({
     clubId: {
@@ -13,6 +13,7 @@ const props = defineProps({
         required: true
     }
 })
+
 
 </script>
 

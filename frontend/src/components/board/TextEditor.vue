@@ -1,5 +1,5 @@
 <template>
-    <div v-if="editor">
+    <div v-if="editor" class="buttons">
         <button
             @click="editor.chain().focus().toggleBold().run()"
             :disabled="!editor.can().chain().focus().toggleBold().run()"
@@ -101,10 +101,12 @@ onBeforeMount(() => {
 <style lang="scss">
 .ProseMirror {
   height: 300px;
-  border: 1px solid black;
+  background-color:#CBD0D8;;
   border-radius: 10px;
   padding: 6px;
-  overflow: scroll;  // 내용 넘치면 스크롤바
+  overflow-y: auto; /* 세로 스크롤바만 사용 */
+  overflow-x: hidden; /* 수평 스크롤바 숨기기 */
+  word-break: break-word; /* 긴 텍스트 자동 줄바꿈 */
 
   > * + * {
     margin-top: 0.75em;
@@ -121,6 +123,7 @@ onBeforeMount(() => {
   h4,
   h5,
   h6 {
+    color:black;
     line-height: 1.1;
   }
 
@@ -151,14 +154,16 @@ onBeforeMount(() => {
 
   blockquote {
     padding-left: 1rem;
-    border-left: 2px solid rgba(#0d0d0d, 0.1);
   }
 
   hr {
     border: none;
-    border-top: 2px solid rgba(#0d0d0d, 0.1);
     margin: 2rem 0;
   }
+}
+
+.buttons {
+  color:#D3AC2B
 }
 
 </style>

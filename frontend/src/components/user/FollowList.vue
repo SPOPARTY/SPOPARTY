@@ -5,25 +5,29 @@
         @click:outside="closeModal"
         persistent      >
         <v-card>
-          
-          <v-card-title class="justify-space-between">
-            <span>팔로우 중인 구단 목록</span>
-            <v-btn icon @click="closeModal">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
           <v-row>
-              <v-col cols="6">
+            <v-col>
+              <v-card-title style="margin-left:330px;">팔로우 리스트</v-card-title>
+            </v-col>
+            <v-col class="text-right">
+              <v-btn :ripple="false" @click="closeModal" class="no-background-hover">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+
+          <v-row justify="center">
+              <v-col cols="5">
                   <v-btn 
-                      color="orange" 
+                      color="#333D51" 
                       style="width:100%"
                       @click="showAllClubs">
                       전체
                   </v-btn>
               </v-col>   
-              <v-col cols="6">
+              <v-col cols="5">
                   <v-btn 
-                      color="purple" 
+                      color="#333D51" 
                       style="width:100%"
                       @click="showFollwingClubs">
                       내가 팔로우 한 구단
@@ -64,12 +68,12 @@
                       </v-col>
                       <v-col cols="3">
                         <v-list-item-action>
-                          <v-btn icon v-if="!clubData.following.some(followedClub => followedClub.id === item.id)" @click="followClub(item)">
-                            <v-icon color="green">mdi-plus</v-icon>
+                          <v-btn class="button" icon v-if="!clubData.following.some(followedClub => followedClub.id === item.id)" @click="followClub(item)">
+                            <v-icon>mdi-plus</v-icon>
                           </v-btn>
 
-                          <v-btn icon v-if="clubData.following.some(followedClub => followedClub.id === item.id) && clubData.current == clubData.following" @click="unfollowClub(item.id)">
-                            <v-icon color="red">mdi-delete</v-icon>
+                          <v-btn class="button" icon v-if="clubData.following.some(followedClub => followedClub.id === item.id) && clubData.current == clubData.following" @click="unfollowClub(item.id)">
+                            <v-icon>mdi-delete</v-icon>
                           </v-btn>
         
 
@@ -152,16 +156,10 @@
 
   // 구단을 팔로우
   const followClub = (club) => {
-      console.log("******구단 팔로우******")
-      console.log("memberId -> ",memberId)
       // 이미 팔로우 중인지 확인
       if(!clubData.following.includes(club)) {
         if(confirm("해당 구단을 팔로우 하시겠습니까?") === true) {
-          const data = {
-              memberId  : memberId,
-              teamId : club.id,
-          }
-          followStore.doFollow(data);
+          followStore.doFollow(club.id); // club.id가 곧 teamId
           clubData.following.push(club);
           if (clubData.current === clubData.following){
             clubData.current = [...clubData.following];
@@ -174,18 +172,10 @@
 
     // 구단을 언팔로우
   const unfollowClub = (id) => {
-    console.log("********여기는 구단 언팔로우********")
     console.log("teamid가 무엇이냐? -> ", id)
-    // teamId를 가지고 followTeamId 만들기
-    const followTeamId = props.followList
-        .filter((club) => club.teamId === id)
-        .map((club) => club.id)[0]
-    console.log("이게 옳게 된 followTeamId지", followTeamId)
-
     if (confirm("해당 구단을 팔로우 취소하시겠습니까?") === true) {
-        followStore.doUnFollow(followTeamId);
+        followStore.doUnFollow(id);
 
-        // Remove from both following and current list immediately
         const indexInFollowing = clubData.following.findIndex(club => club.id === id);
         if (indexInFollowing !== -1) {
             clubData.following.splice(indexInFollowing, 1);
@@ -213,6 +203,19 @@
   }
   </script>
 
-  <style scoped>
+  <style scoped lang="scss">
+  .no-background-hover {
+    box-shadow: none !important;
+
+    &:hover {
+      background-color: transparent !important;
+    }
+  }
+
+  .button {
+      color : #292646;
+      box-shadow: none !important;
+      background : transparent !important;
+  }
 
   </style>

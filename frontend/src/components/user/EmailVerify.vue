@@ -6,7 +6,7 @@
     persistent
   >
     <v-card class="justify-center">
-      <v-card-title class="text-h5">이메일 인증</v-card-title>
+      <v-card-title class="text-center">이메일 인증</v-card-title>
       <v-card-text>
         <p>인증 코드가 이메일 주소로 전송되었습니다.</p>
         <p> 코드를 입력해 주세요.</p>

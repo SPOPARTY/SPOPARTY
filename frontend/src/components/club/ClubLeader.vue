@@ -17,7 +17,7 @@
                     </v-btn>
                 </div>
             </div>
-            <div class="feature-container" @click.native="showChangeClubName">
+            <div class="feature-container" @click="showChangeClubName">
                 <v-img class="img" src="/change_club_name.png" alt="그룹명 바꾸기"/>
                 <v-card-text class="feature-text">그룹명 바꾸기</v-card-text>
             </div>
@@ -29,6 +29,10 @@
                 <v-img class="img" src="/ban_club_member.png" alt="그룹원 강퇴"/>
                 <v-card-text class="feature-text">그룹원 강퇴</v-card-text>
             </div>
+            <div class="feature-container" @click="showDeleteClub">
+                <v-img class="img" src="/building.png" alt="그룹 없애기"/>
+                <v-card-text class="feature-text">그룹 없애기</v-card-text>
+            </div>
         </v-card>
     </v-dialog>
 
@@ -38,26 +42,48 @@
     />
     <QuitClub
         v-if="isQuitClubVisible"
+        :club-member-list="clubMemberList"
         @quit-club-close="closeQuitClub"
     />
     <BanClubMemeber
         v-if="isBanClubMemberVisible"
+        :club-member-list="clubMemberList"
         @ban-member-close="closeBanClubMember"
+    />
+    <DeleteClub
+        v-if="isDeleteClubVisible"
+        @delete-club-close="closeDeleteClub"
     />
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted,watch} from 'vue';
+import {useRouter, useRoute} from 'vue-router'
+
 import ChangeClubName from '@/components/club/ChangeClubName.vue';
 import QuitClub from '@/components/club/QuitClub.vue';
 import BanClubMemeber from '@/components/club/BanClubMemeber.vue';
+import DeleteClub from '@/components/club/DeleteClub.vue';
 
+import {useClubStore} from '@/stores/club/clubs'
+
+const router = useRouter();
+const route = useRoute();
 
 const emits = defineEmits([
     'club-leader-close'
 ])
 
+const clubStore = useClubStore();
+
+const clubId = route.params.clubId;
+
 const ModalVisible = ref(true)
+
+const clubMemberList = ref([]);
+watch(() => clubStore.clubMemberList,(newClubMemberList) => {
+    clubMemberList.value = newClubMemberList;
+},{immediate:true})
 
 // 그룹명 바꾸기 
 const isChangeClubNameVisible = ref(false)
@@ -93,12 +119,25 @@ function closeBanClubMember() {
 }
 
 
+// 그룹 폭파시키기
+const isDeleteClubVisible = ref(false);
+
+function showDeleteClub() {
+    isDeleteClubVisible.value = true;
+}
+function closeDeleteClub() {
+    isDeleteClubVisible.value = false;
+}
+
 // 그룹장 기능 모달 닫기
 function closeModal(){
     ModalVisible.value = false;
     emits('club-leader-close')
 }
 
+onMounted(()=> {
+    clubStore.getClubMemberList(clubId);
+})
 
 </script>
 

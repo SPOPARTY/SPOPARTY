@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.common.dto.ApiResponse;
-import com.spoparty.api.common.exception.UnauthorizedException;
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Team;
-import com.spoparty.api.member.entity.FollowingTeam;
 import com.spoparty.api.member.entity.FollowingTeamProjection;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.MemberProjection;
+import com.spoparty.api.member.entity.Notification;
+import com.spoparty.api.member.entity.NotificationProjection;
 import com.spoparty.api.member.service.MemberService;
+import com.spoparty.api.member.service.NotificationService;
 import com.spoparty.security.model.PrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
@@ -37,13 +39,14 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 
 	private final MemberService memberService;
+	private final NotificationService notificationService;
 
 	// Member 기능
 	@GetMapping("/{memberId}")
 	public ResponseEntity<?> getMember(@PathVariable("memberId") Long memberId) {
 		MemberProjection member = memberService.findByIdProjection(memberId);
 		if (member == null)
-			return ApiResponse.error(EXAMPLE_ERROR);
+			throw new CustomException(BAD_CLIENT_REQUEST);
 		else
 			return ApiResponse.success(GET_SUCCESS, member);
 	}
@@ -53,7 +56,7 @@ public class MemberController {
 		log.info("MemberController.register{}: ", member);
 		MemberProjection loginMember = memberService.findByLoginIdProjection(member.getLoginId());
 		if (loginMember != null)
-			return ApiResponse.error(CONFLICT_DATA);
+			throw new CustomException(CONFLICT_DATA);
 
 		member = memberService.registerMember(member);
 		return ApiResponse.success(CREATE_SUCCESS, member);
@@ -62,29 +65,20 @@ public class MemberController {
 	@PutMapping
 	public ResponseEntity<?> modifyMember(@RequestBody Member member) {
 		MemberProjection data = memberService.updateMember(member);
-		if (data == null)
-			return ApiResponse.error(DATA_NOT_FOUND);
-		else
-			return ApiResponse.success(UPDATE_SUCCESS, data);
+		return ApiResponse.success(UPDATE_SUCCESS, data);
 	}
 
 	@DeleteMapping("/{memberId}")
 	public ResponseEntity<?> deleteMember(@PathVariable("memberId") Long memberId) {
-		Member member = memberService.deleteMember(memberId);
-		if (member == null)
-			return ApiResponse.error(EXAMPLE_ERROR);
-		else
-			return ApiResponse.success(DELETE_SUCCESS, null);
+		memberService.deleteMember(memberId);
+		return ApiResponse.success(DELETE_SUCCESS);
 	}
 
 	// Follow 기능
 	@GetMapping("/{memberId}/follows")
 	public ResponseEntity<?> getFollowList(@PathVariable("memberId") Long memberId) {
 		List<FollowingTeamProjection> list = memberService.getFollowList(memberId);
-		if (list.isEmpty())
-			return ApiResponse.error(DATA_NOT_FOUND);
-		else
-			return ApiResponse.success(GET_SUCCESS, list);
+		return ApiResponse.success(GET_SUCCESS, list);
 	}
 
 	@PostMapping("/follows")
@@ -92,36 +86,33 @@ public class MemberController {
 		Long memberId = data.get("memberId");
 		Long teamId = data.get("teamId");
 		FollowingTeamProjection followingTeam = memberService.registerFollow(memberId, teamId);
-		if (followingTeam == null)
-			return ApiResponse.error(DATA_NOT_FOUND);
-		else
-			return ApiResponse.success(CREATE_SUCCESS, followingTeam);
+		return ApiResponse.success(CREATE_SUCCESS, followingTeam);
 	}
 
 	@DeleteMapping("/follows/{followTeamId}")
 	public ResponseEntity<?> deleteFollow(@PathVariable("followTeamId") Long followTeamId) {
-		FollowingTeam followingTeam = memberService.deleteFollow(followTeamId);
-		if (followingTeam == null)
-			return ApiResponse.error(EXAMPLE_ERROR);
-		else
-			return ApiResponse.success(DELETE_SUCCESS, null);
+		memberService.deleteFollow(followTeamId);
+		return ApiResponse.success(DELETE_SUCCESS);
 	}
 
 	@DeleteMapping("/logout")
 	public ResponseEntity<?> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		if (principalDetails == null)
-			throw new UnauthorizedException(UNAUTHORIZED_USER);
+			throw new CustomException(UNAUTHORIZED_USER);
 		memberService.deleteToken(principalDetails.getMember().getId());
-		return ApiResponse.success(DELETE_SUCCESS, null);
+		return ApiResponse.success(DELETE_SUCCESS);
 	}
 
 	@GetMapping("/teams")
 	public ResponseEntity<?> getTeamList() {
 		List<Team> list = memberService.getTeamList();
-		if (list.isEmpty())
-			return ApiResponse.error(DATA_NOT_FOUND);
-		else
-			return ApiResponse.success(GET_SUCCESS, list);
-
+		return ApiResponse.success(GET_SUCCESS, list);
 	}
+
+	@PostMapping("/alert")
+	public ResponseEntity<?> registerNotification(@RequestBody Notification notification) {
+		NotificationProjection data = notificationService.registerNotification(notification);
+		return ApiResponse.success(CREATE_SUCCESS, data);
+	}
+
 }

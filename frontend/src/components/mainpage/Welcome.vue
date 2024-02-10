@@ -13,6 +13,9 @@
                         <div class="text-center">
                             <span class="asking">회원이 아니시라면</span>
                             <v-btn text to="/signup" class="mx-2" color="primary">
+                                <v-tooltip activator="parent" location="top">
+                                    회원가입
+                                </v-tooltip>
                                 <v-icon size="x-large">mdi-account-plus</v-icon>
                             </v-btn>
                         </div>
@@ -20,6 +23,9 @@
                         <div class="text-center">
                             <span class="asking">회원이시라면</span>
                             <v-btn text to="/login" class="mx-2" color="primary">
+                                <v-tooltip activator="parent" location="top">
+                                    로그인
+                                </v-tooltip>
                                 <v-icon size="x-large">mdi-login</v-icon>
                             </v-btn>
                         </div>

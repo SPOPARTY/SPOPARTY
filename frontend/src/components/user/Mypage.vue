@@ -1,14 +1,14 @@
 <template>
     <v-container class="mypage-container">
-        <v-card class="pa-4" outlined>
-            <v-card-title class="text-h4 mb-6">마이페이지</v-card-title>
+        <v-card class="inner-card pa-4" outlined>
+            <h1>마이페이지</h1>
         
             <v-row>
                 <v-col cols="12" md="8">
-                    <v-text-field label="아이디" :value="memberInfo.loginId" outlined dense readonly></v-text-field>
+                    <v-text-field class="input" label="아이디" v-model="memberInfo.loginId" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                    <v-btn color="#393646" style="margin-top:10px" @click="showChangePwdModal" block>비밀번호 수정</v-btn>
+                    <v-btn class="input" color="#393646" @click="showChangePwdModal" block>비밀번호 수정</v-btn>
                 </v-col>
             </v-row>
             <SetNewPwd 
@@ -18,20 +18,20 @@
             
             <v-row>
                 <v-col cols="12">
-                    <v-text-field label="닉네임" :value="memberInfo.nickname" outlined dense></v-text-field>
+                    <v-text-field class="input" label="닉네임" v-model="memberInfo.nickname" outlined dense></v-text-field>
                 </v-col>
             </v-row>
             
             <v-row>
                 <v-col cols="4" md="4">
-                    <v-text-field label="이메일 아이디" :value="memberInfo.email.split('@')[0]" outlined dense></v-text-field>
+                    <v-text-field class="input" label="이메일 아이디" v-model="memberInfo.email.split('@')[0]" outlined dense readonly></v-text-field>
                 </v-col>
-                <v-col cols="1" md="1" class="text-center">@</v-col>
+                <v-col cols="1" md="1" class="text-center" style="color:white; margin-top:10px;"><h4>@</h4></v-col>
                 <v-col cols="4" md="4">
-                    <v-text-field label="도메인" :value="memberInfo.email.split('@')[1]" outlined dense></v-text-field>
+                    <v-text-field class="input" label="도메인" v-model="memberInfo.email.split('@')[1]" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="3" md="3">
-                    <v-btn color="#123421" style="margin-top:10px;" @click="showChangeEmailModal">이메일 수정</v-btn>
+                    <v-btn color="#393646" style="margin-top:10px;" @click="showChangeEmailModal">이메일 수정</v-btn>
                 </v-col>
             </v-row>
             <SetNewEmail 
@@ -51,7 +51,7 @@
                     </v-btn>
                 </v-col>
                 <v-col cols="4" md="4">
-                    <v-btn color="#4F4557" style="margin-top:10px;" @click="showEmblemModal">엠블럼 목록</v-btn>
+                    <v-btn color="#393646" style="margin-top:12px;" @click="showEmblemModal">엠블럼 목록</v-btn>
                 </v-col>
             </v-row>
             <EmblemList 
@@ -62,12 +62,20 @@
                 @select-emblem="setEmblem($event)"
                 />
             
-            <v-row>
-                <v-col cols="8">
+            <v-row class="justify-center">
+                <v-col cols="6">
                     <v-btn 
                         style="width:100% "
                         @click="showFollowModal"
                     >팔로우 중인 구단 수 : {{followingClubNum}}</v-btn>
+                </v-col>
+                <v-col cols="6">
+                    <v-card-actions class="justify-center">
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey" @click="goBack">이전</v-btn>
+                        <v-btn color="primary" @click="updateChanges">수정</v-btn>
+                        <v-btn color="red" @click="Withdraw">회원 탈퇴</v-btn>
+                    </v-card-actions>
                 </v-col>
             </v-row>
             <FollowList
@@ -80,12 +88,6 @@
                 @unfollow-club="setFollowClubNumber($event)"
             />
 
-            <v-card-actions class="text-center">
-                <v-spacer></v-spacer>
-                <v-btn color="grey" @click="goBack">이전</v-btn>
-                <v-btn color="primary" @click="updateChanges">수정</v-btn>
-                <v-btn color="red" @click="Withdraw">회원 탈퇴</v-btn>
-            </v-card-actions>
         </v-card>
     </v-container>
 </template>
@@ -104,16 +106,16 @@ import SetNewEmail from '@/components/user/SetNewEmail.vue';
 import EmblemList from '@/components/user/EmblemList.vue';
 import FollowList from '@/components/user/FollowList.vue';
 
+const followStore = useFollowStore();
 
 const router = useRouter();
 const memberId = ref("");
- const followStore = useFollowStore();
 const teamList = ref(null);
 const followList = ref(null);
 
 onMounted(() => {
-    const id = sessionStorage.getItem("id")
-    memberId.value = sessionStorage.getItem("id");
+    const id = localStorage.getItem("id")
+    memberId.value = localStorage.getItem("id");
     teamList.value = followStore.getTeamList();
     followStore.getFollowList(memberId.value);
     getMemberInfo();
@@ -131,11 +133,12 @@ watch(() => followStore.teamList, (newTeamList) => {
 },{immediate:true})
 
 
+const updatedPwd = ref("");
 
 const memberInfo = ref({
     id : "",
     loginId : "",
-    loginPwd : "",
+    loginPwd : updatedPwd.value,
     nickname : "",
     email : "",
     team : {
@@ -151,16 +154,18 @@ const emailDomain = ref(memberInfo.value.email.split("@")[1]);
 const getMemberInfo = () => {
     getMember(
         memberId.value,
-        ({data}) => {
-        console.log(data);
-        memberInfo.value.id = data.id;
-        memberInfo.value.loginId = data.loginId;
-        memberInfo.value.loginPwd = data.loginPwd;
-        memberInfo.value.nickname = data.nickname;
-        memberInfo.value.email = data.email;
-        memberInfo.value.team.id = data.team.id;
-        memberInfo.value.team.logo = data.team.logo;
-        memberInfo.value.team.status = data.status;
+        ({data,status}) => {
+        // console.log("data ==> ",data);
+        // console.log("message ==> ",data.message);
+        // console.log("status ==> ",status);
+        memberInfo.value.id = data.data.id;
+        memberInfo.value.loginId = data.data.loginId;
+        memberInfo.value.loginPwd = data.data.loginPwd;
+        memberInfo.value.nickname = data.data.nickname;
+        memberInfo.value.email = data.data.email;
+        memberInfo.value.team.id = data.data.team.id;
+        memberInfo.value.team.logo = data.data.team.logo;
+        memberInfo.value.team.status = data.data.status;
         },
         (error) => {
         console.log("살려줘")
@@ -188,11 +193,11 @@ const Withdraw = () => {
     (res) => {
         if (res.status === httpStatusCode.OK) {
             console.log(res)
-            sessionStorage.removeItem("accessToken");
-            sessionStorage.removeItem("refreshToken");
-            sessionStorage.removeItem("id")
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("id")
             alert("함께해서 더러웠고 다신 만나지 말자")
-            router.push("/")
+            window.location.replace("/")
         } 
     },
     (error) => {
@@ -213,7 +218,8 @@ function showChangePwdModal() {
 function changePwd(newPwds){
     isPwdModalVisible.value = false;
     console.log(newPwds)
-    memberInfo.value.loginPwd = newPwds.password;
+    updatedPwd.value = newPwds.password;
+    memberInfo.value.loginPwd = updatedPwd.value;
     console.log("새로 바뀐 비밀번호!")
     console.log(memberInfo.value.loginPwd)
     
@@ -227,6 +233,7 @@ function showChangeEmailModal() {
 }
 
 function updateEmail(newEmail) {
+    console.log("마이페이지에서 update된 이메일을 받아오자!!!")
     console.log(newEmail.value)
     emailId.value = newEmail.value.split("@")[0];
     emailDomain.value = newEmail.value.split("@")[1];
@@ -240,7 +247,7 @@ function showEmblemModal() {
     isEmblemModalVisible.value = true;
 }
 
-const emblemIcon = ref('/src/assets/mancity.png');
+const emblemIcon = ref('/spo-icon.png');
 const emblemName = ref('맨체스터 시티');
 
 function setEmblem(newEmblem) {
@@ -251,6 +258,7 @@ function setEmblem(newEmblem) {
 // 구단 팔로우 모달
 const isFollowModalVisible = ref(false)
 function showFollowModal() {
+    console.log("구단 팔로우 모달 띄우기!!!")
     isFollowModalVisible.value = true;
 }
 
@@ -278,7 +286,24 @@ function goBack() {
 </script>
 
 <style scoped>
+h1 {
+    text-align: center;
+    margin-top:10px;
+    margin-bottom:20px;
+    color : #D3AC2B;
+}
+
+.inner-card{
+    background-color: #292646
+}
+
+.input {
+    border-radius: 5px;
+    background-color:#F4F3EA ;
+    height:50px;
+}
 .mypage-container{
+    margin-top:40px;
     max-width: 600px;
 }
 

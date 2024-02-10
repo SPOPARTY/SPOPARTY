@@ -30,13 +30,13 @@ public class FixtureController {
 
 	// 메인에 띄우는 다가올 가장 이른 경기 6개
 	@GetMapping(params = {"next"})
-	ResponseEntity<ResponseDTO> findFixtureByNext(@RequestParam(value = "next") int next) {
+	ResponseEntity findFixtureByNext(@RequestParam(value = "next") int next) {
 
 		ResponseDTO responseDTO = fixtureServiceImpl.findFixtureByNext(next);
 
-		HttpStatusCode code = common.getStatusByContent(responseDTO);
+		// HttpStatusCode code = common.getStatusByContent(responseDTO);
 
-		return new ResponseEntity<>(responseDTO, code);
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
 
 	// 날짜별로 경기 일정 조회
@@ -46,9 +46,9 @@ public class FixtureController {
 		ResponseDTO responseDTO = fixtureServiceImpl.findFixtureByDate(date);
 
 		// HttpStatusCode code = isContentExist(responseDTO);
-		HttpStatusCode code = common.getStatusByContent(responseDTO);
+		// HttpStatusCode code = common.getStatusByContent(responseDTO);
 
-		return new ResponseEntity<>(responseDTO, code);
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
 
 	// 리그/팀으로 경기 일정 조회
@@ -59,7 +59,7 @@ public class FixtureController {
 
 		ResponseDTO responseDTO = fixtureServiceImpl.findFixtureByKeyWord(type, keyword);
 
-		HttpStatusCode code = common.getStatusByContent(responseDTO);
+		// HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
@@ -71,9 +71,9 @@ public class FixtureController {
 
 		ResponseDTO responseDTO = fixtureServiceImpl.findFixtureByStartEndDate(startDate, endDate);
 
-		HttpStatusCode code = common.getStatusByContent(responseDTO);
+		// HttpStatusCode code = common.getStatusByContent(responseDTO);
 
-		return new ResponseEntity<>(responseDTO, code);
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 
 	}
 
@@ -92,13 +92,13 @@ public class FixtureController {
 			return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(400));
 		}
 
-		HttpStatusCode code = common.getStatusByContent(responseDTO);
+		// HttpStatusCode code = common.getStatusByContent(responseDTO);
 
 		// if (responseDTO.getData() == null) {
 		// 	return new ResponseEntity<>(responseDTO, HttpStatusCode.vlaueOf(404))
 		// }
 
-		return new ResponseEntity<>(responseDTO, code);
+		return new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(200));
 	}
 
 	@GetMapping("/events")

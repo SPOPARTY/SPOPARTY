@@ -8,18 +8,20 @@
     >
         <v-card class="board-detail" >
             <v-card-title class="text-center">{{ props.post.title }}</v-card-title>
-            <v-card-subtitle class="text-right">{{ props.post.nickname }}</v-card-subtitle>
-            <v-card-item>
-                <v-img :src="props.post.img" class="img" cover width="100%"></v-img>
+            <v-card-subtitle class="text-right">{{ props.post.member.nickname }}</v-card-subtitle>
+            <v-card-text v-if="post.file">{{ formatDateTime(post.file.updatedTime) }}</v-card-text>
+            <v-card-item v-if="props.post.file">
+                <v-img :src="props.post.file.url" class="img" cover width="100%"></v-img>
             </v-card-item>
             <v-card-text>
-                {{ props.post.content }}
+                <div>
+                    <div v-html="props.post.content"></div>
+                </div>
             </v-card-text>
             <v-card-actions>
                 <v-spacer/>
-                <v-btn v-if="currentUserId == 1" color="success" @click="showEditModal">수정하기</v-btn>
-                <v-btn v-if="currentUserId == 1" color="error" @click="confirmDelete">삭제하기</v-btn>
-                <v-btn v-else color="#121212" @click="closeModal">히히 버튼 발사</v-btn>
+                <v-btn v-if="currentUserId == props.post.member.id" color="success" @click="showEditModal">수정하기</v-btn>
+                <v-btn v-if="currentUserId == props.post.member.id" color="error" @click="confirmDelete">삭제하기</v-btn>
                 <v-btn color="red" @click="closeModal">닫기</v-btn>
             </v-card-actions>
             
@@ -45,9 +47,13 @@
 <script setup>
 import  {ref, onMounted} from 'vue';
 import EditBoard from '@/components/board/EditBoard.vue';
+import {useBoardStore} from "@/stores/club/boards";
 
-const currentUserId = ref(1); // 작성자 id
+import {formatDateTime} from "@/util/tools.js"
 
+const boardStore = useBoardStore();
+
+const currentUserId = localStorage.getItem("id"); // 로그인 된 id
 const modalVisible = ref(true); // BoardDetail on/off 관장
 
 const props = defineProps({
@@ -65,9 +71,13 @@ function showEditModal() {
 }
 
 // EditBoard모달 off
-function editClose(editPost) {
+function editClose(editedPost) {
+    if(editedPost) {
+        props.post = editedPost
+    }
     isEditModalVisible.value = false // EditBoard off
     modalVisible.value = true// BoardDetail on
+    closeModal()
 }
 
 // 삭제 확인 모달
@@ -78,6 +88,7 @@ const confirmDelete = () => {
 
 // 진짜 삭제
 function deletePost() {
+    boardStore.deleteBoard(props.post.id,props.post.club_id);
     emits('delete-post',props.post.id)
     closeModal()
     deleteConfirmVisible.value = false;
@@ -87,24 +98,23 @@ function deletePost() {
 function closeModal() {
     modalVisible.value = false; // 1. modalVisible off
     emits('detail-close') // 2. emit
-    console.log("BoardDetail닫음")
-    console.log("modalVisible --> ",modalVisible.value)
 }
 
-
-onMounted(() => {
-    console.log("히히 boardDetail 발사")
-})
 
 </script>
 
 <style lang="scss" scoped>
-
+h1{
+    color:black
+}
 .img{
     border:solid;
     border-radius: 20px;
-    width:50%;
-    height:50%;
+    width:100%;
+    height:100%;
 }
 
+.board-detail {
+    background-color: #F4F3EA ;
+}
 </style>

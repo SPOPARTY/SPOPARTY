@@ -1,5 +1,7 @@
 package com.spoparty.api.member.service;
 
+import static com.spoparty.api.common.constants.ErrorCode.*;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.Notification;
 import com.spoparty.api.member.entity.NotificationProjection;
@@ -25,30 +28,32 @@ public class NotificationService {
 
 	private final NotificationRepository notificationRepository;
 	private final MemberRepository memberRepository;
-	// private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 	private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
 	public List<NotificationProjection> getNotificationList(Long memberId) {
-		return notificationRepository.findByMember_id(memberId, NotificationProjection.class);
+		return notificationRepository.findByMember_idOrderByState(memberId, NotificationProjection.class);
 	}
 
 	public NotificationProjection registerNotification(Notification notification) {
-		Member member = memberRepository.findById(notification.getMember().getId(), Member.class).orElse(null);
-		if (member == null)
-			return null;
+		log.debug("registerNotification 시작");
+		Member member = memberRepository.findById(notification.getMember().getId(), Member.class)
+			.orElseThrow(() -> new CustomException(
+				DATA_NOT_FOUND));
+		log.debug("Member - {}", member);
 		notification.setMember(member);
 		Notification tmp = notificationRepository.save(notification);
 		push(notification);
-		return notificationRepository.findById(tmp.getId(), NotificationProjection.class).orElse(null);
+		return notificationRepository.findById(tmp.getId(), NotificationProjection.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 	}
 
 	@Transactional
 	public NotificationProjection updateNotificationState(Long notificationId, int state) {
-		Notification data = notificationRepository.findById(notificationId, Notification.class).orElse(null);
-		if (data == null)
-			return null;
+		Notification data = notificationRepository.findById(notificationId, Notification.class)
+			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		data.setState(state);
-		return notificationRepository.findById(notificationId, NotificationProjection.class).orElse(null);
+		return notificationRepository.findById(notificationId, NotificationProjection.class)
+			.orElse(null);
 	}
 
 	public void add(Long memberId, SseEmitter emitter) {
@@ -56,15 +61,20 @@ public class NotificationService {
 		log.info("new emitter added: {}", emitter);
 		log.info("emitters: {}", emitters);
 		emitter.onCompletion(() -> {
-			this.emitters.remove(memberId);    // 만료되면 리스트에서 삭제
+			log.info(emitter.toString());
 		});
 		emitter.onTimeout(() -> {
 			emitter.complete();
+			emitters.remove(memberId);    // 만료되면 리스트에서 삭제
+		});
+		emitter.onError((error) -> {
+			log.error(error.toString());
+			emitters.remove(memberId);
 		});
 	}
 
 	public void push(Notification notification) {
-		SseEmitter emitter = emitters.get(notification.getId());
+		SseEmitter emitter = emitters.get(notification.getMember().getId());
 		if (emitter != null) {
 			try {
 				emitter.send(SseEmitter.event()
@@ -74,7 +84,6 @@ public class NotificationService {
 				throw new RuntimeException(e);
 			}
 		}
-
 	}
 
 }

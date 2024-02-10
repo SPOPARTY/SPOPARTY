@@ -8,7 +8,7 @@
         class="contents-section mx-12 my-8 pa-1">
         <!-- 비로그인 시 소개 출력 -->
         <v-col
-          v-if="!isLogin"
+          v-if="!isLogined"
           cols="12"
           class="my-1 mx-12">
           <Welcome />
@@ -26,12 +26,6 @@
           class="my-1 mx-12">
           <MatchNear />
         </v-col>
-        <!-- 두 번째 컨텐츠 영역: 경기 일정 -->
-        <v-col
-          cols="12"
-          class="my-1 mx-12">
-          <OpenViduView />
-        </v-col>
       </v-row>
     </v-container>
   </v-app>
@@ -41,10 +35,15 @@
 import MatchNear from '@/components/mainpage/MatchNear.vue'
 import CheerVote from '@/components/mainpage/CheerVote.vue'
 import Welcome from '@/components/mainpage/Welcome.vue'
-import OpenViduView from './OpenViduView.vue'
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 
-const isLogin = ref(false)
+// import { useManagementStore } from '@/stores/member/managements'
+
+// const managementStore = useManagementStore()
+
+// const isLogin = ref(managementStore.isLogin)
+const isLogined = ref(localStorage.getItem("accessToken") !== null);
+
 </script>
 
 <style scoped></style>

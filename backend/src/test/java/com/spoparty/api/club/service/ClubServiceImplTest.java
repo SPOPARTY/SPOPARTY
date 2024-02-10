@@ -16,12 +16,12 @@
 // import org.springframework.test.context.junit.jupiter.SpringExtension;
 // import org.springframework.transaction.annotation.Transactional;
 //
-// import com.spoparty.api.club.dto.ClubHostRequestDto;
-// import com.spoparty.api.club.dto.ClubMemberResponseDto;
-// import com.spoparty.api.club.dto.ClubRequestDto;
-// import com.spoparty.api.club.dto.ClubResponseDto;
-// import com.spoparty.api.club.dto.InviteRequestDto;
-// import com.spoparty.api.club.dto.InviteResponseDto;
+// import com.spoparty.api.club.dto.request.ClubHostRequestDto;
+// import com.spoparty.api.club.dto.response.ClubMemberResponseDto;
+// import com.spoparty.api.club.dto.request.ClubRequestDto;
+// import com.spoparty.api.club.dto.response.ClubResponseDto;
+// import com.spoparty.api.club.dto.request.InviteRequestDto;
+// import com.spoparty.api.club.dto.response.InviteResponseDto;
 // import com.spoparty.api.club.entity.Club;
 // import com.spoparty.api.club.repository.ClubMemberRepository;
 // import com.spoparty.api.club.repository.ClubRepository;

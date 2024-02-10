@@ -5,7 +5,7 @@
         @click:outside="closeModal"
         persistent        >
         <v-card>
-            <v-card-title class="text-h4">이메일 수정</v-card-title>
+            <v-card-title class="text-center">이메일 수정</v-card-title>
             <v-card-text>
                 <v-row>
                     <v-col cols="4" md="4">                        
@@ -24,7 +24,7 @@
                         />
                     </v-col>
                     <v-col cols="3">
-                        <v-btn color="black" @click="sendEmail">인증코드 발송</v-btn>
+                        <v-btn color="#292646" @click="sendEmail"  style="margin-top:10px">인증코드 발송</v-btn>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -35,22 +35,34 @@
                             outlined
                         />
                     </v-col>
-                    <v-col cols="2">
-                        4:59
-                    </v-col>
                     <v-col cols="4">
-                        <v-btn color="black" @click="checkVerifyCode">인증번호 확인</v-btn>
+                        <v-btn color="#292646" @click="checkVerifyCode" style="margin-top:10px">인증번호 확인</v-btn>
+                    </v-col>
+                    <v-col cols="2">
+                        <span v-if="startTimer">{{ timer }}</span>
                     </v-col>
                 </v-row>
             </v-card-text>
             <v-card-actions>
                 <v-spacer/>
                 <v-btn color="red" @click="closeModal">닫기</v-btn>
-                <v-btn color="black" @click="confirmChange">수정</v-btn>
+                <v-btn color="#292646" @click="confirmChange">수정</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 
+    <!-- 인증코드가 메일로 잘 보내졌을 때 뜨는 모달 -->
+    <v-dialog v-model="emailSent" max-width="200px">
+        <v-card>
+            <v-card-text>
+                이메일에 인증코드가 보내졌습니다.
+            </v-card-text>
+            <v-card-actions>
+                <v-btn color="black" @click="emailSent = false">확인</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    
     <!-- 인증코드가 맞았을 때 뜨는 모달 -->
     <v-dialog v-model="codeChecked" max-width="200px">
         <v-card>
@@ -75,17 +87,6 @@
         </v-card>
     </v-dialog>
 
-    <!-- 인증코드가 메일로 잘 보내졌을 때 뜨는 모달 -->
-    <v-dialog v-model="emailSent" max-width="200px">
-        <v-card>
-            <v-card-text>
-                이메일에 인증코드가 보내졌습니다.
-            </v-card-text>
-            <v-card-actions>
-                <v-btn color="black" @click="emailSent = false">확인</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
 
     <!-- 이메일 인증 후 이메일 수정이 완료되었음을 알려주는 모달 -->
     <v-dialog v-model="verifyDone" max-width="200px">
@@ -105,7 +106,7 @@
             <v-card-text>
                 이메일을 인증하세요.
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions class="justify-center">
                 <v-btn color="black" @click="verifyNotDone = false">확인</v-btn>
             </v-card-actions>
         </v-card>
@@ -134,6 +135,7 @@ const verifyNotDone = ref(false); // 아직 이메일 인증이 완료되지 않
 
 const emit = defineEmits(['setEmail-close','update-email'])
 
+const startTimer = ref(false);
 
 function sendEmail () {
     if(newEmailId.value === '' || newEmailDomain.value === '' ) {
@@ -146,13 +148,17 @@ function sendEmail () {
     emailCheck(
       newEmail.value,
       (res) => {
+        console.log(res)
         if(res.status === httpStatusCode.OK) {
-          console.log("잘 발송 되었음")
-          console.log(res.status)
-          emailSent.value = true;
+            startTimer.value = true; // 잘 발송되면 타이머 시작
+            console.log("잘 발송 되었음")
+            console.log(res.status)
+            emailSent.value = true;
         }
       },
       (error) => {
+        console.log("비상!")
+        console.log(error)
         if (error.response.status === httpStatusCode.CONFLICT) {
           console.log(error)
           alert("이미 사용 중인 이메일입니다!")
@@ -177,23 +183,31 @@ function checkVerifyCode () {
       data,
       (res)=>{
         if(res.status === httpStatusCode.OK){
-          codeChecked.value = true
-          emailVerifiedConfirm.value = true;
-        }
+            console.log("")
+            codeChecked.value = true // 인증코드가 알맞고
+            emailVerifiedConfirm.value = true; // 그로 인해 이메일 인증도 되었음
+            //   verifyDone.value = true; // 인증완료 ==> 얘는 최후의 수정버튼을 클릭했을 때만!
+            }
       },
       (error)=>{
         console.log(error)
-        if (error.response.status === "400") {
-          console.log(error)
-          codeNotChecked.value = true;
+        if(error.response.status === httpStatusCode.BAD_REQUEST){
+            codeNotChecked.value = true;
         }
       }
     )
 }
 
 function confirmChange() {
-    if (emailVerifiedConfirm) {
-        verifyDone.value = true;
+    if(!emailVerifiedConfirm.value) { // 이메일이 인증되지 않았으면
+        verifyNotDone.value = true; // 인증 X 모달을 띄움
+        return;
+    }
+
+    if (emailVerifiedConfirm.value) { // 이메일 인증이 되었다면
+        verifyDone.value = true; // 인증 O 모달을 띄움
+        // console.log("바뀐 이메일??")
+        // console.log(newEmail.value)
         emit('update-email',newEmail)
     }
     else {
@@ -201,6 +215,25 @@ function confirmChange() {
     }
 }
 
+const timer = ref('5:00')
+
+const intervalId = setInterval(() => {
+    const currentTime = timer.value.split(":");
+    let minutes = parseInt(currentTime[0]);
+    let seconds = parseInt(currentTime[1]);
+
+    if (minutes == 0 && seconds == 0) {
+        clearInterval(intervalId);
+    } else {
+        if (seconds == 0) {
+            minutes -= 1;
+            seconds = 59;
+        } else {
+            seconds -= 1;
+        }
+        timer.value = `${minutes} : ${seconds < 10 ? '0' + seconds : seconds}`
+    }
+},1000); 
 
 
 function closeModal() {

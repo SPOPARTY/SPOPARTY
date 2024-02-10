@@ -10,23 +10,23 @@ export const useFollowStore = defineStore("follow", () => {
     const router = useRouter();
     const route = useRoute();
 
-
+    const memberId = localStorage.getItem("id") // 나중에 입력받은 memberId로 바꿔야함
     const teamList = ref(null);
     const followList = ref(null);
 
     const getTeamList = () => {
         requestAllTeamList(
-            (res) => {
-                console.log(res)
-                if(res.status === httpStatusCode.OK) {
-                    console.log("히히 모든 팀 가져오기 발사")
-                    teamList.value = res.data
+            ({data,status}) => {
+                // console.log("히히 모든 팀 가져오기 발사")
+                // console.log(data.data)
+                if(status === httpStatusCode.OK) {
+                    teamList.value = data.data
                     console.log(teamList.value)
                     return teamList.value;
                 }
             },
             (error) => {
-                console.log(error)
+                console.error(error)
                 if(error.status === httpStatusCode.NOTFOUND) {
                     console.log(error)
 
@@ -39,31 +39,36 @@ export const useFollowStore = defineStore("follow", () => {
     const getFollowList = (memberId) => {
         requestFollowList(
         memberId,
-        (res) => {
-            console.log(res)
-            if(res.status === httpStatusCode.OK) {
-                console.log("히히 팔로우 리스트 발사")
-                followList.value = res.data;
-                console.log(followList.value)
+        ({data,status}) => {
+            console.log(data)
+            if(status === httpStatusCode.OK) {
+                // console.log("히히 팔로우 리스트 발사")
+                followList.value = data.data;
+                // console.log(followList.value)
             }
         }),
         (error) => {
             console.log("팔로우 리스트 가져오는데 에러")
             if(error.response.status === httpStatusCode.NOTFOUND) {
-                console.log("***********비상***********")
+                // console.log("***********비상***********")
                 console.err(err);
                 alert("팔로우 리스트 가져오기 실패!")
             }
         }
 
     }
-
-    const doFollow = (data) => {
+    // teamId를 받아서 memberId와 함께 팔로우 요청을 보내는 함수
+    const doFollow = (teamId) => {
+        const data = {
+            memberId: localStorage.getItem("id"),
+            teamId: teamId
+        }
         requestFollow(
             data,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.CREATE) {
+                    getFollowList(memberId);
                     alert("팔로우 완료!")
                 }
             },
@@ -78,13 +83,20 @@ export const useFollowStore = defineStore("follow", () => {
 
         )
     }
-
+    // teamId를 받아서 followTeamId를 찾아서 팔로우 취소 요청을 보내는 함수
     const doUnFollow = (teamId) => {
+        getFollowList(localStorage.getItem("id"));
+
+        const followTeamId = followList.value
+        .filter((club) => club.teamId === teamId)
+        .map((club) => club.id)[0];
+
         requestUnFollow(
-            teamId,
+            followTeamId,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
+                    getFollowList(memberId);
                     alert("팔로우 취소 완료")
                     
                 }

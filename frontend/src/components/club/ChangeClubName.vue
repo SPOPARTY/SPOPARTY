@@ -22,9 +22,8 @@
                     </template> -->
                 </v-text-field>
                 <v-card-actions>
-                    <v-spacer/>
-                    <v-btn color="green darken-1" text @click="submitName">변경</v-btn>
-                    <v-btn color="red darken -1" text @click="closeModal">취소</v-btn>
+                    <v-btn class="button" color="#292646" text @click="submitName">변경</v-btn>
+                    <v-btn class="button" color="red darken -1" text @click="closeModal">취소</v-btn>
                 </v-card-actions>
             </v-card>
         </v-container>
@@ -45,19 +44,61 @@
 
 <script setup>
 import {ref, onMounted} from 'vue'
+import {useRoute} from 'vue-router'
+import {useClubStore} from '@/stores/club/clubs'
 
-const clubName = ref(null);
+const route = useRoute();
 
 const emits = defineEmits([
     'change-club-name-close'
 ])
 
+const clubStore = useClubStore();
+
+const {updateClub} = clubStore;
+
+const clubId = route.params.clubId;
+const memberId = localStorage.getItem("id"); // 언제까지나 localStorage에 넣어야하나?
+const clubName = ref(null);
+
 const modalVisible = ref(true)
 
 const submitName = () =>  {
-    modalVisible.value = false;
-    confirm.value = true
-}
+    if(clubName.value === null) {
+        alert("그룹명이 공란이어서는 안됩니다!")
+        return;
+    }
+
+    if (clubName.value.length > 20) {
+        alert("클럽 이름은 20자 이상을 넘기면 안됩니다!")
+        clubName.value = clubName.value.substring(0,20);
+        return;
+    }
+
+    let data = {
+        memberId : memberId,
+        name : clubName.value
+    }
+
+    console.log(data);
+
+    // 예외처리 세밀하게
+    try{
+        const success = updateClub(clubId,data);
+        if (success) {
+            console.log("그룹 명 수정, 성공적!")
+            modalVisible.value = false;
+            confirm.value = true
+        } else {
+            console.error("그룹 정보 수정 실패!")
+        }
+    } catch(error) {
+        console.log("비상!!!!!" + error)
+    }
+        
+    }
+
+
 
 const confirm = ref(false)
 
@@ -111,6 +152,15 @@ onMounted(() => {
     justify-content: center; 
     height: 100%; /* v-card의 높이를 부모 컨테이너(여기서는 v-dialog)에 맞춤 */
     text-align: center;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:auto;
+    box-shadow: none !important;
+    background:transparent
 }
 
 </style>

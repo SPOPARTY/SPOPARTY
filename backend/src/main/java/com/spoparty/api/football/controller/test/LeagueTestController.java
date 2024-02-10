@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.football.entity.League;
-import com.spoparty.api.football.entity.LeagueType;
-import com.spoparty.api.football.entity.League;
-import com.spoparty.api.football.repository.LeagueRepository;
 import com.spoparty.api.football.repository.LeagueRepository;
 
 import jakarta.transaction.Transactional;
@@ -26,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LeagueTestController {
 
 	private final LeagueRepository leagueRepository;
+
 	@GetMapping("/save")
 	public ResponseEntity<League> save() {
 
@@ -36,7 +34,7 @@ public class LeagueTestController {
 			.logo("https://media.api-sports.io/football/leagues/40.png")
 			.country("England")
 			.countryLogo("https://media.api-sports.io/flags/gb.svg")
-			.type(LeagueType.league)
+			.type("League")
 			.build();
 
 		League league2 = leagueRepository.save(league);

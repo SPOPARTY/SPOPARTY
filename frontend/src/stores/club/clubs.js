@@ -4,33 +4,39 @@ import { defineStore } from 'pinia';
 
 import {httpStatusCode} from "@/util/http-status"
 
-import {requestRecentClubs, requestCreateClubs, requestClubInfo, requestUpdateClubName, requestDeleteClub,
-    requestClubInviteLink, requestClubMemberList, requestClubInvite, requestUpdateClubLeader, requestDeleteClubMember} from "@/api/club"
+import {requestRecentClubs, requestCreateClubs, requestClubInfo, requestUpdateClubName, requestDeleteClub, requestClubInviteLink, 
+    requestClubMemberList, requestClubInvite, requestUpdateClubLeader, requestDeleteClubMember,requestBanClubMember} from "@/api/club"
 
 
 export const useClubStore = defineStore("club",() => {
 
-    const myClubs = ref(null);
+    const myClubs = ref({});
     const createdClub = ref(null);
-    const clubInfo = ref(null);
+    const clubInfo = ref({});
     const clubInviteLink = ref(null);
-    const clubMemberList = ref(null);
+    const clubMemberList = ref([]);
+    const memberId = ref(localStorage.getItem("id"));
 
     // 최근 활동 그룹 목록 조회
     const requestClub = () => {
         requestRecentClubs(
             (res) => {
                 console.log("히히 최근 활동 그룹 발사")
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     myClubs.value = res.data.data;
                     console.log("*******최근 활동이 있는클럽 목록*******")
-                    console.log(myClubs.value)
-                    alert(res.data.status)
+                    // console.log(myClubs.value)
+                    // console.log(myClubs.value);
                 }
             },
             (error) => {
-                console.log(error);
+                if (error.response.status === httpStatusCode.NOTFOUND) {
+                    console.log("*******해당 그룹 접근 불가!********")
+                    // alert("해당 그룹에 접근할 수 없습니다!")
+                    console.log(error);
+                    // window.location.replace("/")
+                }
             }
         )
     }
@@ -41,13 +47,14 @@ export const useClubStore = defineStore("club",() => {
             data,
             (res) => {
                 console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
-                    console.log("히히 그룹 생성!"); 
+                if (res.data.status === httpStatusCode.CREATE) {
+                    // console.log("히히 그룹 생성!"); 
                     createdClub.value = res.data.data;
-                    console.log("내가 만든 클럽~")
+                    // console.log("내가 만든 클럽~")
                     console.log(createdClub.value)
-                    alert(res.data.status)
-                    // 그룹이 생성되면 바로 이동할 수 있게 리다이렉트??
+                    console.log("clubId ->" , res.data.data)
+                    requestClub();
+                    window.location.replace("/");
                 }
             },
             (error) => {
@@ -57,61 +64,73 @@ export const useClubStore = defineStore("club",() => {
     }
 
     // 그룹 조회
-    const getClubInfo = (memberId) => {
+    const getClubInfo = (clubId) => {
         requestClubInfo(
-            memberId,
+            clubId,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if (res.data.status === httpStatusCode.OK) {
-                    console.log("********히히 그룹 정보!********")
+                    // console.log("********히히 그룹 정보!********")
                     clubInfo.value = res.data.data;
-                    console.log("지금 내가 있는 클럽~~")
-                    console.log(clubInfo.value)
-                    alert(res.data.status)
+                    // console.log("지금 내가 있는 클럽~~")
+                    // console.log(clubInfo.value)
+
                 }
             },
             (error) => {
-                console.log(error)
+                if (error.response.status === httpStatusCode.NOTFOUND) {
+                    console.log("*******해당 그룹 접근 불가!********")
+                    alert("해당 그룹에 접근할 수 없습니다!")
+                    console.log(error);
+                    window.location.replace("/")
+                }
             }
         )
     }
 
-    // 그룹명 수정(그룹장 권한)
+    // 그룹명 수정
     const updateClub = (clubId, data) => {
-        requestUpdateClubName(
-            clubId,data,
-            (res) => {
-                console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
-                    console.log("******히히 그룹 정보 수정~*********")
-                    alert(res.data.status)
-                    window.location.reload("/");
+        return new Promise((resolve, reject) => { // 함수 내부에서 값을 반환하지 않고 콜백함수에서 값을 처리해야한다.
+            requestUpdateClubName(
+                clubId, data,
+                (res) => {
+                    // console.log(res);
+                    if (res.data.status === httpStatusCode.OK) {
+                        // console.log("******히히 그룹 정보 수정~*********");
+                        resolve(true); // 성공 시 true를 리턴 -> 비동기 콜백함수에서 값을 처리하도록...
+                        getClubInfo(clubId);
+                        requestClub();
+                    } else {
+                        reject("그룹 정보 수정 실패"); 
+                    }
+                },
+                (error) => {
+                    console.log(error);
+                    reject("그룹 정보 수정 실패"); 
                 }
-            },
-            (error) => {
-                console.log(error)
-                alert("그룹 수정 실패!")
-            }
-        )
-    }
+            );
+        });
+    };
 
     // 그룹 삭제(그룹장 권한)
     const deleteClub = (clubId) => {
-        requestDeleteClub(
-            clubId,
-            (res) => {
-                console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
-                    console.log("******히히 그룹 삭제*********")
-                    alert(res.data.status)
-                    window.location.replace("/"); // 삭제되면 메인으로 이동
+        return new Promise((resolve,reject) => {
+
+            requestDeleteClub(
+                clubId,
+                (res) => {
+                    console.log(res)
+                    if (res.data.status === httpStatusCode.OK) {
+                        // console.log("******히히 그룹 삭제*********")
+                        resolve(true)
+                    }
+                },
+                (error) => {
+                    console.log(error)
+                    reject("그룹 삭제 실패!")
                 }
-            },
-            (error) => {
-                console.log(error)
-                alert("그룹 삭제 실패!")
-            }
-        )
+            )
+        }) 
     }
 
     // 그룹 초대 링크
@@ -121,9 +140,9 @@ export const useClubStore = defineStore("club",() => {
             (res) => {
                 console.log(res)
                 if (res.data.status === httpStatusCode.OK) {
-                    console.log("******히히 그룹 초대 링크 생성*********")
-                    clubInviteLink.value = res.data.data
-                    alert(res.data.status)
+                    // console.log("******히히 그룹 초대 링크 생성*********")
+                    // console.log(res.data.data.inviteUrl);
+                    clubInviteLink.value = res.data.data.inviteUrl
                 }
             },
             (error) => {
@@ -140,9 +159,9 @@ export const useClubStore = defineStore("club",() => {
             (res) => {
                 console.log(res)
                 if (res.data.status === httpStatusCode.OK) {
-                    console.log("******히히 그룹원 목록 조회*********")
-                    clubInviteLink.value = res.data.data
-                    alert(res.data.status)
+                    // console.log("******히히 그룹원 목록 조회*********")
+                    clubMemberList.value = res.data.data
+                    // console.log(clubMemberList.value)
                 }
             },
             (error) => {
@@ -153,55 +172,103 @@ export const useClubStore = defineStore("club",() => {
     }
 
     // 그룹원 초대
-    const clubInvite = (data) => {
+    const clubInvite = (data,memberId) => {
+        let clubId;
         requestClubInvite(
             data,
             (res) => {
-                console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
-                    console.log("******히히 그룹원 초대 후 생성*********")
-                    alert(res.data.status)
+                // console.log(res)
+                if (res.data.status === httpStatusCode.CREATE) {
+                    // console.log("******히히 그룹원 초대 후 생성*********")
+                    const clubId = res.data.data.clubId
+                    // alert("너, 동료가 되었다!")
+                    setTimeout(() => {
+                        window.location.replace(`/club/${clubId}`)
+                    }, 1000);
                 }
             },
             (error) => {
-                console.log(error)
-                alert("그룹원 초대 실패!")
+                console.log("여기는 그룹 초대")
+                console.log(error.response.status)
+                if (error.response.status === httpStatusCode.BAD_REQUEST){
+                    console.log(error)
+                    // alert(error.response)
+                    // setTimeout(() => {
+                    //     window.location.replace(`/`)
+                    // }, 1000);
+                }
+
+                if (error.response.status === httpStatusCode.UNAUTHORIZED) {
+                    alert("동료가 되기 전 로그인부터 해라!")
+                    window.location.replace("/login") // 로그인으로 보낸 다음에 다시 원래 요청으로 돌아오고 싶다.
+                    return;
+                }
+
+                if (error.response.status === httpStatusCode.BAD_REQUEST) {
+                    alert("넌 이미 동료다!")
+                    window.location.replace("/")
+                }
             }
         )
     }
 
-    // 그룹장 물려주기(그룹장 권한)
-    const updateClubLeader = () => {
-        requestUpdateClubLeader(
-            clubId,
-            (res) => {
-                console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
-                    console.log("******히히 그룹장 물려주기*********")
-                    alert(res.data.status)
+    // 그룹장 물려주기/변경 (그룹장 권한)
+    const updateClubLeader = (clubId, clubMemberId) => {
+        return new Promise((success,fail) => {
+            requestUpdateClubLeader(
+                clubId,
+                clubMemberId,
+                (res) => {
+                    // console.log("******히히 그룹장 물려주기*********")
+                    console.log(res)
+                    if (res.data.status === httpStatusCode.OK) {
+                        // console.log("그룹장 물려주기 성공!!")
+                        success(true)
+                    }
+                },
+                (error) => {
+                    console.log(error)
+                    alert("그룹장 물려주기 실패!")
                 }
-            },
-            (error) => {
-                console.log(error)
-                alert("그룹원 초대 실패!")
-            }
-        )
+            )
+        })
     }
 
     // 그룹원 탈퇴(그룹장 권한)
-    const deleteClubMember = () => {
-        requestDeleteClubMember(
-            clubId,
+    const leaveClub = (clubId) => {
+        return new Promise((resolve,reject) => {
+            requestDeleteClubMember(
+                clubId,
+                (res) => {
+                    // console.log(res)
+                    if (res.data.status === httpStatusCode.OK) {
+                        // console.log("******히히 그룹 떠나기*********")
+                        resolve(true);
+                    }
+                },
+                (error) => {
+                    console.log(error)
+                    reject("그룹 떠나기 실패!")
+                }
+            )
+        })
+    }
+
+    // 그룹원 강퇴(그룹장 권한)
+    const banClubMember = (clubId, clubMemberId) => {
+        requestBanClubMember(
+            clubId,clubMemberId,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if (res.data.status === httpStatusCode.OK) {
-                    console.log("******히히 그룹원 쫒아내기*********")
-                    alert(res.data.status)
+                    // console.log("******히히 그룹원 강퇴*******")
+                    alert("강퇴 완료!")
+                    getClubInfo(clubId)
+                    getClubMemberList(clubId)
                 }
             },
             (error) => {
-                console.log(error)
-                alert("그룹원 초대 실패!")
+                console.error(error)
             }
         )
     }
@@ -211,6 +278,6 @@ export const useClubStore = defineStore("club",() => {
         myClubs,createdClub, clubInfo, clubInviteLink, clubMemberList,
         requestClub,createClubs,getClubInfo,updateClub, 
         deleteClub,getClubInviteLink,getClubMemberList,clubInvite,
-        updateClubLeader,deleteClubMember,
+        updateClubLeader,leaveClub,banClubMember,
     }
 })

@@ -25,7 +25,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="grey" text @click="closeModal">이전</v-btn>
-            <v-btn color="primary" type="submit">인증번호 요청</v-btn>
+            <v-btn color="primary" type="submit">임시 비밀번호 요청</v-btn>
           </v-card-actions>
         </v-form>
       </v-card-text>
@@ -73,4 +73,5 @@ function closeModal() {
 </script>
 
 <style scoped>
+
 </style>

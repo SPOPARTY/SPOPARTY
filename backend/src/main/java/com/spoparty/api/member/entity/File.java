@@ -28,10 +28,10 @@ public class File extends BaseEntity {
 	@Column(nullable = false, length = 20)
 	private String type = "";
 
-	@Column(nullable = false, length = 100)
+	@Column(nullable = false, length = 200)
 	private String url = "";
 
-	@Column(nullable = false, length = 100)
+	@Column(nullable = false, length = 200)
 	private String thumbnailUrl = "";
 
 }
