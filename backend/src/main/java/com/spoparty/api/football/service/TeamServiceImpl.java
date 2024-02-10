@@ -36,7 +36,7 @@ public class TeamServiceImpl implements TeamService {
 
 		SeasonLeagueTeamAllInfoDTO seasonLeagueTeamAllInfoDTO = null;
 		if (seasonLeagueTeam.getStandings().size() > 1) {
-			System.out.println("하나이상!");
+			log.info("하나이상!");
 			List<SeasonLeagueTeamPlayer> tmp =  seasonLeagueTeam.getSeasonLeagueTeamPlayers();
 			seasonLeagueTeamAllInfoDTO = SeasonLeagueTeamAllInfoDTO.toDTO(
 				seasonLeagueTeam, seasonLeagueTeam.getStandings().get(1));
