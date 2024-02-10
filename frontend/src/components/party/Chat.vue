@@ -20,8 +20,8 @@
     <!-- 입력창 -->
     <v-form @submit.prevent class="chat-form">
       <v-text-field class="chat-input" v-model="myMessage.message" append-icon="mdi-send" variant="outlined"
-        clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="[console.log('엔터'),sendMessage]" 
-        @click:append="[console.log('클릭'),sendMessage]" @click:clear="clearMessage"></v-text-field>
+        clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="sendMessage" 
+        @click:append="sendMessage" @click:clear="clearMessage"></v-text-field>
       <!-- <v-text-field class="chat-input" v-model="myMessage.message" append-icon="mdi-send" variant="outlined"
         clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="sendMessage"
         @click:append="sendMessage" @click:clear="clearMessage" @click="addChatMock"></v-text-field> -->
