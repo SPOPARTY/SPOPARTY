@@ -12,7 +12,19 @@ services:
     ports:
       - "9090:9090"
     # depends_on:
-      # -  nginx
+    # -  nginx
+  batch:
+    image: gogoadl247/spoparty-batch:latest
+    container_name: batch
+    tty: true
+    restart: always
+    #networks:
+    #  - vue-spring
+    #  - spring-mysql
+    ports:
+      - "9091:9091"
+    # depends_on:
+    # -  nginx
   frontend:
     image: gogoadl247/spoparty-frontend:latest
     container_name: frontend
