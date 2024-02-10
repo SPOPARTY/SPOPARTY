@@ -9,7 +9,7 @@ import com.spoparty.api.member.entity.Notification;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-	<T> List<T> findByMember_id(Long memberId, Class<T> type);
+	<T> List<T> findByMember_idOrderByState(Long memberId, Class<T> type);
 
 	<T> Optional<T> findById(Long id, Class<T> type);
 
