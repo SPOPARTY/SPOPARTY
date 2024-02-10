@@ -36,7 +36,7 @@
                 <v-card :disabled="match.alreadyCheer" class="team-card text-center"
                   @click="() => voteForTeam(match, 'home')">
                   <v-img :src="match.fixture.homeTeam.logo" class="team-logo"></v-img>
-                  <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.homeTeam.teamId }">
+                  <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.homeTeam.seasonLeagueTeamId }">
                     {{ match.fixture.homeTeam.nameKr }}
                   </v-card-title>
                   <v-card-text v-if="match.alreadyCheer">
@@ -48,7 +48,7 @@
                 <v-card :disabled="match.alreadyCheer" class="team-card text-center"
                   @click="() => voteForTeam(match, 'away')">
                   <v-img :src="match.fixture.awayTeam.logo" class="team-logo"></v-img>
-                  <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.teamId }">
+                  <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.seasonLeagueTeamId }">
                     {{ match.fixture.awayTeam.nameKr }}
                   </v-card-title>
                   <v-card-text v-if="match.alreadyCheer">
@@ -258,7 +258,7 @@ function resetBarAnimation(match) {
   bottom: 0;
 }
 .barWin {
-  background-color: rgb(232, 20, 20);
+  background-color: rgb(232, 25, 25);
 }
 .barLose {
   background-color: #333D51;
@@ -281,7 +281,7 @@ function resetBarAnimation(match) {
 }
 
 .team-card {
-  width: 300px;
+  width: 350px;
   cursor: pointer;
   /* 마우스 오버 시 커서 변경 */
   margin: 0px 30px;
@@ -294,7 +294,7 @@ function resetBarAnimation(match) {
 }
 
 .chosen {
-  color: red;
+  color: mediumvioletred;
   font-size: 1.5rem;
   font-weight: bold;
 }
