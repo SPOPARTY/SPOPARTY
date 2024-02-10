@@ -125,15 +125,21 @@
 </template>
 
 <script setup>
-import {ref, computed, watch} from 'vue'
+import {ref, computed, watch, onMounted} from 'vue'
+import {useRoute, useRouter} from 'vue-router';
 
 import CreateVote from '@/components/vote/CreateVote.vue'
+import {useVoteStore} from '@/stores/club/party/votes'
+
 
 const emit = defineEmits([
     'vote-close'
 ])
 
+const voteStore = useVoteStore();
+
 const memberId = localStorage.getItem("id");
+const partyId = route.params.partyId;
 
 const isModalVisible = ref(true);
 
@@ -166,6 +172,22 @@ const voteDetail = ref({
     partyMemberId : '',
     options : [],
 })
+
+const onGoingVoteList = ref([]);
+const finishedVoteList = ref([]);
+const myVoteList = ref([]);
+
+watch(() => voteStore.ongoingVoteList,(newOngoingList) => {
+    onGoingVoteList.value = newOngoingList
+},{immediate:true, deep:true})
+
+watch(() => voteStore.finishedVoteList,(newFinishedVoteList) => {
+    finishedVoteList.value = newFinishedVoteList
+},{immediate:true, deep:true})
+
+watch(() => voteStore.myVoteList,(newMyVoteList) => {
+    myVoteList.value = newMyVoteList
+},{immediate:true, deep:true})
 
 
 const currentVotes = ref(votes.value.filter(vote => vote.ongoing === true));
@@ -261,6 +283,12 @@ function closeModal() {
     isModalVisible.value = false; 
     emit('vote-close'); 
 }
+
+onMounted(() => {
+    voteStore.getOngoingVoteList(partyId);
+    voteStore.getFinisihedVoteList(partyId);
+    voteStore.getMyVoteList(partyId, memberId);
+})
 
 </script>
 
