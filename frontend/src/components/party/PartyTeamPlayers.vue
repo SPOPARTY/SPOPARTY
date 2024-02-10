@@ -1,7 +1,8 @@
 <template>
     <v-container fluid class="vc">
         <p>선수 목록 페이지. fixtureId = {{ fixtureId? fixtureId : 'null'}}</p>
-        <v-row>
+        <p v-if="fixtureId==null">경기를 선택해주세요.</p>
+        <v-row v-if="fixtureId!=null">
             <v-col cols="6">
                 <p class="team-name text-center">Home {{ teamIds['homeName'] }}</p>
                 <TeamInfoMembers v-if="count" :team-id="teamIds['home']" />

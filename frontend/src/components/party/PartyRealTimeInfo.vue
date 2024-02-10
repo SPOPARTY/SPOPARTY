@@ -1,9 +1,10 @@
 <template>
     <v-container fluid class="vc">
       <p>실시간 정보 페이지. fixtureId = {{ fixtureId? fixtureId : 'null'}}</p>
+      <p v-if="fixtureId==null">경기를 선택해주세요.</p>
       <p class="table-title">예시 테이블</p>
-      <p>{{ footballStore.matchRealTimeData }}</p>
-      <v-table>
+      <!-- <p>{{ footballStore.matchRealTimeData }}</p> -->
+      <v-table v-if="fixtureId!=null">
         <template v-slot:default>
           <thead>
             <tr>
@@ -48,7 +49,7 @@ watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
     if (newFixtureId !== null) {
         getMatchRealTimeData(newFixtureId)
     }
-}, { immediate: true }, { deep: true })
+}, { immediate: true, deep: true })
 
 // 데이터를 시간의 역순으로 정렬하는 computed 속성
 const sortedEvents = computed(() => {

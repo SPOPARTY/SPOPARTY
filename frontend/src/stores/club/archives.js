@@ -87,7 +87,7 @@ export const useArchiveStore = defineStore("archive",() => {
     }
 
     // 추억 삭제
-    const deleteArchive = (archiveId) => {
+    const deleteArchive = (archiveId, clubId) => {
         requestDeleteArchive(
             archiveId,
             (res) => {
@@ -95,7 +95,8 @@ export const useArchiveStore = defineStore("archive",() => {
                 console.log(res)
                 if (res.status === httpStatusCode.OK) {
                     console.log("********추억이 아주 잘 삭제됨******")
-                    alert(res.message)
+                    alert("추억이 눈녹듯 사라졌습니다!")
+                    getArchiveList(clubId)
                 }
             },
             (error) => {

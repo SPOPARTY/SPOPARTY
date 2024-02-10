@@ -10,18 +10,18 @@ export const useFollowStore = defineStore("follow", () => {
     const router = useRouter();
     const route = useRoute();
 
-    const memberId = sessionStorage.getItem("id") // 나중에 입력받은 memberId로 바꿔야함
+    const memberId = localStorage.getItem("id") // 나중에 입력받은 memberId로 바꿔야함
     const teamList = ref(null);
     const followList = ref(null);
 
     const getTeamList = () => {
         requestAllTeamList(
             ({data,status}) => {
-                console.log("히히 모든 팀 가져오기 발사")
+                // console.log("***********히히 모든 구단 목록 조회********")
                 // console.log(data.data)
                 if(status === httpStatusCode.OK) {
                     teamList.value = data.data
-                    console.log(teamList.value)
+                    // console.log(teamList.value)
                     return teamList.value;
                 }
             },
@@ -42,15 +42,15 @@ export const useFollowStore = defineStore("follow", () => {
         ({data,status}) => {
             console.log(data)
             if(status === httpStatusCode.OK) {
-                console.log("히히 팔로우 리스트 발사")
+                // console.log("히히 팔로우 리스트 발사")
                 followList.value = data.data;
-                console.log(followList.value)
+                // console.log(followList.value)
             }
         }),
         (error) => {
             console.log("팔로우 리스트 가져오는데 에러")
             if(error.response.status === httpStatusCode.NOTFOUND) {
-                console.log("***********비상***********")
+                // console.log("***********비상***********")
                 console.err(err);
                 alert("팔로우 리스트 가져오기 실패!")
             }
@@ -60,7 +60,7 @@ export const useFollowStore = defineStore("follow", () => {
     // teamId를 받아서 memberId와 함께 팔로우 요청을 보내는 함수
     const doFollow = (teamId) => {
         const data = {
-            memberId: sessionStorage.getItem("id"),
+            memberId: localStorage.getItem("id"),
             teamId: teamId
         }
         requestFollow(
@@ -85,7 +85,7 @@ export const useFollowStore = defineStore("follow", () => {
     }
     // teamId를 받아서 followTeamId를 찾아서 팔로우 취소 요청을 보내는 함수
     const doUnFollow = (teamId) => {
-        getFollowList(sessionStorage.getItem("id"));
+        getFollowList(localStorage.getItem("id"));
 
         const followTeamId = followList.value
         .filter((club) => club.teamId === teamId)

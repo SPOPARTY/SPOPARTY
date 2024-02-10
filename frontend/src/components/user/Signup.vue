@@ -1,12 +1,13 @@
 <template>
   <v-container class="signup-container">
-    <v-card class="mx-auto" outlined>
-      <v-card-title class="justify-center">회원 가입</v-card-title>
+    <v-card class="signup-card mx-auto" outlined>
+      <v-card-title class="title justify-center"><h2>회원 가입</h2></v-card-title>
       <v-card-text>
         <v-form @submit.prevent="submitSignup">
           <v-row>
             <v-col cols="9">
               <v-text-field
+                class="input"
                 label="아이디"
                 v-model="id"
                 outlined
@@ -16,7 +17,7 @@
             <v-col cols="3">
               <v-btn
                 class="id-check"
-                color="blue lighten-1"
+                color="#333D51"
                 @click="checkId"
               >
                 아이디 중복확인
@@ -25,6 +26,7 @@
           </v-row>
           
           <v-text-field
+            class="input"
             label="닉네임"
             v-model="nickname"
             outlined
@@ -32,6 +34,7 @@
           ></v-text-field>
           
           <v-text-field
+            class="input" 
             label="비밀번호"
             v-model="password"
             :type="'password'"
@@ -40,6 +43,7 @@
           ></v-text-field>
           
           <v-text-field
+            class="input"
             label="비밀번호 확인"
             v-model="password2"
             :type="'password'"
@@ -50,6 +54,7 @@
           <v-row align="center">
             <v-col cols="12" md="4" sm="4" xs="4">
               <v-text-field
+                class="input"
                 label="이메일"
                 v-model="emailId"
                 outlined
@@ -57,9 +62,10 @@
                 dense
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="1" sm="1" xs="1" class="text-center">@</v-col>
+            <v-col cols="12" md="1" sm="1" xs="1" class="text-center" style="color:white"><h2>@</h2></v-col>
             <v-col cols="12" md="4" sm="4" xs="4">
               <v-text-field
+                class="input"
                 label="도메인"
                 v-model="emailDomain"
                 outlined
@@ -69,7 +75,7 @@
             </v-col>
             <v-col cols="12" md="3" sm="3" xs="3">
               <v-btn class="email-verify"
-                color="primary"
+                color="#333D51"
                 @click="showEmailVerify"
                 >이메일 인증</v-btn>
               <!-- <EmailVerify v-if="isEmailVerifyVisible" @close="isEmailVerifyVisible=false"/> -->
@@ -77,20 +83,29 @@
             </v-col>
           </v-row>
 
-          <v-select
-            :items="teamIds"
-            item-text="logo"
-            item-value="teamId"
-            label="대표 앰블럼"
-            v-model="teamId"
-            required
-            return-object
-            outlined
-          ></v-select>
+
+        <v-row  justify="center" align="center" class="mx-2">
+          <v-col cols="auto" class="pa-0">
+            <v-btn color="#474F7A" @click="showEmblemModal" style="margin-right:30px;">엠블럼 목록</v-btn>
+          </v-col>
+          <v-col cols="auto" class="pa-0">
+            <v-img :src="emblem.emblemIcon" :alt="emblem.emblemName" class="mx-2" style="width: 50px; height: 50px;"></v-img>
+          </v-col>
+          <v-col cols="auto" class="pa-0">
+            <h2 style="color:white;">{{ emblem.emblemName }}</h2>
+          </v-col>
+        </v-row>
+
+        <EmblemList 
+          v-if="isEmblemModalVisible"
+          :team-list="teamList"
+          @emblem-list-close="isEmblemModalVisible = false"
+          @select-emblem="setEmblem($event)"
+        />
           
           <v-row>
             <v-col>
-              <v-btn color="success" type="submit" block>회원가입</v-btn>
+              <v-btn color="#333D51" type="submit" block>회원가입</v-btn>
             </v-col>
             <v-col>
               <v-btn color="grey" @click="goBack" block>이전</v-btn>
@@ -101,7 +116,8 @@
       </v-card-text>
     </v-card>
   </v-container>
-
+  
+  <!-- ******************************************** -->
   <!-- ***********여기서부터 모달*********** -->
   <!-- 아이디를 안 적은 상태에서 아이디 중복검사를 한 경우 -->
   <v-dialog
@@ -109,7 +125,7 @@
     class="idCheckModal"
     persistent
   >
-    <v-card>
+    <v-card class="modals">
       <v-card-text>
         아이디를 입력하세요!
       </v-card-text>
@@ -125,12 +141,12 @@
     class="idCheckModal"
     persistent
   >
-    <v-card>
+    <v-card class="modals">
       <v-card-text>
         사용 가능한 아이디입니다.
       </v-card-text>
       <v-card-actions class="justify-center">
-        <v-btn color="blue" @click="validId = false">확인</v-btn>
+        <v-btn class="button" @click="validId = false">확인</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -141,7 +157,7 @@
     class="idCheckModal"
     persistent
   >
-    <v-card>
+    <v-card class="modals">
       <v-card-text>
         중복된 아이디입니다!
       </v-card-text>
@@ -157,7 +173,7 @@
     width="400"
     persistent
   >
-    <v-card class="justify-center">
+    <v-card class="modals justify-center">
       <v-card-title class="text-h5">이메일 인증</v-card-title>
       <v-card-text>
         <p>인증 코드가 이메일 주소로 전송되었습니다.</p>
@@ -171,7 +187,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="checkVerifyCode">인증</v-btn>
+        <v-btn class="button"  @click="checkVerifyCode">인증</v-btn>
         <v-btn color="grey" @click="isEmailVerifyVisible = false">취소</v-btn>
       </v-card-actions>
     </v-card>
@@ -182,10 +198,16 @@
   
   <script setup>
   import {useRouter} from 'vue-router';
-  import { ref,computed } from 'vue';
+  import { ref,computed, watch, onMounted } from 'vue';
   import {registMember} from '@/api/member'
   import {idCheck, emailCheck,verifyCodeCheck} from '@/api/authentication'
   import { httpStatusCode } from '@/util/http-status';
+  import {useFollowStore} from '@/stores/member/follows'
+
+
+  import EmblemList from '@/components/user/EmblemList.vue';
+  
+  const followStore = useFollowStore();
 
   const router = useRouter()
 
@@ -198,15 +220,32 @@
   const email = computed(() => {
     return `${emailId.value}@${emailDomain.value}`
   } )
-  const teamId = ref('');
 
-  const teamList = [
-      {teamId : 1, logo : "토트넘 FC", "isMain" : false},
-      {teamId : 2, logo : "리버풀", "isMain" : false},
-      {teamId : 3, logo : "토론토", "isMain" : false},
-    ]
-  
-  const teamIds = teamList.map(t => t.teamId);
+  const teamId = ref('');
+  const teamList = ref([]);
+
+  onMounted(() => {
+    teamList.value = followStore.getTeamList();
+  })
+
+  watch(() => followStore.teamList, (newTeamList) => {
+      teamList.value = newTeamList
+  },{immediate:true})
+
+  // 구단 엠블럼 고르기!
+  const emblem = ref({});
+
+  const isEmblemModalVisible = ref(false) // 엠블럼 수정 모달 보일까 말까
+  function showEmblemModal() {
+      isEmblemModalVisible.value = true;
+  }
+
+  function setEmblem(newEmblem) {
+    emblem.value = newEmblem
+    console.log("******내가 선택한 엠블럼********")
+    console.log(emblem.value)
+  }
+
 
   // 아이디 중복 검사
   const idDuplicatedChecked = ref(false); // 아이디 검사 여부 flag
@@ -218,23 +257,29 @@
     if(id.value === '') {
       blankId.value = true;
     }
-
+    idDuplicatedChecked.value = false;
+    console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
     idCheck(
       id.value,
       (res) => {
-        if (res.status === httpStatusCode.OK) {
+        // console.log(res);
+        if (res.data.status === httpStatusCode.OK) {
           console.log("히히 아이디 중복 검사 발사")
           idDuplicatedChecked.value = true; // 아이디 중복 검사 완료
+          console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
           validId.value = true // 아이디 검사 완료 모달
         }
       },
       (error) => {
+        // console.error("*******비상*******")
         if (error.response.status === httpStatusCode.CONFLICT) {
           console.log("히히 이미 있는 아이디 발사")
           inValidId.value = true; // 아이디 중복 모달 
         }
-        console.error("*******비상*******")
-        console.error(error)
+        if (error.response.status === 500) {
+          console.log("중복체크를 하지 않음!!")
+          // console.error(error)
+        }
       }
     )
   }
@@ -323,14 +368,14 @@
       password.value === "" ||
       nickname.value === "" ||
       email.value === "" ||
-      teamId.value === ""
+      emblem.value.emblemId === ""
       ) {
         alert("모든 내용을 입력해주세요");
         console.log("id -> ",id.value)
         console.log("password -> ",password.value)
         console.log("nickname -> ",nickname.value)
         console.log("email -> ",email.value)
-        console.log("teamId -> ",teamId.value)
+        console.log("emblem -> ",emblem.value.emblemId)
         return;
       }
     if (!idDuplicatedChecked.value){
@@ -358,6 +403,11 @@
       return;
     }
 
+    if(emblem.value.emblemId === '') {
+      alert("엠블럼은 반드시 골라야 합니다!!");
+      return;
+    }
+
 
     const member = {
       loginId : id.value,
@@ -365,7 +415,7 @@
       nickname : nickname.value,
       email : email.value,
       team : {
-        id : teamId.value
+        id : emblem.value.emblemId
       }
     }
 
@@ -392,15 +442,35 @@
 
   }
 
-
   function goBack(){
     router.back(); // 이전 페이지로 이동
   }
+
+ 
   </script>
   
 <style scoped lang="scss">
 .signup-container {
   max-width: 600px;
+  background-color: #08042B;
+}
+
+.v-card {
+  background-color: #292646; 
+}
+
+.input {
+  background-color : #CBD0D8;
+  height:60px;
+  margin-top:10px;
+  margin-bottom:10px;
+  border-radius: 5px;
+}
+
+.title {
+  margin-top:10px;
+  margin-bottom : 10px;
+  color:#D3AC2B;
 }
 
 .justify-center{
@@ -408,7 +478,7 @@
 } 
 
 .id-check{
-  margin-top : 10px;
+  margin-top : 20px;
 }
 
 .idCheckModal {
@@ -416,8 +486,12 @@
   text-align: center;
 }
 
+.modals {
+  background-color:#CBD0D8
+}
+
 .email-verify{
-  margin-bottom:20px;
+  margin-bottom:3px;
 }
 
 </style>
