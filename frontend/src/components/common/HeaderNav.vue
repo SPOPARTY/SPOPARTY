@@ -155,6 +155,7 @@ import { useNotificationStore } from "@/stores/member/notification"
 import { storeToRefs } from "pinia";
 
 import NewClub from '@/components/club/NewClub.vue';
+import { set } from 'date-fns';
 
 const {myClubs} = useClubStore();
 
@@ -183,7 +184,9 @@ const drawer = ref(false);
 function goHome() {
   router.push('/');
   // 이동 후 새로고침
-  router.go(0);
+  // setTimeout(() => {
+  //   router.go(0);
+  // }, 150);
 }
 
 // 예시 클럽 데이터

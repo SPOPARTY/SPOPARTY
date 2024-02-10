@@ -9,7 +9,7 @@ function requestGetCheersData(success,fail) {
     local.get(`/${API_URL}/cheers`).then(success).catch(fail);
 }
 
-function requestPostCheersData(data,success,fail) {
+async function requestPostCheersData(data,success,fail) {
     // 응원 정보 등록
     local.post(`/${API_URL}/cheers`,data).then(success).catch(fail);
 }

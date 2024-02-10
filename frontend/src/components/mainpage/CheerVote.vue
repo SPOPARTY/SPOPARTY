@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-col cols="12" class="d-flex flex-column align-center justify-center">
         <v-carousel v-model="model" class='carousel' cycle interval="6000" height="500px" 
-          hide-delimiter-background progress="primary" color="red">
+          hide-delimiter-background progress="primary" color="red" :key="carouselKey">
           <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
             <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
               <!-- 경기 기본 정보 -->
@@ -18,7 +18,7 @@
               </div>
               <!-- 투표 상태 메시지 -->
               <div class="vote-message">
-                <h1>{{ convertToBoolean(match.already_cheer) ? '이미 투표하셨습니다' : '팀을 선택해주세요!' }}</h1>
+                <h1>{{ match.alreadyCheer ? '이미 투표하셨습니다' : '팀을 선택해주세요!' }}</h1>
               </div>
               <!-- 투표 버튼 및 득표율 -->
               <div class="d-flex justify-center align-center pb-12">
@@ -153,15 +153,15 @@ function formatDate(dateStr) {
 //     }
 // }
 
-function voteForTeam(match, team) {
-  if (match.already_cheer === 'true') return;
+async function voteForTeam(match, team) {
+  if (match.alreadyCheer === 'true') return;
   if (isLogined.value === false || memberId === null) {
     alert("로그인이 필요한 서비스입니다.");
     return;
   }
 
   const cheerFixtureId = match.cheerFixtureId;
-  const teamId = team === 'home' ? match.fixture.homeTeam.teamId : match.fixture.awayTeam.teamId;
+  const teamId = team === 'home' ? match.fixture.homeTeam.seasonLeagueTeamId : match.fixture.awayTeam.seasonLeagueTeamId;
   const fixtureId = match.fixture.fixtureId;
   // memberId.value = Number(memberId.value)
 
@@ -173,8 +173,10 @@ function voteForTeam(match, team) {
   } 
 
   console.log("data=",data);
-  postCheers(data);
-  // postCheers(data);
+  postCheers(data).then(() => {
+      carouselKey.value++; // 강제 리렌더링을 위한 key 값 변경
+      resetBarAnimation(match); // 득표율 바 업데이트
+  });
 }
 
 const homePercentage = ref(0);
@@ -191,6 +193,9 @@ const votePercentage = (match, team) => {
 };
 
 //// 응원 득표율을 Bar로 표현하기 위한 로직
+
+const carouselKey = ref(0);
+
 onMounted(() => {
   // setInterval을 사용하여 cheer.value.length가 0보다 큰지 확인
   const checkCheerLength = setInterval(() => {
@@ -209,7 +214,8 @@ onMounted(() => {
 
 // 캐러셀의 현재 항목이 변경될 때 호출되는 함수
 watch(model, async (newVal) => {
-  await nextTick(); // 캐러셀 항목 변경 후 DOM 업데이트를 기다림
+  // 캐러셀 항목 변경 후 DOM 업데이트를 기다림
+  // await nextTick(); 
   const currentMatch = cheer.value[newVal];
   console.log("nextTick", newVal)
   if (currentMatch && currentMatch.alreadyCheer) {
@@ -222,17 +228,16 @@ watch(model, async (newVal) => {
 
 function resetBarAnimation(match) {
   // 막대의 높이를 0으로 초기화
-  homePercentage.value = 0;
-  awayPercentage.value = 0;
+  // homePercentage.value = 0;
+  // awayPercentage.value = 0;
 
   // 약간의 지연 후 막대의 높이를 원래 값으로 설정하여 애니메이션을 생성합니다.
-  setTimeout(() => {
+  nextTick(() => {
     homePercentage.value = votePercentage(match, 'home');
     awayPercentage.value = votePercentage(match, 'away');
-    // 막대 높이를 득표율에 맞게 조정하는 로직
+  });
     // {homePercentage * 2.5}px;
     // {awayPercentage * 2.5}px;
-  }, 200); 
   // 200ms의 지연은 애니메이션을 생성하기 위한 시간
   // 필요에 따라 수정 가능, 아래 .bar 스타일의 transition 속성도 함께 수정 가능
 }
