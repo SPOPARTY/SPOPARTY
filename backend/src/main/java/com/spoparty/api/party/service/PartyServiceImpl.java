@@ -14,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.club.entity.ClubMember;
 import com.spoparty.api.club.repository.ClubMemberRepository;
-import com.spoparty.api.club.repository.ClubRepository;
-import com.spoparty.api.club.service.ClubMemberServiceImpl;
 import com.spoparty.api.club.service.ClubServiceImpl;
 import com.spoparty.api.common.constants.NotificationMessage;
 import com.spoparty.api.common.entity.RoleType;
@@ -26,7 +24,6 @@ import com.spoparty.api.football.response.PartyFixtureDTO;
 import com.spoparty.api.football.service.FixtureServiceImpl;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.Notification;
-import com.spoparty.api.member.service.MemberService;
 import com.spoparty.api.member.service.NotificationService;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
 import com.spoparty.api.party.dto.response.PartyResponseDTO;
@@ -67,13 +64,16 @@ public class PartyServiceImpl implements PartyService {
 
 		// party 엔티티 생성
 		Party party = Party.createParty(member, club);
-		partyRepository.save(party);
+		log.debug("party 엔티티 - {}", party);
 
 		// openvidu 세션, 토큰 생성
 		String openviduToken = createOpenviduSessionAndToken(club.getId(), party);
+		log.debug("openviduToken - {}", party);
 
 		// partyMember 엔티티 생성
 		PartyMember partyMember = PartyMember.createPartyMember(party, member, openviduToken, RoleType.host);
+
+		partyRepository.save(party);
 		partyMemberRepository.save(partyMember);
 
 		// 알림 생성
