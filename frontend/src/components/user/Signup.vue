@@ -83,17 +83,16 @@
             </v-col>
           </v-row>
 
-
-        <v-row  justify="center" align="center" class="mx-2">
+        <v-row v-if="emblem.emblemId !== ''" justify="center" align="center" class="emblem mx-2" @click="showEmblemModal">
           <v-col cols="auto" class="pa-0">
-            <v-btn color="#474F7A" @click="showEmblemModal" style="margin-right:30px;">엠블럼 목록</v-btn>
+            <v-img :src="emblem.emblemIcon" :alt="emblem.emblemName" class="mx-2" style="width: 50px; height: 50px; cursor:pointer"/>
           </v-col>
           <v-col cols="auto" class="pa-0">
-            <v-img :src="emblem.emblemIcon" :alt="emblem.emblemName" class="mx-2" style="width: 50px; height: 50px;"></v-img>
+            <h2 style="color:white; cursor:pointer">{{ emblem.emblemName }}</h2>
           </v-col>
-          <v-col cols="auto" class="pa-0">
-            <h2 style="color:white;">{{ emblem.emblemName }}</h2>
-          </v-col>
+        </v-row>
+        <v-row v-else justify="center" align="center"  class="emblem mx-2 my-2" @click="showEmblemModal">
+          <h2 style="color:white; cursor:pointer">원하는 구단의 엠블럼을 선택해보세요!</h2>
         </v-row>
 
         <EmblemList 
@@ -221,7 +220,6 @@
     return `${emailId.value}@${emailDomain.value}`
   } )
 
-  const teamId = ref('');
   const teamList = ref([]);
 
   onMounted(() => {
@@ -233,7 +231,11 @@
   },{immediate:true})
 
   // 구단 엠블럼 고르기!
-  const emblem = ref({});
+  const emblem = ref({
+    emblemId : "",
+    emblemIcon : "",
+    emblemName : "",
+  });
 
   const isEmblemModalVisible = ref(false) // 엠블럼 수정 모달 보일까 말까
   function showEmblemModal() {
@@ -450,6 +452,13 @@
   </script>
   
 <style scoped lang="scss">
+.emblem {
+  background-color: #474F7A; 
+  height:100px;
+  border-radius: 20px;
+}
+
+
 .signup-container {
   max-width: 600px;
   background-color: #08042B;

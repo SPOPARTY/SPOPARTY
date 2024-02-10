@@ -38,20 +38,15 @@
                 v-if="isEmailModalVisible" 
                 @set-email-close="isEmailModalVisible = false"
                 @update-email="updateEmail($event)"
-                />
+                />  
             
-            <v-row>
-            </v-row>
-            
-            <v-row>
-                <v-col cols="8">
-                    <v-btn style="width:100%; height:100%;" @click="showEmblemModal">
-                        <!-- <v-img :src="emblemIcon" :alt="emblemName" style="width:64px; height:64px;"></v-img> -->
-                        {{ memberInfo.team.id }}
-                    </v-btn>
+            <v-row class="emblem-box mx-2 mb-2 my-6" justify="center" align="center" @click="showEmblemModal" >
+                <v-col cols="2">
+                    <v-img :src="memberInfo.team.logo" :alt="memberInfo.team.nameKr"  
+                    style="width: 50px; height: 50px; transform: translateX(10px);"/>
                 </v-col>
-                <v-col cols="4" md="4">
-                    <v-btn color="#393646" style="margin-top:12px;" @click="showEmblemModal">엠블럼 목록</v-btn>
+                <v-col cols="6">
+                    <h2 style="color:white;">{{ memberInfo.team.nameKr }}</h2>
                 </v-col>
             </v-row>
             <EmblemList 
@@ -62,7 +57,7 @@
                 @select-emblem="setEmblem($event)"
                 />
             
-            <v-row class="justify-center">
+            <v-row class="follow-box justify-center">
                 <v-col cols="6">
                     <v-btn 
                         style="width:100% "
@@ -142,6 +137,8 @@ const memberInfo = ref({
     email : "",
     team : {
         id : "",
+        logo : "",
+        nameKr : "",
     },
     status : "",
 })
@@ -150,8 +147,8 @@ const emailId = ref(memberInfo.value.email.split("@")[0]);
 const emailDomain = ref(memberInfo.value.email.split("@")[1]);
 
 const emblemId = ref(memberInfo.value.team.id);
-const emblemName = ref('')
-const emblemIcon = ref('')
+const emblemName = ref(memberInfo.value.team.nameKr);
+const emblemIcon = ref(memberInfo.value.team.logo);
 
 
 const getMemberInfo = () => {
@@ -167,6 +164,8 @@ const getMemberInfo = () => {
         memberInfo.value.nickname = data.data.nickname;
         memberInfo.value.email = data.data.email;
         memberInfo.value.team.id = data.data.team === null? emblemId.value : data.data.team.id;
+        memberInfo.value.team.logo = data.data.team.logo;
+        memberInfo.value.team.nameKr = data.data.team.nameKr;
         memberInfo.value.team.status = data.data.status;
         },
         (error) => {
@@ -252,10 +251,12 @@ function showEmblemModal() {
 function setEmblem(newEmblem) {
     console.log("새로운 emblemId ->",newEmblem.emblemId)
     emblemId.value = newEmblem.emblemId
-    memberInfo.value.team.id = emblemId.value;
-    console.log("잘 바뀌었나? emblemId ->",memberInfo.value.team.id)
     emblemIcon.value = newEmblem.emblemIcon;
     emblemName.value = newEmblem.emblemName;
+    memberInfo.value.team.id = emblemId.value;
+    memberInfo.value.team.logo = emblemIcon.value
+    memberInfo.value.team.nameKr = emblemName.value 
+    console.log("잘 바뀌었나? emblemId ->",memberInfo.value.team.id)
 }
 
 // 구단 팔로우 모달
@@ -308,6 +309,12 @@ h1 {
 .mypage-container{
     margin-top:40px;
     max-width: 600px;
+}
+
+.emblem-box{
+    cursor:pointer; 
+    background-color: #474F7A;
+    border-radius: 5px;
 }
 
 </style>
