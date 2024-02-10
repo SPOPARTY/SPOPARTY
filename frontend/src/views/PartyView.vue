@@ -773,7 +773,7 @@ const leaveSession = () => {
      /* min-height: 450px; */
      background-color: #CBD0D8;
      /* 채팅창 배경색 */
-     overflow-y: auto;
+     /* overflow-y: auto; */
      /* 내용이 많을 경우 스크롤 */
      /* z-index: 10;  */
      /* 다른 요소 위에 채팅창이 나타나도록 z-index 설정 */

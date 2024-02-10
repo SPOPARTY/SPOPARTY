@@ -140,6 +140,37 @@ const send = (destination, body, header) => {
   }
 }
 
+const connect = () => {
+  if (stompClient === undefined) {
+    const socket = new SockJS(serverURL)
+    stompClient = Stomp.over(socket)
+
+    stompClient.connect(
+      {},
+      (frame) => {
+        console.log('stomp client connected.')
+        myMessage.value.message = `${myMessage.value.userName} 님이 입장했습니다.`
+        send('/chat/enter', myMessage.value, myMessage.value)
+        myMessage.value.message = ''
+        stompClient.subscribe(`/sub/chat${clubId}-${partyId}`, (response) => {
+          console.log(response)
+          chats.push(JSON.parse(response.body))
+        })
+        stompClient.subscribe(
+          `/user/${myMessage.value.userName}/sub/chat${clubId}-${partyId}`,
+          (response) => {
+            chats.push(...JSON.parse(response.body))
+            console.log(chats)
+          },
+        )
+      },
+      (error) => {
+        console.error(`stomp client connect error : ${error}`)
+      },
+    )
+  }
+}
+
 const disconnect = () => {
   myMessage.value.message = `${myMessage.value.userName} 님이 퇴장했습니다.`
   send('/sub/chat/out', myMessage.value, myMessage.value)
