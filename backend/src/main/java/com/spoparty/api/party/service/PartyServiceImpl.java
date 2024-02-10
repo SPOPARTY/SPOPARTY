@@ -3,11 +3,15 @@ package com.spoparty.api.party.service;
 import static com.spoparty.api.common.constants.ErrorCode.*;
 import static com.spoparty.api.common.constants.NotificationMessage.*;
 
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.spoparty.api.member.entity.File;
+import io.openvidu.java.client.Recording;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -254,5 +258,27 @@ public class PartyServiceImpl implements PartyService {
 		if (party.getMaxParticipants() <= countPartyMembers(party.getId())) {
 			throw new CustomException(ENOUGH_PARTY_PARTICIPANTS);
 		}
+	}
+
+	@Override
+	public Recording startRecording(String sessionId, Map<String, Object> params)
+			throws OpenViduJavaClientException, OpenViduHttpException {
+		return openViduService.startRecording(sessionId, params);
+	}
+
+	@Override
+	public void stopRecording(String recordingId)
+			throws OpenViduJavaClientException, OpenViduHttpException {
+		openViduService.stopRecording(recordingId);
+	}
+
+	@Override
+	public File uploadRecording(String recordingId) throws InvalidPathException {
+		return openViduService.uploadRecording();
+	}
+
+	@Override
+	public void deleteRecording(String recordingId) throws IOException {
+		openViduService.deleteRecording(recordingId);
 	}
 }
