@@ -28,7 +28,7 @@ pipeline {
                     sh 'cp -f ${privateConfigFile}  backend/src/main/resources/application-private.yml'
                 }
                 withCredentials([file(credentialsId: 'batch-application-private', variable: 'batchPrivateConfigFile')]) {
-                    sh 'cp -f ${batchPrivateConfigFile}  backend/batch/src/main/resources/application-private.yml'
+                    sh 'cp -f ${batchPrivateConfigFile}  batch/src/main/resources/application-private.yml'
                 }
             }
         }
@@ -48,7 +48,7 @@ pipeline {
                 stage ('Batch') {
                     steps {
                         echo 'BE - Build batch start'
-                        dir ('backend/batch') {
+                        dir ('batch') {
                             sh'''
                                 chmod +x gradlew
                                 ./gradlew clean build

@@ -95,10 +95,6 @@ test-color {
   color: #F4F3EA;
 }
 
-
-
-
-
 :root {
   font-family: 'Noto Sans KR', 'Roboto', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
@@ -107,13 +103,16 @@ a:hover {
   color: #D3AC2B;
 }
 
-.v-application__wrap, .v-toolbar__content {
+.v-application__wrap, .v-toolbar__content{
   background-color: #08042B;
 }
 
 .contents-section, .title-section {
   background-color: #333D51;
   min-width: 900px;
+  /* max-width: 1400px; */
+  /* justify-content: center;
+  align-items: center; */
 }
 
 .contents-section, .part-section{

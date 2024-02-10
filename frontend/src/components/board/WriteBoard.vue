@@ -7,7 +7,7 @@
             outlined
             class="title"
         />
-        <TextEditor v-model="content"/>
+        <TextEditor class="file-input" v-model="content"/>
         <v-card-text class="file-input-container">
             <v-file-input
                 accept="image/*"
@@ -41,7 +41,7 @@ const boardStore = useBoardStore();
 const route = useRoute();
 const router = useRouter();
 
-const memberId = sessionStorage.getItem("id");
+const memberId = localStorage.getItem("id");
 const clubId = route.params.clubId;
 const title = ref('');
 const content = ref('');
@@ -83,6 +83,7 @@ const goBack = () => {
     background-color: #292646;
     margin-top:50px;
     border-radius: 10px;
+    padding:20px;
 }
 
 h1 {
