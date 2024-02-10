@@ -25,51 +25,43 @@ import lombok.NoArgsConstructor;
 public class LineupPlayer extends FootballBaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "lineup_player_id")
 	private long id;
 
-	@Column(nullable = false, columnDefinition = "TINYINT")
-	private boolean mainPlayer;
-
 	// 등번호
 	@Size(min=0, max=3)
-	@Column(nullable = false, length=3)
+	@Column(nullable = true, length=3)
 	private String number;
 
 	// 역할
 	@Size(min=0, max=20)
-	@Column(nullable = false, length=20)
+	@Column(nullable = true, length=20)
 	private String position;
 
 	// 위치 (포메이션 기반)
 	@Size(min=0, max=10)
-	@Column(nullable=false, length=10)
+	@Column(nullable=true, length=10)
 	private String grid;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="lineup_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name="lineup_id", nullable=true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Lineup lineup;
 
 
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="season_league_team_player_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private SeasonLeagueTeamPlayer seasonLeagueTeamPlayer;
-
-
-
+	@Size(min=0, max=50)
+	@Column(nullable=true, length=50)
+	private String name;
 
 	@Builder
 
-	public LineupPlayer(boolean mainPlayer, String number, String position, String grid, Lineup lineup,
-		SeasonLeagueTeamPlayer seasonLeagueTeamPlayer) {
-		this.mainPlayer = mainPlayer;
+	public LineupPlayer(Long id, String number, String position, String grid, Lineup lineup,
+		String name) {
+		this.id = id;
 		this.number = number;
 		this.position = position;
 		this.grid = grid;
 		this.lineup = lineup;
-		this.seasonLeagueTeamPlayer = seasonLeagueTeamPlayer;
+		this.name = name;
 	}
 }

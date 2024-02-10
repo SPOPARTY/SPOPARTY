@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.spoparty.api.common.entity.FootballBaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -33,23 +32,22 @@ public class Lineup extends FootballBaseEntity {
 	@Column(name = "lineup_id")
 	private long id;
 
-	@Size(min=0, max=20)
-	@Column(nullable=false, length=20)
+	@Size(min = 0, max = 20)
+	@Column(nullable = true, length = 20)
 	private String formation;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fixture_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "fixture_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Fixture fixture;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "season_league_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "season_league_team_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam seasonLeagueTeam;
 
 	@OneToMany(mappedBy = "lineup")
 	private List<LineupPlayer> lineupPlayers = new ArrayList<>();
-
 
 	@Builder
 

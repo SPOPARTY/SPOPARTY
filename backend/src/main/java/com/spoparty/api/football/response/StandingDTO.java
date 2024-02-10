@@ -37,6 +37,8 @@ public class StandingDTO {
 	// 실점 수
 	private int goalsAgainst;
 
+	private String group;
+
 	public static StandingDTO toDTO(Standings entity) {
 		return StandingDTO.builder()
 			.rank(entity.getRank())
@@ -49,6 +51,7 @@ public class StandingDTO {
 			.lose(entity.getLose())
 			.goalsFor(entity.getGoalsFor())
 			.goalsAgainst(entity.getGoalsAgainst())
+			.group(entity.getGroup())
 			.build();
 	}
 }
