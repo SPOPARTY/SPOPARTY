@@ -11,6 +11,7 @@ import com.spoparty.api.member.entity.File;
 import com.spoparty.api.member.service.FileService;
 import com.spoparty.common.util.CustomMultipartFile;
 import io.openvidu.java.client.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OpenViduService {
 
 	@Value("${openvidu.url}")
@@ -35,7 +37,7 @@ public class OpenViduService {
 
 	private final String RECORDINGS_PATH = "/opt/openvidu/recordings/";
 
-	private FileService fileService;
+	private final FileService fileService;
 	@PostConstruct
 	public void init() {
 		this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
@@ -91,16 +93,16 @@ public class OpenViduService {
 	}
 
 	public File uploadRecording() throws InvalidPathException {
-		//Path path = Paths.get(String.format("%s\\%s\\%s.mp4", RECORDINGS_PATH, recordingId, recordingId));
-		Path path = Paths.get("D:\\GitRepository_HW\\2.mp4");
+		Path path = Paths.get(String.format("%s\\%s\\%s.mp4", RECORDINGS_PATH, recordingId, recordingId));
+
 		CustomMultipartFile file = new CustomMultipartFile(path.toFile());
 		File uploadedFile = fileService.uploadFile(file);
 
 		return uploadedFile;
 	}
 	public void deleteRecording(String recordingId) throws IOException {
-//		Path path = Paths.get(String.format("%s\\%s", RECORDINGS_PATH, recordingId));
-		Path path = Paths.get("D:\\GitRepository_HW\\2.mp4");
+		Path path = Paths.get(String.format("%s\\%s", RECORDINGS_PATH, recordingId));
+
 		path.toFile().delete();
 		log.info("file deleted : {}", path);
 	}
