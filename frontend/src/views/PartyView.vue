@@ -33,8 +33,10 @@
                          <!-- 경기 선택 -->
                          <v-col cols="5" class="match pa-2">
                               <!-- {{ dialog }} -->
-                              <v-btn @click="[dialog = true, isTitleEditing = true, isMatchEditing = true, isUrlEditing = true]" block variant="outlined" size="x-large">
-                                   {{ matchName.find((item) => item.fixtureId === matchModel)?.text || '경기 선택'}}
+                              <v-btn
+                                   @click="[dialog = true, isTitleEditing = true, isMatchEditing = true, isUrlEditing = true]"
+                                   block variant="outlined" size="x-large">
+                                   {{ matchName.find((item) => item.fixtureId === matchModel)?.text || '경기 선택' }}
                               </v-btn>
                               <v-dialog v-model="dialog" max-width="600">
                                    <v-card>
@@ -73,7 +75,8 @@
                                              </v-text-field>
                                         </v-card-text>
                                         <v-card-actions>
-                                             <v-btn color="blue darken-1" text block @click="clickCheck(isUrlEditing)">확인</v-btn>
+                                             <v-btn color="blue darken-1" text block
+                                                  @click="clickCheck(isUrlEditing)">확인</v-btn>
                                         </v-card-actions>
                                    </v-card>
                               </v-dialog>
@@ -82,7 +85,7 @@
                </v-col>
                <v-col class="chatting-section" cols="3">
                     <!-- 여기가 유저들 캠 화면 오는 영역 -->
-                    <v-row class="cam-section">
+                    <v-row class="cam-section" id="cam-section">
                          <v-col cols="6" class="cam-video">
                               <UserVideo :stream-manager="publisher"
                                    @click.native="updateMainVideoStreamManager(publisher)" />
@@ -122,7 +125,7 @@
                          <!-- 파티 초대 -->
                          <v-col cols="6" class="cam-video" v-if="partyMembers.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
-                              <v-img src="https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg" class="invite-img" contain></v-img>
+                              <v-img src="/maruche.jpg" class="invite-img" contain></v-img>
                               <span>친구를 초대해 보세요!</span>
                          </v-col>
                          <!-- 채팅창 -->
@@ -141,12 +144,22 @@
                     <!-- 버튼 영역 -->
                     <v-row class="button-section">
                          <v-col cols="3">
-                              <v-btn color="secondary">
+                              <v-btn color="secondary" @click="captureScreen">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         사진
                                    </v-tooltip>
                                    <v-icon size="x-large">mdi-camera-outline</v-icon>
                               </v-btn>
+                              <!-- 스크린샷 미리보기 오버레이 -->
+                              <v-overlay v-model="overlay" class="over">
+                                   <v-card class="overlay-card">
+                                        <v-img :src="screenshotUrl" contain class="screenshot-preview"></v-img>
+                                        <v-card-actions class="justify-end">
+                                             <v-btn color="green" @click="downloadScreenshot" size="x-large">다운로드</v-btn>
+                                             <v-btn color="red" @click="overlay = false" size="large">닫기</v-btn>
+                                        </v-card-actions>
+                                   </v-card>
+                              </v-overlay>
                          </v-col>
                          <v-col cols="3">
                               <v-btn color="secondary">
@@ -398,13 +411,9 @@ const exitParty = () => {
      if (confirm("파티를 나가시겠습니까?")) {
           delPartyMem();
           setTimeout(() => {
-               // confirm 후 200ms 지나서 클럽 페이지로 이동
-               router.push({ name: 'ClubMain', params: { clubId } }).then(() => {
-                    // router.push 프로미스 완료 후 페이지 새로고침
-                    // window.location.reload();
-                    router.go();
-               });
-          }, 200);
+               // confirm 후 100ms 지나서 클럽 페이지로 이동
+               window.location.href = `/club/${clubId}`;
+          }, 100);
      }
      // '아니오'를 선택한 경우 아무 동작도 하지 않음
 }
@@ -475,7 +484,7 @@ const getMatchTitle = (item) => {
      }
      matchName.value.push({
           fixtureId: item.fixtureId,
-          text:`${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr}`
+          text: `${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr}`
           // text:`${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`
      });
      return `${item.league.nameKr} ${item.round} / ${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr} / ${status.value}`;
@@ -493,6 +502,35 @@ const onMatchChange = () => {
 }
 
 getMatchWatchable(startDate.value, endDate.value);
+
+/////// 스크린샷 캡처 로직 
+import html2canvas from 'html2canvas';
+
+const overlay = ref(false);
+const screenshotUrl = ref('');
+
+// 스크린샷 캡처 함수
+function captureScreen() {
+     const element = document.getElementById('cam-section')
+     if (element) {
+          html2canvas(element, { scale: 1 }).then(canvas => {
+               // canvas를 이미지 URL로 변환
+               screenshotUrl.value = canvas.toDataURL('image/png');
+               overlay.value = true;
+          });
+     }
+}
+
+// 다운로드 함수
+function downloadScreenshot() {
+     const a = document.createElement('a');
+     a.href = screenshotUrl.value;
+     a.download = 'screenshot.png';
+     document.body.appendChild(a);
+     a.click();
+     document.body.removeChild(a);
+}
+
 
 // matches
 // {
@@ -657,7 +695,7 @@ const leaveSession = () => {
 
 <style>
 .party-section {
-     /* background-color: #333D51; */
+     background-color: #08042B;
      color: white;
      margin-top: 0px;
      min-width: 1280px;
@@ -725,6 +763,7 @@ const leaveSession = () => {
      height: 70%;
      /* justify-self: start; */
      align-content: start;
+     background-color: #333D51;
 }
 
 .cam-video {
@@ -830,5 +869,27 @@ const leaveSession = () => {
      -ms-overflow-style: none;
      /* Internet Explorer 및 Edge에서 스크롤바를 숨깁니다 */
      overscroll-behavior: contain;
+}
+
+.overlay-card {
+     margin: auto;
+     width: 32vw;
+     /* max-width: 600px; */
+     overflow: hidden;
+     /* 내용이 넘칠 경우 숨김 처리 */
+
+}
+
+.over {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+}
+
+
+.screenshot-preview {
+     /* max-height: 80vh; */
+     margin: 20px;
+     /* padding: 30px; */
 }
 </style> 
