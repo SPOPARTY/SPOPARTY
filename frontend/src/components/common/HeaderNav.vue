@@ -182,11 +182,12 @@ const router = useRouter();
 const drawer = ref(false);
 
 function goHome() {
-  router.push('/');
-  // 이동 후 새로고침
-  setTimeout(() => {
-    router.go(0);
-  }, 20);
+  // router.push('/');
+  // // 이동 후 새로고침
+  // setTimeout(() => {
+  //   router.go(0);
+  // }, 20);
+  window.location.href = '/';
 }
 
 // 예시 클럽 데이터

@@ -23,7 +23,7 @@
               </v-col>
             </v-row>
             <v-row class="team-vs-team">
-              <v-col cols="3" class="team-name" @click="toTDP(match.homeTeam.teamId)">
+              <v-col cols="3" class="team-name" @click="toTDP(match.homeTeam.seasonLeagueTeamId)">
                 <h3>{{ match.homeTeam.nameKr }}</h3>
               </v-col>
               <v-col cols="2" align="center">
@@ -37,7 +37,7 @@
                 <v-img :src="match.awayTeam.logo" class="team-logo team-name"
                   @click="toTDP(match.awayTeam.teamId)"></v-img>
               </v-col>
-              <v-col cols="3" class="team-name" @click="toTDP(match.awayTeam.teamId)">
+              <v-col cols="3" class="team-name" @click="toTDP(match.awayTeam.seasonLeagueTeamId)">
                 <h3>{{ match.awayTeam.nameKr }}</h3>
               </v-col>
             </v-row>
