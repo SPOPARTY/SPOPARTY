@@ -93,8 +93,8 @@ public class OpenViduService {
 	}
 
 	public File uploadRecording(String recordingId) throws InvalidPathException {
-		Path videoPath = Paths.get(String.format("%s\\%s\\%s.mp4", RECORDINGS_PATH, recordingId, recordingId));
-		Path thumbnailPath = Paths.get(String.format("%s\\%s\\%s.jpg", RECORDINGS_PATH, recordingId, recordingId));
+		Path videoPath = Paths.get(String.format("%s/%s/%s.mp4", RECORDINGS_PATH, recordingId, recordingId));
+		Path thumbnailPath = Paths.get(String.format("%s/%s/%s.jpg", RECORDINGS_PATH, recordingId, recordingId));
 
 		CustomMultipartFile videoFile = new CustomMultipartFile(videoPath.toFile());
 		CustomMultipartFile thumbnailFile = new CustomMultipartFile(thumbnailPath.toFile());
@@ -104,9 +104,13 @@ public class OpenViduService {
 		return uploadedVideoFile;
 	}
 	public void deleteRecording(String recordingId) throws IOException {
-		Path path = Paths.get(String.format("%s\\%s", RECORDINGS_PATH, recordingId));
+		Path path = Paths.get(String.format("%s/%s", RECORDINGS_PATH, recordingId));
 
+		for (java.io.File f: path.toFile().listFiles()) {
+			f.delete();
+		}
 		path.toFile().delete();
+
 		log.info("file deleted : {}", path);
 	}
 }
