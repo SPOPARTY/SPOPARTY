@@ -53,7 +53,6 @@ const titleRules = [
 ];
 
 
-
 const writeBoard = () => {
     // 사진을 비롯한 미디어 파일들은 form형식으로 보내줘야한다.
     const formdata = new FormData(); 

@@ -61,7 +61,7 @@
 </template>
   
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useFootballStore } from '@/stores/football/football';
 
 const footballStore = useFootballStore();
@@ -73,11 +73,19 @@ const props = defineProps({
   },
 });
 
-getTeamDetail(props.teamId);
 const team = ref([]);
 
-watch(() => footballStore.teamDetail, (newValue) => {
-  team.value = newValue;
+async function GTD(teamId) {
+  try {
+    team.value = await getTeamDetail(teamId);
+    console.log("#########", team.value);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted (() => {
+  GTD(props.teamId);
 });
 
 

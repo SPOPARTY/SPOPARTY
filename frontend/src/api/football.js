@@ -4,7 +4,7 @@ const API_URL = "football"
 
 const local = localAxios();
 
-function requestGetCheersData(success,fail) {
+async function requestGetCheersData(success,fail) {
     // 응원 정보 조회
     local.get(`/${API_URL}/cheers`).then(success).catch(fail);
 }
@@ -35,7 +35,7 @@ function requestGetLeagueRanking(leagueId,success,fail) {
     local.get(`/${API_URL}/leagues/rank/${leagueId}`).then(success).catch(fail);
 }
 
-function requestGetTeamDetail(teamId,success,fail) {
+async function requestGetTeamDetail(teamId,success,fail) {
     // 팀 상세 정보 조회
     local.get(`/${API_URL}/teams?teamId=${teamId}`).then(success).catch(fail);
 }

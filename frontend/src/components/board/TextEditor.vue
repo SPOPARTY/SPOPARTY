@@ -64,6 +64,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const editor = ref(null);
+const maxContentLength = 2000;
 
 // modelValue가 바뀔 때마다 실행되는 watcher
 watch(() => props.modelValue, (newValue) => {
@@ -84,7 +85,13 @@ onMounted(() => {
         extensions: [StarterKit, Image],
         content: props.modelValue,
         onUpdate: ({editor}) => {
-            emit('update:modelValue', editor.getHTML());
+            const contentLength = editor.getHTML().length;
+            if (contentLength > maxContentLength) {
+              alert("본문의 길이는 2000자로 제한됩니다!")
+              editor.commands.setContent(editor.getHTML().substring(0, maxContentLength-1), false);
+            } else {
+                emit('update:modelValue', editor.getHTML());
+            }
         }
     });
 });
