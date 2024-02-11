@@ -10,6 +10,8 @@ services:
       - "9090:9090"
     environment:
       - TZ=Asia/Seoul
+    volume:
+      - /opt/openvidu/recordings:/opt/openvidu/recordings
   batch:
     image: gogoadl247/spoparty-batch:latest
     container_name: batch
