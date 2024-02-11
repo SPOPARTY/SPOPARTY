@@ -33,7 +33,7 @@
                          <!-- 경기 선택 -->
                          <v-col cols="5" class="match pa-2">
                               <!-- {{ dialog }} -->
-                              <v-btn @click="dialog = true" block variant="outlined" size="x-large">
+                              <v-btn @click="[dialog = true, isTitleEditing = true, isMatchEditing = true, isUrlEditing = true]" block variant="outlined" size="x-large">
                                    {{ matchName.find((item) => item.fixtureId === matchModel)?.text || '경기 선택'}}
                               </v-btn>
                               <v-dialog v-model="dialog" max-width="600">
