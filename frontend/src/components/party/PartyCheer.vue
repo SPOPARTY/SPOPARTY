@@ -1,10 +1,10 @@
 <template>
     <p>경기 응원 페이지. fixtureId = {{ fixtureId ? fixtureId : 'null' }}</p>
-    <p v-if="fixtureId == null" class="mb-6">경기를 선택해주세요.</p>
+    <p v-if="fixtureId == null" class="mb-6 alert-msg">경기를 선택해주세요.</p>
     <v-container v-else fluid class="pa-2 fill-height part-section">
         <v-row justify="center">
             <v-col cols="12" class="d-flex flex-column align-center justify-center">
-                <v-carousel v-model="model" class='carousel' :show-arrows="false" height="500px" hide-delimiters 
+                <v-carousel v-if="cheer" v-model="model" class='carousel' :show-arrows="false" height="500px" hide-delimiters 
                     hide-delimiter-background>
                     <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
                         <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
@@ -69,6 +69,11 @@
                         </div>
                     </v-carousel-item>
                 </v-carousel>
+                <v-card v-else class="card-else" title="경기 응원 데이터가 없습니다.">
+                    <!-- <v-card-title>경기 응원 데이터가 없습니다.</v-card-title> -->
+                    <v-card-subtitle v-if="fixtureId">해당 경기에는 응원이 없습니다.</v-card-subtitle>
+                    <v-card-subtitle v-else>경기를 선택해주세요.</v-card-subtitle>
+                </v-card>
             </v-col>
         </v-row>
     </v-container>
@@ -86,7 +91,7 @@ const { getCheerData, postCheersData } = footballStore;
 
 const fixtureId = ref(null)
 
-const cheer = ref([]);
+const cheer = ref(null);
 watch(() => footballStore.fixtureIdForParty, (newFixtureId) => {
     fixtureId.value = newFixtureId
     if (newFixtureId !== null) {
@@ -99,8 +104,9 @@ watch(() => footballStore.oneCheerData, (newCheer) => {
 }, { immediate: true, deep: true })
 
 // 비동기 함수 호출
-getCheerData(fixtureId);
-
+if (fixtureId.value !== null) {
+    getCheerData(fixtureId);
+}
 // post 메서드 함수 관련
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
 const memberId = ref(localStorage.getItem("id"));
@@ -114,10 +120,6 @@ const postCheers = (data, team) => {
 
 const model = ref(0);
 
-
-function convertToBoolean(str) {
-    return str === "true";
-}
 
 function formatDate(dateStr) {
     const date = new Date(dateStr);
@@ -202,7 +204,7 @@ const votePercentage = (match, team) => {
 onMounted(() => {
     // setInterval을 사용하여 cheer.value.length가 0보다 큰지 확인
     const checkCheerLength = setInterval(() => {
-        if (cheer.value.length > 0) {
+        if (cheer.value != null && cheer.value.length > 0) {
             // cheer.value.length가 0보다 크면 초기화 로직을 실행
             const currentMatch = cheer.value[model.value];
             if (currentMatch && currentMatch.alreadyCheer) {
@@ -332,6 +334,19 @@ function resetBarAnimation(match) {
 
 .VS {
     font-size: 3rem;
+}
+.card-else {
+    padding: 30px;
+    margin: 20px;
+    text-align: center;
+    /* font-size: 2rem; */
+    color: #292646;
+}
+.alert-msg {
+    text-align: center;
+    margin: 30px;
+    font-size: 2rem;
+    color: #292646;
 }
 </style>
   
