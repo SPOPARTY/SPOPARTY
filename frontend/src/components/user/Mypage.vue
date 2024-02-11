@@ -18,7 +18,7 @@
             
             <v-row>
                 <v-col cols="12">
-                    <v-text-field :disabled="memberInfo.provider === 'basic'" 
+                    <v-text-field :disabled="memberInfo.provider !== 'basic'" 
                         class="input" label="닉네임" v-model="memberInfo.nickname" outlined dense/>
                 </v-col>
             </v-row>
