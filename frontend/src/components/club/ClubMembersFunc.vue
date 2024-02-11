@@ -18,8 +18,8 @@
         <v-btn block color="#81689D" @click="showClubMembers">그룹원 보기</v-btn>
 
         <div style="padding-left:50px; padding-right:50px;">
-            <v-btn class="invite-button" block color="#6C22A6" 
-                style="margin-top:30px; margin-bottom:30px;" 
+            <v-btn class="invite-button" block color="#944E63" 
+                style="margin-top:30px; margin-bottom:30px; height:100px;" 
                 @click="showInvite">그룹으로 초대
             </v-btn>
         </div>
@@ -321,10 +321,10 @@ const newPartyInfo = async () => {
     & .member {
         transform: translateX(150px)
     }
+}
 
-    & .star {
-        transform: translateY(-3px) translateX(-80px) !important
-    }
+.star {
+    transform: translateY(-3px) translateX(-100px) !important
 }
 
 .v-card-title {

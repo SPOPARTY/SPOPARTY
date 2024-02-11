@@ -138,6 +138,8 @@ const emit = defineEmits([
 
 const voteStore = useVoteStore();
 
+const route = useRoute();
+
 const memberId = localStorage.getItem("id");
 const partyId = route.params.partyId;
 
@@ -281,12 +283,13 @@ function showFinishedVote() {
 
 function closeModal() {
     isModalVisible.value = false; 
+    console.log("*****투표 나가기*****")
     emit('vote-close'); 
 }
 
 onMounted(() => {
     voteStore.getOngoingVoteList(partyId);
-    voteStore.getFinisihedVoteList(partyId);
+    voteStore.getFinishedVoteList(partyId);
     voteStore.getMyVoteList(partyId, memberId);
 })
 
