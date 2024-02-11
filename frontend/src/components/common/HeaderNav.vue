@@ -197,6 +197,7 @@ function goToOneClubPage(clubId) {
   // const url = router.resolve({ name: 'ClubView', params: { clubId } }).href;
   // window.open(url, '_blank');
   console.log("클럽 페이지로 이동")
+  drawer.value = false;
   router.push({ name: 'ClubMain', params: { clubId } });
 }
 
