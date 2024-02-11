@@ -81,8 +81,11 @@ export const useManagementStore = defineStore("management",() => {
             },
             (error) => {
                 console.log(error)
-                if (error.response.status === 400) {
+                if (error.response.status === httpStatusCode.BAD_REQUEST) {
                     alert("임시 비밀번호 생성에 실패했습니다!")
+                }
+                if (error.response.status === httpStatusCode.NOTFOUND) {
+                    alert("해당 회원정보가 존재하지 않습니다!")
                 }
             }
             
