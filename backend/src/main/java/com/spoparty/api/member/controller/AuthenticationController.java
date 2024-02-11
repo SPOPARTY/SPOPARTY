@@ -37,7 +37,7 @@ public class AuthenticationController {
 	private final MemberService memberService;
 
 	@GetMapping("/email-check/{email}")
-	public ResponseEntity<?> emailCheck(@PathVariable("email") String email) throws InterruptedException {
+	public ResponseEntity<?> emailCheck(@PathVariable("email") String email) throws Exception {
 		Member member = memberService.findByEmail(email);
 		if (member != null)
 			throw new CustomException(CONFLICT_DATA);
@@ -95,7 +95,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/password")
-	public ResponseEntity<?> tempPwd(@RequestBody Member member) throws InterruptedException {
+	public ResponseEntity<?> tempPwd(@RequestBody Member member) throws Exception {
 		memberService.tempPwd(member);
 		return ApiResponse.success(GET_SUCCESS, null);
 	}

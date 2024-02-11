@@ -4,7 +4,6 @@ import static com.spoparty.api.common.constants.ErrorCode.*;
 
 import java.util.List;
 
-import org.springframework.mail.MailSendException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -166,11 +165,11 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void tempPwd(Member member) throws MailSendException, InterruptedException {
+	public void tempPwd(Member member) throws Exception {
 		Member data = memberRepository.findByLoginIdAndEmail(member.getLoginId(), member.getEmail(), Member.class)
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		int code = (int)(Math.random() * 100000000);
-		emailService.sendEmail(data.getEmail(), "SPOPARTY 비밀번호 찾기", "임시 비밀번호 : [" + code + "]");
+		emailService.sendTmpPwd(data.getEmail(), code);
 		data.setLoginPwd(bCryptPasswordEncoder.encode(code + ""));
 	}
 
