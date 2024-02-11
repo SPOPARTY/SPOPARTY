@@ -1,5 +1,6 @@
 package com.spoparty.api.vote.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @RedisHash(value = "option", timeToLive = 604800) // TTL 1주 604800
-public class Option {
+public class Option implements Serializable {
 	@Id
 	private String optionId;
 	private String content;
