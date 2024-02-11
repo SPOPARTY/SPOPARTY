@@ -228,7 +228,7 @@ public class LoadFootballData {
 						}
 						if (!data.getFixture().getDate().isEmpty()){
 							OffsetDateTime odt = OffsetDateTime.parse(data.getFixture().getDate());
-							ldt = odt.toLocalDateTime();
+							ldt = odt.toLocalDateTime().plusHours(9);
 						}
 						Fixture fixture = Fixture.builder()
 							.id(data.getFixture().getId())

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,15 @@ import org.springframework.util.MultiValueMap;
 import com.spoparty.batch.entity.CheerFixture;
 import com.spoparty.batch.entity.Fixture;
 import com.spoparty.batch.entity.FixtureEvent;
+import com.spoparty.batch.entity.FollowingTeam;
 import com.spoparty.batch.entity.LineupPlayer;
+import com.spoparty.batch.entity.Notification;
 import com.spoparty.batch.entity.SeasonLeagueTeam;
+import com.spoparty.batch.entity.Team;
 import com.spoparty.batch.repository.CheerFixtureRepository;
 import com.spoparty.batch.repository.FixtureEventRepository;
 import com.spoparty.batch.repository.FixtureRepository;
+import com.spoparty.batch.repository.FollowingTeamRepository;
 import com.spoparty.batch.repository.LineupPlayerRepository;
 import com.spoparty.batch.repository.LineupRepository;
 import com.spoparty.batch.repository.SeasonLeagueRepository;
@@ -30,6 +35,7 @@ import com.spoparty.batch.scheduler.model.Events;
 import com.spoparty.batch.scheduler.model.Fixtures;
 import com.spoparty.batch.scheduler.model.FixturesResponse;
 import com.spoparty.batch.util.FootballApiUtil;
+import com.spoparty.batch.util.SpopartyApiUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +51,8 @@ public class Scheduler {
 	private final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
 	private final LineupPlayerRepository lineupPlayerRepository;
 	private final FixtureEventRepository fixtureEventRepository;
+	private final FollowingTeamRepository followingTeamRepository;
+	private final SpopartyApiUtil spopartyApiUtil;
 
 
 	// 응원 테이블 관리
@@ -52,7 +60,7 @@ public class Scheduler {
 	public void registerCheer() {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-		LocalDateTime current = LocalDateTime.now(ZoneId.of("Europe/London"));
+		LocalDateTime current = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 		LocalDateTime yesterday = current.minusDays(1);
 		LocalDateTime tomorrow = current.plusDays(1);
 
@@ -91,13 +99,21 @@ public class Scheduler {
 
 		// 응원 경기 테이블에 있는 경기 중, 현재시간과 3시간 이전 사이의 경기들의 events를 조회하여 테이블에 추가
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-		LocalDateTime t1 = LocalDateTime.now(ZoneId.of("Europe/London"));
+		LocalDateTime t1 = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 		LocalDateTime t2 = t1.minusHours(3);
 		List<CheerFixture> cheerFixtures = cheerFixtureRepository.findAll();
 
 		for (CheerFixture cheers : cheerFixtures){
 			Fixture fixture = cheers.getFixture();
-			if(fixture.getStartTime().compareTo(t1) * fixture.getStartTime().compareTo(t2) > 0) continue;
+
+			// 시작시간이 현재시간과 같거나 60초 미만으로 크면 팔로워들에게 알림 전송
+			LocalDateTime startTime = fixture.getStartTime();
+			long differenceInMinutes = ChronoUnit.SECONDS.between(t1, startTime);
+			if (differenceInMinutes>=0 && differenceInMinutes<60){
+				sendNotification(cheers.getFixture());
+			}
+
+			if(startTime.compareTo(t1) * startTime.compareTo(t2) > 0) continue;
 
 			MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 			queryParams.add("fixture", fixture.getId()+"");
@@ -169,7 +185,7 @@ public class Scheduler {
 						}
 						if (!data.getFixture().getDate().isEmpty()){
 							OffsetDateTime odt = OffsetDateTime.parse(data.getFixture().getDate());
-							ldt = odt.toLocalDateTime();
+							ldt = odt.toLocalDateTime().plusHours(9);
 						}
 						Fixture fix = Fixture.builder()
 							.id(data.getFixture().getId())
@@ -193,8 +209,32 @@ public class Scheduler {
 					}
 				}
 			}
-
 		}
+	}
+
+	public void sendNotification(Fixture fixture){
+		Team homeTeam = fixture.getHomeTeam().getTeam();
+		Team awayTeam = fixture.getAwayTeam().getTeam();
+
+		Notification notification = new Notification();
+		notification.setContent(fixture.getHomeTeam().getTeam().getNameKr()+" vs "+fixture.getAwayTeam().getTeam().getNameKr()+"\n"+fixture.getRoundKr());
+
+		List<FollowingTeam> list = followingTeamRepository.findByTeam_Id(homeTeam.getId());
+		for (FollowingTeam ft: list){
+			notification.setTitle("["+fixture.getHomeTeam().getTeam().getNameKr()+"]팀 경기가 시작되었습니다!");
+			notification.setMember(ft.getMember());
+			ResponseEntity<?> response = spopartyApiUtil.sendPostRequest("/members/alert", notification, Object.class);
+			log.info(response.toString());
+		}
+
+		list = followingTeamRepository.findByTeam_Id(awayTeam.getId());
+		for (FollowingTeam ft: list){
+			notification.setTitle("["+fixture.getHomeTeam().getTeam().getNameKr()+"]팀 경기가 시작되었습니다!");
+			notification.setMember(ft.getMember());
+			ResponseEntity<?> response = spopartyApiUtil.sendPostRequest("/members/alert", notification, Object.class);
+			log.info(response.toString());
+		}
+
 	}
 
 }
