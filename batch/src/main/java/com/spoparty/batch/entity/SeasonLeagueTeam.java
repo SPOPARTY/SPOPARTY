@@ -37,7 +37,7 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	private SeasonLeague seasonLeague;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Team team;
 
