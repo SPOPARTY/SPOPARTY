@@ -122,8 +122,8 @@
                          <!-- 파티 초대 -->
                          <v-col cols="6" class="cam-video" v-if="partyMembers.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
-                              <v-icon class="invite-icon">mdi-human-greeting</v-icon>
-                              <span>파티 초대</span>
+                              <v-img src="https://i1.sndcdn.com/avatars-000953353822-6fbf5r-t240x240.jpg" class="invite-img" contain></v-img>
+                              <span>친구를 초대해 보세요!</span>
                          </v-col>
                          <!-- 채팅창 -->
                          <v-col cols="12" v-show="showChat" class="chat-window" :style="{ height: chatDivHeight }">
@@ -731,7 +731,7 @@ const leaveSession = () => {
      background-color: blueviolet;
      border: 1px solid white;
      min-height: 100px;
-     height: 33%;
+     height: 33.3%;
      /* height: 300px; */
      text-align: center;
      /* 중앙 정렬 */
@@ -740,7 +740,7 @@ const leaveSession = () => {
      justify-content: center;
      align-items: center;
      /* aspect-ratio: 16/16; */
-     padding: 0;
+     padding: 1px 0;
 }
 
 .button-section {
@@ -785,9 +785,9 @@ const leaveSession = () => {
      color: #333D51;
 }
 
-.invite-icon {
-     font-size: 3rem;
-     /* 아이콘 크기 조정 */
+.invite-img {
+     height: 80%;
+     width: 80%;
      margin-bottom: 10px;
      /* 텍스트와의 간격 */
      color: #CBD0D8;

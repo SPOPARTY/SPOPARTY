@@ -91,7 +91,7 @@ const { getCheerData, postCheersData } = footballStore;
 
 const fixtureId = ref(null)
 
-const cheer = ref();
+const cheer = ref(null);
 watch(() => footballStore.fixtureIdForParty, (newFixtureId) => {
     fixtureId.value = newFixtureId
     if (newFixtureId !== null) {
@@ -104,8 +104,9 @@ watch(() => footballStore.oneCheerData, (newCheer) => {
 }, { immediate: true, deep: true })
 
 // 비동기 함수 호출
-getCheerData(fixtureId);
-
+if (fixtureId.value !== null) {
+    getCheerData(fixtureId);
+}
 // post 메서드 함수 관련
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
 const memberId = ref(localStorage.getItem("id"));
@@ -203,7 +204,7 @@ const votePercentage = (match, team) => {
 onMounted(() => {
     // setInterval을 사용하여 cheer.value.length가 0보다 큰지 확인
     const checkCheerLength = setInterval(() => {
-        if (cheer.value.length > 0) {
+        if (cheer != null && cheer.value.length > 0) {
             // cheer.value.length가 0보다 크면 초기화 로직을 실행
             const currentMatch = cheer.value[model.value];
             if (currentMatch && currentMatch.alreadyCheer) {
