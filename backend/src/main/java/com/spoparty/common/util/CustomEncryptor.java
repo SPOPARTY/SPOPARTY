@@ -33,10 +33,17 @@ public class CustomEncryptor {
 			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
 			SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
 			cipher.init(Cipher.DECRYPT_MODE, secretKey);
-			String decodingString = URLDecoder.decode(strToDecrypt, "UTF-8");
+			String decodingString = URLDecoder.decode(strToDecrypt, "UTF-8"); // '/' 들어가지 않은 경우
 			return new String(cipher.doFinal(Base64.getDecoder().decode(decodingString)));
 		} catch (Exception e) {
-			throw new CustomException(ErrorCode.DECRYPT_FAIL);
+			try {
+				Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+				SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
+				cipher.init(Cipher.DECRYPT_MODE, secretKey);
+				return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt))); // '/' 들어가는 경우 -> URLDecoder decode 불필요
+			} catch (Exception err) {
+				throw new CustomException(ErrorCode.DECRYPT_FAIL);
+			}
 		}
 	}
 }

@@ -34,15 +34,12 @@ public class LineupPlayerTestController {
 	@GetMapping("/save")
 	public ResponseEntity<LineupPlayer> save() {
 
-
-
 		LineupPlayer lineupPlayer = LineupPlayer.builder()
 			.lineup(lineupRepository.findById((long)1).orElse(null))
 			.grid("1:3")
 			.number("3")
-			.mainPlayer(true)
 			.position("공격수")
-			.seasonLeagueTeamPlayer(seasonLeagueTeamPlayerRepository.findById((long)1).orElse(null))
+			// .seasonLeagueTeamPlayer(seasonLeagueTeamPlayerRepository.findById((long)1).orElse(null))
 			.build();
 
 		LineupPlayer lineupPlayer2 = lineupPlayerRepository.save(lineupPlayer);

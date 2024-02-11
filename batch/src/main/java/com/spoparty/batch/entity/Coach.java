@@ -26,22 +26,22 @@ public class Coach extends FootballBaseEntity {
 
 	@Size(min=0, max=100)
 	@Column(length=100, nullable=false)
-	private String nameKr;
+	private String nameKr="";
 
 	@Size(min=0, max=200)
 	@Column(length=200, nullable=false)
-	private String nameEng;
+	private String nameEng="";
 
 	@Column(nullable=false)
 	private int age;
 
 	@Size(min=0, max=100)
 	@Column(length=100, nullable=false)
-	private String nationality;
+	private String nationality="";
 
 	@Size(min=0, max=200)
 	@Column(length=200, nullable=false)
-	private String photo;
+	private String photo="";
 
 	@OneToMany(mappedBy="coach")
 	List<SeasonLeagueTeam> seasonLeagueTeams = new ArrayList<>();

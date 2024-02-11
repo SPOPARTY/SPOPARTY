@@ -1,9 +1,9 @@
 <template>
-  <v-container class="login-form" fluid fill-height>
-    <v-row justify="center" align="center">
+  <v-container class="login-container" fluid fill-height>
+    <v-row justify="center">
       <v-col cols="12" sm="8" md="6" lg="5">
-        <v-card class="pa-5" outlined>
-          <v-card-title class="justify-center">로그인</v-card-title>
+        <v-card class="login-card pa-5" outlined>
+          <v-card-title class="justify-center p-2"><h2>로그인</h2></v-card-title>
           <v-card-text>
             <v-form @submit.prevent="handleSubmit">
 
@@ -12,7 +12,7 @@
                 v-model="loginRequest.loginId"
                 outlined
                 dense
-                class="mb-4"
+                class="infos mb-4"
               ></v-text-field>
 
               <v-text-field
@@ -21,18 +21,18 @@
                 :type="'password'"
                 outlined
                 dense
-                class="mb-4"
+                class="infos mb-4"
               ></v-text-field>
 
               <v-row>
                 <v-col cols="12" md="4">
-                  <v-btn color="primary" type="submit" block @click="doLogin">로그인</v-btn>
+                  <v-btn color="#333D51" type="submit" block @click="doLogin">로그인</v-btn>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-btn text color="primary" @click="handleSignup" block>회원가입</v-btn>
+                  <v-btn text color="#333D51" @click="handleSignup" block>회원가입</v-btn>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-btn text color="primary" @click="showFindPwdModal" block>비밀번호 찾기</v-btn>
+                  <v-btn text color="#333D51" @click="showFindPwdModal" block>비밀번호 찾기</v-btn>
                 </v-col>
               </v-row>
 
@@ -115,19 +115,29 @@ function showKakaoLoginModal() {
 </script>
 
 <style scoped>
-.login-form {
-  background-color: #f9f9f9;
+.login-container {
   min-height: 100vh;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
+h2 {
+  color: #D3AC2B;
+}
+
 .v-card{
+  background-color: #292646;
   margin-top:100px;
 }
 
 .justify-center{
   text-align: center;
+}
+
+.infos {
+  margin-top:20px;
+  margin-bottom:20px;
+  border-radius: 5px;
+  background-color: #CBD0D8;
 }
 
 .kakao{

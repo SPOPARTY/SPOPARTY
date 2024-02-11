@@ -1,7 +1,5 @@
 package com.spoparty.api.football.entity;
 
-import com.spoparty.api.common.entity.FootballBaseEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -24,39 +22,39 @@ import lombok.NoArgsConstructor;
 public class FixtureEvent extends FootballBaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="fixture_event_id")
+	@Column(name = "fixture_event_id")
 	private long id;
 
-	@Column(nullable=false)
+	@Column(nullable = true)
 	private long time;
 
 	@Size(min = 0, max = 20)
-	@Column(nullable = false, length=20)
+	@Column(nullable = true, length = 20)
 	private String type;
 
 	@Size(min = 0, max = 50)
-	@Column(nullable = false, length=50)
+	@Column(nullable = true, length = 50)
 	private String detail;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="fixture_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "fixture_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Fixture fixture;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="season_league_team_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "season_league_team_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam seasonLeagueTeam;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="player_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private SeasonLeagueTeamPlayer player;
+	@JoinColumn(name = "player_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private LineupPlayer player;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="assist_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private SeasonLeagueTeamPlayer assist;
+	@JoinColumn(name = "assist_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private LineupPlayer assist;
 
 	@Builder
 	public FixtureEvent(long time, String type, String detail, Fixture fixture, SeasonLeagueTeam seasonLeagueTeam,
-		SeasonLeagueTeamPlayer player, SeasonLeagueTeamPlayer assist) {
+		LineupPlayer player, LineupPlayer assist) {
 		this.time = time;
 		this.type = type;
 		this.detail = detail;

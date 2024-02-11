@@ -62,7 +62,7 @@ import TextEditor from '@/components/board/TextEditor.vue'
 
 import {useBoardStore} from "@/stores/club/boards"
 
-const memberId = sessionStorage.getItem("id");
+const memberId = localStorage.getItem("id");
 
 const boardStore = useBoardStore();
 

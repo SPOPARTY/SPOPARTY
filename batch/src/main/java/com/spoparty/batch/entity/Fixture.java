@@ -35,43 +35,43 @@ public class Fixture extends FootballBaseEntity {
 	@Column(name = "fixture_id")
 	private long id;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime startTime;
 
 	@Size(min=0, max=50)
-	@Column(nullable = false, length=50)
+	@Column(nullable = true, length=50)
 	private String roundKr;
 
 	@Size(min=0, max=100)
-	@Column(nullable = false, length=100)
+	@Column(nullable = true, length=100)
 	private String roundEng;
 
-	@Column(nullable = false, columnDefinition = "TINYINT")
+	@Column(nullable = true, columnDefinition = "TINYINT")
 	private int homeTeamGoal;
 
-	@Column(nullable = false, columnDefinition = "TINYINT")
+	@Column(nullable = true, columnDefinition = "TINYINT")
 	private int awayTeamGoal;
 
 	@Size(min=0, max=50)
-	@Column(nullable = false, length = 50)
+	@Column(nullable = true, length = 50)
 	private String status;
 
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "home_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "home_team_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam homeTeam;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "away_team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "away_team_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeagueTeam awayTeam;
 
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "season_league_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "season_league_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private SeasonLeague seasonLeague;
 
 	@OneToMany(mappedBy = "fixture")

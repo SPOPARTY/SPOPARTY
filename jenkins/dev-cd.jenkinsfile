@@ -5,6 +5,7 @@ pipeline {
     }
     environment {
         backImageName = "gogoadl247/spoparty-backend"
+        batchImageName = "gogoadl247/spoparty-batch"
         registryCredential = 'spoparty-docker'
         
         releaseServerAccount = 'ubuntu'
@@ -26,6 +27,9 @@ pipeline {
                 withCredentials([file(credentialsId: 'application-private', variable: 'privateConfigFile')]) {
                     sh 'cp -f ${privateConfigFile}  backend/src/main/resources/application-private.yml'
                 }
+                withCredentials([file(credentialsId: 'batch-application-private', variable: 'batchPrivateConfigFile')]) {
+                    sh 'cp -f ${batchPrivateConfigFile}  batch/src/main/resources/application-private.yml'
+                }
             }
         }
         stage ('3. Build') {
@@ -41,11 +45,31 @@ pipeline {
                         }
                     }                    
                 }
+                stage ('Batch') {
+                    steps {
+                        echo 'BE - Build batch start'
+                        dir ('batch') {
+                            sh'''
+                                chmod +x gradlew
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'Batch - Success Build'
+                        }
+                        failure{
+                            error 'Batch - Fail Build'
+                        }
+                    }              
+                }
                 stage ('FE') {
                     steps {
                         echo 'FE Build!'
                         dir('frontend'){
                             sh'''
+                                rm -rf /root/.npm/_cacache
                                 npm cache clean --force
                                 rm -rf node_modules package-lock.json
                                 npm install --save
@@ -79,7 +103,7 @@ pipeline {
                 }
             }
         }
-        stage('5. Docker Publish') {
+        stage('5. Docker Publish - BE') {
             steps {
                 echo 'BE Publish Docker Hub!'
                 dir('backend') {
@@ -93,7 +117,21 @@ pipeline {
                 }
             }
         }
-        stage ('6. FE Publish') {
+        stage('6. Docker Publish - Batch') {
+            steps {
+                echo 'Batch Publish Docker Hub!'
+                dir('batch') {
+                    script {
+                        docker.withRegistry('', registryCredential) {
+                            sh "docker buildx create --use --name spoparty-builder"
+                            sh "docker buildx build --no-cache --platform linux/amd64,linux/arm64 -t ${batchImageName}:${BUILD_NUMBER} --push ."
+                            sh "docker buildx build --no-cache --platform linux/amd64,linux/arm64 -t ${batchImageName}:latest --push ."
+                        }
+                    }
+                }
+            }
+        }
+        stage ('7. FE Publish') {
             steps {
                  sshagent(credentials: ['ubuntu-a802']) {
                 sh '''
@@ -103,7 +141,7 @@ pipeline {
                 }
             }
         }
-        stage ('7. Service Stop') {
+        stage ('8. Service Stop') {
             steps {
                 sshagent(credentials: ['ubuntu-a802']) {
                 sh '''
@@ -112,11 +150,12 @@ pipeline {
 
                 docker stop $(docker ps -a -q --filter name=frontend) && docker rm $(docker ps -a -q --filter name=frontend) || true
                 docker stop $(docker ps -a -q --filter name=backend) && docker rm $(docker ps -a -q --filter name=backend) || true
+                docker stop $(docker ps -a -q --filter name=batch) && docker rm $(docker ps -a -q --filter name=batch) || true
                 '''
                 }
             }
         }
-        stage ('8. Service Start') {
+        stage ('9. Service Start') {
              steps {
                 sshagent(credentials: ['ubuntu-a802']) {
                 sh '''

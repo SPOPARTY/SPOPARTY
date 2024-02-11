@@ -9,7 +9,8 @@ public class League {
 	private String country;
 	private String logo;
 	private String flag;
-	private int season;
+	private String season;
+	private String type;
 	private String round;
 
 }

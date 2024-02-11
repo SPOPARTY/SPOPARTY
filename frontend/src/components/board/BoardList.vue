@@ -1,8 +1,8 @@
 <template>
     <v-container>
-        <v-row justify="center">
+        <v-row justify="center" style="padding-right:15px;">
             <v-col cols="10">
-                <h1 class="text-center" style="color:white; margin-left:100px;">그룹 게시판</h1>
+                <h1 class="text-center" style="color:white; margin-left:150px;">그룹 게시판</h1>
             </v-col>
             <v-col cols="2">
                 <v-btn class="write-board" variant="outlined" @click="writeBoard">글쓰기</v-btn>
@@ -20,16 +20,12 @@
                     :post="currentPost"
                     @detail-close="isDetailVisible = false"
                 />
-                <v-card @click="showBoardDetail(post)" >
-                    <v-card-title>{{ post.title }}</v-card-title>
-                    <v-card-subtitle>{{ post.member.nickname }}</v-card-subtitle>
-                    <v-card-text >{{ formatDateTime(post.updatedTime) }}</v-card-text>
-                    <v-card-item v-if="post.file"> <img class="thumbnail" :src="post.file.url" :alt="post.title"></v-card-item>
-                    <v-card-text>
-                        <div>
-                            <div v-html="post.content"></div>
-                        </div>
-                    </v-card-text>
+                <v-card class="card" @click="showBoardDetail(post)" >
+                    <v-card-title class="text-center">{{ post.title }}</v-card-title>
+                    <v-card-subtitle class="text-right">{{ post.member.nickname }}</v-card-subtitle>
+                    <v-card-text class="text-right">{{ formatDateTime(post.updatedTime) }}</v-card-text>
+                    <v-img v-if="post.file" class="thumbnail" :src="post.file.url" :alt="post.title" cover height="200px"/>
+                    <!-- <div class="content" v-html="post.content"></div> -->
                 </v-card>
             </v-col>
         </v-row>
@@ -55,16 +51,10 @@ const routes = useRoute();
 
 const clubId = routes.params.clubId;
 
-onMounted(() => {
-    boardStore.getBoardList(clubId);
-})
-
-
 const posts = ref([]);
 watch(() => boardStore.boardList,(newBoardList) => {
     posts.value = newBoardList;
 })
-
 
 function writeBoard() {
     router.push(`/club/${clubId}/board/write`)
@@ -86,7 +76,9 @@ const showBoardDetail = (post) => {
     isDetailVisible.value  = true;
 }
 
-
+onMounted(() => {
+    boardStore.getBoardList(clubId);
+})
 
 </script>
 
@@ -94,6 +86,19 @@ const showBoardDetail = (post) => {
 h1{
     color:black
 }
+
+.card {
+    min-height: 300px; /* 예시 높이, 필요에 따라 조정 */
+    display: flex;
+    flex-direction: column;
+    background-color: #F4F3EA ;
+}
+
+.content{
+    text-align: center;
+    padding:0px;
+}
+
 .write-board{
     color:white; 
     margin-top:10px;
@@ -109,6 +114,11 @@ h1{
 .thumbnail{
     width : 100%;
     height: 100%;
+    object-fit: cover;
+}
+
+.v-card-text{
+    flex-grow: 1;
 }
 
 </style>

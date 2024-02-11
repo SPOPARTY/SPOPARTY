@@ -53,7 +53,7 @@ import {formatDateTime} from "@/util/tools.js"
 
 const boardStore = useBoardStore();
 
-const currentUserId = sessionStorage.getItem("id"); // 로그인 된 id
+const currentUserId = localStorage.getItem("id"); // 로그인 된 id
 const modalVisible = ref(true); // BoardDetail on/off 관장
 
 const props = defineProps({
@@ -114,4 +114,7 @@ h1{
     height:100%;
 }
 
+.board-detail {
+    background-color: #F4F3EA ;
+}
 </style>

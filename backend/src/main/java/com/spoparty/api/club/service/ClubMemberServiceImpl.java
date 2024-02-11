@@ -18,7 +18,6 @@ import com.spoparty.api.club.dto.response.InviteResponseDTO;
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.club.entity.ClubMember;
 import com.spoparty.api.club.repository.ClubMemberRepository;
-import com.spoparty.api.common.constants.ErrorCode;
 import com.spoparty.api.common.entity.RoleType;
 import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.member.entity.Member;
@@ -87,11 +86,6 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 			}
 		}
 		return result;
-		// return clubMembers.stream()
-		// 	.filter(
-		// 		clubMember -> clubMember.getMember() != null && clubMember.getMember().getState() != 2) // 탈퇴가 아닌 경우만 체크
-		// 	.map(ClubMemberResponseDTO::toDTO)
-		// 	.collect(Collectors.toList());
 	}
 
 	public ClubMemberResponseDTO getClubMember(Long clubMemberId) {
@@ -132,11 +126,40 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 		if (countClubMembers(clubId) == 1) { // 남아있는 그룹원이 없는 경우 -> 그룹도 삭제됨
 			club.softDelete();
 		} else if (clubMember.getRole().equals(RoleType.host)) { // 그룹장이 나가는 경우 -> 그룹원 넘겨야 함
-			throw new CustomException(HOST_CANNOT_LEAVE_GROUP);
+			throw new CustomException(HOST_CANNOT_LEAVE_CLUB);
 		}
 
 		clubMember.softDelete(); // 그룹원 삭제
 		return clubMember.getId();
+	}
+
+	@Transactional
+	public int deleteClubMemberFromAllClub(Member member) {
+		int count = 0;
+		List<ClubMember> clubMembers = clubMemberRepository.findAllByMember(member);
+
+		for (ClubMember clubMember : clubMembers) {
+			Club club = clubMember.getClub();
+			log.debug("club - {}", club);
+			List<ClubMember> otherMembers = clubMemberRepository.findAllByClub_IdAndMember_IdNot(club.getId(),
+				member.getId());
+			log.debug("otherMembers - {}, {}", otherMembers.size(), otherMembers);
+
+			if (otherMembers.isEmpty()) { // 남아있는 그룹원이 없는 경우 -> 그룹도 삭제됨
+				log.debug("그룹원이 없는 경우");
+				club.softDelete();
+			} else if (clubMember.getRole().equals(RoleType.host)) { // 그룹장이 나가는 경우 -> 그룹장 넘겨짐
+				log.debug("그룹장이 나가는 경우");
+				ClubMember nextHost = otherMembers.get(0);
+				club.setHostMember(nextHost.getMember());
+				nextHost.setRole(RoleType.host);
+				clubMember.setRole(RoleType.guest);
+			}
+
+			clubMember.softDelete(); // 그룹원 삭제
+			count++;
+		}
+		return count; // 삭제된 개수 카운팅
 	}
 
 	@Transactional
@@ -209,7 +232,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 	private void validateNewClubMember(Club club, Member member) {
 		Optional<ClubMember> clubMember = clubMemberRepository.findByClub_IdAndMember_Id(club.getId(), member.getId());
 		if (clubMember.isPresent()) {
-			throw new CustomException(ALREADY_GROUP_MEMBER);
+			throw new CustomException(ALREADY_CLUB_MEMBER);
 		}
 	}
 
@@ -217,7 +240,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 		log.debug("MaxParticipants - {}", club.getMaxParticipants());
 		log.debug("currentParticipants - {}", countClubMembers(club.getId()));
 		if (club.getMaxParticipants() <= countClubMembers(club.getId())) {
-			throw new CustomException(ENOUGH_GROUP_PARTICIPANTS);
+			throw new CustomException(ENOUGH_CLUB_PARTICIPANTS);
 		}
 	}
 

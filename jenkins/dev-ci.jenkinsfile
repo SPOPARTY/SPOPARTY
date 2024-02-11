@@ -50,13 +50,16 @@ pipeline {
                 withCredentials([file(credentialsId: 'application-private', variable: 'privateConfigFile')]) {
                     sh 'cp -f ${privateConfigFile}  backend/backend/src/main/resources/application-private.yml'
                 }
+                withCredentials([file(credentialsId: 'batch-application-private', variable: 'batchPrivateConfigFile')]) {
+                    sh 'cp -f ${batchPrivateConfigFile}  backend/batch/src/main/resources/application-private.yml'
+                }
             }
         }
         stage ('[Build]') {
             parallel {
                 stage ('BE Build') {
                     steps {
-                        echo 'BE - Build start'
+                        echo 'BE - Build backend start'
                         dir ('backend/backend') {
                             sh'''
                                 chmod +x gradlew
@@ -73,11 +76,31 @@ pipeline {
                         }
                     }              
                 }
+                stage ('Batch Build') {
+                    steps {
+                        echo 'BE - Build batch start'
+                        dir ('backend/batch') {
+                            sh'''
+                                chmod +x gradlew
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'Batch - Success Build'
+                        }
+                        failure{
+                            error 'Batch - Fail Build'
+                        }
+                    }              
+                }
                 stage ('FE Build') {
                     steps {
                         echo 'FE - Build start'
                         dir ('frontend/frontend'){
                             sh'''
+                                rm -rf /root/.npm/_cacache
                                 npm cache clean --force
                                 rm -rf node_modules package-lock.json
                                 npm install --save

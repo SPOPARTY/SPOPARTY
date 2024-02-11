@@ -5,7 +5,7 @@ import com.spoparty.security.model.PrincipalDetails;
 
 public interface CheerService {
 
-	public void deleteEndCheerFixture();
+	// public void deleteEndCheerFixture();
 
 	public ResponseDTO findCheerFixture(PrincipalDetails principalDetails, Long fixtureId);
 

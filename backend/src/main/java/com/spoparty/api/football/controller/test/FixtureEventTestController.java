@@ -1,6 +1,5 @@
 package com.spoparty.api.football.controller.test;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -11,11 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.football.entity.FixtureEvent;
-import com.spoparty.api.football.entity.SeasonLeague;
-import com.spoparty.api.football.entity.SeasonLeagueTeam;
 import com.spoparty.api.football.repository.FixtureEventRepository;
 import com.spoparty.api.football.repository.FixtureRepository;
-import com.spoparty.api.football.repository.SeasonLeagueRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamPlayerRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
 
@@ -32,12 +28,9 @@ public class FixtureEventTestController {
 	private final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
 	private final FixtureRepository fixtureRepository;
 	private final SeasonLeagueTeamPlayerRepository seasonLeagueTeamPlayerRepository;
+
 	@GetMapping("/save")
 	public ResponseEntity<FixtureEvent> save() {
-
-
-
-
 
 		FixtureEvent fixtureEvent = FixtureEvent.builder()
 			.fixture(fixtureRepository.findById((long)0).orElse(null))
@@ -45,7 +38,7 @@ public class FixtureEventTestController {
 			.detail("Normal Goal")
 			.time((long)23)
 			.seasonLeagueTeam(seasonLeagueTeamRepository.findById((long)2).orElse(null))
-			.player(seasonLeagueTeamPlayerRepository.findById((long)1).orElse(null))
+			// .player(seasonLeagueTeamPlayerRepository.findById((long)1).orElse(null))
 			.assist(null)
 			.build();
 

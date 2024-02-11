@@ -43,12 +43,12 @@ public class SeasonLeague extends FootballBaseEntity {
 
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "season_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Season season;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "league_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private League league;
 
@@ -60,7 +60,6 @@ public class SeasonLeague extends FootballBaseEntity {
 
 
 	@Builder
-
 	public SeasonLeague(LocalDateTime seasonStartDate, LocalDateTime seasonEndDate, Season season, League league) {
 		this.seasonStartDate = seasonStartDate;
 		this.seasonEndDate = seasonEndDate;

@@ -1,6 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router';
 import HeaderNav from "./components/common/HeaderNav.vue";
+import Footer from './components/common/Footer.vue';
 
 let global = globalThis
 </script>
@@ -12,6 +13,7 @@ let global = globalThis
     <v-main>
       <RouterView/>
     </v-main>
+    <Footer/>
   </v-app>
 </template>
 

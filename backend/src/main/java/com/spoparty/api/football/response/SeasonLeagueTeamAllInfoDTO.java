@@ -56,18 +56,27 @@ public class SeasonLeagueTeamAllInfoDTO {
 	}
 
 
-	public static SeasonLeagueTeamAllInfoDTO toDTO(SeasonLeagueTeam entity) {
+	public static SeasonLeagueTeamAllInfoDTO toDTO(SeasonLeagueTeam entity, Standings standingEntity) {
 
 		Team team = entity.getTeam();
-		StandingDTO standingDTO = StandingDTO.toDTO(entity.getStanding());
-		CoachDTO coachDTO = CoachDTO.toDTO(entity.getCoach());
 
+		StandingDTO standingDTO = null;
+		if (standingEntity != null) {
+			standingDTO = StandingDTO.toDTO(standingEntity);
+		}
+
+		CoachDTO coachDTO = null;
+		if (entity.getCoach() != null) {
+			coachDTO = CoachDTO.toDTO(entity.getCoach());
+		}
 		List<PlayerDTO> players = new ArrayList<>();
-
+		List<Long> playerId = new ArrayList<>();
 		for(SeasonLeagueTeamPlayer player : entity.getSeasonLeagueTeamPlayers()){
+			if (playerId.contains(player.getId()))
+				continue;
+			playerId.add(player.getId());
 			players.add(PlayerDTO.toDTO(player));
 		};
-
 		return SeasonLeagueTeamAllInfoDTO.builder()
 			.seasonLeagueTeamId(entity.getId())
 			.teamId(team.getId())

@@ -4,7 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.spoparty.api.football.entity.Standings;
+import com.spoparty.api.football.repository.querydsl.StandingsRepositoryCustom;
 
 @Repository
-public interface StandingsRepository extends JpaRepository<Standings, Long> {
+public interface StandingsRepository extends JpaRepository<Standings, Long>, StandingsRepositoryCustom {
 }

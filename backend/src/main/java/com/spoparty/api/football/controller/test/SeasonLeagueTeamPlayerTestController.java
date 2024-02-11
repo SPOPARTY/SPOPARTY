@@ -9,15 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spoparty.api.football.entity.Player;
 import com.spoparty.api.football.entity.SeasonLeagueTeamPlayer;
-import com.spoparty.api.football.repository.CoachRepository;
 import com.spoparty.api.football.repository.PlayerRepository;
-import com.spoparty.api.football.repository.SeasonLeagueRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamPlayerRepository;
 import com.spoparty.api.football.repository.SeasonLeagueTeamRepository;
-import com.spoparty.api.football.repository.StandingsRepository;
-import com.spoparty.api.football.repository.TeamRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,7 +31,6 @@ public class SeasonLeagueTeamPlayerTestController {
 		SeasonLeagueTeamPlayer seasonLeagueTeamPlayer = SeasonLeagueTeamPlayer.builder()
 			.seasonLeagueTeam(seasonLeagueTeamRepository.findById((long)1).orElse(null))
 			.player(playerRepository.findById((long)2).orElse(null))
-			.captain(true)
 			.build();
 
 		SeasonLeagueTeamPlayer seasonLeagueTeamPlayer2 = seasonLeagueTeamPlayerRepository.save(seasonLeagueTeamPlayer);
