@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spoparty.api.club.service.ClubMemberService;
 import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.football.repository.TeamRepository;
@@ -37,6 +38,7 @@ public class MemberService {
 	private final JwtTokenUtil jwtTokenUtil;
 	private final MemberTokenRepository memberTokenRepository;
 	private final EmailService emailService;
+	private final ClubMemberService clubMemberService;
 
 	// Member 기능
 
@@ -88,6 +90,7 @@ public class MemberService {
 	public void deleteMember(Long id) {
 		Member member = memberRepository.findById(id, Member.class)
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		clubMemberService.deleteClubMemberFromAllClub(member);
 		member.setState(2);
 	}
 

@@ -26,11 +26,11 @@ public enum ErrorCode {
 	BAD_PARAMETER_TYPE(BAD_REQUEST, "지원하지 않는 파라미터 형식입니다."),
 
 	// 그룹
-	NOT_ENOUGH_GROUP_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 없습니다."),
-	ENOUGH_GROUP_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 꽉 찼습니다."),
-	ALREADY_GROUP_MEMBER(BAD_REQUEST, "이미 존재하는 그룹원입니다."),
+	NOT_ENOUGH_CLUB_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 없습니다."),
+	ENOUGH_CLUB_PARTICIPANTS(BAD_REQUEST, "그룹에 회원이 꽉 찼습니다."),
+	ALREADY_CLUB_MEMBER(BAD_REQUEST, "이미 존재하는 그룹원입니다."),
 	INVALID_INVITE_URL(BAD_REQUEST, "유효하지 않은 초대 링크입니다."),
-	HOST_CANNOT_LEAVE_GROUP(BAD_REQUEST, "그룹장은 그룹을 나갈 수 없습니다. 그룹장을 넘기세요."),
+	HOST_CANNOT_LEAVE_CLUB(BAD_REQUEST, "그룹장은 그룹을 나갈 수 없습니다. 그룹장을 넘기세요."),
 
 	// 파티
 	ALREADY_PARTY(BAD_REQUEST, "이미 파티가 존재합니다."),
