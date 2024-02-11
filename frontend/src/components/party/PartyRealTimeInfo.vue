@@ -1,9 +1,9 @@
 <template>
     <v-container fluid class="vc">
       <p>실시간 정보 페이지. fixtureId = {{ fixtureId? fixtureId : 'null'}}</p>
-      <p v-if="fixtureId==null">경기를 선택해주세요.</p>
-      <p class="table-title">예시 테이블</p>
+      <p v-if="fixtureId==null" class="alert-msg">경기를 선택해주세요.</p>
       <!-- <p>{{ footballStore.matchRealTimeData }}</p> -->
+      <p class="table-title">예시 테이블</p>
       <v-table v-if="fixtureId!=null">
         <template v-slot:default>
           <thead>
@@ -140,5 +140,11 @@ td {
 
 th {
   font-size: 1rem;
+}
+.alert-msg {
+    text-align: center;
+    margin: 30px;
+    font-size: 2rem;
+    color: #292646;
 }
 </style>
