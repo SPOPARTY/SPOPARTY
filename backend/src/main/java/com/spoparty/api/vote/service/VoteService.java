@@ -12,8 +12,9 @@ import com.spoparty.api.vote.domain.Option;
 import com.spoparty.api.vote.domain.Penalty;
 import com.spoparty.api.vote.domain.User;
 import com.spoparty.api.vote.domain.Vote;
+import com.spoparty.api.vote.dto.VoteCountingRequestDTO;
 import com.spoparty.api.vote.dto.VoteCreateRequestDTO;
-import com.spoparty.api.vote.dto.VoteUpdateRequestDTO;
+import com.spoparty.api.vote.dto.VoteRequestDTO;
 import com.spoparty.api.vote.repository.OptionRepository;
 import com.spoparty.api.vote.repository.PenaltyRepository;
 import com.spoparty.api.vote.repository.VoteRepository;
@@ -29,7 +30,7 @@ public class VoteService {
 	private final OptionRepository optionRepository;
 	private final PenaltyRepository penaltyRepository;
 
-	public Vote create(String partyId, VoteCreateRequestDTO dto) {
+	public Vote create(VoteCreateRequestDTO dto) {
 		// user
 		User user = new User(dto.getMemberId(), dto.getNickname());
 
@@ -40,40 +41,43 @@ public class VoteService {
 			optionRepository.save(option);
 			options.add(option);
 		}
+		log.debug("options {}", options);
 
 		// penalty 등록
 		Penalty penalty = new Penalty(dto.getPenalty());
 		penaltyRepository.save(penalty);
 
 		// Vote 등록
-		Vote vote = new Vote(user, dto.getTitle(), options, penalty, partyId);
+		Vote vote = new Vote(user, dto.getTitle(), options, penalty, dto.getPartyId());
 		voteRepository.save(vote);
-		log.debug("Vote - {}", vote);
+		log.debug("생성된 Vote - {}", vote);
 		return getVote(vote.getVoteId());
 	}
 
-	public Vote update(String voteId, VoteUpdateRequestDTO voteRequestDTO) {
-		Vote vote = getVote(voteId);
-		if (voteRequestDTO.getOptionId() != null) { // 투표하기
-			log.debug("투표 하기!!");
-			increaseOptionCount(vote, voteRequestDTO);
-		}
-		if (voteRequestDTO.getAnswerOptionId() != null) { // 투표 종료하기
-			log.debug("투표 종료하기!!");
-			vote.finish(voteRequestDTO.getAnswerOptionId());
-		}
+	public Vote updateOption(VoteRequestDTO dto) {
+		Vote vote = getVote(dto.getVoteId());
+		increaseOptionCount(vote, dto);
 		log.debug("수정 후 - {}", vote);
 		voteRepository.save(vote);
-		return getVote(voteId); // check
+		return getVote(dto.getVoteId()); // check
 	}
 
-	private void increaseOptionCount(Vote vote, VoteUpdateRequestDTO dto) {
+	public Vote updateAnswer(VoteCountingRequestDTO dto) {
+		Vote vote = getVote(dto.getVoteId());
+		vote.finish(dto.getAnswerOptionId());
+		log.debug("수정 후 - {}", vote);
+		voteRepository.save(vote);
+		return getVote(dto.getVoteId()); // check
+	}
+
+	private void increaseOptionCount(Vote vote, VoteRequestDTO dto) {
 		User user = new User(dto.getMemberId(), dto.getNickname());
 		for (Option option : vote.getOptions()) {
 			if (option.getOptionId().equals(dto.getOptionId())) {
 				option.increaseCount();
 				option.getUsers().add(user);
 				log.debug("Option - {}", option);
+				vote.increaseCount();
 				return;
 			}
 		}
