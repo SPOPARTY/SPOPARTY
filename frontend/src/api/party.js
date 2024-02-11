@@ -50,7 +50,13 @@ function requestDeletePartyMember (clubId,partyId,participantId,success,fail) {
     local.delete(`clubs/${clubId}/${API_URL}/${partyId}/participants/${participantId}`).then(success).catch(fail);
 }
 
+function requestStartRecording(clubId, data, success, fail) {
+  local.post(`clubs/${clubId}/${API_URL}/recording/start`, data).then(success).catch(fail)
+}
 
+function requestStopRecording(clubId, data, success, fail) {
+  local.post(`clubs/${clubId}/${API_URL}/recording/stop`, data).then(success).catch(fail)
+}
 export {
     requestGetPartyInfo,
     requestPostPartyInfo,
@@ -60,4 +66,6 @@ export {
     requestPostPartyMember,
     requestGetPartyMember,
     requestDeletePartyMember,
+    requestStartRecording,
+    requestStopRecording
 }
