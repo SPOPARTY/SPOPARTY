@@ -18,6 +18,7 @@ public class RestExceptionHandler {
 	public ResponseEntity<?> customExceptionHandler(CustomException exception, HttpServletRequest request) {
 		log.error("ExceptionCode: {}", exception.getCode());
 		log.error("ExceptionMessage: {}", exception.getMessage());
+		exception.printStackTrace();
 		return ApiResponse.error(exception.getCode(), exception.toString());
 	}
 
@@ -25,12 +26,14 @@ public class RestExceptionHandler {
 	public ResponseEntity<?> runtimeExceptionHandler(RuntimeException exception, HttpServletRequest request) {
 		log.error("ExceptionToString: {}", exception.toString());
 		log.error("ExceptionMessage: {}", exception.getMessage());
+		exception.printStackTrace();
 		return ApiResponse.error(HttpStatus.BAD_REQUEST, exception.toString());
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> unhandledExceptionHandler(Exception exception, HttpServletRequest request) {
 		log.error(exception.toString());
+		exception.printStackTrace();
 		return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, exception.toString());
 	}
 
