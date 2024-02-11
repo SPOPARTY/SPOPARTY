@@ -184,9 +184,9 @@ const drawer = ref(false);
 function goHome() {
   router.push('/');
   // 이동 후 새로고침
-  // setTimeout(() => {
-  //   router.go(0);
-  // }, 150);
+  setTimeout(() => {
+    router.go(0);
+  }, 20);
 }
 
 // 예시 클럽 데이터

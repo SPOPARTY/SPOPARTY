@@ -24,12 +24,12 @@
               <div class="d-flex justify-center align-center pb-12">
                 <!-- 투표 버튼 -->
                 <!-- 홈 팀 카드 -->
-                <div class="wrapper pb-1">
+                <div class="wrapper pb-1" :style="{ height: votePercentage(match, 'home')*2.5 + 'px' }">
                 <div v-if="match.alreadyCheer"
                   :class="{ 'barWin': votePercentage(match, 'home') > 50, 
                             'barLose': votePercentage(match, 'home') < 50,
                             'barSame':votePercentage(match, 'home') == 50, }"
-                  :style="{ height: homePercentage*2.5 + 'px' }"
+                  :style="{ height: votePercentage(match, 'home')*2.5 + 'px' }"
                   class="bar"></div>
                 </div>
                 <!-- 여기까지 득표율에 따른 막대기 -->
@@ -56,12 +56,12 @@
                   </v-card-text>
                 </v-card>
                 <!-- 득표율에 따른 막대기 -->
-                <div class="wrapper pb-1">
+                <div class="wrapper pb-1" :style="{ height: votePercentage(match, 'away')*2.5 + 'px' }">
                 <div v-if="match.alreadyCheer"
                 :class="{ 'barWin': votePercentage(match, 'away') > 50, 
                           'barLose': votePercentage(match, 'away') < 50,
                           'barSame':votePercentage(match, 'away') == 50 }"
-                  :style="{ height: awayPercentage*2.5 + 'px' }"
+                  :style="{ height: votePercentage(match, 'away')*2.5 + 'px' }"
                   class="bar"></div>
                 </div>
                 <!-- 여기까지 득표율에 따른 막대기 -->
@@ -91,11 +91,9 @@ getCheersData();
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
 const memberId = ref(localStorage.getItem("id"));
 
-const postCheers = (data) => {
-  postCheersData(data);
-  setTimeout(() => {
-    getCheersData();
-  }, 100);
+const postCheers = async (data) => {
+  await postCheersData(data);
+  await getCheersData();
 };
 
 const model = ref(0);
@@ -106,10 +104,6 @@ watch(() => footballStore.cheersData, (newVal) => {
   cheer.value = newVal;
 }, { immediate: true, deep: true});
 
-
-function convertToBoolean(str) {
-  return str === "true";
-}
 
 function formatDate(dateStr) {
   const date = new Date(dateStr);
@@ -154,6 +148,7 @@ function formatDate(dateStr) {
 // }
 
 async function voteForTeam(match, team) {
+  try {
   if (match.alreadyCheer === 'true') return;
   if (isLogined.value === false || memberId === null) {
     alert("로그인이 필요한 서비스입니다.");
@@ -174,10 +169,13 @@ async function voteForTeam(match, team) {
 
   console.log("data=",data);
   postCheers(data).then(() => {
-      carouselKey.value++; // 강제 리렌더링을 위한 key 값 변경
+    // 강제 리렌더링을 위한 key 값 변경
+      // carouselKey.value++; 
       resetBarAnimation(match); // 득표율 바 업데이트
   });
-}
+} catch (error) {
+  console.error(error);
+}}
 
 const homePercentage = ref(0);
 const awayPercentage = ref(0);
@@ -231,11 +229,9 @@ function resetBarAnimation(match) {
   // homePercentage.value = 0;
   // awayPercentage.value = 0;
 
-  // 약간의 지연 후 막대의 높이를 원래 값으로 설정하여 애니메이션을 생성합니다.
-  nextTick(() => {
-    homePercentage.value = votePercentage(match, 'home');
-    awayPercentage.value = votePercentage(match, 'away');
-  });
+  
+  homePercentage.value = votePercentage(match, 'home');
+  awayPercentage.value = votePercentage(match, 'away');
     // {homePercentage * 2.5}px;
     // {awayPercentage * 2.5}px;
   // 200ms의 지연은 애니메이션을 생성하기 위한 시간
@@ -250,12 +246,23 @@ function resetBarAnimation(match) {
 .wrapper {
   margin-top: auto;
   width: 20px; /* 래퍼 너비 조정 */
+  /* height: 300px; */
+}
+@keyframes heightChange {
+  from {
+    transform: scaleY(0); /* 시작할 때 바의 높이가 0% (완전히 축소) */
+  }
+  to {
+    transform: scaleY(1); /* 끝날 때 바의 높이가 100% (원래 크기) */
+  }
 }
 .bar {
   width: 20px;
-  /* background-color: rgb(61, 172, 186); */
-  transition: height 1.0s ease; /* 애니메이션 효과 */
+  /* 필요한 경우 여기에 background-color 추가 */
+  transform-origin: bottom; /* 바의 변형 기준점을 아래쪽으로 설정 */
+  animation: heightChange 1s ease; /* 애니메이션 적용 */
   bottom: 0;
+  display: block; /* 또는 필요에 따라 inline-block */
 }
 .barWin {
   background-color: rgb(232, 25, 25);
