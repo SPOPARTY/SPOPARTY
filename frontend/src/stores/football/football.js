@@ -25,6 +25,12 @@ export const useFootballStore = defineStore("football",() => {
     const fixtureIdForParty = ref(null);
     const teamIdsForParty = ref({home: null, homeName:null, away: null, awayName: null});
     const oneCheerData = ref([]);
+    const matchHistory = ref(
+        {
+            home: [],
+            away: [],
+        }
+    );
 
     const getCheersData = () => {
         return new Promise((resolve, reject) => {
@@ -254,15 +260,19 @@ export const useFootballStore = defineStore("football",() => {
         } return "not found";
     }
     
-    const getMatchHistory = (Id,type="팀") => {
+    const getMatchHistory = (name,home='home',type="팀") => {
         requestGetMatchHistory(
-            Id,type,
+            name,type,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     console.log("히히 경기 기록 정보 가져오기 발사")
                     console.log(res.data.data)
-                    return res.data.data;
+                    if (home === 'home') {
+                        matchHistory.value.home = res.data.data;
+                    } else {
+                        matchHistory.value.away = res.data.data;
+                    }
                 }
             },
             (error) => {
@@ -326,5 +336,6 @@ export const useFootballStore = defineStore("football",() => {
         fixtureIdForParty,
         teamIdsForParty,
         oneCheerData,
+        matchHistory,
     }
 })

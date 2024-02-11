@@ -15,10 +15,10 @@
             <p id="timeLeft" v-if="count" class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
             <p id="timeLeft" v-else class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
             <v-row class="league-round-details">
-              <v-col cols="2" align="center" class="pa-1">
+              <v-col cols="auto" align="center" class="pa-1 mx-4">
                 <v-img :src="match.league.logo" class="league-logo"></v-img>
               </v-col>
-              <v-col cols="2">
+              <v-col cols="auto">
                 <span>{{ match.round }}</span>
               </v-col>
             </v-row>
@@ -28,14 +28,14 @@
               </v-col>
               <v-col cols="2" align="center">
                 <v-img :src="match.homeTeam.logo" class="team-logo team-name"
-                  @click="toTDP(match.homeTeam.teamId)"></v-img>
+                  @click="toTDP(match.homeTeam.seasonLeagueTeamId)"></v-img>
               </v-col>
               <v-col cols="1" class="pa-0">
                 <span class="vs">VS</span>
               </v-col>
               <v-col cols="2" align="center">
                 <v-img :src="match.awayTeam.logo" class="team-logo team-name"
-                  @click="toTDP(match.awayTeam.teamId)"></v-img>
+                  @click="toTDP(match.awayTeam.seasonLeagueTeamId)"></v-img>
               </v-col>
               <v-col cols="3" class="team-name" @click="toTDP(match.awayTeam.seasonLeagueTeamId)">
                 <h3>{{ match.awayTeam.nameKr }}</h3>
@@ -193,8 +193,8 @@ const toTDP = (teamId) => {
 }
 
 .league-logo {
-  width: 75px;
-  height: 75px;
+  width: 80px;
+  height: 80px;
 }
 
 .team-logo {
