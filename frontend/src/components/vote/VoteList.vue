@@ -289,7 +289,7 @@ function closeModal() {
 
 onMounted(() => {
     voteStore.getOngoingVoteList(partyId);
-    voteStore.getFinisihedVoteList(partyId);
+    voteStore.getFinishedVoteList(partyId);
     voteStore.getMyVoteList(partyId, memberId);
 })
 

@@ -62,9 +62,9 @@
             <v-row class="follow-box justify-center">
                 <v-col cols="6">
                     <v-btn 
-                        style="width:100% "
+                        style="width:100%; background-color:#B4B4B8;"
                         @click="showFollowModal"
-                    >팔로우 중인 구단 수 : {{followingClubNum}}</v-btn>
+                    ><h3>팔로우 중인 구단 수 : {{followingClubNum}}</h3></v-btn>
                 </v-col>
                 <v-col cols="6">
                     <v-card-actions class="justify-center">
