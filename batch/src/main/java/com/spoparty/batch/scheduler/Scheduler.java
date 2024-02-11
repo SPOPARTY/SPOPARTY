@@ -56,11 +56,11 @@ public class Scheduler {
 
 
 	// 응원 테이블 관리
-	// @Scheduled(fixedRate = 1000*60*60)
+	@Scheduled(fixedRate = 1000*60*60)
 	public void registerCheer() {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-		LocalDateTime current = LocalDateTime.now(ZoneId.of("Europe/London"));
+		LocalDateTime current = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 		LocalDateTime yesterday = current.minusDays(1);
 		LocalDateTime tomorrow = current.plusDays(1);
 
@@ -99,7 +99,7 @@ public class Scheduler {
 
 		// 응원 경기 테이블에 있는 경기 중, 현재시간과 3시간 이전 사이의 경기들의 events를 조회하여 테이블에 추가
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-		LocalDateTime t1 = LocalDateTime.now(ZoneId.of("Europe/London"));
+		LocalDateTime t1 = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 		LocalDateTime t2 = t1.minusHours(3);
 		List<CheerFixture> cheerFixtures = cheerFixtureRepository.findAll();
 
@@ -185,7 +185,7 @@ public class Scheduler {
 						}
 						if (!data.getFixture().getDate().isEmpty()){
 							OffsetDateTime odt = OffsetDateTime.parse(data.getFixture().getDate());
-							ldt = odt.toLocalDateTime();
+							ldt = odt.toLocalDateTime().plusHours(9);
 						}
 						Fixture fix = Fixture.builder()
 							.id(data.getFixture().getId())
