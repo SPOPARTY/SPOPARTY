@@ -447,7 +447,6 @@
         alert("히히 회원가입 실패 발사")
       }
     )
-
   }
 
   function goBack(){

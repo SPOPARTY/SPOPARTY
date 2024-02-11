@@ -2,13 +2,13 @@
     <v-container class="mypage-container">
         <v-card class="inner-card pa-4" outlined>
             <h1>마이페이지</h1>
-        
             <v-row>
                 <v-col cols="12" md="8">
-                    <v-text-field class="input" label="아이디" v-model="memberInfo.loginId" outlined dense readonly></v-text-field>
+                    <v-text-field class="input" label="아이디" v-model="memberInfo.loginId" outlined dense readonly/>
                 </v-col>
                 <v-col cols="12" md="4">
-                    <v-btn class="input" color="#393646" @click="showChangePwdModal" block>비밀번호 수정</v-btn>
+                    <v-btn class="input" :disabled="memberInfo.provider !== 'basic'" color="#393646" 
+                    @click="showChangePwdModal" block>비밀번호 수정</v-btn>
                 </v-col>
             </v-row>
             <SetNewPwd 
@@ -18,7 +18,8 @@
             
             <v-row>
                 <v-col cols="12">
-                    <v-text-field class="input" label="닉네임" v-model="memberInfo.nickname" outlined dense></v-text-field>
+                    <v-text-field :disabled="memberInfo.provider === 'basic'" 
+                        class="input" label="닉네임" v-model="memberInfo.nickname" outlined dense/>
                 </v-col>
             </v-row>
             
@@ -31,7 +32,8 @@
                     <v-text-field class="input" label="도메인" v-model="memberInfo.email.split('@')[1]" outlined dense readonly></v-text-field>
                 </v-col>
                 <v-col cols="3" md="3">
-                    <v-btn color="#393646" style="margin-top:10px;" @click="showChangeEmailModal">이메일 수정</v-btn>
+                    <v-btn :disabled="memberInfo.provider !== 'basic'" color="#393646" style="margin-top:10px;" 
+                            @click="showChangeEmailModal">이메일 수정</v-btn>
                 </v-col>
             </v-row>
             <SetNewEmail 
@@ -134,6 +136,7 @@ const memberInfo = ref({
     loginId : "",
     loginPwd : updatedPwd.value,
     nickname : "",
+    provider : "",
     email : "",
     team : {
         id : "",
@@ -162,6 +165,7 @@ const getMemberInfo = () => {
         memberInfo.value.loginId = data.data.loginId;
         memberInfo.value.loginPwd = data.data.loginPwd;
         memberInfo.value.nickname = data.data.nickname;
+        memberInfo.value.provider = data.data.provider;
         memberInfo.value.email = data.data.email;
         memberInfo.value.team.id = data.data.team === null? emblemId.value : data.data.team.id;
         memberInfo.value.team.logo = data.data.team.logo;
