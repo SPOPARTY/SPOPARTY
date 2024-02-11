@@ -104,8 +104,9 @@ watch(() => footballStore.oneCheerData, (newCheer) => {
 }, { immediate: true, deep: true })
 
 // 비동기 함수 호출
-getCheerData(fixtureId);
-
+if (fixtureId.value !== null) {
+    getCheerData(fixtureId);
+}
 // post 메서드 함수 관련
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
 const memberId = ref(localStorage.getItem("id"));
