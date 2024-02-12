@@ -3,8 +3,7 @@ import { defineStore } from 'pinia';
 
 import {httpStatusCode} from "@/util/http-status";
 
-import {requestCreateVote, requestCastVote, requestFinishVote, requestVoteDetail,
-    requestOngoingVoteList, requestFinishedVoteList, requestMyVoteList} from '@/api/vote';
+import {requestVoteDetail, requestOngoingVoteList, requestFinishedVoteList, requestMyVoteList} from '@/api/vote';
 
 export const useVoteStore = defineStore("vote", () => {
 
@@ -79,62 +78,10 @@ export const useVoteStore = defineStore("vote", () => {
         )
     }
 
-    // 투표 생성
-    const createVote = (partyId, data) => {
-        requestCreateVote(
-            partyId,data,
-            (res) => {
-                if(res.data.status === httpStatusCode.CREATE) {
-                    console.log("******투표 생성*****")
-                    alert(res.data.message);
-
-                }
-            },
-            (error) => {
-                console.log(error);
-                alert("투표 생성 실패!")
-            }
-        )
-    }
-
-    // 투표 하기
-    const castVote = (partyId, voteId, data) => {
-        requestCastVote(
-            partyId, voteId, data,
-            (res) => {
-                if(res.data.status === httpStatusCode.OK) {
-                    console.error("******투표 완료******")
-                    alert("투표 완료");
-
-                }
-            },
-            (error) => {
-                console.error(error);
-                alert("투표 실패!")
-            }
-        )
-    }
-
-    // 투표 종료
-    const finishVote = (partyId, voteId, data) => {
-        requestFinishVote(partyId, voteId, data,
-            (res) => {
-                if(res.data.status === httpStatusCode.OK) {
-                    console.log("******투표 종료*******")
-                    alert(res.data.message);
-
-                }
-            },
-            (error) => {
-                console.error(error);
-                alert("투표 종료 실패!")
-            }
-        ) 
-    }
 
 
     return {
         voteDetail, ongoingVoteList, finishtedVoteList, myVoteList, 
-        getOngoingVoteList, getFinishedVoteList, getMyVoteList, getVoteDetail, createVote, castVote, finishVote
+        getOngoingVoteList, getFinishedVoteList, getMyVoteList, getVoteDetail
     }
 })

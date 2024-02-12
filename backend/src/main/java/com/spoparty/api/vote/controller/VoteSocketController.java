@@ -6,9 +6,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spoparty.api.vote.domain.Vote;
-import com.spoparty.api.vote.dto.VoteCountingRequestDTO;
-import com.spoparty.api.vote.dto.VoteCreateRequestDTO;
-import com.spoparty.api.vote.dto.VoteRequestDTO;
+import com.spoparty.api.vote.dto.request.VoteCountingRequestDTO;
+import com.spoparty.api.vote.dto.request.VoteCreateRequestDTO;
+import com.spoparty.api.vote.dto.request.VoteRequestDTO;
+import com.spoparty.api.vote.dto.response.VoteCountingResponseDTO;
 import com.spoparty.api.vote.service.VoteService;
 
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ public class VoteSocketController {
 		log.debug("투표 생성 시작");
 		log.debug("VoteCreateRequestDTO - {}", voteRequestDTO);
 		Vote response = voteService.create(voteRequestDTO);
-		simpMessagingTemplate.convertAndSend("/sub/vote/" + voteRequestDTO.getPartyId(), response);
+		simpMessagingTemplate.convertAndSend("/sub/vote/create/" + voteRequestDTO.getPartyId(), response);
 	}
 
 	@MessageMapping("vote/do")
@@ -35,14 +36,14 @@ public class VoteSocketController {
 		log.debug("투표 시작");
 		log.debug("VoteRequestDTO - {}", voteRequestDTO);
 		Vote response = voteService.updateOption(voteRequestDTO);
-		simpMessagingTemplate.convertAndSend("/sub/vote/" + voteRequestDTO.getPartyId(), response);
+		simpMessagingTemplate.convertAndSend("/sub/vote/do/" + voteRequestDTO.getPartyId(), response);
 	}
 
 	@MessageMapping("vote/counting")
 	public void countVote(@Payload @Valid VoteCountingRequestDTO voteCountingRequestDTO) {
 		log.debug("투표 집계 시작");
 		log.debug("VoteCountingRequestDTO - {}", voteCountingRequestDTO);
-		Vote response = voteService.updateAnswer(voteCountingRequestDTO);
-		simpMessagingTemplate.convertAndSend("/sub/vote/" + voteCountingRequestDTO.getPartyId(), response);
+		VoteCountingResponseDTO response = voteService.updateAnswer(voteCountingRequestDTO);
+		simpMessagingTemplate.convertAndSend("/sub/vote/counting/" + voteCountingRequestDTO.getPartyId(), response);
 	}
 }
