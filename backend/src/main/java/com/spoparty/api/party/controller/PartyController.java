@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.spoparty.api.member.entity.File;
 import com.spoparty.api.member.service.FileService;
+import com.spoparty.api.party.dto.response.RecordingResponseDTO;
 import com.spoparty.common.util.CustomMultipartFile;
 import io.openvidu.java.client.Recording;
 import org.springframework.core.io.FileSystemResource;
@@ -153,11 +154,11 @@ public class PartyController {
 		partyService.stopRecording(recordingId);
 
 		// 녹화된 영상 S3 업로드, DB 저장
-		File file = partyService.uploadRecording(recordingId);
+		RecordingResponseDTO recordingResponseDTO = partyService.uploadRecording(recordingId);
 
 		// 서버에 저장된 영상 제거
 		partyService.deleteRecording(recordingId);
 
-		return ApiResponse.success(RECORD_STOP_REQUEST_SUCCESS, file);
+		return ApiResponse.success(RECORD_STOP_REQUEST_SUCCESS, recordingResponseDTO);
 	}
 }

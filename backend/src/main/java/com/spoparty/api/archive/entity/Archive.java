@@ -52,4 +52,8 @@ public class Archive extends BaseEntity {
 	@JoinColumn(name = "file_id", referencedColumnName = "file_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private File file;
 
+	@OneToOne
+	@JoinColumn(name = "thumbnail_id", referencedColumnName = "file_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private File thumbnail;
+
 }

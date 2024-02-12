@@ -4,6 +4,7 @@ import static com.spoparty.api.common.constants.ErrorCode.*;
 import static com.spoparty.api.common.constants.SuccessCode.*;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,16 +53,22 @@ public class ArchiveController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> registerArchive(Long memberId, Long clubId, String partyTitle, String fixtureTitle,
-		MultipartFile file) {
+	public ResponseEntity<?> registerArchive(@RequestBody Map<String, String> request) {
+		Long memberId = Long.parseLong(request.get("memberId"));
+		Long clubId = Long.parseLong(request.get("clubId"));
+		Long fileId = Long.parseLong(request.get("fileId"));
+		Long thumbnailId = Long.parseLong(request.get("thumbnailId"));
+		String partyTitle = request.get("partyTitle");
+		String fixtureTitle = request.get("fixtureTitle");
+
 		Archive archive = new Archive();
 		archive.setMember(memberService.findById(memberId));
 		archive.setClub(clubRepository.findById(clubId).orElseThrow(() -> new CustomException(DATA_NOT_FOUND)));
 		archive.setPartyTitle(partyTitle);
 		archive.setFixtureTitle(fixtureTitle);
-		if (file != null) {
-			archive.setFile(fileService.uploadFile(file));
-		}
+		archive.setFile(fileService.findById(fileId));
+		archive.setThumbnail(fileService.findById(thumbnailId));
+
 		ArchiveProjection data = archiveService.registerArchive(archive);
 		return ApiResponse.success(CREATE_SUCCESS, data);
 	}
