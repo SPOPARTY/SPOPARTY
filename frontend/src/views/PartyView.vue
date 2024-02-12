@@ -830,8 +830,8 @@ const registerArchive = () => {
      {
        memberId : localStorage.getItem("id"),
        clubId : clubId,
-       partyTitle : titleModel,
-       fixtureTitle : matchModel,
+       partyTitle : titleModel.value,
+       fixtureTitle : matchModel.value,
        fileId : recordingFile.value.id,
        thumbnailId : recordingFile.value.thumbnailId
      }
