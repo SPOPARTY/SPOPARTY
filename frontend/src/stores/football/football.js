@@ -25,27 +25,39 @@ export const useFootballStore = defineStore("football",() => {
     const fixtureIdForParty = ref(null);
     const teamIdsForParty = ref({home: null, homeName:null, away: null, awayName: null});
     const oneCheerData = ref([]);
+    const matchHistory = ref(
+        {
+            home: [],
+            away: [],
+        }
+    );
 
     const getCheersData = () => {
-        requestGetCheersData(
-            (res) => {
-                console.log(res)
-                if(res.status === httpStatusCode.OK) {
-                    console.log("히히 응원 정보 가져오기 발사")
-                    cheersData.value = res.data.data;
-                    console.log(cheersData.value)
+        return new Promise((resolve, reject) => {
+            requestGetCheersData(
+                (res) => {
+                    console.log(res)
+                    if(res.status === httpStatusCode.OK) {
+                        console.log("히히 응원 정보 가져오기 발사")
+                        cheersData.value = res.data.data;
+                        console.log(cheersData.value)
+                        resolve(res.data.data);
+                    } else {
+                        reject(new Error("응답 상태가 OK가 아님"));
+                    }   
+                },
+                (error) => {
+                    console.log("응원 정보 가져오는데 에러")
+                    if(error.response.status === httpStatusCode.NOTFOUND) {
+                        console.log("***********비상***********")
+                        console.error(error)
+                        alert("응원 정보 가져오기 실패!")
+                    }
+                    reject(error);
                 }
-            },
-            (error) => {
-                console.log("응원 정보 가져오는데 에러")
-                if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
-                    console.error(error)
-                    alert("응원 정보 가져오기 실패!")
-                }
-            }
-        )
-    }
+            )
+        }
+    )}
 
     const postCheersData = async (data) => {
         return new Promise((resolve, reject) => {
@@ -56,7 +68,7 @@ export const useFootballStore = defineStore("football",() => {
                     if (res.status === httpStatusCode.CREATE) {
                         console.log("히히 응원 정보 등록하기 발사");
                         console.log(res.data.data);
-                        cheersData.value = res.data.data;
+                        // cheersData.value = res.data.data;
                         resolve(res.data.data); // 성공한 경우, 결과 데이터를 resolve로 반환
                     } else {
                         reject(new Error("응답 상태가 CREATE가 아님")); // CREATE 상태 코드가 아니면 reject
@@ -162,26 +174,32 @@ export const useFootballStore = defineStore("football",() => {
     }
 
     const getTeamDetail = (teamId) => {
-        requestGetTeamDetail(
-            teamId,
-            (res) => {
-                console.log(res)
-                if(res.status === httpStatusCode.OK) {
-                    console.log("히히 팀 상세 정보 가져오기 발사")
-                    teamDetail.value = res.data.data;
-                    console.log(teamDetail.value)
+        return new Promise((resolve, reject) => {
+            requestGetTeamDetail(
+                teamId,
+                (res) => {
+                    console.log(res)
+                    if(res.status === httpStatusCode.OK) {
+                        console.log("히히 팀 상세 정보 가져오기 발사")
+                        teamDetail.value = res.data.data;
+                        console.log(teamDetail.value)
+                        resolve(res.data.data);
+                    } else {
+                        reject(new Error("응답 상태가 OK가 아님"));
+                    }
+                },
+                (error) => {
+                    console.log("팀 상세 정보 가져오는데 에러")
+                    if(error.response.status === httpStatusCode.NOTFOUND) {
+                        console.log("***********비상***********")
+                        console.error(error)
+                        alert("팀 상세 정보 가져오기 실패!")
+                    }
+                    reject(error);
                 }
-            },
-            (error) => {
-                console.log("팀 상세 정보 가져오는데 에러")
-                if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
-                    console.error(error)
-                    alert("팀 상세 정보 가져오기 실패!")
-                }
-            }
-        )
-    }
+            )
+        }
+    )}
 
     const getMatchWatchable = (startDate, endDate) => {
         requestGetMatchWatchable(
@@ -242,15 +260,19 @@ export const useFootballStore = defineStore("football",() => {
         } return "not found";
     }
     
-    const getMatchHistory = (Id,type="팀") => {
+    const getMatchHistory = (name,home='home',type="팀") => {
         requestGetMatchHistory(
-            Id,type,
+            name,type,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     console.log("히히 경기 기록 정보 가져오기 발사")
                     console.log(res.data.data)
-                    return res.data.data;
+                    if (home === 'home') {
+                        matchHistory.value.home = res.data.data;
+                    } else {
+                        matchHistory.value.away = res.data.data;
+                    }
                 }
             },
             (error) => {
@@ -314,5 +336,6 @@ export const useFootballStore = defineStore("football",() => {
         fixtureIdForParty,
         teamIdsForParty,
         oneCheerData,
+        matchHistory,
     }
 })

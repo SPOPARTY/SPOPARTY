@@ -1,12 +1,11 @@
 package com.spoparty.api.party.controller;
 
-import com.spoparty.api.party.dto.request.ChatRequestDto;
-
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.spoparty.api.party.dto.request.ChatRequestDto;
 import com.spoparty.api.party.service.ChatServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
-
 
 	private final ChatServiceImpl chatService;
 

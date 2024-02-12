@@ -17,7 +17,9 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { useArchiveStore} from '@/stores/club/archives'
 import { useClubStore } from '@/stores/club/clubs';
+import { useBoardStore } from '@/stores/club/boards';
 
 import ArchivePreview from '@/components/archive/ArchivePreview.vue';
 import ClubMembersFunc from '@/components/club/ClubMembersFunc.vue';
@@ -25,6 +27,8 @@ import BoardPreview from '@/components/board/BoardPreview.vue';
 
 const route = useRoute();
 
+const archiveStore = useArchiveStore();
+const boardStore = useBoardStore();
 const clubStore = useClubStore();
 
 const props = defineProps({
@@ -40,6 +44,8 @@ const clubMemberList = ref([]);
 
 // route.params.clubId 변화를 감지하여 클럽 정보와 멤버 리스트를 업데이트하는 함수
 const updateClubData = (clubId) => {
+    archiveStore.getArchiveList(clubId)
+    boardStore.getBoardList(clubId)
     clubStore.getClubInfo(clubId)
     clubStore.getClubMemberList(clubId)
 };
@@ -60,6 +66,7 @@ onMounted(() => {
 
 // route.params.clubId가 변경될 때마다 클럽 데이터를 다시 불러오도록 설정
 watch(() => route.params.clubId, (newClubId) => {
+    console.log("새로 바뀐 클럽 id! ->",newClubId);
     updateClubData(newClubId);
 });
 

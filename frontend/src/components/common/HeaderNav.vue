@@ -182,11 +182,12 @@ const router = useRouter();
 const drawer = ref(false);
 
 function goHome() {
-  router.push('/');
-  // 이동 후 새로고침
+  // router.push('/');
+  // // 이동 후 새로고침
   // setTimeout(() => {
   //   router.go(0);
-  // }, 150);
+  // }, 20);
+  window.location.href = '/';
 }
 
 // 예시 클럽 데이터
@@ -197,6 +198,7 @@ function goToOneClubPage(clubId) {
   // const url = router.resolve({ name: 'ClubView', params: { clubId } }).href;
   // window.open(url, '_blank');
   console.log("클럽 페이지로 이동")
+  drawer.value = false;
   router.push({ name: 'ClubMain', params: { clubId } });
 }
 

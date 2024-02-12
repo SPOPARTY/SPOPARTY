@@ -17,11 +17,11 @@ export const useFollowStore = defineStore("follow", () => {
     const getTeamList = () => {
         requestAllTeamList(
             ({data,status}) => {
-                // console.log("히히 모든 팀 가져오기 발사")
+                // console.log("***********히히 모든 구단 목록 조회********")
                 // console.log(data.data)
                 if(status === httpStatusCode.OK) {
                     teamList.value = data.data
-                    console.log(teamList.value)
+                    // console.log(teamList.value)
                     return teamList.value;
                 }
             },

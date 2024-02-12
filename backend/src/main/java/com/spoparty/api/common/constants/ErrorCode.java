@@ -59,6 +59,9 @@ public enum ErrorCode {
 	PARTY_MEMBER_NOT_FOUND(NOT_FOUND, "파티원을 찾을 수 없습니다."),
 	PARTY_MEMBERS_NOT_FOUND(NOT_FOUND, "파티원 목록을 찾을 수 없습니다."),
 	FIXTURE_NOT_FOUND(NOT_FOUND, "경기를 찾을 수 없습니다."),
+	PENALTY_NOT_FOUND(NOT_FOUND, "패널티를 찾을 수 없습니다."),
+	VOTE_NOT_FOUND(NOT_FOUND, "투표를 찾을 수 없습니다."),
+	OPTION_NOT_FOUND(NOT_FOUND, "투표 선택지를 찾을 수 없습니다."),
 
 	/* 500 INTERNAL_SERVER_ERROR : 서버 오류 */
 	ENCRYPT_FAIL(INTERNAL_SERVER_ERROR, "암호화에 실패했습니다."),

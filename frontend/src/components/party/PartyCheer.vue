@@ -1,10 +1,10 @@
 <template>
-    <p>실시간 정보 페이지. fixtureId = {{ fixtureId ? fixtureId : 'null' }}</p>
-    <p v-if="fixtureId == null">경기를 선택해주세요.</p>
-    <v-container fluid class="pa-2 fill-height part-section">
+    <p>경기 응원 페이지. fixtureId = {{ fixtureId ? fixtureId : 'null' }}</p>
+    <p v-if="fixtureId == null" class="mb-6 alert-msg">경기를 선택해주세요.</p>
+    <v-container v-else fluid class="pa-2 fill-height part-section">
         <v-row justify="center">
             <v-col cols="12" class="d-flex flex-column align-center justify-center">
-                <v-carousel v-model="model" class='carousel' :show-arrows="false" height="500px" hide-delimiters 
+                <v-carousel v-if="cheer" v-model="model" class='carousel' :show-arrows="false" height="500px" hide-delimiters 
                     hide-delimiter-background>
                     <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
                         <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
@@ -20,7 +20,7 @@
                             </div>
                             <!-- 투표 상태 메시지 -->
                             <div class="vote-message">
-                                <h1>{{ convertToBoolean(match.already_cheer) ? '이미 투표하셨습니다' : '팀을 선택해주세요!' }}</h1>
+                                <h1>{{ match.alreadyCheer ? '이미 투표하셨습니다' : '팀을 선택해주세요!' }}</h1>
                             </div>
                             <!-- 투표 버튼 및 득표율 -->
                             <div class="d-flex justify-center align-center pb-12">
@@ -37,7 +37,7 @@
                                 <v-card :disabled="match.alreadyCheer" class="team-card text-center"
                                     @click="() => voteForTeam(match, 'home')">
                                     <v-img :src="match.fixture.homeTeam.logo" class="team-logo"></v-img>
-                                    <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.homeTeam.teamId }">
+                                    <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.homeTeam.seasonLeagueTeamId }">
                                         {{ match.fixture.homeTeam.nameKr }}
                                     </v-card-title>
                                     <v-card-text v-if="match.alreadyCheer">
@@ -49,7 +49,7 @@
                                 <v-card :disabled="match.alreadyCheer" class="team-card text-center"
                                     @click="() => voteForTeam(match, 'away')">
                                     <v-img :src="match.fixture.awayTeam.logo" class="team-logo"></v-img>
-                                    <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.teamId }">
+                                    <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.seasonLeagueTeamId }">
                                         {{ match.fixture.awayTeam.nameKr }}
                                     </v-card-title>
                                     <v-card-text v-if="match.alreadyCheer">
@@ -69,6 +69,11 @@
                         </div>
                     </v-carousel-item>
                 </v-carousel>
+                <v-card v-else class="card-else" title="경기 응원 데이터가 없습니다.">
+                    <!-- <v-card-title>경기 응원 데이터가 없습니다.</v-card-title> -->
+                    <v-card-subtitle v-if="fixtureId">해당 경기에는 응원이 없습니다.</v-card-subtitle>
+                    <v-card-subtitle v-else>경기를 선택해주세요.</v-card-subtitle>
+                </v-card>
             </v-col>
         </v-row>
     </v-container>
@@ -86,7 +91,7 @@ const { getCheerData, postCheersData } = footballStore;
 
 const fixtureId = ref(null)
 
-const cheer = ref([]);
+const cheer = ref(null);
 watch(() => footballStore.fixtureIdForParty, (newFixtureId) => {
     fixtureId.value = newFixtureId
     if (newFixtureId !== null) {
@@ -99,8 +104,9 @@ watch(() => footballStore.oneCheerData, (newCheer) => {
 }, { immediate: true, deep: true })
 
 // 비동기 함수 호출
-getCheerData(fixtureId);
-
+if (fixtureId.value !== null) {
+    getCheerData(fixtureId);
+}
 // post 메서드 함수 관련
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
 const memberId = ref(localStorage.getItem("id"));
@@ -114,10 +120,6 @@ const postCheers = (data, team) => {
 
 const model = ref(0);
 
-
-function convertToBoolean(str) {
-    return str === "true";
-}
 
 function formatDate(dateStr) {
     const date = new Date(dateStr);
@@ -162,7 +164,7 @@ function formatDate(dateStr) {
 // }
 
 function voteForTeam(match, team) {
-    if (match.already_cheer === 'true') return;
+    if (match.alreadyCheer === 'true') return;
     if (isLogined.value === false || memberId === null) {
         alert("로그인이 필요한 서비스입니다.");
         return;
@@ -202,7 +204,7 @@ const votePercentage = (match, team) => {
 onMounted(() => {
     // setInterval을 사용하여 cheer.value.length가 0보다 큰지 확인
     const checkCheerLength = setInterval(() => {
-        if (cheer.value.length > 0) {
+        if (cheer.value != null && cheer.value.length > 0) {
             // cheer.value.length가 0보다 크면 초기화 로직을 실행
             const currentMatch = cheer.value[model.value];
             if (currentMatch && currentMatch.alreadyCheer) {
@@ -290,7 +292,7 @@ function resetBarAnimation(match) {
 }
 
 .team-card {
-    width: 300px;
+    width: 350px;
     cursor: pointer;
     /* 마우스 오버 시 커서 변경 */
     margin: 0px 30px;
@@ -332,6 +334,19 @@ function resetBarAnimation(match) {
 
 .VS {
     font-size: 3rem;
+}
+.card-else {
+    padding: 30px;
+    margin: 20px;
+    text-align: center;
+    /* font-size: 2rem; */
+    color: #292646;
+}
+.alert-msg {
+    text-align: center;
+    margin: 30px;
+    font-size: 2rem;
+    color: #292646;
 }
 </style>
   

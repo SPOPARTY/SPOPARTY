@@ -5,7 +5,7 @@
     @click:outside="closeModal"
     persistent    >
     <v-card>
-      <v-card-title class="text-h5">비밀번호 찾기</v-card-title>
+      <v-card-title class="text-center"><h5>비밀번호 찾기</h5></v-card-title>
       <v-card-text>
         <v-form @submit.prevent="submitForm">
           <v-text-field
