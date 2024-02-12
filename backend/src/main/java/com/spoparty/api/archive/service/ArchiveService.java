@@ -66,6 +66,9 @@ public class ArchiveService {
 		if (archive.getFile() != null) {
 			fileService.deleteFile(archive.getFile().getId());
 		}
+		if (archive.getThumbnail() != null) {
+			fileService.deleteFile(archive.getThumbnail().getId());
+		}
 		archive.softDelete();
 	}
 
