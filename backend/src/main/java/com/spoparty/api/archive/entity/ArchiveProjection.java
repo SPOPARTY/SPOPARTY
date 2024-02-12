@@ -19,6 +19,8 @@ public interface ArchiveProjection {
 
 	File getFile();
 
+	File getThumbnail();
+
 	LocalDateTime getCreatedTime();
 
 	LocalDateTime getUpdatedTime();

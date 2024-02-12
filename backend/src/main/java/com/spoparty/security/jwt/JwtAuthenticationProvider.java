@@ -34,7 +34,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 			log.info("비밀번호 일치!!");
 			return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 		} else {
-			log.info("비밀번호 불일치!!");
+			log.error("비밀번호 불일치!!");
 			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
 		}
 	}

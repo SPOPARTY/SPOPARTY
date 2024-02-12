@@ -3,19 +3,20 @@ package com.spoparty.api.party.service;
 import static com.spoparty.api.common.constants.ErrorCode.*;
 import static com.spoparty.api.common.constants.NotificationMessage.*;
 
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.spoparty.api.party.dto.response.RecordingResponseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spoparty.api.club.entity.Club;
 import com.spoparty.api.club.entity.ClubMember;
 import com.spoparty.api.club.repository.ClubMemberRepository;
-import com.spoparty.api.club.repository.ClubRepository;
-import com.spoparty.api.club.service.ClubMemberServiceImpl;
 import com.spoparty.api.club.service.ClubServiceImpl;
 import com.spoparty.api.common.constants.NotificationMessage;
 import com.spoparty.api.common.entity.RoleType;
@@ -24,9 +25,9 @@ import com.spoparty.api.football.entity.Fixture;
 import com.spoparty.api.football.repository.FixtureRepository;
 import com.spoparty.api.football.response.PartyFixtureDTO;
 import com.spoparty.api.football.service.FixtureServiceImpl;
+import com.spoparty.api.member.entity.File;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.entity.Notification;
-import com.spoparty.api.member.service.MemberService;
 import com.spoparty.api.member.service.NotificationService;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
 import com.spoparty.api.party.dto.response.PartyResponseDTO;
@@ -39,6 +40,7 @@ import com.spoparty.security.model.PrincipalDetails;
 
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
+import io.openvidu.java.client.Recording;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,14 +69,18 @@ public class PartyServiceImpl implements PartyService {
 
 		// party 엔티티 생성
 		Party party = Party.createParty(member, club);
-		partyRepository.save(party);
 
 		// openvidu 세션, 토큰 생성
 		String openviduToken = createOpenviduSessionAndToken(club.getId(), party);
+		log.debug("openviduToken - {}", openviduToken);
 
 		// partyMember 엔티티 생성
 		PartyMember partyMember = PartyMember.createPartyMember(party, member, openviduToken, RoleType.host);
+
+		partyRepository.save(party);
 		partyMemberRepository.save(partyMember);
+		log.debug("party 엔티티 - {}", party);
+		log.debug("partyMember 엔티티 - {}", partyMember);
 
 		// 알림 생성
 		sendNotification(member.getId(), club, START_PARTY);
@@ -90,8 +96,8 @@ public class PartyServiceImpl implements PartyService {
 				continue;
 			}
 			Member member = new Member();
-			log.debug("member - {}", member);
 			member.setId(memberId);
+			log.debug("member - {}", member);
 
 			Notification notification = new Notification();
 			notification.setMember(member);
@@ -99,6 +105,7 @@ public class PartyServiceImpl implements PartyService {
 			notification.setContent(message.getContent());
 			log.debug("notification - {}", notification);
 			notificationService.registerNotification(notification);
+			log.debug("알림 생성 완료!");
 		}
 	}
 
@@ -116,7 +123,6 @@ public class PartyServiceImpl implements PartyService {
 
 		// openvidu 커넥션 토큰 발급
 		String openviduToken = openViduService.createConnection(openviduSessionId, new HashMap<>());
-		log.debug("openviduToken - {}", openviduToken);
 		return openviduToken;
 	}
 
@@ -254,5 +260,27 @@ public class PartyServiceImpl implements PartyService {
 		if (party.getMaxParticipants() <= countPartyMembers(party.getId())) {
 			throw new CustomException(ENOUGH_PARTY_PARTICIPANTS);
 		}
+	}
+
+	@Override
+	public Recording startRecording(String sessionId, Map<String, Object> params)
+		throws OpenViduJavaClientException, OpenViduHttpException {
+		return openViduService.startRecording(sessionId, params);
+	}
+
+	@Override
+	public void stopRecording(String recordingId)
+		throws OpenViduJavaClientException, OpenViduHttpException {
+		openViduService.stopRecording(recordingId);
+	}
+
+	@Override
+	public RecordingResponseDTO uploadRecording(String recordingId) throws InvalidPathException {
+		return openViduService.uploadRecording(recordingId);
+	}
+
+	@Override
+	public void deleteRecording(String recordingId) throws IOException {
+		openViduService.deleteRecording(recordingId);
 	}
 }

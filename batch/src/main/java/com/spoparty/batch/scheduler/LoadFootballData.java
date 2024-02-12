@@ -41,6 +41,7 @@ import com.spoparty.batch.repository.SeasonLeagueRepository;
 import com.spoparty.batch.repository.SeasonLeagueTeamPlayerRepository;
 import com.spoparty.batch.repository.SeasonLeagueTeamRepository;
 import com.spoparty.batch.repository.TeamRepository;
+import com.spoparty.batch.scheduler.model.Career;
 import com.spoparty.batch.scheduler.model.CoachResponse;
 import com.spoparty.batch.scheduler.model.Coaches;
 import com.spoparty.batch.scheduler.model.EventResponse;
@@ -82,9 +83,6 @@ public class LoadFootballData {
 	private final LineupPlayerRepository lineupPlayerRepository;
 	private final FixtureEventRepository fixtureEventRepository;
 
-	private List<Long> fixtureIdInProgress = new ArrayList<>();
-
-
 	// 시즌리그정보로 [팀, 코치, 시즌리그구단] 테이블을 만들어줌
 	// @Scheduled(fixedRate = 1000*60*60*24)
 	public void loadSLT() {
@@ -117,7 +115,7 @@ public class LoadFootballData {
 						CoachResponse body2 = (CoachResponse)response.getBody();
 						List<Coaches> list2 = body2.getResponse();
 						Coach coach = null;
-						for (Coaches cc :list2){
+						outer :for (Coaches cc :list2){
 							coach = Coach.builder()
 								.id(cc.getId())
 								.age(cc.getAge())
@@ -126,6 +124,15 @@ public class LoadFootballData {
 								.nameEng(cc.getName())
 								.nationality(cc.getNationality())
 								.build();
+							for (Career career :cc.getCareer()){
+								if (career.getTeam().getId() != data.getTeam().getId()) continue;
+								if (career.getEnd() == null) break outer;
+								DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+								LocalDate current = LocalDate.now(ZoneId.of("Europe/London"));
+								LocalDate t1 =LocalDate.parse(career.getStart(), formatter);
+								LocalDate t2 =LocalDate.parse(career.getEnd(), formatter);
+								if (current.compareTo(t1) * current.compareTo(t2) <=0 ) break outer;
+							}
 						}
 						log.info("coach: {}",coach);
 						if(coach != null){
@@ -221,7 +228,7 @@ public class LoadFootballData {
 						}
 						if (!data.getFixture().getDate().isEmpty()){
 							OffsetDateTime odt = OffsetDateTime.parse(data.getFixture().getDate());
-							ldt = odt.toLocalDateTime();
+							ldt = odt.toLocalDateTime().plusHours(9);
 						}
 						Fixture fixture = Fixture.builder()
 							.id(data.getFixture().getId())
@@ -324,103 +331,6 @@ public class LoadFootballData {
 	}
 
 
-	// 경기로 [경기 이벤트] 테이블 생성
-	@Scheduled(fixedRate = 1000*60)
-	public void loadEvents() {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-		LocalDateTime t1 = LocalDateTime.now(ZoneId.of("Europe/London"));
-		LocalDateTime t2 = t1.minusHours(300);
-		List<CheerFixture> cheerFixtures = cheerFixtureRepository.findAll();
-
-		for (CheerFixture cheers : cheerFixtures){
-			Fixture fixture = cheers.getFixture();
-			if(fixture.getStartTime().compareTo(t1) * fixture.getStartTime().compareTo(t2) > 0) continue;
-
-			MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-			queryParams.add("fixture", fixture.getId()+"");
-			ResponseEntity<?> response = footballApiUtil.sendRequest("/fixtures/events", queryParams, EventResponse.class);
-			if (response.getStatusCode() == HttpStatus.OK){
-				EventResponse body = (EventResponse)response.getBody();
-				List<Events> list = body.getResponse();
-
-				outer : for (Events data : list){
-
-					try {
-						SeasonLeagueTeam team = null;
-						LineupPlayer p1 = null;
-						LineupPlayer p2 = null;
-						if(data.getTeam() != null){
-							team = seasonLeagueTeamRepository.findByTeam_Id((long)data.getTeam().getId());
-						}
-						if (data.getPlayer().getId() != null){
-							p1 = lineupPlayerRepository.findById(data.getPlayer().getId().longValue()).orElse(null);
-						}
-						if (data.getAssist().getId() != null){
-							p2 = lineupPlayerRepository.findById(data.getAssist().getId().longValue()).orElse(null);
-						}
-
-						FixtureEvent fixtureEvent = FixtureEvent.builder()
-							.fixture(fixture)
-							.seasonLeagueTeam(team)
-							.player(p1)
-							.assist(p2)
-							.time(Long.parseLong(data.getTime().get("elapsed")))
-							.type(data.getType())
-							.detail(data.getDetail())
-							.build();
-						List<FixtureEvent> events = fixtureEventRepository.findByFixture_IdAndTime(fixture.getId(), Long.parseLong(data.getTime().get("elapsed")));
-						for (FixtureEvent ddddd : events){
-							if ( ddddd.equals(fixtureEvent)){
-								continue outer;
-							}
-						}
-						fixtureEventRepository.save(fixtureEvent);
-						log.info("fixtureEvent: {}", fixtureEvent);
-					}catch (Exception e){
-						log.error(e.toString());
-						log.error("fail id : {}",data.getTeam().getId());
-					}
-				}
-			}
-		}
-	}
-
-	// 응원 테이블 관리
-	@Scheduled(fixedRate = 1000*60*60)
-	public void registerCheer() {
-
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-		LocalDateTime current = LocalDateTime.now(ZoneId.of("Europe/London"));
-		LocalDateTime yesterday = current.minusDays(1);
-		LocalDateTime tomorrow = current.plusDays(1);
-
-		// 응원경기 테이블에서 지난 응원들 삭제처리
-		List<CheerFixture> cheerList = cheerFixtureRepository.findAll();
-		for (CheerFixture cheerFixture :cheerList){
-			LocalDateTime fixtureTime = cheerFixture.getFixture().getStartTime();
-			if (fixtureTime.compareTo(yesterday) * fixtureTime.compareTo(tomorrow) >= 0){
-				cheerFixture.softDelete();
-				cheerFixtureRepository.save(cheerFixture);
-				log.info("delete cheerFixture : {}", cheerFixture);
-			}
-		}
-
-		// 경기목록에서 24시간 전후의 경기를 응원경기 테이블에 추가
-		List<Fixture> fixtures = fixtureRepository.findByStartTimeBetween(yesterday, tomorrow);
-		for(Fixture fixture : fixtures){
-			CheerFixture tmp = cheerFixtureRepository.findByFixture_Id(fixture.getId());
-			if (tmp == null){
-				CheerFixture saveData = CheerFixture.builder()
-					.fixture(fixture)
-					.homeCount(0)
-					.awayCount(0)
-					.build();
-
-				cheerFixtureRepository.save(saveData);
-				log.info("save cheerFixture : {}", saveData);
-			}
-		}
-	}
 
 }

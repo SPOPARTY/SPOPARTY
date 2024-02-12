@@ -4,11 +4,11 @@ import static com.spoparty.api.common.constants.ErrorCode.*;
 
 import java.util.List;
 
-import org.springframework.mail.MailSendException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spoparty.api.club.service.ClubMemberService;
 import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Team;
 import com.spoparty.api.football.repository.TeamRepository;
@@ -37,6 +37,7 @@ public class MemberService {
 	private final JwtTokenUtil jwtTokenUtil;
 	private final MemberTokenRepository memberTokenRepository;
 	private final EmailService emailService;
+	private final ClubMemberService clubMemberService;
 
 	// Member 기능
 
@@ -76,6 +77,10 @@ public class MemberService {
 			data.setEmail(member.getEmail());
 		if (member.getNickname() != null)
 			data.setNickname(member.getNickname());
+		if (member.getTeam() != null) {
+			Team team = teamRepository.findById(member.getTeam().getId(), Team.class).orElse(null);
+			data.setTeam(team);
+		}
 		return memberRepository.findById(member.getId(), MemberProjection.class)
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 	}
@@ -84,6 +89,7 @@ public class MemberService {
 	public void deleteMember(Long id) {
 		Member member = memberRepository.findById(id, Member.class)
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+		clubMemberService.deleteClubMemberFromAllClub(member);
 		member.setState(2);
 	}
 
@@ -159,11 +165,11 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void tempPwd(Member member) throws MailSendException, InterruptedException {
+	public void tempPwd(Member member) throws Exception {
 		Member data = memberRepository.findByLoginIdAndEmail(member.getLoginId(), member.getEmail(), Member.class)
 			.orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 		int code = (int)(Math.random() * 100000000);
-		emailService.sendEmail(data.getEmail(), "SPOPARTY 비밀번호 찾기", "임시 비밀번호 : [" + code + "]");
+		emailService.sendTmpPwd(data.getEmail(), code);
 		data.setLoginPwd(bCryptPasswordEncoder.encode(code + ""));
 	}
 

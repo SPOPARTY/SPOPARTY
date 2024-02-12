@@ -41,11 +41,16 @@ public class FileService {
 			metadata.setContentLength(file.getSize());
 			amazonS3.putObject(bucket, fileName, file.getInputStream(), metadata);
 		} catch (Exception e) {
+			log.error("FILE_UPLOAD_FAIL : {}", e);
 			throw new CustomException(FILE_UPLOAD_FAIL);
 		}
 
 		File saveFile = new File();
-		saveFile.setType("image");
+		if (file.getOriginalFilename().split("\\.")[1].equals("mp4")) {
+			saveFile.setType("video");
+		} else {
+			saveFile.setType("image");
+		}
 		saveFile.setUrl("https://" + bucket + ".s3." + region + ".amazonaws.com/" + URLEncoder.encode(fileName));
 		return fileRepository.save(saveFile);
 	}
@@ -54,13 +59,16 @@ public class FileService {
 	public void deleteFile(Long id) {
 		File file = fileRepository.findById(id, File.class)
 			.orElse(null);
-		if (file == null)
+		if (file == null) {
+			log.error("file not exist");
 			return;
+		}
 		try {
 			String fileName = file.getUrl().split("/")[3];
 			log.info("delete file: {}", fileName);
 			amazonS3.deleteObject(bucket, fileName);
 		} catch (Exception e) {
+			log.error("BAD_CLIENT_REQUEST : {}", e);
 			throw new CustomException(BAD_CLIENT_REQUEST);
 		}
 		file.setUrl("deleted");

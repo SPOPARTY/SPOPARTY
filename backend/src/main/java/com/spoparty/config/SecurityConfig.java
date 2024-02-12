@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,6 +22,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.spoparty.api.member.service.MemberService;
 import com.spoparty.common.util.JwtTokenUtil;
+import com.spoparty.security.exception.CustomAuthenticationEntryPoint;
 import com.spoparty.security.jwt.JwtAuthenticationFilter;
 import com.spoparty.security.jwt.JwtAuthenticationProvider;
 import com.spoparty.security.jwt.JwtAuthorizationFilter;
@@ -49,7 +49,7 @@ public class SecurityConfig {
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final MemberService memberService;
 	private final JwtTokenUtil jwtTokenUtil;
-	private final AuthenticationEntryPoint authenticationEntryPoint;
+	private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -65,9 +65,12 @@ public class SecurityConfig {
 			// '/admin' 은 권한이 'ROLE_ADMIN'인 사람만 접근 가능
 			// 나머지 경로에 대해서 인증(로그인)된 사람만 접근 가능 ( 임시로 모두가능하게 설정 )
 			.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-				.requestMatchers("/authentication/**", "/members/register", "/members/teams", "/error", "/ws-stomp").permitAll()
-				.requestMatchers("/admin").hasAnyRole("ADMIN")
-				.anyRequest().permitAll()
+				.requestMatchers("/authentication/**", "/members/register", "/members/teams", "/error", "/ws-stomp")
+				.permitAll()
+				.requestMatchers("/admin")
+				.hasAnyRole("ADMIN")
+				.anyRequest()
+				.permitAll()
 			)
 
 			.oauth2Login(oauth2Login -> oauth2Login
@@ -80,7 +83,7 @@ public class SecurityConfig {
 			)
 
 			.exceptionHandling(exceptionHandling -> exceptionHandling
-				.authenticationEntryPoint(authenticationEntryPoint)
+				.authenticationEntryPoint(customAuthenticationEntryPoint)
 			)
 
 			.sessionManagement(sessionManagement -> sessionManagement
@@ -117,13 +120,14 @@ public class SecurityConfig {
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		config.addAllowedOrigin("*");
+		config.addAllowedOrigin("http://localhost:5173");
+		config.addAllowedOrigin("https://i10a802.p.ssafy.io");
 		config.addAllowedMethod("*");
 		config.addAllowedHeader("*");
 		config.addExposedHeader("Authorization");
 		config.addExposedHeader("AccessToken");
 		config.addExposedHeader("RefreshToken");
-		config.setAllowCredentials(false);
+		config.setAllowCredentials(true);
 		config.setMaxAge(3600L);
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);

@@ -42,10 +42,10 @@ public class Board extends BaseEntity {
 	@JoinColumn(name = "club_id", referencedColumnName = "club_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Club club;
 
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 100)
 	private String title = "";
 
-	@Column(nullable = false, length = 255)
+	@Column(nullable = false, length = 2000)
 	private String content = "";
 
 	@OneToOne
