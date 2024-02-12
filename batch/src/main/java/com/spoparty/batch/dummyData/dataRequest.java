@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +51,7 @@ public class dataRequest {
 
 	public final FootballApiUtil apiRequest;
 	public final LanguageUtil languageUtil;
-	public final SeasonRepository seasonRepository;
+	// public final SeasonRepository seasonRepository;
 	public final LeagueRepository leagueRepository;
 	public final SeasonLeagueRepository seasonLeagueRepository;
 	public final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
@@ -59,86 +61,86 @@ public class dataRequest {
 
 	// @Scheduled(fixedRate=200000)
 	public void getAllSeason() {
-		ResponseEntity<Map> response = apiRequest.sendRequest("/leagues/seasons", null, Map.class);
-		List<Integer> seasons = (List<Integer>)response.getBody().get("response");
-
-
-		for (Integer season : seasons) {
-			Season seasonEntity = Season.builder()
-				.value(Integer.toString(season))
-				.build();
-
-		seasonRepository.save(seasonEntity);
-		}
-
-		System.out.println("end");
+		// ResponseEntity<Map> response = apiRequest.sendRequest("/leagues/seasons", null, Map.class);
+		// List<Integer> seasons = (List<Integer>)response.getBody().get("response");
+		//
+		//
+		// for (Integer season : seasons) {
+		// 	Season seasonEntity = Season.builder()
+		// 		.value(Integer.toString(season))
+		// 		.build();
+		//
+		// seasonRepository.save(seasonEntity);
+		// }
+		//
+		// System.out.println("end");
 	}
 
 
 	// @Scheduled(fixedRate=300000)
 	public void getAllLeague() {
-		System.out.println(LocalTime.MIN);
-		List<Long> leagueIds = new ArrayList<>(Arrays.asList((long)1, (long)7, (long)8, (long)18,
-			(long)15, (long)532, (long)965, (long)1012, (long)17, (long)292, (long)293, (long)295, (long)294,
-			(long)48, (long)143, (long)556, (long)78, (long)529, (long)81, (long)66, (long)526, (long)119));
-
-
-		for (Long id : leagueIds) {
-			MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>() {
-			};
-
-			queryParams.add("id", Long.toString(id));
-
-			ResponseEntity<Map> response = apiRequest.sendRequest("/leagues", queryParams, Map.class);
-			List<Map<String, Object>> data = (List)response.getBody().get("response");
-
-
-			Map<String, String> league = (Map)data.get(0).get("league");
-			Map<String, String> country = (Map)data.get(0).get("country");
-			List<Map<String, Object>> seasons = (List)data.get(0).get("seasons");
-
-
-
-
-
-			String nameKr = languageUtil.translate(league.get("name"));
-			String countryNameKr = languageUtil.translate(country.get("name"));
-			System.out.println("name " + nameKr);
-			System.out.println("country "  + countryNameKr);
-
-			League leagueEntity = League.builder()
-				.id(id)
-				.nameKr(nameKr)
-				.nameEng(league.get("name"))
-				.logo(league.get("logo"))
-				.country(country.get("name"))
-				.countryLogo(country.get("flag"))
-				.type(league.get("type"))
-				.build();
-
-			leagueRepository.save(leagueEntity);
-
-			for (Map<String, Object> season : seasons){
-
-
-				Season seasonEntity = seasonRepository.findByValue(String.valueOf(season.get("year")), Season.class);
-
-				SeasonLeague seasonLeague = SeasonLeague.builder()
-					.league(leagueEntity)
-					.season(seasonEntity)
-					.seasonStartDate(ToLocalDateTime((String)season.get("start")))
-					.seasonEndDate(ToLocalDateTime((String)season.get("end")))
-					.build();
-
-				seasonLeagueRepository.save(seasonLeague);
-			}
-
-		}
-
-		System.out.println("end");
+		// System.out.println(LocalTime.MIN);
+		// List<Long> leagueIds = new ArrayList<>(Arrays.asList((long)1, (long)7, (long)8, (long)18,
+		// 	(long)15, (long)532, (long)965, (long)1012, (long)17, (long)292, (long)293, (long)295, (long)294,
+		// 	(long)48, (long)143, (long)556, (long)78, (long)529, (long)81, (long)66, (long)526, (long)119));
+		//
+		//
+		// for (Long id : leagueIds) {
+		// 	MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>() {
+		// 	};
+		//
+		// 	queryParams.add("id", Long.toString(id));
+		//
+		// 	ResponseEntity<Map> response = apiRequest.sendRequest("/leagues", queryParams, Map.class);
+		// 	List<Map<String, Object>> data = (List)response.getBody().get("response");
+		//
+		//
+		// 	Map<String, String> league = (Map)data.get(0).get("league");
+		// 	Map<String, String> country = (Map)data.get(0).get("country");
+		// 	List<Map<String, Object>> seasons = (List)data.get(0).get("seasons");
+		//
+		//
+		//
+		//
+		//
+		// 	String nameKr = languageUtil.translate(league.get("name"));
+		// 	String countryNameKr = languageUtil.translate(country.get("name"));
+		// 	System.out.println("name " + nameKr);
+		// 	System.out.println("country "  + countryNameKr);
+		//
+		// 	League leagueEntity = League.builder()
+		// 		.id(id)
+		// 		.nameKr(nameKr)
+		// 		.nameEng(league.get("name"))
+		// 		.logo(league.get("logo"))
+		// 		.country(country.get("name"))
+		// 		.countryLogo(country.get("flag"))
+		// 		.type(league.get("type"))
+		// 		.build();
+		//
+		// 	leagueRepository.save(leagueEntity);
+		//
+		// 	for (Map<String, Object> season : seasons){
+		//
+		//
+		// 		Season seasonEntity = seasonRepository.findByValue(String.valueOf(season.get("year")), Season.class);
+		//
+		// 		SeasonLeague seasonLeague = SeasonLeague.builder()
+		// 			.league(leagueEntity)
+		// 			.season(seasonEntity)
+		// 			.seasonStartDate(ToLocalDateTime((String)season.get("start")))
+		// 			.seasonEndDate(ToLocalDateTime((String)season.get("end")))
+		// 			.build();
+		//
+		// 		seasonLeagueRepository.save(seasonLeague);
+		// 	}
+		//
+		// }
+		//
+		// System.out.println("end");
 	}
 
-	// @Scheduled(fixedRate=300000)
+	// @Scheduled(fixedRate=3000000)
 	public void getStandings() {
 
 
@@ -202,7 +204,19 @@ public class dataRequest {
 
 	}
 
+	// @Scheduled(fixedRate=3000000)
+	public void test() {
+		// System.out.println("시작");
+		// leagueRepository.findAll();
+		// System.out.println("끝");
 
+
+		TimeZone tz = Calendar.getInstance().getTimeZone();
+
+
+
+		System.out.println("현재 TimeZone 구역 의 이름 ::: " + tz.getDisplayName());
+	}
 
 
 	private LocalDateTime ToLocalDateTime(String date) {

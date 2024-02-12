@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SeasonLeague extends FootballBaseEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="season_league_id")
 	private long id;
 
@@ -43,12 +44,12 @@ public class SeasonLeague extends FootballBaseEntity {
 
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "season_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Season season;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "league_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private League league;
 
@@ -60,7 +61,8 @@ public class SeasonLeague extends FootballBaseEntity {
 
 
 	@Builder
-	public SeasonLeague(LocalDateTime seasonStartDate, LocalDateTime seasonEndDate, Season season, League league) {
+	public SeasonLeague(Long id, LocalDateTime seasonStartDate, LocalDateTime seasonEndDate, Season season, League league) {
+		this.id = id;
 		this.seasonStartDate = seasonStartDate;
 		this.seasonEndDate = seasonEndDate;
 		this.season = season;

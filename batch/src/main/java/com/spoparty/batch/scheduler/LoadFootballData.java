@@ -257,7 +257,7 @@ public class LoadFootballData {
 
 
 	// 경기와 구단으로 [라인업, 라인업선수] 테이블 생성
-	// @Scheduled(fixedRate = 1000*60*60*24)
+	@Scheduled(fixedRate = 1000*60*60*24)
 	public void loadLineup() {
 
 		List<Fixture> fix = fixtureRepository.findAll();
