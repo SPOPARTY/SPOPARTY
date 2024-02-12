@@ -22,9 +22,9 @@
             <!-- 투표 리스트 --> 
             <v-card class="inner-card" >
                 <div v-for="(vote, index) in currentVotes" :key="index">
-                    <v-card-text class="vote-title" v-if="voteType == 'ongoing'" @click="showDetailVote(vote)">{{vote.content}}</v-card-text>
-                    <v-card-text class="vote-title" v-if="voteType == 'myVotes'" @click="showMyVote(vote)">{{vote.content}}</v-card-text>
-                    <v-card-text class="vote-title" v-if="voteType == 'finished'" @click="showFinishedVote(vote)">{{vote.content}}</v-card-text>
+                    <v-card-text class="vote-title" v-if="voteType == 'ongoing'" @click="showDetailVote(vote)">{{vote}}</v-card-text>
+                    <v-card-text class="vote-title" v-if="voteType == 'myVotes'" @click="showMyVote(vote)">{{vote}}</v-card-text>
+                    <v-card-text class="vote-title" v-if="voteType == 'finished'" @click="showFinishedVote(vote)">{{vote}}</v-card-text>
                 </div>
                 <div v-if="currentVotes.length === 0">
                     <br>
@@ -130,6 +130,7 @@ import {useRoute, useRouter} from 'vue-router';
 
 import CreateVote from '@/components/vote/CreateVote.vue'
 import {useVoteStore} from '@/stores/club/party/votes'
+import {voteConnect, voteDisconnect,doVote, finsihVote } from '@/api/vote'
 
 
 const emit = defineEmits([
@@ -146,10 +147,10 @@ const partyId = route.params.partyId;
 const isModalVisible = ref(true);
 
 const votes = ref([
-    {voteId : 1, content : "다음 중 잉글랜드 최고 미드필더는?", ongoing : true, partyMemberId : 12 },
-    {voteId : 2, content : "내일 메뉴 추천 좀", ongoing : true, partyMemberId : 15 },
-    {voteId : 3, content : "내일 승리 팀은?", ongoing : true, partyMemberId : 15 },
-    {voteId : 4, content : "미안하다 이거 보여줄려고 어그로 끌었다", ongoing : false, partyMemberId : 12 }
+    {voteId : 1, user : {userId : 12, name : "장승호"}, content : "다음 중 잉글랜드 최고 미드필더는?", ongoing : true, partyMemberId : 12 },
+    {voteId : 2, user : {userId : 17, name : "장승호"}, content : "내일 메뉴 추천 좀", ongoing : true, partyMemberId : 15 },
+    {voteId : 3, user : {userId : 17, name : "장승호"}, content : "내일 승리 팀은?", ongoing : true, partyMemberId : 15 },
+    {voteId : 4, user : {userId : 12, name : "장승호"}, content : "미안하다 이거 보여줄려고 어그로 끌었다", ongoing : false, partyMemberId : 12 }
 ])
 
 const options = ref([
@@ -198,11 +199,11 @@ const voteType = ref('ongoing');
 function chooseVoteType(type) {
     voteType.value = type
     if (type === 'ongoing') {
-        currentVotes.value = votes.value.filter(vote => vote.ongoing === true);
+        currentVotes.value = onGoingVoteList.value;
     } else if (type === 'myVotes') {
-        currentVotes.value = votes.value.filter(vote => vote.partyMemberId == memberId);
+        currentVotes.value = finishedVoteList.value;
     } else if (type === 'finished') {
-        currentVotes.value = votes.value.filter(vote => vote.ongoing === false);
+        currentVotes.value = myVoteList.value;
     }
 }
 // 투표 생성 프로세스 컴포넌트 모달 on/off
@@ -291,6 +292,7 @@ onMounted(() => {
     voteStore.getOngoingVoteList(partyId);
     voteStore.getFinishedVoteList(partyId);
     voteStore.getMyVoteList(partyId, memberId);
+    voteConnect(partyId);
 })
 
 </script>
