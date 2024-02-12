@@ -805,6 +805,26 @@ const getTimeFormatString = () => {
 
     return String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
 }
+
+const registerArchive = () => {
+  createArchive(
+     {
+       memberId : localStorage.getItem("id"),
+       clubId : clubId,
+       partyTitle : titleModel.value ? titleModel.value : "",
+       fixtureTitle : matchModel.value ? matchModel.value : "",
+       fileId : recordingFile.value.id,
+       thumbnailId : recordingFile.value.thumbnailId
+     }
+  )
+  videoOverlay.value = false
+}
+
+const cancelArchive = () => {
+  videoOverlay.value = false
+  deleteFile(recordingFile.value.id)
+}
+
 </script>
 
 <style>
