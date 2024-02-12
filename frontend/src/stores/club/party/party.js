@@ -4,7 +4,8 @@ import {defineStore} from 'pinia'
 import axios from 'axios'
 
 import { requestGetPartyInfo, requestPostPartyInfo, requestPutPartyInfo, requestDeletePartyInfo,
-    requestGetPartyMemberList, requestPostPartyMember, requestGetPartyMember, requestDeletePartyMember, } from "@/api/party"
+    requestGetPartyMemberList, requestPostPartyMember, requestGetPartyMember, requestDeletePartyMember,
+    requestStartRecording, requestStopRecording } from "@/api/party"
 
 import {httpStatusCode} from "@/util/http-status"
 
@@ -16,7 +17,7 @@ export const usePartyStore = defineStore("party",() => {
     const openViduSession = ref({});
     const partyMemberList = ref([]);
     const myParticipantId = ref(null);
-
+    
     const getPartyInfo = async (clubId,partyId) => {
         requestGetPartyInfo(
             clubId,partyId,
@@ -214,7 +215,24 @@ export const usePartyStore = defineStore("party",() => {
             }
         )
     }
-    
+
+    const postStartRecording = (clubId, data, success, fail) => {
+        requestStartRecording(
+            clubId,
+            data,
+            success,
+            fail
+        )
+    }
+
+    const postStopRecording = (clubId, data, success, fail) => {
+        requestStopRecording(
+          clubId,
+          data,
+          success,
+          fail
+        )
+    }
 
     return {
         partyInfo,
@@ -229,5 +247,7 @@ export const usePartyStore = defineStore("party",() => {
         postPartyMember,
         getPartyParticipant,
         deletePartyMember,
+        postStartRecording,
+        postStopRecording
     }
 })
