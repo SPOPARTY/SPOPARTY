@@ -46,7 +46,11 @@ public class FileService {
 		}
 
 		File saveFile = new File();
-		saveFile.setType("image");
+		if (file.getOriginalFilename().split("\\.")[1].equals("mp4")) {
+			saveFile.setType("video");
+		} else {
+			saveFile.setType("image");
+		}
 		saveFile.setUrl("https://" + bucket + ".s3." + region + ".amazonaws.com/" + URLEncoder.encode(fileName));
 		return fileRepository.save(saveFile);
 	}
