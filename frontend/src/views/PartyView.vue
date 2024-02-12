@@ -241,7 +241,7 @@ import { useFootballStore } from '@/stores/football/football'
 import { usePartyStore } from '@/stores/club/party/party'
 import { useArchiveStore } from '@/stores/club/archives'
 import { useFileStore } from '@/stores/member/file'
-
+import { useVoteStore } from '@/stores/club/party/votes'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../components/openvidu/UserVideo.vue'
 
@@ -252,6 +252,7 @@ const footballStore = useFootballStore()
 const partyStore = usePartyStore()
 const archiveStore = useArchiveStore()
 const fileStore = useFileStore()
+const voteStore = useVoteStore()
 
 const { getMatchWatchable, findTeamIdsByFixtureId } = footballStore
 const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
@@ -261,6 +262,19 @@ const { deleteFile } = fileStore
 
 const url = ref("https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu");
 const isUrlExist = ref(false);
+
+watch(() => voteStore.finishtedVoteList, (newVal) => {
+     console.log(newVal)
+     subscribers.value.forEach((subscriber) => {
+          console.log(subscriber)
+          const data = subscriber.stream.connection.data
+          const memberId = data.substr(5, data.length)
+          console.log(memberId)
+          // 페널티 타입 확인
+
+          // memberId와 비교하여 페널티 대상자 선택 및 적용
+     })
+})
 
 watch(() => partyStore.partyInfo, (newVal) => {
      console.log(newVal)
