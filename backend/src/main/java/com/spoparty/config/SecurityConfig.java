@@ -120,13 +120,14 @@ public class SecurityConfig {
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		config.addAllowedOrigin("*");
+		config.addAllowedOrigin("http://localhost:5173");
+		config.addAllowedOrigin("https://i10a802.p.ssafy.io");
 		config.addAllowedMethod("*");
 		config.addAllowedHeader("*");
 		config.addExposedHeader("Authorization");
 		config.addExposedHeader("AccessToken");
 		config.addExposedHeader("RefreshToken");
-		config.setAllowCredentials(false);
+		config.setAllowCredentials(true);
 		config.setMaxAge(3600L);
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);
