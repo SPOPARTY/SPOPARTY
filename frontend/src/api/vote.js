@@ -1,4 +1,5 @@
 import { localAxios } from '@/util/http-commons'
+import { localAxios } from '@/util/http-commons'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 import {useVoteStore} from '@/stores/club/party/votes'
@@ -59,7 +60,25 @@ function createVote(data) {
   )
 }
 
+function createVote(data) {
+  // 투표 생성 호출 메서드
+  console.log(stompClient)
+  stompClient.send(
+    '/vote/create',
+    JSON.stringify(data), // body
+    {}, // headers
+  )
+}
+
 // 투표 하기
+function doVote(data) {
+  // 투표 진행 호출 메서드
+  stompClient.send(
+    '/vote/do',
+    JSON.stringify(data), // body
+    {}, // header
+  )
+}
 function doVote(data) {
   // 투표 진행 호출 메서드
   stompClient.send(
@@ -79,8 +98,21 @@ function finishVote() {
   )
 }
 
+function finishVote() {
+  // 투표 종료 호출 메서드
+  stompClient.send(
+    '/vote/counting',
+    JSON.stringify(data), // body
+    {}, // header
+  )
+}
+
 // 연결 해제
 const voteDisconnect = () => {
+  stompClient.disconnect(() => {
+    console.log('stomp client disconnected.')
+  })
+}
   stompClient.disconnect(() => {
     console.log('stomp client disconnected.')
   })
@@ -89,20 +121,28 @@ const voteDisconnect = () => {
 // 투표 상세 조회
 function requestVoteDetail(partyId, voteId, success, fail) {
   local.get(`/party/${partyId}/votes/${voteId}`).then(success).catch(fail)
+  local.get(`/party/${partyId}/votes/${voteId}`).then(success).catch(fail)
 }
 
 // 진행 중인 투표 조회
 function requestOngoingVoteList(partyId, success, fail) {
   local.get(`/party/${partyId}/votes/ongoing`).then(success).catch(fail)
 }
+  local.get(`/party/${partyId}/votes/ongoing`).then(success).catch(fail)
+}
 
 // 종료된 투표 조회
 function requestFinishedVoteList(partyId, success, fail) {
+  local.get(`/party/${partyId}/votes/finished`).then(success).catch(fail)
   local.get(`/party/${partyId}/votes/finished`).then(success).catch(fail)
 }
 
 // 내가 만든 투표 조회
 function requestMyVoteList(partyId, memberId, success, fail) {
+  local
+    .get(`/party/${partyId}/votes/members/${memberId}`)
+    .then(success)
+    .catch(fail)
   local
     .get(`/party/${partyId}/votes/members/${memberId}`)
     .then(success)
@@ -119,4 +159,14 @@ export {
   requestOngoingVoteList,
   requestFinishedVoteList,
   requestMyVoteList,
+  voteConnect,
+  createVote,
+  doVote,
+  finishVote,
+  voteDisconnect,
+  requestVoteDetail,
+  requestOngoingVoteList,
+  requestFinishedVoteList,
+  requestMyVoteList,
 }
+

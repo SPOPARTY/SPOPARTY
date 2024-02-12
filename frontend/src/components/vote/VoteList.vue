@@ -130,10 +130,11 @@
 <script setup>
 import {ref, computed, watch, onMounted} from 'vue'
 import {useRoute, useRouter} from 'vue-router';
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
 
 import CreateVote from '@/components/vote/CreateVote.vue'
 import {useVoteStore} from '@/stores/club/party/votes'
-
 
 
 const emit = defineEmits([
@@ -194,6 +195,7 @@ function chooseVoteType(type) {
     voteType.value = type
     if (type === 'ongoing') {
         currentVotes.value = onGoingVoteList.value;
+        console.log(currentVotes.value)
     } else if (type === 'myVotes') {
         currentVotes.value = myVoteList.value;
     } else if (type === 'finished') {
