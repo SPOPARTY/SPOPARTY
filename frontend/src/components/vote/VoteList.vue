@@ -98,7 +98,7 @@
             <v-card-text><h3>{{ myAnswer.answerOption }}</h3></v-card-text>
             <v-card-actions class="buttons" style="transform:translateX(-80px)">
                 <v-spacer></v-spacer>
-                <v-btn color="green" @click="doneVote(myAnswer)"><h4>확인</h4></v-btn>
+                <v-btn color="green" @click="doneVote"><h4>확인</h4></v-btn>
                 <v-btn color="blue" @click="confirmFinish = false"><h4>취소</h4></v-btn>
             </v-card-actions>
         </v-card>
@@ -304,12 +304,15 @@ function finalizeAnswer(answer) {
 const confirmFinish = ref(false)
 
 // 내가 만든 투표 마감
-function doneVote(myAnswer) {
+function doneVote() {
     let data = {
         partyId : partyId,
         voteId : myVoteDetail.value.voteId,
+        memberId : myVoteDetail.value.user.userId,
+        nickname : myVoteDetail.value.user.name,
         answerOptionId : myAnswer.value.answerOptionId
     }
+    console.log(data)
     finishVote(data);
     confirmFinish.value = false;
     isMyVoteVisible.value = false;
