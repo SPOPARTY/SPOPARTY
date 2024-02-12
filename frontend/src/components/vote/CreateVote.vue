@@ -94,9 +94,14 @@
 </template>
 
 <script setup>
-import {ref,watch} from 'vue'
+import {ref,watch,onMounted} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
-import {voteConnect, createVote, voteDisconnect } from '@/api/vote'
+import {getMember} from '@/api/member'
+// import Stomp from 'webstomp-client'
+// import SockJS from 'sockjs-client'
+
+import {voteConnect, createVote } from '@/api/vote'
+import {useVoteStore} from '@/stores/club/party/votes'
 
 const isModalVisible = ref(true);
 
@@ -104,14 +109,33 @@ const emit = defineEmits([
     'create-vote-close'
 ])
 
-const route = useRoute();
 
-const partyId = route.params.clubId;
+const route = useRoute();
+const clubId = route.params.clubId;
+
+const partyId = route.params.partyId;
 const memberId = localStorage.getItem("id");
-// const nickName = 
+const nickname = ref('')
 const voteTitle = ref('');
 const options = ref(['']);
 const selectedPenalty = ref(null);
+
+const voteStore = useVoteStore();
+
+const getMemberInfo = () => {
+    getMember(
+        memberId,
+        ({data,status}) => {
+        console.log("data ==> ",data);
+        nickname.value = data.data.nickname;
+        },
+        (error) => {
+        console.log("살려줘")
+        console.log(error)
+        }
+    )
+}
+
 
 const penalties = ref([
     '음소거',
@@ -160,8 +184,6 @@ const showCustomPenalty = ref(false);
 
 const customPenalty = ref('');
 const setCustomPenalty = (penalty) => {
-    // console.log("***커스텀 벌칙 생성***")
-    // console.log("커스텀 벌칙 ->",penalty)
     if (penalty === '' || penalty.length > 20) {
         return;
     }
@@ -173,7 +195,8 @@ const setCustomPenalty = (penalty) => {
     customPenalty.value = ''
 }
 
-// 투표생성 로직
+voteConnect(partyId);
+
 function submitVote() {
     if (voteTitle.value === "" || options.value === "" || selectedPenalty.value === "") {
         return;
@@ -193,14 +216,18 @@ function submitVote() {
     const data = {
         partyId : partyId,
         memberId : memberId,
-        // nickname : ,     // 닉네임이 반드시 필요한가?
+        nickname : nickname.value,     // 닉네임이 반드시 필요한가?
         title : voteTitle.value,
         options : options.value,
         penalty : selectedPenalty.value,
     }
     createVote(data);
+    closeModal();
 }
 
+onMounted(() => {
+    getMemberInfo();
+})
 
 // 투표 생성 모달 닫기
 function closeModal() {
