@@ -53,7 +53,7 @@ public class OpenViduService {
 		return session.getSessionId();
 	}
 
-	public String createConnection(String sessionId, Map<String, Object> params) throws
+	public String createConnection(String sessionId, Map<String, Object> params, Long memberId) throws
 		OpenViduJavaClientException, OpenViduHttpException {
 		log.debug("createConnection 시작 - {}", params);
 		Session session = openvidu.getActiveSession(sessionId);
@@ -61,7 +61,7 @@ public class OpenViduService {
 			log.debug("session is null");
 			return null;
 		}
-		ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
+		ConnectionProperties properties = ConnectionProperties.fromJson(params).data(memberId.toString()).build();
 		Connection connection = session.createConnection(properties);
 
 		return connection.getToken();

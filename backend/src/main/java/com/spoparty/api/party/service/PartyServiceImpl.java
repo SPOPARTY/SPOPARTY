@@ -71,7 +71,7 @@ public class PartyServiceImpl implements PartyService {
 		Party party = Party.createParty(member, club);
 
 		// openvidu 세션, 토큰 생성
-		String openviduToken = createOpenviduSessionAndToken(club.getId(), party);
+		String openviduToken = createOpenviduSessionAndToken(club.getId(), party, member.getId());
 		log.debug("openviduToken - {}", openviduToken);
 
 		// partyMember 엔티티 생성
@@ -109,7 +109,7 @@ public class PartyServiceImpl implements PartyService {
 		}
 	}
 
-	private String createOpenviduSessionAndToken(Long clubId, Party party) throws
+	private String createOpenviduSessionAndToken(Long clubId, Party party, Long memberId) throws
 		OpenViduJavaClientException,
 		OpenViduHttpException {
 		// openvidu session 발급
@@ -122,7 +122,7 @@ public class PartyServiceImpl implements PartyService {
 		party.setOpenviduSessionId(openviduSessionId);
 
 		// openvidu 커넥션 토큰 발급
-		String openviduToken = openViduService.createConnection(openviduSessionId, new HashMap<>());
+		String openviduToken = openViduService.createConnection(openviduSessionId, new HashMap<>(), memberId);
 		return openviduToken;
 	}
 
@@ -139,7 +139,7 @@ public class PartyServiceImpl implements PartyService {
 		validateParticipants(party); // 남은 자리가 있는지 확인
 
 		// openvidu 세션, 토큰 생성
-		String openviduToken = createOpenviduSessionAndToken(clubId, party);
+		String openviduToken = createOpenviduSessionAndToken(clubId, party, member.getId());
 
 		// partyMember 엔티티 생성
 		PartyMember partyMember = PartyMember.createPartyMember(party, member, openviduToken, RoleType.guest);
