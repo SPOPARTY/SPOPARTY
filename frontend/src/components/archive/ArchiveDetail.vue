@@ -18,7 +18,8 @@
                 </v-col>
             </v-row>
             <v-card-item class="text-center" v-if="props.detail.file">
-                <v-img :src="props.detail.file.url" :alt="props.detail.title"/>
+                <v-img v-if="props.detail.file.type == 'image'" :src="props.detail.file.url" :alt="props.detail.title"/>
+                <video v-else :src="props.detail.file.url" controls type="video/mp4" class="video-preview"></video>
             </v-card-item>
             <v-card-subtitle class="text-right">파티명 : {{ props.detail.partyTitle }}</v-card-subtitle>
             <v-card-text class="text-right">작성자 : {{ props.detail.member.nickname }}</v-card-text>
@@ -108,5 +109,11 @@ onMounted(()=>{
     background-color: transparent !important;
   }
 }
-
+.video-preview {
+     /* max-height: 80vh; */
+     width: 90%;
+     object-fit: cover;
+     margin: 20px;
+     /* padding: 30px; */
+}
 </style>
