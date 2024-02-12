@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.spoparty.api.party.dto.response.RecordingResponseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -274,7 +275,7 @@ public class PartyServiceImpl implements PartyService {
 	}
 
 	@Override
-	public File uploadRecording(String recordingId) throws InvalidPathException {
+	public RecordingResponseDTO uploadRecording(String recordingId) throws InvalidPathException {
 		return openViduService.uploadRecording(recordingId);
 	}
 

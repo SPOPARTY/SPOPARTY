@@ -7,6 +7,7 @@ import java.util.Map;
 import com.spoparty.api.member.entity.File;
 import com.spoparty.api.party.dto.request.PartyUpdateRequestDto;
 import com.spoparty.api.party.dto.response.PartyResponseDTO;
+import com.spoparty.api.party.dto.response.RecordingResponseDTO;
 import com.spoparty.api.party.entity.PartyMemberProjection;
 import com.spoparty.security.model.PrincipalDetails;
 
@@ -43,6 +44,6 @@ public interface PartyService {
 	void stopRecording(String recordingId) throws
 			OpenViduJavaClientException,
 			OpenViduHttpException;
-	File uploadRecording(String recordingId) ;
+	RecordingResponseDTO uploadRecording(String recordingId) ;
 	void deleteRecording(String recordingId) throws IOException;
 }
