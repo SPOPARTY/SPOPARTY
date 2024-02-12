@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.spoparty.api.member.entity.File;
 import com.spoparty.api.member.service.FileService;
+import com.spoparty.api.party.dto.response.RecordingResponseDTO;
 import com.spoparty.common.util.CustomMultipartFile;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
@@ -92,16 +93,25 @@ public class OpenViduService {
 		sessionRecordings.remove(recording.getSessionId());
 	}
 
-	public File uploadRecording(String recordingId) throws InvalidPathException {
+	public RecordingResponseDTO uploadRecording(String recordingId) throws InvalidPathException {
 		Path videoPath = Paths.get(String.format("%s/%s/%s.mp4", RECORDINGS_PATH, recordingId, recordingId));
 		Path thumbnailPath = Paths.get(String.format("%s/%s/%s.jpg", RECORDINGS_PATH, recordingId, recordingId));
 
 		CustomMultipartFile videoFile = new CustomMultipartFile(videoPath.toFile());
 		CustomMultipartFile thumbnailFile = new CustomMultipartFile(thumbnailPath.toFile());
+
 		File uploadedVideoFile = fileService.uploadFile(videoFile);
 		File uploadedThumbnailFile = fileService.uploadFile(thumbnailFile);
-		uploadedVideoFile.setThumbnailUrl(uploadedThumbnailFile.getUrl());
-		return uploadedVideoFile;
+
+		RecordingResponseDTO recordingResponseDTO = RecordingResponseDTO
+				.builder()
+				.id(uploadedVideoFile.getId())
+				.thumbnailId(uploadedThumbnailFile.getId())
+				.url(uploadedVideoFile.getUrl())
+				.thumbnailUrl(uploadedThumbnailFile.getUrl())
+				.build();
+
+		return recordingResponseDTO;
 	}
 	public void deleteRecording(String recordingId) throws IOException {
 		Path path = Paths.get(String.format("%s/%s", RECORDINGS_PATH, recordingId));
