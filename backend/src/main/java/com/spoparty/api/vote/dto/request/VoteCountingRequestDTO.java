@@ -1,4 +1,4 @@
-package com.spoparty.api.vote.dto;
+package com.spoparty.api.vote.dto.request;
 
 import java.io.Serializable;
 
