@@ -133,7 +133,7 @@
                               <div class="chat-content">
                                    <!-- 채팅 내용을 여기에 표시 -->
                                    <!-- {{ chatDivHeightProp }} -->
-                                   <Chat :chat-div-height-prop="chatDivHeightProp" />
+                                   <Chat :chat-div-height-prop="chatDivHeightProp" :disconnect-prop="chatDisconnectProp" />
                               </div>
                          </v-col>
                          <v-spacer></v-spacer>
@@ -360,6 +360,8 @@ function toggleChat() {
 const chatDivHeight = ref('300px'); // 초기값 설정
 const chatDivHeightProp = ref(300); // 초기값 설정
 
+const chatDisconnectProp = ref(false)
+
 const updatechatDivHeight = () => {
      const chattingSection = document.querySelector('.chatting-section');
      const buttonSection = document.querySelector('.button-section');
@@ -415,6 +417,7 @@ const exitParty = () => {
      // 사용자에게 확인을 요청하는 대화상자 표시
      if (confirm("파티를 나가시겠습니까?")) {
           delPartyMem();
+          chatDisconnectProp.value = true;
           setTimeout(() => {
                // confirm 후 100ms 지나서 클럽 페이지로 이동
                window.location.href = `/club/${clubId}`;
