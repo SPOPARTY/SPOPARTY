@@ -63,7 +63,7 @@ logging:
   file:
     name: "./ssafy-web.log"
   level:
-    org.hibernate.SQL: debug
+    org.hibernate.SQL: INFO
     org.hibernate.orm.jdbc.bind: trace
     root: INFO
     com:
@@ -72,7 +72,7 @@ logging:
       spoparty.api: DEBUG
     org:
       springframework:
-        web: DEBUG
+        web: INFO
         apache:
           tiles: DEBUG
         springframework:

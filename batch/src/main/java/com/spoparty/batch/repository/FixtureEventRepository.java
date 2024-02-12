@@ -10,6 +10,6 @@ public interface FixtureEventRepository extends JpaRepository<FixtureEvent, Long
 
 	List<FixtureEvent> findByFixture_IdAndTime(Long fixtureId, Long time);
 
-	void deleteByFixture_Id(Long id);
+	void deleteAllByFixture_Id(Long id);
 
 }
