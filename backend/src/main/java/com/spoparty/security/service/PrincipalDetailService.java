@@ -23,8 +23,10 @@ public class PrincipalDetailService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
 		Member member = memberRepository.findByLoginId(loginId, Member.class).orElse(null);
 		log.info("loadUserByUsername - {}", member);
-		if (member == null || member.getState() == 2)
+		if (member == null || member.getState() == 2) {
 			throw new UsernameNotFoundException("User Not Found");
-		return new PrincipalDetails(member);
+		} else {
+			return new PrincipalDetails(member);
+		}
 	}
 }
