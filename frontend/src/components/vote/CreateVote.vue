@@ -97,8 +97,8 @@
 import {ref,watch,onMounted} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
 import {getMember} from '@/api/member'
-import Stomp from 'webstomp-client'
-import SockJS from 'sockjs-client'
+// import Stomp from 'webstomp-client'
+// import SockJS from 'sockjs-client'
 
 import {voteConnect, voteDisconnect, createVote,doVote, finishVote } from '@/api/vote'
 
@@ -192,40 +192,7 @@ const setCustomPenalty = (penalty) => {
     customPenalty.value = ''
 }
 
-// 투표생성 로직
-
-const serverURL = "http://localhost:9090/api/ws-stomp"
-let stompClient = undefined;
-
-const connect = () => {
-  if (stompClient === undefined) {
-    const socket = new SockJS(serverURL)
-    stompClient = Stomp.over(socket)
-    stompClient.connect({}, function () {
-      stompClient.subscribe(`/sub/vote/${partyId}`, function (response) {
-        console.log("*******CreateVote********")
-        console.log(response);
-        // 1. 투표 생성
-        // 
-        // 2. 투표 진행
-        // voteCount : 투표에 참여했습니다.
-        // 총인원수 == voteCount : 투표 종료 할 수 있으니까 -> 생성한 사람한테 보내주기
-
-        // 3. 투표 종료
-      })
-    })
-  }
-}
-
-// function createVote(data) {
-//   stompClient.send(
-//     '/vote/create',
-//     JSON.stringify(data),
-//     {}
-//   )
-// }
-
-voteConnect();
+voteConnect(partyId);
 
 function submitVote() {
     if (voteTitle.value === "" || options.value === "" || selectedPenalty.value === "") {
