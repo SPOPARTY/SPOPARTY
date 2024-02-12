@@ -2,7 +2,7 @@ application-private.yml
 
 HELP.md
 .gradle
-build/q
+build/
 
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
