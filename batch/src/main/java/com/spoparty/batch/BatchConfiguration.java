@@ -28,39 +28,39 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableConfigurationProperties(BatchProperties.class)
 public class BatchConfiguration {
 
-	// batchDatasource 사용을 위한 수동 빈 등록
-	@Bean
-	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = "spring.batch.job", name = "enabled", havingValue = "true", matchIfMissing = true)
-	public JobLauncherApplicationRunner jobLauncherApplicationRunner(JobLauncher jobLauncher, JobExplorer jobExplorer,
-		JobRepository jobRepository, BatchProperties properties) {
-		JobLauncherApplicationRunner runner = new JobLauncherApplicationRunner(jobLauncher, jobExplorer, jobRepository);
-		String jobNames = properties.getJob().getName();
-		if (StringUtils.hasText(jobNames)) {
-			runner.setJobName(jobNames);
-		}
-		return runner;
-	}
-
-	// batchDatasource 사용을 위한 수동 빈 등록
-	@Bean
-	@ConditionalOnMissingBean(BatchDataSourceScriptDatabaseInitializer.class)
-	BatchDataSourceScriptDatabaseInitializer batchDataSourceInitializer(DataSource dataSource,
-		@BatchDataSource ObjectProvider<DataSource> batchDataSource, BatchProperties properties) {
-		return new BatchDataSourceScriptDatabaseInitializer(batchDataSource.getIfAvailable(() -> dataSource),
-			properties.getJdbc());
-	}
-
-	@BatchDataSource
-	@ConfigurationProperties(prefix = "spring.datasource.batch.hikari")
-	@Bean("batchDataSource")
-	public DataSource batchDataSource() {
-		return DataSourceBuilder.create().type(HikariDataSource.class).build();
-	}
-
-	@Bean
-	public PlatformTransactionManager batchTransactionManager(
-		@Qualifier("batchDataSource") DataSource batchDataSource) {
-		return new DataSourceTransactionManager(batchDataSource);
-	}
+	// // batchDatasource 사용을 위한 수동 빈 등록
+	// @Bean
+	// @ConditionalOnMissingBean
+	// @ConditionalOnProperty(prefix = "spring.batch.job", name = "enabled", havingValue = "true", matchIfMissing = true)
+	// public JobLauncherApplicationRunner jobLauncherApplicationRunner(JobLauncher jobLauncher, JobExplorer jobExplorer,
+	// 	JobRepository jobRepository, BatchProperties properties) {
+	// 	JobLauncherApplicationRunner runner = new JobLauncherApplicationRunner(jobLauncher, jobExplorer, jobRepository);
+	// 	String jobNames = properties.getJob().getName();
+	// 	if (StringUtils.hasText(jobNames)) {
+	// 		runner.setJobName(jobNames);
+	// 	}
+	// 	return runner;
+	// }
+	//
+	// // batchDatasource 사용을 위한 수동 빈 등록
+	// @Bean
+	// @ConditionalOnMissingBean(BatchDataSourceScriptDatabaseInitializer.class)
+	// BatchDataSourceScriptDatabaseInitializer batchDataSourceInitializer(DataSource dataSource,
+	// 	@BatchDataSource ObjectProvider<DataSource> batchDataSource, BatchProperties properties) {
+	// 	return new BatchDataSourceScriptDatabaseInitializer(batchDataSource.getIfAvailable(() -> dataSource),
+	// 		properties.getJdbc());
+	// }
+	//
+	// @BatchDataSource
+	// @ConfigurationProperties(prefix = "spring.datasource.batch.hikari")
+	// @Bean("batchDataSource")
+	// public DataSource batchDataSource() {
+	// 	return DataSourceBuilder.create().type(HikariDataSource.class).build();
+	// }
+	//
+	// @Bean
+	// public PlatformTransactionManager batchTransactionManager(
+	// 	@Qualifier("batchDataSource") DataSource batchDataSource) {
+	// 	return new DataSourceTransactionManager(batchDataSource);
+	// }
 }

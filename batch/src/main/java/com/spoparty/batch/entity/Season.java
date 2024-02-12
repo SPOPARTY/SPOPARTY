@@ -28,7 +28,7 @@ import lombok.Setter;
 public class Season extends FootballBaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "season_id")
 	private long id;
 
@@ -36,11 +36,12 @@ public class Season extends FootballBaseEntity {
 	@Column(length = 4, nullable = false)
 	private String value;
 
-	@OneToMany(mappedBy = "season", fetch = FetchType.LAZY)
-	List<SeasonLeague> seasonLeagues = new ArrayList<>();
+	// @OneToMany(mappedBy = "season", fetch = FetchType.LAZY)
+	// List<SeasonLeague> seasonLeagues = new ArrayList<>();
 
 	@Builder
-	public Season(String value) {
+	public Season(long id, String value) {
+		this.id = id;
 		this.value = value;
 	}
 }
