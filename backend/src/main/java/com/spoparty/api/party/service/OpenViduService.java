@@ -74,7 +74,7 @@ public class OpenViduService {
 		boolean hasVideo = (boolean) params.get("hasVideo");
 
 		RecordingProperties properties = new RecordingProperties.Builder().outputMode(outputMode).hasAudio(hasAudio)
-				.hasVideo(hasVideo).build();
+				.hasVideo(hasVideo).frameRate(4).build();
 
 		log.info("Starting recording for session {} with properties outputMode= {}, hasAudio= {}, hasVideo={}", sessionId, outputMode, hasAudio, hasVideo);
 
