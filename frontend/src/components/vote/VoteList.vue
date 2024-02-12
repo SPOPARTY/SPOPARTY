@@ -26,11 +26,6 @@
                     <v-card-text class="vote-title" v-if="voteType == 'myVotes'" @click="showMyVote(vote)">{{vote}}</v-card-text>
                     <v-card-text class="vote-title" v-if="voteType == 'finished'" @click="showFinishedVote(vote)">{{vote}}</v-card-text>
                 </div>
-                <div v-if="currentVotes.length === 0">
-                    <br>
-                    <v-card-text class="vote-title">해당 투표가 없습니다.</v-card-text>
-                    <br>
-                </div>
             </v-card>
             <v-row class="buttons">
                 <v-col cols="8">
@@ -127,10 +122,37 @@
 <script setup>
 import {ref, computed, watch, onMounted} from 'vue'
 import {useRoute, useRouter} from 'vue-router';
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
 
 import CreateVote from '@/components/vote/CreateVote.vue'
 import {useVoteStore} from '@/stores/club/party/votes'
-import {voteConnect, voteDisconnect,doVote, finishVote } from '@/api/vote'
+// import {voteConnect, voteDisconnect,doVote, finishVote } from '@/api/vote'
+
+
+
+const serverURL = "http://localhost:9090/api/ws-stomp"
+let stompClient = undefined;
+
+const connect = () => {
+  if (stompClient === undefined) {
+    const socket = new SockJS(serverURL)
+    stompClient = Stomp.over(socket)
+    stompClient.connect({}, function () {
+      stompClient.subscribe(`/sub/vote/${partyId}`, function (response) {
+        console.log("******VOTELIST*********")
+        console.log(response);
+        // 1. 투표 생성
+        // 
+        // 2. 투표 진행
+        // voteCount : 투표에 참여했습니다.
+        // 총인원수 == voteCount : 투표 종료 할 수 있으니까 -> 생성한 사람한테 보내주기
+
+        // 3. 투표 종료
+      })
+    })
+  }
+}
 
 
 const emit = defineEmits([
@@ -147,24 +169,11 @@ const partyId = route.params.partyId;
 const isModalVisible = ref(true);
 
 const votes = ref([
-    {voteId : 1, user : {userId : 12, name : "장승호"}, content : "다음 중 잉글랜드 최고 미드필더는?", ongoing : true, partyMemberId : 12 },
-    {voteId : 2, user : {userId : 17, name : "장승호"}, content : "내일 메뉴 추천 좀", ongoing : true, partyMemberId : 15 },
-    {voteId : 3, user : {userId : 17, name : "장승호"}, content : "내일 승리 팀은?", ongoing : true, partyMemberId : 15 },
-    {voteId : 4, user : {userId : 12, name : "장승호"}, content : "미안하다 이거 보여줄려고 어그로 끌었다", ongoing : false, partyMemberId : 12 }
+
 ])
 
 const options = ref([
-    {optionId : 1, content:"제라드", count : 0, voteId : 1, isAnswer : true},
-    {optionId : 2, content:"램파드", count : 0, voteId : 1, isAnswer : true},
-    {optionId : 3, content:"스콜스", count : 0, voteId : 1, isAnswer : true},
-    {optionId : 4, content:"피자", count : 0, voteId : 2, isAnswer : true},
-    {optionId : 5, content:"치킨", count : 0, voteId : 2, isAnswer : true},
-    {optionId : 6, content:"파스타", count : 0, voteId : 2, isAnswer : true},
-    {optionId : 7, content:"한국", count : 0, voteId : 3, isAnswer : true},
-    {optionId : 8, content:"요르단", count : 0, voteId : 3, isAnswer : true},
-    {optionId : 9, content:"히히", count : 0, voteId : 4, isAnswer : true},
-    {optionId : 10, content:"투표", count : 0, voteId : 4, isAnswer : true},
-    {optionId : 11, content:"발사", count : 0, voteId : 4, isAnswer : true},
+
 ])
 
 // 투표 참여 프로세스
@@ -193,17 +202,20 @@ watch(() => voteStore.myVoteList,(newMyVoteList) => {
 },{immediate:true, deep:true})
 
 
-const currentVotes = ref(votes.value.filter(vote => vote.ongoing === true));
+const currentVotes = ref([]);
 const voteType = ref('ongoing');
 
 function chooseVoteType(type) {
     voteType.value = type
     if (type === 'ongoing') {
         currentVotes.value = onGoingVoteList.value;
+        console.log(currentVotes.value)
     } else if (type === 'myVotes') {
         currentVotes.value = finishedVoteList.value;
+        console.log(currentVotes.value)
     } else if (type === 'finished') {
         currentVotes.value = myVoteList.value;
+        console.log(currentVotes.value)
     }
 }
 // 투표 생성 프로세스 컴포넌트 모달 on/off
@@ -292,7 +304,8 @@ onMounted(() => {
     voteStore.getOngoingVoteList(partyId);
     voteStore.getFinishedVoteList(partyId);
     voteStore.getMyVoteList(partyId, memberId);
-    voteConnect(partyId);
+    console.log("VoteList ONMOUNTED!!!!!!!");
+    connect();
 })
 
 </script>
