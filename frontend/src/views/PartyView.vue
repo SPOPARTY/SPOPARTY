@@ -832,7 +832,8 @@ const registerArchive = () => {
        clubId : clubId,
        partyTitle : titleModel,
        fixtureTitle : matchModel,
-       fileId : recordingFile.value.id
+       fileId : recordingFile.value.id,
+       thumbnailId : recordingFile.value.thumbnailId
      }
   )
 }
