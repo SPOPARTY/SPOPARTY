@@ -69,9 +69,9 @@ public class Scheduler {
 		for (CheerFixture cheerFixture :cheerList){
 			LocalDateTime fixtureTime = cheerFixture.getFixture().getStartTime();
 			if (fixtureTime.compareTo(yesterday) * fixtureTime.compareTo(tomorrow) >= 0){
+				fixtureEventRepository.deleteByFixture_Id(cheerFixture.getFixture().getId());
 				cheerFixture.softDelete();
 				cheerFixtureRepository.save(cheerFixture);
-				fixtureEventRepository.deleteByFixture_Id(cheerFixture.getFixture().getId());
 				log.info("delete cheerFixture : {}", cheerFixture);
 			}
 		}

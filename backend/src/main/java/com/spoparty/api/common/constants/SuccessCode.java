@@ -39,6 +39,14 @@ public enum SuccessCode {
 	PARTY_MEMBER_DELETE_SUCCESS(OK, "파티원 삭제 성공"),
 	PARTY_MEMBER_READ_SUCCESS(OK, "파티원 조회 성공"),
 
+	// 투표
+	PENALTY_CREATE_SUCCESS(CREATED, "패널티 생성 성공"),
+	PENALTY_READ_SUCCESS(OK, "패널티 조회 성공"),
+	VOTE_CREATE_SUCCESS(CREATED, "투표 생성 성공"),
+	VOTE_READ_SUCCESS(OK, "투표 조회 성공"),
+	VOTE_UPDATE_SUCCESS(OK, "투표 수정 성공"),
+	VOTES_READ_SUCCESS(OK, "투표 목록 조회 성공"),
+
 	// 축구
 	CHEER_CREATE_SUCCESS(CREATED, "응원 정보 생성 성공"),
 	FIXTURE_EVENTS_READ_SUCCESS(OK, "경기 이벤트 조회 성공"),
