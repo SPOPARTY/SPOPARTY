@@ -830,12 +830,13 @@ const registerArchive = () => {
      {
        memberId : localStorage.getItem("id"),
        clubId : clubId,
-       partyTitle : titleModel.value,
-       fixtureTitle : matchModel.value,
+       partyTitle : titleModel.value ? titleModel.value : "",
+       fixtureTitle : matchModel.value ? matchModel.value : "",
        fileId : recordingFile.value.id,
        thumbnailId : recordingFile.value.thumbnailId
      }
   )
+  videoOverlay.value = false
 }
 
 const cancelArchive = () => {
