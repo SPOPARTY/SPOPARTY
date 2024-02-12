@@ -31,6 +31,9 @@ const voteConnect = (partyId) => {
         console.log('*******do********')
         alert("투표 하기 성공!")
         console.log(response)
+        voteStore.getOngoingVoteList(partyId);
+        voteStore.getMyVoteList(partyId,memberId);
+        voteStore.getFinishedVoteList(partyId);
 
         // 2. 투표 진행
         // voteCount : 투표에 참여했습니다.
