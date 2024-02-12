@@ -26,8 +26,9 @@
         </tbody>
       </template>
     </v-table>
+    <h3 v-else class="mb-6">감독 정보가 없습니다!</h3>
     <h2>선수 목록</h2>
-    <v-table>
+    <v-table v-if="team.players">
       <template v-slot:default>
         <thead>
           <tr>
@@ -55,11 +56,12 @@
         </tbody>
       </template>
     </v-table>
+    <h3 v-else class="mb-6">선수 정보가 없습니다!</h3>
   </v-card>
 </template>
   
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useFootballStore } from '@/stores/football/football';
 
 const footballStore = useFootballStore();
@@ -71,11 +73,19 @@ const props = defineProps({
   },
 });
 
-getTeamDetail(props.teamId);
 const team = ref([]);
 
-watch(() => footballStore.teamDetail, (newValue) => {
-  team.value = newValue;
+async function GTD(teamId) {
+  try {
+    team.value = await getTeamDetail(teamId);
+    console.log("#########", team.value);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted (() => {
+  GTD(props.teamId);
 });
 
 

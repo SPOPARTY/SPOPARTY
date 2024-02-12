@@ -135,8 +135,8 @@ pipeline {
             steps {
                  sshagent(credentials: ['ubuntu-a802']) {
                 sh '''
-                scp -i I10A802T.pem -r /var/jenkins_home/workspace/spoparty-publish/frontend/dist/. $releaseServerAccount@$releaseServerUri:/usr/share/nginx/html
-                scp -i I10A802T.pem -r /var/jenkins_home/workspace/spoparty-publish/docker-compose.yml $releaseServerAccount@$releaseServerUri:/home/ubuntu
+                scp -i /I10A802T.pem -r /var/jenkins_home/workspace/spoparty-publish/frontend/dist/. $releaseServerAccount@$releaseServerUri:/usr/share/nginx/html
+                scp -i /I10A802T.pem -r /var/jenkins_home/workspace/spoparty-publish/docker-compose.yml $releaseServerAccount@$releaseServerUri:/home/ubuntu
                 '''
                 }
             }

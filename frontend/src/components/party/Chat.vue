@@ -20,8 +20,11 @@
     <!-- 입력창 -->
     <v-form @submit.prevent class="chat-form">
       <v-text-field class="chat-input" v-model="myMessage.message" append-icon="mdi-send" variant="outlined"
+        clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="sendMessage" 
+        @click:append="sendMessage" @click:clear="clearMessage"></v-text-field>
+      <!-- <v-text-field class="chat-input" v-model="myMessage.message" append-icon="mdi-send" variant="outlined"
         clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="sendMessage"
-        @click:append="sendMessage" @click:clear="clearMessage" @click="addChatMock"></v-text-field>
+        @click:append="sendMessage" @click:clear="clearMessage" @click="addChatMock"></v-text-field> -->
     </v-form>
   </v-container>
 </template>
@@ -62,35 +65,6 @@ const myMessage = ref({
   clubId: '',
   message: '',
 })
-
-const connect = () => {
-  const socket = new SockJS(serverURL)
-  stompClient = Stomp.over(socket)
-
-  stompClient.connect(
-    {},
-    (frame) => {
-      console.log('stomp client connected.')
-      myMessage.value.message = `${myMessage.value.userName} 님이 입장했습니다.`
-      send('/chat/enter', myMessage.value, myMessage.value)
-      myMessage.value.message = ''
-      stompClient.subscribe(`/sub/chat`, (response) => {
-        console.log(response)
-        chats.push(JSON.parse(response.body))
-      })
-      stompClient.subscribe(
-        `/user/${myMessage.value.userName}/sub/chat`,
-        (response) => {
-          chats.push(...JSON.parse(response.body))
-          console.log(chats)
-        },
-      )
-    },
-    (error) => {
-      console.error(`stomp client connect error : ${error}`)
-    },
-  )
-}
 
 watch(
   () => partyStore.partyMemberList,
@@ -137,6 +111,37 @@ const send = (destination, body, header) => {
   }
 }
 
+const connect = () => {
+  if (stompClient === undefined) {
+    const socket = new SockJS(serverURL)
+    stompClient = Stomp.over(socket)
+
+    stompClient.connect(
+      {},
+      (frame) => {
+        console.log('stomp client connected.')
+        myMessage.value.message = `${myMessage.value.userName} 님이 입장했습니다.`
+        send('/chat/enter', myMessage.value, myMessage.value)
+        myMessage.value.message = ''
+        stompClient.subscribe(`/sub/chat${clubId}-${partyId}`, (response) => {
+          console.log(response)
+          chats.push(JSON.parse(response.body))
+        })
+        stompClient.subscribe(
+          `/user/${myMessage.value.userName}/sub/chat${clubId}-${partyId}`,
+          (response) => {
+            chats.push(...JSON.parse(response.body))
+            console.log(chats)
+          },
+        )
+      },
+      (error) => {
+        console.error(`stomp client connect error : ${error}`)
+      },
+    )
+  }
+}
+
 const disconnect = () => {
   myMessage.value.message = `${myMessage.value.userName} 님이 퇴장했습니다.`
   send('/sub/chat/out', myMessage.value, myMessage.value)
@@ -154,7 +159,28 @@ const props = defineProps({
   }
 })
 
-// // 로컬에서 테스트할 때 쓸 코드 (테스트할 때만 true로 변경) 
+// 스크롤을 채팅창의 맨 아래로 이동시키는 함수
+const chatMessages = ref(null); // chat-messages div에 대한 참조
+
+const scrollToBottom = () => {
+  console.log('scrollToBottom')
+  console.log(chatMessages.value)
+  nextTick(() => {
+    if (chatMessages.value) {
+      chatMessages.value.scrollTop = chatMessages.value.scrollHeight;
+    }
+  });
+};
+
+// chats 배열에 변화가 있을 때마다 스크롤을 맨 아래로 이동
+watch(chats, () => {
+  // console.log('chats changed')
+  scrollToBottom();
+}, { immediate: true, deep: true });
+
+
+
+/// /// 로컬에서 테스트할 때 쓸 코드 (테스트할 때만 true로 변경) 
 const chatsMock = ref([
   { userName: 'Alice', message: '안녕하세요!' },
   { userName: 'Bob', message: '오늘 날씨가 좋네요.' },
@@ -162,6 +188,12 @@ const chatsMock = ref([
   { userName: 'Alice', message: '그럼 다음에 또 봐요!' },
   { userName: 'Son', message: '네, 안녕히가세요!' }
 ]);
+
+// chatsMock 배열에 변화가 있을 때마다 스크롤을 맨 아래로 이동
+watch(chatsMock, () => {
+  console.log('chatsMock changed')
+  scrollToBottom();
+}, { immediate: true, deep: true });
 
 // 채팅 추가 함수
 // 채팅 메시지 추가 시 스크롤 처리

@@ -29,7 +29,9 @@ public class RedisSubscriber implements MessageListener {
 		try {
 			log.debug("redis 발행 데이터 : {}", message);
 			String channel = redisTemplate.getStringSerializer().deserialize(message.getChannel());
-			ChatRequestDto request = (ChatRequestDto)redisTemplate.getValueSerializer().deserialize(message.getBody());
+			ChatRequestDto request = (ChatRequestDto) redisTemplate.getValueSerializer().deserialize(message.getBody());
+
+			String endpoint = String.format("%s-%s", request.getClubId(), request.getPartyId());
 			ListOperations<String, ChatRequestDto> operations = redisTemplate.opsForList();
 
 			operations.rightPush(channel, request);
@@ -37,12 +39,12 @@ public class RedisSubscriber implements MessageListener {
 //			if (request.getType().equals(SubscribeType.BROAD_CAST)) {
 			// 기본적으로 모든 메세지는 broadcast 되도록 하고, 유저 입장의 경우
 			// 전체 채팅 로그를 전달
-			messagingTemplate.convertAndSend(SUBSCRIBE_DESTINATION, request);
+			messagingTemplate.convertAndSend(SUBSCRIBE_DESTINATION + endpoint, request);
 //			}
 			if (request.getType().equals(SubscribeType.USER)) {
 				long size = operations.size(channel);
 				List<ChatRequestDto> list = operations.range(channel, 0, size);
-				messagingTemplate.convertAndSendToUser(request.getUserName(), SUBSCRIBE_DESTINATION, list);
+				messagingTemplate.convertAndSendToUser(request.getUserName(), SUBSCRIBE_DESTINATION + endpoint, list);
 			}
 
 		} catch (Exception e) {
