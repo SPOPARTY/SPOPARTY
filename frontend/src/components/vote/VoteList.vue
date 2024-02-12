@@ -78,7 +78,7 @@
             <v-card-text v-for="(option,index) in myVoteDetail.options" :key="index" class="text-center" @click="finalizeAnswer(option)">
                 {{ option.content }}
             </v-card-text>
-            <v-card-text>
+            <v-card-text v-if="myAnswer.answerOption !== ''" class="text-center">
                 당신의 선택 : <b>{{ myAnswer.answerOption }}</b>
             </v-card-text>
 
@@ -92,11 +92,13 @@
     </v-dialog>
 
     <v-dialog v-model="confirmFinish" max-width="300px">
-        <v-card>
-            <v-card-title class="close-vote text-center">투표를 마감하시겠습니까?</v-card-title>
-            <v-card-actions class="buttons" style="transform:translateX(-70px)">
+        <v-card class="text-center">
+            <v-card-title class="close-vote">투표를 마감하시겠습니까?</v-card-title>
+            <v-card-text><h2>최종 답안</h2></v-card-text>
+            <v-card-text><h3>{{ myAnswer.answerOption }}</h3></v-card-text>
+            <v-card-actions class="buttons" style="transform:translateX(-80px)">
                 <v-spacer></v-spacer>
-                <v-btn color="green" @click="doneVote(selectAnswer)"><h4>확인</h4></v-btn>
+                <v-btn color="green" @click="doneVote(myAnswer)"><h4>확인</h4></v-btn>
                 <v-btn color="blue" @click="confirmFinish = false"><h4>취소</h4></v-btn>
             </v-card-actions>
         </v-card>
@@ -134,6 +136,7 @@ import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 
 import CreateVote from '@/components/vote/CreateVote.vue'
+import {voteConnect, createVote,doVote,finishVote } from '@/api/vote'
 import {useVoteStore} from '@/stores/club/party/votes'
 
 
@@ -150,6 +153,8 @@ const clubId = route.params.clubId;
 const partyId = route.params.partyId;
 
 const isModalVisible = ref(true);
+
+voteConnect(partyId);
 
 // 투표 참여 프로세스
 const voteDetail = ref({
@@ -215,9 +220,9 @@ let selectedAnswer;
 
 function showDetailVote(vote) {
     selectedAnswer = ref({
-    optionId : '',
-    content : '',
-    voteId : '',
+        optionId : '',
+        content : '',
+        voteId : '',
     })
     isDetailVoteVisible.value = true;
     voteDetail.value = vote;
@@ -278,15 +283,17 @@ function showMyVote(vote) {
 }
 
 // 정답 확정 하기
-let myAnswer;
+let myAnswer = ref({
+    memberId : '',
+    nickname : '',
+    answerOptionId : '',
+    answerOption : '',
+})
 
 function finalizeAnswer(answer) {
-    myAnswer = ref({
-        memberId : '',
-        nickname : '',
-        answerOptionId : '',
-        answerOption : '',
-    })
+    if (answer.optionId === '') {
+        return;
+    }
     myAnswer.value.memberId = myVoteDetail.value.user.userId;
     myAnswer.value.nickname = myVoteDetail.value.user.name;
     myAnswer.value.answerOptionId = answer.optionId;
@@ -298,6 +305,12 @@ const confirmFinish = ref(false)
 
 // 내가 만든 투표 마감
 function doneVote(myAnswer) {
+    let data = {
+        partyId : partyId,
+        voteId : myVoteDetail.value.voteId,
+        answerOptionId : myAnswer.value.answerOptionId
+    }
+    finishVote(data);
     confirmFinish.value = false;
     isMyVoteVisible.value = false;
     alert("투표 마감 완료!")
@@ -345,7 +358,6 @@ onMounted(() => {
 }
 
 .close-vote{
-    height:200px;
     display: flex;
     justify-content: center;
 }

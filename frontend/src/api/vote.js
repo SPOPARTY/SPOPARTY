@@ -28,6 +28,7 @@ const voteConnect = (partyId) => {
       })
       stompClient.subscribe(`/sub/vote/do/${partyId}`, function (response) {
         console.log('*******do********')
+        alert("투표 하기 성공!")
         console.log(response)
 
         // 2. 투표 진행
@@ -38,6 +39,7 @@ const voteConnect = (partyId) => {
       stompClient.subscribe(
         `/sub/vote/counting/${partyId}`,
         function (response) {
+          alert("투표 마감 성공!")
           console.log('*******counting********')
           console.log(response)
 
@@ -70,7 +72,7 @@ function doVote(data) {
 }
 
 // 투표 종료(정답, 집계)
-function finishVote() {
+function finishVote(data) {
   // 투표 종료 호출 메서드
   stompClient.send(
     '/vote/counting',
