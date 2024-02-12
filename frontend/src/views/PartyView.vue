@@ -162,7 +162,7 @@
                               </v-overlay>
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="secondary" @click="toggleRecording">
+                              <v-btn color="secondary" @click="toggleRecording" :disabled="recordingLoading">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         동영상
                                    </v-tooltip>
@@ -170,8 +170,17 @@
                                    <div v-else>
                                         {{ timeStr }}
                                    </div>
-                                   
                               </v-btn>
+                              <!-- 동영상 미리보기 오버레이 -->
+                              <v-overlay v-model="videoOverlay" persistent class="over">
+                                   <v-card class="overlay-card">
+                                        <video :src="recordingFile.url" autoplay loop type="video/mp4" class="video-preview" ></video>
+                                        <v-card-actions class="justify-end">
+                                             <v-btn color="green" @click="registerArchive" size="x-large">아카이브 하기</v-btn>
+                                             <v-btn color="red" @click="cancelArchive" size="large">닫기</v-btn>
+                                        </v-card-actions>
+                                   </v-card>
+                              </v-overlay>
                          </v-col>
                          <v-col cols="3">
                               <v-btn color="#D3AC2B">
@@ -230,6 +239,8 @@ import VoteList from "@/components/vote/VoteList.vue"
 
 import { useFootballStore } from '@/stores/football/football'
 import { usePartyStore } from '@/stores/club/party/party'
+import { useArchiveStore } from '@/stores/club/archives'
+import { useFileStore } from '@/stores/member/file'
 
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../components/openvidu/UserVideo.vue'
@@ -239,11 +250,14 @@ const router = useRouter()
 
 const footballStore = useFootballStore()
 const partyStore = usePartyStore()
+const archiveStore = useArchiveStore()
+const fileStore = useFileStore()
 
 const { getMatchWatchable, findTeamIdsByFixtureId } = footballStore
 const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
      getPartyParticipant, deletePartyMember, postStartRecording, postStopRecording } = partyStore
-
+const { createArchive } = archiveStore
+const { deleteFile } = fileStore
 
 const url = ref("https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu");
 const isUrlExist = ref(false);
@@ -276,8 +290,6 @@ watch(() => partyStore.partyMemberList, (newPartyMembers) => {
      console.log("newPartyMembers", newPartyMembers);
      partyMemberList.value = newPartyMembers;
      partyMemberList.value.map((member) => {
-          console.log(member)
-          console.log(localStorage.getItem("id"))
           if (member.memberId == localStorage.getItem("id")) {
                joinSession(member.openviduToken, member.nickName)
           }
@@ -696,10 +708,13 @@ const leaveSession = () => {
      window.removeEventListener('beforeunload', leaveSession)
 }
 
+const videoOverlay = ref(false);
+
 const recordingSession = ref({})
 const recordingFile = ref({})
 
 const recordingState = ref(false)
+const recordingLoading = ref(false)
 const recordingTime = ref(0)
 
 let intervalId = undefined
@@ -720,6 +735,7 @@ const toggleRecording = () => {
 
 const startRecording = () => {
   if (clubId !== undefined) {
+     recordingLoading.value = true
     postStartRecording(
        clubId, 
        {
@@ -732,6 +748,7 @@ const startRecording = () => {
           if (res.status === httpStatusCode.OK) {
             console.log(res.data.data)
             recordingSession.value = res.data.data
+            recordingLoading.value = false
             intervalId = setInterval(() => {
               recordingTime.value++
               timeStr.value = getTimeFormatString()
@@ -756,6 +773,7 @@ const startRecording = () => {
 
 const stopRecording = () => {
   if (clubId !== undefined && recordingSession.value.id !== undefined) {
+     recordingLoading.value = true
      console.log("stop recording")
        postStopRecording(
        clubId,
@@ -767,11 +785,13 @@ const stopRecording = () => {
           if (res.status === httpStatusCode.OK) {
             recordingFile.value = res.data.data
             console.log(res.data.data)
+            recordingLoading.value = false
             clearInterval(intervalId)
             recordingTime.value = 0
             timeStr.value = "00:00"
             downloadFile(recordingFile.value.url)
             recordingSession.value = {}
+            videoOverlay.value = true
           }
        },
        (error) => {
@@ -785,13 +805,9 @@ const stopRecording = () => {
 }
 
 const downloadFile = async (url) => {
-    // 1. fetch 실행이 끝나면 FETCH API는 내부적으로 Body Object를 상속받아 Response 인스턴스를 생성
     const res = await fetch(url)
-    // 2. blob() 메소드는 Body Object의 메서드로 상속이 되어있으므로 res.blob() 가능, blob 인스턴스 반환
     const blob = await res.blob()
-    // 3. 여기서 이 작업을 해주지않으면 link.download에 있는 파일명으로 다운로드하지 못한다.
-    // createObjectURL()는 URL을 DOMString으로 반환한다. (URL 해제는 revokeObjectURL())
-    const downloadUrl = window.URL.createObjectURL(blob) // 이 과정이 필요하다.
+    const downloadUrl = window.URL.createObjectURL(blob)
 
     const link = document.createElement('a')
     link.href = downloadUrl
@@ -805,6 +821,24 @@ const getTimeFormatString = () => {
 
     return String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
 }
+
+const registerArchive = () => {
+  createArchive(
+     {
+       memberId : localStorage.getItem("id"),
+       clubId : clubId,
+       partyTitle : titleModel,
+       fixtureTitle : matchModel,
+       fileId : recordingFile.value.id
+     }
+  )
+}
+
+const cancelArchive = () => {
+  videoOverlay.value = false
+  deleteFile(recordingFile.value.id)
+}
+
 </script>
 
 <style>
@@ -1003,6 +1037,14 @@ const getTimeFormatString = () => {
 
 .screenshot-preview {
      /* max-height: 80vh; */
+     margin: 20px;
+     /* padding: 30px; */
+}
+
+.video-preview {
+     /* max-height: 80vh; */
+     width: 90%;
+     object-fit: cover;
      margin: 20px;
      /* padding: 30px; */
 }
