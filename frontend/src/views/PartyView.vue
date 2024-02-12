@@ -162,11 +162,15 @@
                               </v-overlay>
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="secondary">
+                              <v-btn color="secondary" @click="toggleRecording">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         동영상
                                    </v-tooltip>
-                                   <v-icon size="x-large">mdi-video-plus-outline</v-icon>
+                                   <v-icon v-if="!recordingState" size="x-large">mdi-video-plus-outline</v-icon>
+                                   <div v-else>
+                                        {{ timeStr }}
+                                   </div>
+                                   
                               </v-btn>
                          </v-col>
                          <v-col cols="3">
@@ -218,6 +222,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import { format, set, parseISO, addDays } from 'date-fns';
+import {httpStatusCode} from "@/util/http-status"
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
 import Chat from '../components/party/Chat.vue';
@@ -237,7 +242,7 @@ const partyStore = usePartyStore()
 
 const { getMatchWatchable, findTeamIdsByFixtureId } = footballStore
 const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
-     getPartyParticipant, deletePartyMember } = partyStore
+     getPartyParticipant, deletePartyMember, postStartRecording, postStopRecording } = partyStore
 
 
 const url = ref("https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu");
@@ -691,6 +696,115 @@ const leaveSession = () => {
      window.removeEventListener('beforeunload', leaveSession)
 }
 
+const recordingSession = ref({})
+const recordingFile = ref({})
+
+const recordingState = ref(false)
+const recordingTime = ref(0)
+
+let intervalId = undefined
+const timeStr = ref("00:00")
+let min, sec
+
+const toggleRecording = () => {
+  if (!recordingState.value) {
+     console.log("start recording call")
+    startRecording()
+  }
+  else {
+     console.log("stop recording call")
+    stopRecording()
+  }
+  recordingState.value = !recordingState.value
+}
+
+const startRecording = () => {
+  if (clubId !== undefined) {
+    postStartRecording(
+       clubId, 
+       {
+          "session" : clubId,
+          "outputMode" : "COMPOSED",
+          "hasAudio": true,
+          "hasVideo" : true
+       },
+       (res) => {
+          if (res.status === httpStatusCode.OK) {
+            console.log(res.data.data)
+            recordingSession.value = res.data.data
+            intervalId = setInterval(() => {
+              recordingTime.value++
+              timeStr.value = getTimeFormatString()
+              if (recordingTime.value >= 60) {
+               recordingTime.value = 0
+               recordingState.value = !recordingState.value
+               timeStr.value = "00:00"
+               clearInterval(intervalId)
+              }
+            } , 1000)
+          }
+       },
+       (error) => {
+          console.log(error)
+          if (error.response.status === httpStatusCode.NOTFOUND) {
+            console.error(error)
+          }
+       }
+     )
+  }
+}
+
+const stopRecording = () => {
+  if (clubId !== undefined && recordingSession.value.id !== undefined) {
+     console.log("stop recording")
+       postStopRecording(
+       clubId,
+       {
+          "recording": recordingSession.value.id
+       },
+       (res) => {
+          console.log(res)
+          if (res.status === httpStatusCode.OK) {
+            recordingFile.value = res.data.data
+            console.log(res.data.data)
+            clearInterval(intervalId)
+            recordingTime.value = 0
+            timeStr.value = "00:00"
+            downloadFile(recordingFile.value.url)
+            recordingSession.value = {}
+          }
+       },
+       (error) => {
+          console.log(error)
+          if (error.response.status === httpStatusCode.NOTFOUND) {
+            console.error(error)
+            }
+       },
+     )
+  }
+}
+
+const downloadFile = async (url) => {
+    // 1. fetch 실행이 끝나면 FETCH API는 내부적으로 Body Object를 상속받아 Response 인스턴스를 생성
+    const res = await fetch(url)
+    // 2. blob() 메소드는 Body Object의 메서드로 상속이 되어있으므로 res.blob() 가능, blob 인스턴스 반환
+    const blob = await res.blob()
+    // 3. 여기서 이 작업을 해주지않으면 link.download에 있는 파일명으로 다운로드하지 못한다.
+    // createObjectURL()는 URL을 DOMString으로 반환한다. (URL 해제는 revokeObjectURL())
+    const downloadUrl = window.URL.createObjectURL(blob) // 이 과정이 필요하다.
+
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = 'video.mp4'
+    link.click()
+}
+
+const getTimeFormatString = () => {
+    min = parseInt(String(recordingTime.value / 60));
+    sec = recordingTime.value % 60;
+
+    return String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
+}
 </script>
 
 <style>
