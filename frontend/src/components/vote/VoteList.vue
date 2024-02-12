@@ -19,17 +19,11 @@
                     <v-btn @click="chooseVoteType('finished')">완료된 투표</v-btn>
                 </v-col>   
             </v-row>
-            <!-- 투표 리스트 --> 
             <v-card class="inner-card" >
                 <div v-for="(vote, index) in currentVotes" :key="index">
-                    <v-card-text class="vote-title" v-if="voteType == 'ongoing'" @click="showDetailVote(vote)">{{vote}}</v-card-text>
-                    <v-card-text class="vote-title" v-if="voteType == 'myVotes'" @click="showMyVote(vote)">{{vote}}</v-card-text>
-                    <v-card-text class="vote-title" v-if="voteType == 'finished'" @click="showFinishedVote(vote)">{{vote}}</v-card-text>
-                </div>
-                <div v-if="currentVotes.length === 0">
-                    <br>
-                    <v-card-text class="vote-title">해당 투표가 없습니다.</v-card-text>
-                    <br>
+                    <v-card-text class="vote-title" v-if="voteType == 'ongoing' && vote.user.userId !== memberId" @click="showDetailVote(vote)">{{ vote.title }}</v-card-text>
+                    <v-card-text class="vote-title" v-if="voteType == 'myVotes'" @click="showMyVote(vote)">{{ vote.title }}</v-card-text>
+                    <v-card-text class="vote-title" v-if="voteType == 'finished'" @click="showFinishedVote(vote)">{{ vote.title }}</v-card-text>
                 </div>
             </v-card>
             <v-row class="buttons">
@@ -44,14 +38,14 @@
         <CreateVote v-if="isCreateVoteVisible" @create-vote-close="isCreateVoteVisible = false"/>
     </v-dialog>
 
-    <!-- 투표 상세 모달 -->
+    <!-- 투표 참여 모달 -->
     <v-dialog
         v-model="isDetailVoteVisible"
         max-width="500px"
     >
         <v-card class="vote-detail">
             <v-card-title class="text-center">진행 중인 투표</v-card-title>
-            <v-card-text>Q : {{ voteDetail.content }}</v-card-text>
+            <v-card-text>Q : {{ voteDetail.title }}</v-card-text>
             <v-card-text class="option" v-for="(option, index) in voteDetail.options" :key="index"
                         @click="selectAnswer(option)">
                 {{ option.content }}
@@ -73,13 +67,22 @@
         </v-card>
     </v-dialog>
 
-    <!-- 내가 만든 투표 -->
+    <!-- 투표 마감 ==> 내가 만든 투표 상세  -->
     <v-dialog 
         v-model="isMyVoteVisible"
         max-width="500px"
         >
         <v-card>
-            <v-card-title class="text-center">내가 만든 투표</v-card-title>
+            <!-- {{ myVoteDetail }} -->
+            <v-card-title class="text-center"> <h2>{{ myVoteDetail.title }}</h2> </v-card-title>
+            <v-card-text v-for="(option,index) in myVoteDetail.options" :key="index" class="text-center" @click="finalizeAnswer(option)">
+                {{ option.content }}
+            </v-card-text>
+            <v-card-text v-if="myAnswer.answerOption !== ''" class="text-center">
+                당신의 선택 : <b>{{ myAnswer.answerOption }}</b>
+            </v-card-text>
+
+
             <v-card-actions class="buttons" style="transform:translateX(-180px)">
                 <v-spacer></v-spacer>
                 <v-btn color="green" @click="() => {confirmFinish = true; isMyVoteVisible = false;}"><h4>마감</h4></v-btn>
@@ -89,11 +92,13 @@
     </v-dialog>
 
     <v-dialog v-model="confirmFinish" max-width="300px">
-        <v-card>
-            <v-card-title class="close-vote text-center">투표를 마감하시겠습니까?</v-card-title>
-            <v-card-actions class="buttons" style="transform:translateX(-70px)">
+        <v-card class="text-center">
+            <v-card-title class="close-vote">투표를 마감하시겠습니까?</v-card-title>
+            <v-card-text><h2>최종 답안</h2></v-card-text>
+            <v-card-text><h3>{{ myAnswer.answerOption }}</h3></v-card-text>
+            <v-card-actions class="buttons" style="transform:translateX(-80px)">
                 <v-spacer></v-spacer>
-                <v-btn color="green" @click="doneVote(selectAnswer)"><h4>확인</h4></v-btn>
+                <v-btn color="green" @click="doneVote"><h4>확인</h4></v-btn>
                 <v-btn color="blue" @click="confirmFinish = false"><h4>취소</h4></v-btn>
             </v-card-actions>
         </v-card>
@@ -127,10 +132,12 @@
 <script setup>
 import {ref, computed, watch, onMounted} from 'vue'
 import {useRoute, useRouter} from 'vue-router';
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
 
 import CreateVote from '@/components/vote/CreateVote.vue'
+import {voteConnect, createVote,doVote,finishVote } from '@/api/vote'
 import {useVoteStore} from '@/stores/club/party/votes'
-import {voteConnect, voteDisconnect,doVote, finishVote } from '@/api/vote'
 
 
 const emit = defineEmits([
@@ -142,30 +149,12 @@ const voteStore = useVoteStore();
 const route = useRoute();
 
 const memberId = localStorage.getItem("id");
+const clubId = route.params.clubId;
 const partyId = route.params.partyId;
 
 const isModalVisible = ref(true);
 
-const votes = ref([
-    {voteId : 1, user : {userId : 12, name : "장승호"}, content : "다음 중 잉글랜드 최고 미드필더는?", ongoing : true, partyMemberId : 12 },
-    {voteId : 2, user : {userId : 17, name : "장승호"}, content : "내일 메뉴 추천 좀", ongoing : true, partyMemberId : 15 },
-    {voteId : 3, user : {userId : 17, name : "장승호"}, content : "내일 승리 팀은?", ongoing : true, partyMemberId : 15 },
-    {voteId : 4, user : {userId : 12, name : "장승호"}, content : "미안하다 이거 보여줄려고 어그로 끌었다", ongoing : false, partyMemberId : 12 }
-])
-
-const options = ref([
-    {optionId : 1, content:"제라드", count : 0, voteId : 1, isAnswer : true},
-    {optionId : 2, content:"램파드", count : 0, voteId : 1, isAnswer : true},
-    {optionId : 3, content:"스콜스", count : 0, voteId : 1, isAnswer : true},
-    {optionId : 4, content:"피자", count : 0, voteId : 2, isAnswer : true},
-    {optionId : 5, content:"치킨", count : 0, voteId : 2, isAnswer : true},
-    {optionId : 6, content:"파스타", count : 0, voteId : 2, isAnswer : true},
-    {optionId : 7, content:"한국", count : 0, voteId : 3, isAnswer : true},
-    {optionId : 8, content:"요르단", count : 0, voteId : 3, isAnswer : true},
-    {optionId : 9, content:"히히", count : 0, voteId : 4, isAnswer : true},
-    {optionId : 10, content:"투표", count : 0, voteId : 4, isAnswer : true},
-    {optionId : 11, content:"발사", count : 0, voteId : 4, isAnswer : true},
-])
+voteConnect(partyId);
 
 // 투표 참여 프로세스
 const voteDetail = ref({
@@ -180,30 +169,42 @@ const onGoingVoteList = ref([]);
 const finishedVoteList = ref([]);
 const myVoteList = ref([]);
 
+const currentVotes = computed(() => {
+    switch (voteType.value) {
+        case 'ongoing':
+            return onGoingVoteList.value;
+        case 'myVotes':
+            return myVoteList.value;
+        case 'finished':
+            return finishedVoteList.value;
+        default:
+            return [];
+    }
+});
+const voteType = ref('ongoing');
+
 watch(() => voteStore.ongoingVoteList,(newOngoingList) => {
     onGoingVoteList.value = newOngoingList
-},{immediate:true, deep:true})
-
-watch(() => voteStore.finishedVoteList,(newFinishedVoteList) => {
-    finishedVoteList.value = newFinishedVoteList
-},{immediate:true, deep:true})
+},{immediate:true})
 
 watch(() => voteStore.myVoteList,(newMyVoteList) => {
     myVoteList.value = newMyVoteList
-},{immediate:true, deep:true})
+},{immediate:true})
 
+watch(() => voteStore.finishedVoteList,(newFinishedVoteList) => {
+    finishedVoteList.value = newFinishedVoteList
+},{immediate:true})
 
-const currentVotes = ref(votes.value.filter(vote => vote.ongoing === true));
-const voteType = ref('ongoing');
 
 function chooseVoteType(type) {
     voteType.value = type
     if (type === 'ongoing') {
         currentVotes.value = onGoingVoteList.value;
+        console.log(currentVotes.value)
     } else if (type === 'myVotes') {
-        currentVotes.value = finishedVoteList.value;
-    } else if (type === 'finished') {
         currentVotes.value = myVoteList.value;
+    } else if (type === 'finished') {
+        currentVotes.value = finishedVoteList.value;
     }
 }
 // 투표 생성 프로세스 컴포넌트 모달 on/off
@@ -219,23 +220,23 @@ let selectedAnswer;
 
 function showDetailVote(vote) {
     selectedAnswer = ref({
-    optionId : '',
-    content : '',
-    voteId : '',
+        optionId : '',
+        content : '',
+        voteId : '',
     })
     isDetailVoteVisible.value = true;
     voteDetail.value = vote;
     voteDetail.value.options = options.value.filter(option => option.voteId === vote.voteId)
 }
 
-// 투표 고르기
+// 투표 해버리기
 function selectAnswer(option) {
     selectedAnswer.value.optionId = option.optionId;
     selectedAnswer.value.content = option.content;
     selectedAnswer.value.voteId = option.voteId;
 }
 
-// 제출
+// 투표 제출
 const confirmSubmit = ref(false); 
 
 function submitAnswer(selected) {
@@ -249,25 +250,70 @@ function submitAnswer(selected) {
     isDetailVoteVisible.value = false;
 }
 
-// 내가 만든 투표
+
+
+// 투표 종료 - 내가 만든 투표
 const isMyVoteVisible = ref(false);
 
 const myVoteDetail = ref({
     voteId : '',
-    content : '',
-    ongoing : null,
-    partyMemberId : '',
+    title : '',
+    voteCount : '', 
+    penalty : {
+        content : '',
+        penaltyId : '',    
+    },
+    user : {
+        userId : '',
+        name : '',
+    },
     options : [],
 })
 
 function showMyVote(vote) {
+    console.log("*****내가 만든 투표 상세*****")
+    console.log(vote)
     isMyVoteVisible.value = true;
+    myVoteDetail.value.voteId = vote.voteId;
+    myVoteDetail.value.title = vote.title;
+    myVoteDetail.value.voteCount = vote.voteCount;
+    myVoteDetail.value.penalty = vote.penalty;
+    myVoteDetail.value.user = vote.user
+    myVoteDetail.value.options = vote.options;
+}
+
+// 정답 확정 하기
+let myAnswer = ref({
+    memberId : '',
+    nickname : '',
+    answerOptionId : '',
+    answerOption : '',
+})
+
+function finalizeAnswer(answer) {
+    if (answer.optionId === '') {
+        return;
+    }
+    myAnswer.value.memberId = myVoteDetail.value.user.userId;
+    myAnswer.value.nickname = myVoteDetail.value.user.name;
+    myAnswer.value.answerOptionId = answer.optionId;
+    myAnswer.value.answerOption = answer.content;
+    console.log("당신의 최종 답안 => ", myAnswer.value)
 }
 
 const confirmFinish = ref(false)
 
 // 내가 만든 투표 마감
-function doneVote(selectAnswer) {
+function doneVote() {
+    let data = {
+        partyId : partyId,
+        voteId : myVoteDetail.value.voteId,
+        memberId : myVoteDetail.value.user.userId,
+        nickname : myVoteDetail.value.user.name,
+        answerOptionId : myAnswer.value.answerOptionId
+    }
+    console.log(data)
+    finishVote(data);
     confirmFinish.value = false;
     isMyVoteVisible.value = false;
     alert("투표 마감 완료!")
@@ -292,7 +338,7 @@ onMounted(() => {
     voteStore.getOngoingVoteList(partyId);
     voteStore.getFinishedVoteList(partyId);
     voteStore.getMyVoteList(partyId, memberId);
-    voteConnect(partyId);
+    console.log("VoteList ONMOUNTED!!!!!!!");
 })
 
 </script>
@@ -315,7 +361,6 @@ onMounted(() => {
 }
 
 .close-vote{
-    height:200px;
     display: flex;
     justify-content: center;
 }
