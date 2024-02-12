@@ -93,7 +93,7 @@
             <v-card-title class="close-vote text-center">투표를 마감하시겠습니까?</v-card-title>
             <v-card-actions class="buttons" style="transform:translateX(-70px)">
                 <v-spacer></v-spacer>
-                <v-btn color="green" @click="finishVote(selectAnswer)"><h4>확인</h4></v-btn>
+                <v-btn color="green" @click="doneVote(selectAnswer)"><h4>확인</h4></v-btn>
                 <v-btn color="blue" @click="confirmFinish = false"><h4>취소</h4></v-btn>
             </v-card-actions>
         </v-card>
@@ -130,7 +130,7 @@ import {useRoute, useRouter} from 'vue-router';
 
 import CreateVote from '@/components/vote/CreateVote.vue'
 import {useVoteStore} from '@/stores/club/party/votes'
-import {voteConnect, voteDisconnect,doVote, finsihVote } from '@/api/vote'
+import {voteConnect, voteDisconnect,doVote, finishVote } from '@/api/vote'
 
 
 const emit = defineEmits([
@@ -267,7 +267,7 @@ function showMyVote(vote) {
 const confirmFinish = ref(false)
 
 // 내가 만든 투표 마감
-function finishVote(selectAnswer) {
+function doneVote(selectAnswer) {
     confirmFinish.value = false;
     isMyVoteVisible.value = false;
     alert("투표 마감 완료!")

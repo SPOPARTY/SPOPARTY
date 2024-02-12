@@ -96,7 +96,7 @@
 <script setup>
 import {ref,watch} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
-import {connect, createVote, disconnect } from '@/api/vote'
+import {voteConnect, createVote, voteDisconnect } from '@/api/vote'
 
 const isModalVisible = ref(true);
 
@@ -198,7 +198,6 @@ function submitVote() {
         options : options.value,
         penalty : selectedPenalty.value,
     }
-    connect(partyId);
     createVote(data);
 }
 
