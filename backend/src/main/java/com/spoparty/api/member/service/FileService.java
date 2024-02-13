@@ -75,6 +75,14 @@ public class FileService {
 		file.softDelete();
 	}
 
+	public File uploadUrl(String url) {
+		File file = new File();
+		long time = System.currentTimeMillis();
+		file.setUrl("https://" + bucket + ".s3." + region + ".amazonaws.com/" + time);
+		file.setType("image");
+		return fileRepository.save(file);
+	}
+
 	public List<File> findByType(String type) {
 		return fileRepository.findByType(type, File.class);
 	}
