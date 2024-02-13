@@ -31,7 +31,6 @@ public class ClubResponseDTO {
 
 	@QueryProjection
 	public ClubResponseDTO(Club entity, int currentParticipants) {
-		// log.debug("ClubResponseDTO - entity: {}, currentParticipants: {}", entity, currentParticipants);
 		this.clubId = entity.getId();
 		this.name = entity.getName();
 		this.maxParticipants = entity.getMaxParticipants();
