@@ -9,7 +9,7 @@ export const useVoteStore = defineStore("vote", () => {
 
     const voteDetail = ref({});
     const ongoingVoteList = ref([]);
-    const finishtedVoteList = ref([]);
+    const finishedVoteList = ref([]);
     const myVoteList = ref([]);
 
     // 진행 중인 투표 조회
@@ -36,7 +36,7 @@ export const useVoteStore = defineStore("vote", () => {
                 if (res.data.status === httpStatusCode.OK) {
                     console.log("*******종료된 투표 조회*******")
                     console.log(res)
-                    finishtedVoteList.value = res.data.data;
+                    finishedVoteList.value = res.data.data;
                 }
             },
             (error) => {
@@ -84,7 +84,7 @@ export const useVoteStore = defineStore("vote", () => {
 
 
     return {
-        voteDetail, ongoingVoteList, finishtedVoteList, myVoteList, 
+        voteDetail, ongoingVoteList, finishedVoteList, myVoteList, 
         getOngoingVoteList, getFinishedVoteList, getMyVoteList, getVoteDetail
     }
 })
