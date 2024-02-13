@@ -34,22 +34,22 @@ public class SeasonLeague extends FootballBaseEntity {
 	@Column(name="season_league_id")
 	private long id;
 
-	@Column(nullable=false)
+	@Column(nullable=true)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime seasonStartDate;
 
-	@Column(nullable=false)
+	@Column(nullable=true)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime seasonEndDate;
 
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "season_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Season season;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "league_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private League league;
 

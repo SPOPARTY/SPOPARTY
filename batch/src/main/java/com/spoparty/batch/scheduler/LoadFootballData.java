@@ -164,35 +164,38 @@ public class LoadFootballData {
 			queryParams.add("league", slt.getSeasonLeague().getLeague().getId()+"");
 			queryParams.add("season", slt.getSeasonLeague().getSeason().getId()+"");
 			queryParams.add("team", slt.getTeam().getId()+"");
-			ResponseEntity<?> response = footballApiUtil.sendRequest("/players", queryParams, PlayerResponse.class);
+			for (int i = 1; i <= 10 ; i++) {
+				queryParams.add("page", i+"");
+				ResponseEntity<?> response = footballApiUtil.sendRequest("/players", queryParams, PlayerResponse.class);
 
-			if (response.getStatusCode() == HttpStatus.OK){
-				PlayerResponse body = (PlayerResponse)response.getBody();
-				List<Players> list = body.getResponse();
+				if (response.getStatusCode() == HttpStatus.OK){
+					PlayerResponse body = (PlayerResponse)response.getBody();
+					List<Players> list = body.getResponse();
 
-				for (Players data : list){
-					try {
-						Player player = Player.builder()
-							.id(data.getPlayer().getId())
-							.nameKr(data.getPlayer().getName())
-							.nameEng(data.getPlayer().getName())
-							.photo(data.getPlayer().getPhoto())
-							.age(data.getPlayer().getAge())
-							.height(data.getPlayer().getHeight())
-							.weight(data.getPlayer().getWeight())
-							.nationality(data.getPlayer().getNationality())
-							.build();
-						log.info("player: {}", player);
-						playerRepository.save(player);
+					for (Players data : list){
+						try {
+							Player player = Player.builder()
+								.id(data.getPlayer().getId())
+								.nameKr(data.getPlayer().getName())
+								.nameEng(data.getPlayer().getName())
+								.photo(data.getPlayer().getPhoto())
+								.age(data.getPlayer().getAge())
+								.height(data.getPlayer().getHeight())
+								.weight(data.getPlayer().getWeight())
+								.nationality(data.getPlayer().getNationality())
+								.build();
+							log.info("player: {}", player);
+							playerRepository.save(player);
 
-						SeasonLeagueTeamPlayer saveData = SeasonLeagueTeamPlayer.builder()
-							.seasonLeagueTeam(slt)
-							.player(player)
-							.build();
-						log.info("SeasonLeagueTeamPlayer: {}", saveData);
-						seasonLeagueTeamPlayerRepository.save(saveData);
-					}catch (Exception e){
-						log.error("fail id : {}",data.getPlayer().getId()+e.getMessage());
+							SeasonLeagueTeamPlayer saveData = SeasonLeagueTeamPlayer.builder()
+								.seasonLeagueTeam(slt)
+								.player(player)
+								.build();
+							log.info("SeasonLeagueTeamPlayer: {}", saveData);
+							seasonLeagueTeamPlayerRepository.save(saveData);
+						}catch (Exception e){
+							log.error("fail id : {}",data.getPlayer().getId()+e.getMessage());
+						}
 					}
 				}
 			}
