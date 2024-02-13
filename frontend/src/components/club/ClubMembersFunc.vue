@@ -101,7 +101,7 @@ getClubInfo(clubId)
 
 watch(() => clubStore.clubInfo, (newClubInfo) => {
     clubInfo.value = newClubInfo;
-    console.log("000클럽인포 와치000", newClubInfo)
+    // console.log("000클럽인포 와치000", newClubInfo)
 }, { immediate: true, deep: true });
 
 const clubMemberList = computed(() => {
