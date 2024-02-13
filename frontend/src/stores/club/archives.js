@@ -17,12 +17,12 @@ export const useArchiveStore = defineStore("archive",() => {
         requestArchiveList(
             clubId,
             (res) => {
-                console.log("**********추억 목록 res**********")
-                console.log(res);
+                // console.log("**********추억 목록 res**********")
+                // console.log(res);
                 if (res.status === httpStatusCode.OK) {
                     archiveList.value = res.data.data;
-                    console.log("********추억 목록 실제 값******")
-                    console.log(archiveList.value)
+                    // console.log("********추억 목록 실제 값******")
+                    // console.log(archiveList.value)
                 }
             },
             (error) => {
@@ -36,12 +36,12 @@ export const useArchiveStore = defineStore("archive",() => {
         requestArchiveDetail(
             archiveId,
             (res) => {
-                console.log("**********추억 상세 조회 res**********")
-                console.log(res);
+                // console.log("**********추억 상세 조회 res**********")
+                // console.log(res);
                 if (res.status === httpStatusCode.OK) {
                     archiveDetail.value = res.data.data;
-                    console.log("********추억 상세 조회 실제 값******")
-                    console.log(archiveDetail.value)
+                    // console.log("********추억 상세 조회 실제 값******")
+                    // console.log(archiveDetail.value)
                 }
             },
             (error) => {
@@ -52,13 +52,13 @@ export const useArchiveStore = defineStore("archive",() => {
 
     // 추억 생성
     const createArchive = (data) => {
-        console.log("******생성될 추억 정보******")
-        console.log(data)
+        // console.log("******생성될 추억 정보******")
+        // console.log(data)
         requestCreateArchive(
             data,
             (res) => {
                 if (res.status === httpStatusCode.CREATE) {
-                    console.log("********추억이 아주 잘 저장됨******")
+                    // console.log("********추억이 아주 잘 저장됨******")
                     alert("추억이 잘 간직되었습니다!")
                 }
             },
@@ -77,8 +77,8 @@ export const useArchiveStore = defineStore("archive",() => {
                 data,
                 (res) => {
                     if (res.status === httpStatusCode.CREATE) {
-                        console.log("********이미지가 아주 잘 저장됨******")
-                        console.log(res.data.data)
+                        // console.log("********이미지가 아주 잘 저장됨******")
+                        // console.log(res.data.data)
                         // {
                         //     "createdTime": "2024-02-13 12:04:31.076883",
                         //     "updatedTime": "2024-02-13 12:04:31.076883",
@@ -102,15 +102,15 @@ export const useArchiveStore = defineStore("archive",() => {
 
     // 추억 수정
     const updateArchive = (data) => {
-        console.log("*******수정될 추억 정보********")
-        console.log(data)
+        // console.log("*******수정될 추억 정보********")
+        // console.log(data)
         requestUpdateArchive(
             data,
             (res) => {
-                console.log("*******추억 수정 res********")
-                console.log(res)
+                // console.log("*******추억 수정 res********")
+                // console.log(res)
                 if (res.status === httpStatusCode.OK) {
-                    console.log("********추억이 아주 잘 수정됨******")
+                    // console.log("********추억이 아주 잘 수정됨******")
                     alert("추억정보가 잘 수정되었습니다!")
                 }
             },
@@ -125,11 +125,11 @@ export const useArchiveStore = defineStore("archive",() => {
         requestDeleteArchive(
             archiveId,
             (res) => {
-                console.log("*******추억 삭제 res********")
-                console.log(res)
+                // console.log("*******추억 삭제 res********")
+                // console.log(res)
                 if (res.status === httpStatusCode.OK) {
-                    console.log("********추억이 아주 잘 삭제됨******")
-                    alert("추억이 눈녹듯 사라졌습니다!")
+                    // console.log("********추억이 아주 잘 삭제됨******")
+                    alert("추억이 사라졌습니다!")
                     getArchiveList(clubId)
                 }
             },

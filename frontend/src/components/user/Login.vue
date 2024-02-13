@@ -87,7 +87,7 @@ const doLogin = () => {
 }
 
 function handleSubmit() {
-  console.log(loginRequest.value);
+  // console.log(loginRequest.value);
   // 서버에 로그인 정보를 보냄
 }
 

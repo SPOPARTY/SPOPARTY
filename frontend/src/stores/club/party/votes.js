@@ -17,8 +17,8 @@ export const useVoteStore = defineStore("vote", () => {
         requestOngoingVoteList(partyId,
             (res) => {
                 if (res.data.status === httpStatusCode.OK) {
-                    console.log("*******진행 중인 투표 조회******")
-                    console.log(res)
+                    // console.log("*******진행 중인 투표 조회******")
+                    // console.log(res)
                     ongoingVoteList.value = res.data.data;
                 }
             },
@@ -34,8 +34,8 @@ export const useVoteStore = defineStore("vote", () => {
         requestFinishedVoteList(partyId,
             (res) => {
                 if (res.data.status === httpStatusCode.OK) {
-                    console.log("*******종료된 투표 조회*******")
-                    console.log(res)
+                    // console.log("*******종료된 투표 조회*******")
+                    // console.log(res)
                     finishedVoteList.value = res.data.data;
                 }
             },
@@ -51,8 +51,8 @@ export const useVoteStore = defineStore("vote", () => {
         requestMyVoteList(partyId, memberId,
             (res) => {
                 if (res.data.status === httpStatusCode.OK) {
-                    console.log("*********내가 만든 투표 조회*********");
-                    console.log(res)
+                    // console.log("*********내가 만든 투표 조회*********");
+                    // console.log(res)
                     myVoteList.value = res.data.data;
                 }
             },
@@ -69,8 +69,8 @@ export const useVoteStore = defineStore("vote", () => {
         requestVoteDetail(partyId, voteId,
         (res) => {
             if(res.data.status === httpStatusCode.OK) {
-                console.log("*******투표 상세 조회 성공*******");
-                console.log(res)
+                // console.log("*******투표 상세 조회 성공*******");
+                // console.log(res)
                 voteDetail.value = res.data.data;
             }
         }, 
