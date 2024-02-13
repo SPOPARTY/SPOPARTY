@@ -21,9 +21,15 @@
             </v-row>
             <v-card class="inner-card" >
                 <div v-for="(vote, index) in currentVotes" :key="index">
-                    <v-card-text class="vote-title" v-if="voteType == 'ongoing' && vote.user.userId !== memberId" @click="showDetailVote(vote)">{{ vote.title }}</v-card-text>
-                    <v-card-text class="vote-title" v-if="voteType == 'myVotes'" @click="showMyVote(vote)">{{ vote.title }}</v-card-text>
-                    <v-card-text class="vote-title" v-if="voteType == 'finished'" @click="showFinishedVote(vote)">{{ vote.title }}</v-card-text>
+                    <v-card-text class="vote-title" 
+                        v-if="voteType == 'ongoing' && vote.user.userId !== memberId" 
+                        @click="showDetailVote(vote)">{{ vote.title }}</v-card-text>
+                    <v-card-text class="vote-title" 
+                        v-if="voteType == 'myVotes' && vote.ongoing === 1" 
+                        @click="showMyVote(vote)">{{ vote.title }}</v-card-text>
+                    <v-card-text class="vote-title" 
+                        v-if="voteType == 'finished'" 
+                        @click="showFinishedVote(vote)">{{ vote.title }}</v-card-text>
                 </div>
             </v-card>
             <v-row class="buttons">
@@ -35,7 +41,7 @@
                 </v-col>
             </v-row>
         </v-card>
-        <CreateVote v-if="isCreateVoteVisible" @create-vote-close="isCreateVoteVisible = false"/>
+        <CreateVote v-if="isCreateVoteVisible" @create-vote-close="isCreateVoteVisible = false" :nickname="nickname"/>
     </v-dialog>
 
     <!-- 투표 참여 모달 -->
@@ -110,13 +116,26 @@
         max-width="500px"
         >
         <v-card>
-            <v-card-title class="text-center">완료된 투표 content</v-card-title>
-            <v-card-text class=text-center>정답</v-card-text>
-            <v-card-text class=text-center>벌칙 당첨자</v-card-text>
+            <!-- {{ finishedVoteDetail }} -->
+            <v-card-title class="text-center">완료된 투표</v-card-title>
+            <!-- {{ finishedVoteDetail.options }} -->
+            <v-card-text class="text-center">
+                정답
+                <h3>
+                    {{finishedVoteDetail.options.filter((option) => option.optionId ===finishedVoteDetail.answerOptionId)[0].content }}
+                </h3>
+            </v-card-text>
+            <v-card-text v-for="(option, index) in finishedVoteDetail.options" :key="index" class="text-center">
+                {{ option.content }} - <span>{{ option.users.length }}</span>
+            </v-card-text>
             <v-card class="inner-card" >
-                <v-card-text>벌칙</v-card-text>
-                <v-card-text>당첨자 1</v-card-text>
-                <v-card-text>당첨자 2</v-card-text>
+                <!-- <v-card-text><h3>벌칙 당첨자</h3></v-card-text> -->
+                <v-card-text class="text-center">벌칙 <h4>{{ finishedVoteDetail.penalty.content }}</h4></v-card-text>
+                <div v-for="(users,index) in finishedVoteDetail.options.filter((option) => option.optionId !== finishedVoteDetail.answerOptionId)" :key="index">
+                    <v-card-text v-for="(user, idx) in users.users" :key="idx">
+                        {{ user.name }}
+                    </v-card-text>
+                </div>
             </v-card>
             <v-card-actions class="buttons" style="transform:translateX(-200px)">
                 <v-spacer></v-spacer>
@@ -135,6 +154,7 @@ import {useRoute, useRouter} from 'vue-router';
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 
+import {getMember} from '@/api/member'
 import CreateVote from '@/components/vote/CreateVote.vue'
 import {voteConnect, createVote,doVote,finishVote } from '@/api/vote'
 import {useVoteStore} from '@/stores/club/party/votes'
@@ -144,20 +164,38 @@ const emit = defineEmits([
     'vote-close'
 ])
 
-const voteStore = useVoteStore();
 
+
+const voteStore = useVoteStore();
 const route = useRoute();
 
 const memberId = localStorage.getItem("id");
+const nickname = ref('');
 const clubId = route.params.clubId;
 const partyId = route.params.partyId;
 
 const isModalVisible = ref(true);
 
+const getMemberInfo = () => {
+    getMember(
+        memberId,
+        ({data,status}) => {
+        console.log("data ==> ",data);
+        nickname.value = data.data.nickname;
+        },
+        (error) => {
+        console.log("살려줘")
+        console.log(error)
+        }
+    )
+}
+
+
 voteConnect(partyId);
 
 // 투표 참여 프로세스
 const voteDetail = ref({
+    partyId : '',
     voteId : '',
     content : '',
     ongoing : null,
@@ -220,20 +258,24 @@ let selectedAnswer;
 
 function showDetailVote(vote) {
     selectedAnswer = ref({
-        optionId : '',
-        content : '',
+        partyId : partyId,
         voteId : '',
+        memberId : memberId,
+        nickname : nickname.value,
+        optionId : '',
+        content:'',
     })
     isDetailVoteVisible.value = true;
     voteDetail.value = vote;
-    voteDetail.value.options = options.value.filter(option => option.voteId === vote.voteId)
 }
 
 // 투표 해버리기
 function selectAnswer(option) {
     selectedAnswer.value.optionId = option.optionId;
+    selectedAnswer.value.voteId = voteDetail.value.voteId;
     selectedAnswer.value.content = option.content;
-    selectedAnswer.value.voteId = option.voteId;
+    console.log("내가 고를 선지")
+    console.log(selectedAnswer.value)
 }
 
 // 투표 제출
@@ -245,7 +287,7 @@ function submitAnswer(selected) {
         alert("반드시 고르셔야 합니다!")
         return;
     }
-
+    doVote(selected)
     confirmSubmit.value = true;
     isDetailVoteVisible.value = false;
 }
@@ -312,11 +354,15 @@ function doneVote() {
         nickname : myVoteDetail.value.user.name,
         answerOptionId : myAnswer.value.answerOptionId
     }
+    if (data.answerOptionId === '') {
+        alert("정답은 반드시 고르셔야 합니다!")
+        return;
+    }
     console.log(data)
     finishVote(data);
     confirmFinish.value = false;
     isMyVoteVisible.value = false;
-    alert("투표 마감 완료!")
+    // alert("투표 마감 완료!")
 }
 
 
@@ -324,7 +370,32 @@ function doneVote() {
 // 투표 결과 모달 -> 나여야 함
 const isFinishVoteVisible = ref(false);
 
-function showFinishedVote() {
+const finishedVoteDetail = ref({
+    answerOptionId : '',
+    answerOptionContent : '',
+    penalty : {
+        content : '',
+        penaltyId : '',
+    },
+    user : {
+        userId : '',
+        name : '',
+    },
+    options : [],
+    penaltyUsers : [],
+})
+
+
+
+
+
+function showFinishedVote(vote) {
+    finishedVoteDetail.value.answerOptionId = vote.answerOptionId;
+    // finishedVoteDeetail.value.answerOptionContent = vote.answerOptionContent;
+    finishedVoteDetail.value.penalty = vote.penalty
+    finishedVoteDetail.value.user = vote.user
+    finishedVoteDetail.value.options = vote.options
+    // finishedVoteDetail.value.penaltyUsers = vote.penaltyUsers;
     isFinishVoteVisible.value = true;
 }
 
@@ -335,6 +406,7 @@ function closeModal() {
 }
 
 onMounted(() => {
+    getMemberInfo()
     voteStore.getOngoingVoteList(partyId);
     voteStore.getFinishedVoteList(partyId);
     voteStore.getMyVoteList(partyId, memberId);

@@ -39,7 +39,7 @@
             
             <v-row >
                 <v-col>
-                    <v-btn class="button" @click="addOption">+</v-btn>
+                    <v-btn class="button" @click="addOption"><b>선택지 추가</b></v-btn>
                 </v-col>
             </v-row>
 
@@ -96,7 +96,6 @@
 <script setup>
 import {ref,watch,onMounted} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
-import {getMember} from '@/api/member'
 // import Stomp from 'webstomp-client'
 // import SockJS from 'sockjs-client'
 
@@ -104,6 +103,10 @@ import {voteConnect, createVote } from '@/api/vote'
 import {useVoteStore} from '@/stores/club/party/votes'
 
 const isModalVisible = ref(true);
+
+const props = defineProps({
+    nickname : String
+})
 
 const emit = defineEmits([
     'create-vote-close'
@@ -115,26 +118,13 @@ const clubId = route.params.clubId;
 
 const partyId = route.params.partyId;
 const memberId = localStorage.getItem("id");
-const nickname = ref('')
+const nickname = ref(props.nickname);
 const voteTitle = ref('');
 const options = ref(['']);
 const selectedPenalty = ref(null);
 
 const voteStore = useVoteStore();
 
-const getMemberInfo = () => {
-    getMember(
-        memberId,
-        ({data,status}) => {
-        console.log("data ==> ",data);
-        nickname.value = data.data.nickname;
-        },
-        (error) => {
-        console.log("살려줘")
-        console.log(error)
-        }
-    )
-}
 
 
 const penalties = ref([
@@ -211,12 +201,13 @@ function submitVote() {
     console.log("partyId -> ",partyId);
     console.log("memberId -> ",memberId);
     console.log("title -> ", voteTitle.value);
+    console.log("nickname -> ", props.nickname);
     console.log("options -> ", options.value);
     console.log("penalty -> " , selectedPenalty.value);
     const data = {
         partyId : partyId,
         memberId : memberId,
-        nickname : nickname.value,     // 닉네임이 반드시 필요한가?
+        nickname : props.nickname,
         title : voteTitle.value,
         options : options.value,
         penalty : selectedPenalty.value,
@@ -225,9 +216,6 @@ function submitVote() {
     closeModal();
 }
 
-onMounted(() => {
-    getMemberInfo();
-})
 
 // 투표 생성 모달 닫기
 function closeModal() {
