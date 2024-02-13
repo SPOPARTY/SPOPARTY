@@ -56,7 +56,10 @@ public class ArchiveController {
 	public ResponseEntity<?> registerArchive(@RequestBody Map<String, String> request) {
 		Long memberId = Long.parseLong(request.get("memberId"));
 		Long clubId = Long.parseLong(request.get("clubId"));
-		Long fileId = Long.parseLong(request.get("fileId"));
+		Long fileId = null;
+		if (!request.get("fileId").isEmpty()) {
+			fileId = Long.parseLong(request.get("fileId"));
+		}
 		Long thumbnailId = Long.parseLong(request.get("thumbnailId"));
 		String partyTitle = request.get("partyTitle");
 		String fixtureTitle = request.get("fixtureTitle");
@@ -66,7 +69,9 @@ public class ArchiveController {
 		archive.setClub(clubRepository.findById(clubId).orElseThrow(() -> new CustomException(DATA_NOT_FOUND)));
 		archive.setPartyTitle(partyTitle);
 		archive.setFixtureTitle(fixtureTitle);
-		archive.setFile(fileService.findById(fileId));
+		if (!request.get("fileId").isEmpty()) {
+			archive.setFile(fileService.findById(fileId));
+		}
 		archive.setThumbnail(fileService.findById(thumbnailId));
 
 		ArchiveProjection data = archiveService.registerArchive(archive);

@@ -29,7 +29,7 @@ spring:
 #로거 찍기
 logging:
   level:
-    org.hibernate.SQL: debug
+    org.hibernate.SQL: INFO
     org.hibernate.orm.jdbc.bind: trace
 
 
