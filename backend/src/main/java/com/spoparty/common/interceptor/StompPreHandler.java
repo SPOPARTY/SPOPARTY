@@ -1,4 +1,4 @@
-package com.spoparty.api.vote.interceptor;
+package com.spoparty.common.interceptor;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
