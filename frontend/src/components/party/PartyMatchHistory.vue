@@ -1,6 +1,7 @@
 <template>
     <v-container fluid class="vc">
-        <p>경기 이력 페이지. fixtureId = {{ fixtureId ? fixtureId : 'null' }}</p>
+        <!-- <p>경기 이력 페이지. fixtureId = {{ fixtureId ? fixtureId : 'null' }}</p> -->
+        <p class="table-title">양 팀 경기 이력</p>
         <p v-if="fixtureId == null" class="alert-msg">경기를 선택해주세요.</p>
         <v-row v-else>
             <v-col cols="6">
@@ -229,5 +230,11 @@ const toTDP = (teamId) => {
     margin: 30px;
     font-size: 2rem;
     color: #292646;
+}
+.table-title {
+  height: 25px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 10px;
 }
 </style>

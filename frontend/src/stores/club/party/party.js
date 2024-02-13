@@ -29,6 +29,17 @@ export const usePartyStore = defineStore("party",() => {
                     console.log(partyInfo.value)
                     return partyInfo.value;
                 }
+                // {
+                //     "partyId": 202,
+                //     "sessionId": "5",
+                //     "title": null,
+                //     "maxParticipants": 6,
+                //     "currentParticipants": 1,
+                //     "hostId": 7,
+                //     "hostNickName": "fetest",
+                //     "fixtureUrl": null,
+                //     "fixtureInfo": null
+                // }
             },
             (error) => {
                 console.log("파티 정보 가져오는데 에러")

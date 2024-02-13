@@ -30,8 +30,8 @@
                 <v-img :src="match.homeTeam.logo" class="team-logo team-name"
                   @click="toTDP(match.homeTeam.seasonLeagueTeamId)"></v-img>
               </v-col>
-              <v-col cols="1" class="pa-0">
-                <span class="vs">VS</span>
+              <v-col cols="1" class="pa-0 vs-col">
+                <span class="vs-span">VS</span>
               </v-col>
               <v-col cols="2" align="center">
                 <v-img :src="match.awayTeam.logo" class="team-logo team-name"
@@ -211,14 +211,19 @@ const toTDP = (teamId) => {
   margin-bottom: 10px;
 }
 
-.vs {
+.vs-col {
+  min-width: 60px;
+}
+
+.vs-span {
   font-size: 24px;
   font-weight: bold;
-  margin: 0 10px;
-  min-width: 70px;
+  margin: 0px;
+  margin-left: 10px;
+  min-width: 60px;
 }
+
 .team-name {
   cursor: pointer;
   padding: 0;
-}
-</style>
+}</style>

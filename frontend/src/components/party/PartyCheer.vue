@@ -1,11 +1,12 @@
 <template>
-    <p>경기 응원 페이지. fixtureId = {{ fixtureId ? fixtureId : 'null' }}</p>
+    <!-- <p>경기 응원 페이지. fixtureId = {{ fixtureId ? fixtureId : 'null' }}</p> -->
+    <!-- <p class="table-title">경기 응원</p> -->
     <p v-if="fixtureId == null" class="mb-6 alert-msg">경기를 선택해주세요.</p>
-    <v-container v-else fluid class="pa-2 fill-height part-section">
+    <v-container v-else fluid class="pa-4 fill-height part-section">
         <v-row justify="center">
             <v-col cols="12" class="d-flex flex-column align-center justify-center">
-                <v-carousel v-if="cheer" v-model="model" class='carousel' :show-arrows="false" height="500px" hide-delimiters 
-                    hide-delimiter-background>
+                <v-carousel v-if="cheer" v-model="model" class='carousel' :show-arrows="false" height="500px"
+                    hide-delimiters hide-delimiter-background>
                     <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
                         <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
                             <!-- 경기 기본 정보 -->
@@ -37,7 +38,8 @@
                                 <v-card :disabled="match.alreadyCheer" class="team-card text-center"
                                     @click="() => voteForTeam(match, 'home')">
                                     <v-img :src="match.fixture.homeTeam.logo" class="team-logo"></v-img>
-                                    <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.homeTeam.seasonLeagueTeamId }">
+                                    <v-card-title
+                                        :class="{ chosen: match.cheerTeamId == match.fixture.homeTeam.seasonLeagueTeamId }">
                                         {{ match.fixture.homeTeam.nameKr }}
                                     </v-card-title>
                                     <v-card-text v-if="match.alreadyCheer">
@@ -49,7 +51,8 @@
                                 <v-card :disabled="match.alreadyCheer" class="team-card text-center"
                                     @click="() => voteForTeam(match, 'away')">
                                     <v-img :src="match.fixture.awayTeam.logo" class="team-logo"></v-img>
-                                    <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.seasonLeagueTeamId }">
+                                    <v-card-title
+                                        :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.seasonLeagueTeamId }">
                                         {{ match.fixture.awayTeam.nameKr }}
                                     </v-card-title>
                                     <v-card-text v-if="match.alreadyCheer">
@@ -71,7 +74,7 @@
                 </v-carousel>
                 <v-card v-else class="card-else" title="경기 응원 데이터가 없습니다.">
                     <!-- <v-card-title>경기 응원 데이터가 없습니다.</v-card-title> -->
-                    <v-card-subtitle v-if="fixtureId">해당 경기에는 응원이 없습니다.</v-card-subtitle>
+                    <v-card-subtitle v-if="fixtureId">해당 경기에는 응원 투표가 없습니다.</v-card-subtitle>
                     <v-card-subtitle v-else>경기를 선택해주세요.</v-card-subtitle>
                 </v-card>
             </v-col>
@@ -105,7 +108,7 @@ watch(() => footballStore.oneCheerData, (newCheer) => {
 
 // 비동기 함수 호출
 if (fixtureId.value !== null) {
-    getCheerData(fixtureId);
+    getCheerData(fixtureId.value);
 }
 // post 메서드 함수 관련
 const isLogined = ref(localStorage.getItem("accessToken") !== null);
@@ -115,7 +118,7 @@ const postCheers = (data, team) => {
     postCheersData(data, team);
     setTimeout(() => {
         getCheerData(data.fixtureId);
-  }, 100);
+    }, 100);
 };
 
 const model = ref(0);
@@ -335,6 +338,7 @@ function resetBarAnimation(match) {
 .VS {
     font-size: 3rem;
 }
+
 .card-else {
     padding: 30px;
     margin: 20px;
@@ -342,6 +346,7 @@ function resetBarAnimation(match) {
     /* font-size: 2rem; */
     color: #292646;
 }
+
 .alert-msg {
     text-align: center;
     margin: 30px;
