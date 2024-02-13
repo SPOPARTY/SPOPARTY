@@ -1,38 +1,30 @@
 <template>
     <v-container fluid class="pa-2 fill-height part-section">
-        <v-row justify="center">
-            <v-col cols="12" class="d-flex flex-column align-center justify-center pa-2">
-                <h2 class="card-title text-h2 py-6">소개 컴포넌트(비로그인)</h2>
-                <div class="card-text py-6">
-                    <div class="intro-text">
-                        <span>
-                            <v-icon size="100px" class="my-2">mdi-human-greeting-variant</v-icon>
-                            <v-icon size="80px" class="mt-2">mdi-soccer</v-icon>
-                        </span>
-                        <p class="text-center text-h4 mb-5">친구들과 함께 축구 경기를 응원해요!</p>
-                        <div class="text-center">
-                            <span class="asking">회원이 아니시라면</span>
-                            <v-btn text to="/signup" class="mx-2" color="primary">
-                                <v-tooltip activator="parent" location="top">
-                                    회원가입
-                                </v-tooltip>
-                                <v-icon size="x-large">mdi-account-plus</v-icon>
-                            </v-btn>
-                        </div>
-                        <br>
-                        <div class="text-center">
-                            <span class="asking">회원이시라면</span>
-                            <v-btn text to="/login" class="mx-2" color="primary">
-                                <v-tooltip activator="parent" location="top">
-                                    로그인
-                                </v-tooltip>
-                                <v-icon size="x-large">mdi-login</v-icon>
-                            </v-btn>
-                        </div>
-                    </div>
-                </div>
-            </v-col>
-        </v-row>
+        <v-row justify="center" class="card-bg">
+      <v-col cols="12" sm="8" md="6">
+        <v-card class="text-center pa-12 elevation-12" color="#f5f5f5">
+          <v-icon large color="green darken-2">mdi-soccer</v-icon>
+          <h1 class="pt-2">축구 경기 응원하기</h1>
+          <p class="subtitle-1 font-weight-medium pt-2">
+            친구들과 함께 축구 경기를 응원하세요. <br>
+            그리고 응원하는 팀의 승리를 같이 기뻐해 보세요!
+          </p>
+          <v-container class="pt-4">
+            <v-row justify="center">
+              <v-col cols="6">
+                <v-btn outlined color="primary" to="/signup" block>회원가입</v-btn>
+              </v-col>
+              <v-col cols="6">
+                <v-btn outlined color="secondary" to="/login" block>로그인</v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+          <p class="caption pt-4">
+            이미 회원이신가요? 바로 <router-link to="/login">로그인</router-link>하고 경기를 즐기세요!
+          </p>
+        </v-card>
+      </v-col>
+    </v-row>
     </v-container>
 </template>
 
@@ -43,31 +35,20 @@
 </script>
     
 <style scoped>
-.card-title {
-    margin-bottom: 16px;
-    /* 제목 아래 여백 */
-    font-weight: bold;
+.part-section {
+    height: 100vh;
 }
-
-.card-text {
-    margin-bottom: 16px;
-    /* 텍스트 아래 여백 */
-}
-
-.intro-text {
+.card-bg {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/soccer-field.jpg');
+  background-size: cover;
+    height: 85vh;
 }
 
-.intro-text p {
-    max-width: 100%;
-    white-space: normal;
-}
-
-.asking {
-    color: rgba(0, 0, 0, 0.5);
+h1 {
+    color : #333D51;
 }
 </style>
 

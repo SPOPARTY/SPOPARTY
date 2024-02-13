@@ -225,14 +225,18 @@ export const useFootballStore = defineStore("football",() => {
     }
 
     const getMatchRealTimeData = (fixtureId) => {
+        return new Promise((resolve, reject) => {
         requestGetMatchRealTimeData(
             fixtureId,
             (res) => {
                 console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     console.log("히히 경기 실황 정보 가져오기 발사")
-                    matchRealTimeData.value = res.data.data;
+                    matchRealTimeData.value = res.data.body.data;
                     console.log(matchRealTimeData.value)
+                    resolve(res.data.data);
+                } else {
+                    reject(new Error("응답 상태가 OK가 아님"));
                 }
             },
             (error) => {
@@ -242,9 +246,10 @@ export const useFootballStore = defineStore("football",() => {
                     console.error(error)
                     alert("경기 실황 정보 가져오기 실패!")
                 }
+                reject(error);
             }
         )
-    }
+    })}
 
     const findTeamIdsByFixtureId = (fixtureId) => {
         const matches = matchWatchable.value;

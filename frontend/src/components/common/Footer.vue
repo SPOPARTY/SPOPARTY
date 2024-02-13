@@ -23,7 +23,7 @@
     background-color:#223355;
     color: #D3AC2B;
     max-height: 8vh;
-    margin-top: 5vh;
+    margin-top: 8vh;
 }
 
 span {
