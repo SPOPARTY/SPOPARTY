@@ -47,6 +47,9 @@ const voteConnect = (partyId) => {
           alert("투표 마감 성공!")
           console.log('*******counting********')
           console.log(response)
+
+          voteStore.currentFinishedVote = JSON.parse(response.body)
+
           voteStore.getOngoingVoteList(partyId);
           voteStore.getMyVoteList(partyId,memberId);
           voteStore.getFinishedVoteList(partyId);
