@@ -39,7 +39,7 @@
             
             <v-row >
                 <v-col>
-                    <v-btn class="button" @click="addOption">+</v-btn>
+                    <v-btn class="button" @click="addOption"><b>선택지 추가</b></v-btn>
                 </v-col>
             </v-row>
 
@@ -94,24 +94,38 @@
 </template>
 
 <script setup>
-import {ref,watch} from 'vue'
+import {ref,watch,onMounted} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
-import {voteConnect, createVote, voteDisconnect } from '@/api/vote'
+// import Stomp from 'webstomp-client'
+// import SockJS from 'sockjs-client'
+
+import {voteConnect, createVote } from '@/api/vote'
+import {useVoteStore} from '@/stores/club/party/votes'
 
 const isModalVisible = ref(true);
+
+const props = defineProps({
+    nickname : String
+})
 
 const emit = defineEmits([
     'create-vote-close'
 ])
 
-const route = useRoute();
 
-const partyId = route.params.clubId;
+const route = useRoute();
+const clubId = route.params.clubId;
+
+const partyId = route.params.partyId;
 const memberId = localStorage.getItem("id");
-// const nickName = 
+const nickname = ref(props.nickname);
 const voteTitle = ref('');
 const options = ref(['']);
 const selectedPenalty = ref(null);
+
+const voteStore = useVoteStore();
+
+
 
 const penalties = ref([
     '음소거',
@@ -160,8 +174,6 @@ const showCustomPenalty = ref(false);
 
 const customPenalty = ref('');
 const setCustomPenalty = (penalty) => {
-    // console.log("***커스텀 벌칙 생성***")
-    // console.log("커스텀 벌칙 ->",penalty)
     if (penalty === '' || penalty.length > 20) {
         return;
     }
@@ -173,9 +185,16 @@ const setCustomPenalty = (penalty) => {
     customPenalty.value = ''
 }
 
-// 투표생성 로직
+voteConnect(partyId);
+
 function submitVote() {
-    if (voteTitle.value === "" || options.value === "" || selectedPenalty.value === "") {
+    if (voteTitle.value === ""){
+        alert("제목이 빈 칸어서는 안됩니다!")
+        return;
+    }
+
+    if( selectedPenalty.value === ""){
+        alert("패널티는 반드시 고르셔야 합니다!")
         return;
     }
 
@@ -185,20 +204,29 @@ function submitVote() {
         return;
     }
 
+    for (let i = 0; i < options.value.length; i++) {
+        if(options.value[i] === '') {
+            alert("선택지 내용 중에 빈 칸이 있어서는 안됩니다!")
+            return;
+        }
+    }
+
     console.log("partyId -> ",partyId);
     console.log("memberId -> ",memberId);
     console.log("title -> ", voteTitle.value);
+    console.log("nickname -> ", props.nickname);
     console.log("options -> ", options.value);
     console.log("penalty -> " , selectedPenalty.value);
     const data = {
         partyId : partyId,
         memberId : memberId,
-        // nickname : ,     // 닉네임이 반드시 필요한가?
+        nickname : props.nickname,
         title : voteTitle.value,
         options : options.value,
         penalty : selectedPenalty.value,
     }
     createVote(data);
+    closeModal();
 }
 
 

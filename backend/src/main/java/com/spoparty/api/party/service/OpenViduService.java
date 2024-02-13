@@ -61,7 +61,7 @@ public class OpenViduService {
 			log.debug("session is null");
 			return null;
 		}
-		ConnectionProperties properties = ConnectionProperties.fromJson(params).data(memberId.toString()).build();
+		ConnectionProperties properties = ConnectionProperties.fromJson(params).data(String.valueOf(memberId)).build();
 		Connection connection = session.createConnection(properties);
 
 		return connection.getToken();

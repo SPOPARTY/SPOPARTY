@@ -5,14 +5,18 @@
       <v-list lines="one">
         <!-- chatsMock 은 ui 테스트용 -->
         <!-- <v-list-item v-for="(item, i) in chatsMock" :key="i" :value="item" color="primary"> -->
-        <v-list-item v-for="(item, i) in chats" :key="i" :value="item" color="primary">
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
+        <v-list-item v-for="(item, i) in chats" :key="i" :value="item" color="primary" justify="center" class="ma-0 pa-0">
+          <v-row rows="12" class="ma-0 pa-0">
+            <v-col cols="3">
+              <v-img :src="item.teamLogo" height="48" width="48"></v-img>
+            </v-col>
+            <v-col cols="8">
+              <v-list-item-content class="ma-0 pa-0">
             <v-list-item-title v-text="item.userName"></v-list-item-title>
             <v-list-item-subtitle v-text="item.message"></v-list-item-subtitle>
-          </v-list-item-content>
+            </v-list-item-content>
+            </v-col>
+          </v-row>
         </v-list-item>
       </v-list>
     </div>
@@ -36,6 +40,7 @@ import SockJS from 'sockjs-client'
 import { onBeforeUnmount, onMounted, reactive, ref, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePartyStore } from '@/stores/club/party/party'
+import {  getMember } from '@/api/member'
 
 const serverURL = 'https://i10a802.p.ssafy.io/api/ws-stomp'
 
@@ -44,19 +49,12 @@ let stompClient = undefined
 const route = useRoute()
 const router = useRouter()
 
-const partyStore = usePartyStore()
-
 const chats = reactive([])
-
-const message = ref('')
-
-onMounted(() => { })
 
 //// 파티 정보 수정 로직
 // 파티 입장 및 퇴장
 const clubId = route.params.clubId
 const partyId = route.params.partyId
-const partyMemberList = ref(partyStore.partyMemberList)
 
 const myMessage = ref({
   userName: '',
@@ -66,23 +64,21 @@ const myMessage = ref({
   message: '',
 })
 
-watch(
-  () => partyStore.partyMemberList,
-  (newPartyMembers) => {
-    partyMemberList.value = newPartyMembers
-    partyMemberList.value.map((member) => {
-      console.log(member)
-      console.log(localStorage.getItem('id'))
-      if (member.memberId == localStorage.getItem('id')) {
-        myMessage.value.userName = member.memberNickname
-        myMessage.value.teamLogo = 'qwer'
-        myMessage.value.clubId = clubId
-        myMessage.value.partyId = partyId
-        connect()
-      }
-    })
-  },
-  { immediate: true, deep: true },
+onMounted(() => { 
+    getMember(
+      localStorage.getItem('id'),
+        ({data,status}) => {
+          myMessage.value.teamLogo = data.data.team.logo
+          myMessage.value.userName = data.data.nickname
+          myMessage.value.clubId = clubId
+          myMessage.value.partyId = partyId
+          connect()
+        },
+        (error) => {
+        console.log(error)
+        }
+    )
+  }
 )
 
 const clearMessage = () => {
