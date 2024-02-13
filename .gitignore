@@ -1,3 +1,4 @@
 .git
 .gitlab
 .idea
+batch/src/main/resources/application-private.yml

@@ -42,10 +42,10 @@ public class Archive extends BaseEntity {
 	@JoinColumn(name = "club_id", referencedColumnName = "club_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Club club;
 
-	@Column(nullable = false, length = 50)
+	@Column(nullable = true, length = 50)
 	private String partyTitle = "";
 
-	@Column(nullable = false, length = 50)
+	@Column(nullable = true, length = 50)
 	private String fixtureTitle = "";
 
 	@OneToOne
