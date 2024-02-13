@@ -45,16 +45,19 @@ public class FixtureEvent extends FootballBaseEntity {
 	private SeasonLeagueTeam seasonLeagueTeam;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "player_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private SeasonLeagueTeamPlayer player;
+
+
+	@JoinColumn(name="player_id", nullable=false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private LineupPlayer player;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "assist_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private SeasonLeagueTeamPlayer assist;
+	@JoinColumn(name="assist_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private LineupPlayer assist;
+
 
 	@Builder
 	public FixtureEvent(long time, String type, String detail, Fixture fixture, SeasonLeagueTeam seasonLeagueTeam,
-		SeasonLeagueTeamPlayer player, SeasonLeagueTeamPlayer assist) {
+		LineupPlayer player, LineupPlayer assist) {
 		this.time = time;
 		this.type = type;
 		this.detail = detail;
