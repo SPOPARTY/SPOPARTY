@@ -81,11 +81,15 @@
         <v-card>
             <!-- {{ myVoteDetail }} -->
             <v-card-title class="text-center"> <h2>{{ myVoteDetail.title }}</h2> </v-card-title>
-            <v-card-text v-for="(option,index) in myVoteDetail.options" :key="index" class="text-center" @click="finalizeAnswer(option)">
-                {{ option.content }}
+            <v-card-text v-for="(option,index) in myVoteDetail.options" :key="index" class="text-left" style="margin-left:150px;"
+                         @click="finalizeAnswer(option)">
+                {{ option.content }} - 
+                <span v-for="(user,index) in option.users" :key="index">
+                    {{ user.name }}
+                </span>
             </v-card-text>
             <v-card-text v-if="myAnswer.answerOption !== ''" class="text-center">
-                당신의 선택 : <b>{{ myAnswer.answerOption }}</b>
+                마감 답안 : <b>{{ myAnswer.answerOption }}</b>
             </v-card-text>
 
 
@@ -125,8 +129,8 @@
                     {{finishedVoteDetail.options.filter((option) => option.optionId ===finishedVoteDetail.answerOptionId)[0].content }}
                 </h3>
             </v-card-text>
-            <v-card-text v-for="(option, index) in finishedVoteDetail.options" :key="index" class="text-center">
-                {{ option.content }} - <span>{{ option.users.length }}</span>
+            <v-card-text v-for="(option, index) in finishedVoteDetail.options" :key="index" class="text-left" style="margin-left:150px;">
+                {{ option.content }} - <span v-for="(user,index) in option.users" :key="index">{{ user.name }}</span>
             </v-card-text>
             <v-card class="inner-card" >
                 <!-- <v-card-text><h3>벌칙 당첨자</h3></v-card-text> -->
@@ -294,6 +298,9 @@ function submitAnswer(selected) {
 
 
 
+////////////////////////////////////////////////////////////
+
+
 // 투표 종료 - 내가 만든 투표
 const isMyVoteVisible = ref(false);
 
@@ -334,6 +341,7 @@ let myAnswer = ref({
 
 function finalizeAnswer(answer) {
     if (answer.optionId === '') {
+        alert("반드시 고르셔야 합니다!")
         return;
     }
     myAnswer.value.memberId = myVoteDetail.value.user.userId;
@@ -366,8 +374,9 @@ function doneVote() {
 }
 
 
+/////////////////////////////////////////////////////////////////////////
 
-// 투표 결과 모달 -> 나여야 함
+// 투표 결과 모달
 const isFinishVoteVisible = ref(false);
 
 const finishedVoteDetail = ref({
@@ -384,10 +393,6 @@ const finishedVoteDetail = ref({
     options : [],
     penaltyUsers : [],
 })
-
-
-
-
 
 function showFinishedVote(vote) {
     finishedVoteDetail.value.answerOptionId = vote.answerOptionId;
