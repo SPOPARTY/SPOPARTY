@@ -24,62 +24,67 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FixtureEventTestController {
 
-	private final FixtureEventRepository fixtureEventRepository;
-	private final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
-	private final FixtureRepository fixtureRepository;
-	private final SeasonLeagueTeamPlayerRepository seasonLeagueTeamPlayerRepository;
 
-	@GetMapping("/save")
-	public ResponseEntity<FixtureEvent> save() {
-
-		FixtureEvent fixtureEvent = FixtureEvent.builder()
-			.fixture(fixtureRepository.findById((long)0).orElse(null))
-			.type("Goal")
-			.detail("Normal Goal")
-			.time((long)23)
-			.seasonLeagueTeam(seasonLeagueTeamRepository.findById((long)2).orElse(null))
-			// .player(seasonLeagueTeamPlayerRepository.findById((long)1).orElse(null))
-			.assist(null)
-			.build();
-
-		FixtureEvent fixtureEvent2 = fixtureEventRepository.save(fixtureEvent);
-		// log.info(fixtureEvent.getId());
-		// log.info(fixtureEvent2.getId());
-
-		return new ResponseEntity<FixtureEvent>(fixtureEvent2, HttpStatusCode.valueOf(200));
-	}
-
-	@GetMapping("/find")
-	public ResponseEntity<FixtureEvent> find(long id) {
-		FixtureEvent fixtureEvent = fixtureEventRepository.findById(id).orElse(null);
-
-		return new ResponseEntity<FixtureEvent>(fixtureEvent, HttpStatusCode.valueOf(200));
-
-	}
-
-	@GetMapping("/findAll")
-	public ResponseEntity<List<FixtureEvent>> findAll() {
-		List<FixtureEvent> fixtureEvent = fixtureEventRepository.findAll();
-		return new ResponseEntity<>(fixtureEvent, HttpStatus.OK);
-	}
-
-	@GetMapping("/delete")
-	public ResponseEntity<List<FixtureEvent>> delete(long id) {
-		fixtureEventRepository.deleteById(id);
-		// List<FixtureEvent> fixtureEvent = fixtureEventRepository.findAll();
-		// return new ResponseEntity<>(fixtureEvent, HttpStatus.OK);
-		return null;
-	}
-
-	// @Transactional
-	// @GetMapping("/dirtycheck-test")
-	// public ResponseEntity<FixtureEvent> dirtycheck(long id, String value) {
-	// 	FixtureEvent fixtureEvent = fixtureEventRepository.findById(id).orElse(null);
-	// 	fixtureEvent.set("UnitedKingdom");
 	//
-	// 	FixtureEvent fixtureEvent2 = fixtureEventRepository.findById(id).orElse(null);
+	// private final FixtureEventRepository fixtureEventRepository;
+	// private final SeasonLeagueTeamRepository seasonLeagueTeamRepository;
+	// private final FixtureRepository fixtureRepository;
+	// private final SeasonLeagueTeamPlayerRepository seasonLeagueTeamPlayerRepository;
+	// @GetMapping("/save")
+	// public ResponseEntity<FixtureEvent> save() {
 	//
-	// 	return new ResponseEntity<>(fixtureEvent2, HttpStatus.OK);
+	//
+	//
+	//
+	//
+	// 	FixtureEvent fixtureEvent = FixtureEvent.builder()
+	// 		.fixture(fixtureRepository.findById((long)0).orElse(null))
+	// 		.type("Goal")
+	// 		.detail("Normal Goal")
+	// 		.time((long)23)
+	// 		.seasonLeagueTeam(seasonLeagueTeamRepository.findById((long)2).orElse(null))
+	// 		.player(seasonLeagueTeamPlayerRepository.findById((long)1).orElse(null))
+	// 		.assist(null)
+	// 		.build();
+	//
+	// 	FixtureEvent fixtureEvent2 = fixtureEventRepository.save(fixtureEvent);
+	// 	// log.info(fixtureEvent.getId());
+	// 	// log.info(fixtureEvent2.getId());
+	//
+	// 	return new ResponseEntity<FixtureEvent>(fixtureEvent2, HttpStatusCode.valueOf(200));
 	// }
+	//
+	// @GetMapping("/find")
+	// public ResponseEntity<FixtureEvent> find(long id) {
+	// 	FixtureEvent fixtureEvent = fixtureEventRepository.findById(id).orElse(null);
+	//
+	// 	return new ResponseEntity<FixtureEvent>(fixtureEvent, HttpStatusCode.valueOf(200));
+	//
+	// }
+	//
+	// @GetMapping("/findAll")
+	// public ResponseEntity<List<FixtureEvent>> findAll() {
+	// 	List<FixtureEvent> fixtureEvent = fixtureEventRepository.findAll();
+	// 	return new ResponseEntity<>(fixtureEvent, HttpStatus.OK);
+	// }
+	//
+	// @GetMapping("/delete")
+	// public ResponseEntity<List<FixtureEvent>> delete(long id) {
+	// 	fixtureEventRepository.deleteById(id);
+	// 	// List<FixtureEvent> fixtureEvent = fixtureEventRepository.findAll();
+	// 	// return new ResponseEntity<>(fixtureEvent, HttpStatus.OK);
+	// 	return null;
+	// }
+	//
+	// // @Transactional
+	// // @GetMapping("/dirtycheck-test")
+	// // public ResponseEntity<FixtureEvent> dirtycheck(long id, String value) {
+	// // 	FixtureEvent fixtureEvent = fixtureEventRepository.findById(id).orElse(null);
+	// // 	fixtureEvent.set("UnitedKingdom");
+	// //
+	// // 	FixtureEvent fixtureEvent2 = fixtureEventRepository.findById(id).orElse(null);
+	// //
+	// // 	return new ResponseEntity<>(fixtureEvent2, HttpStatus.OK);
+	// // }
 
 }
