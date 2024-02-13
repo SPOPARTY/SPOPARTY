@@ -188,7 +188,13 @@ const setCustomPenalty = (penalty) => {
 voteConnect(partyId);
 
 function submitVote() {
-    if (voteTitle.value === "" || options.value === "" || selectedPenalty.value === "") {
+    if (voteTitle.value === ""){
+        alert("제목이 빈 칸어서는 안됩니다!")
+        return;
+    }
+
+    if( selectedPenalty.value === ""){
+        alert("패널티는 반드시 고르셔야 합니다!")
         return;
     }
 
@@ -196,6 +202,13 @@ function submitVote() {
         console.log("*****선택지의 개수는???***** => ", options.value.length)
         alert("투표 선택지의 옵션은 반드시 2개 이상이어야 합니다!")
         return;
+    }
+
+    for (let i = 0; i < options.value.length; i++) {
+        if(options.value[i] === '') {
+            alert("선택지 내용 중에 빈 칸이 있어서는 안됩니다!")
+            return;
+        }
     }
 
     console.log("partyId -> ",partyId);
