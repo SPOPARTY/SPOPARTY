@@ -76,7 +76,7 @@ public class FixtureEventRepositoryCustomImpl implements FixtureEventRepositoryC
 			.where(fixture.id.eq((long)fixtureId))
 			.orderBy(fixtureEvent.time.asc())
 			.fetch();
-	//
+
 	}
 
 }
