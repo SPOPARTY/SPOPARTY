@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.spoparty.api.common.exception.CustomException;
 import com.spoparty.api.football.entity.Fixture;
+import com.spoparty.api.football.entity.FixtureEvent;
 import com.spoparty.api.football.entity.SeasonLeague;
 import com.spoparty.api.football.entity.SeasonLeagueTeam;
 import com.spoparty.api.football.repository.FixtureEventRepository;
@@ -132,13 +133,14 @@ public class FixtureServiceImpl implements FixtureService {
 
 	public List<FixtureEventDTO> findFixtureEvent(int fixtureId) {
 		List<FixtureEventDTO> fixtureEvents = fixtureEventRepository.getFixtureEvent(fixtureId);
-
+		log.info(fixtureEvents.toString());
 		if (!emptyCheckFixtureEvent(fixtureEvents)) {
 			return null;
 		}
 
-		return fixtureEvents;
 
+		// return EntityToDTOFixtureEvent(fixtureEvents);
+		return fixtureEvents;
 	}
 
 	// 특정 날짜 조회시, between으로 조회하기 위해
@@ -176,6 +178,16 @@ public class FixtureServiceImpl implements FixtureService {
 			return true;
 		}
 	}
+
+	// private boolean emptyCheckFixtureEvent(List<FixtureEvent> fixtureEvents) {
+	// 	if (fixtureEvents.isEmpty()) {
+	// 		log.info("조회된 경기 이벤트가 없습니다.");
+	// 		return false;
+	// 	} else {
+	// 		log.info("조회된 경기 이벤트가 있습니다.");
+	// 		return true;
+	// 	}
+	// }
 
 	// Fixture 엔티티를 FixtureDTO로 변환
 	private List<FixtureDTO> EntityToDTOFixture(List<Fixture> fixtures) {
