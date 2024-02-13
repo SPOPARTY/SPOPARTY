@@ -5,8 +5,8 @@ import {useVoteStore} from '@/stores/club/party/votes'
 
 
 const local = localAxios()
-const serverURL = 'http://localhost:9090/api/ws-stomp'
-// const serverURL = "https://i10a802.p.ssafy.io/api/ws-stomp"
+// const serverURL = 'http://localhost:9090/api/ws-stomp'
+const serverURL = "https://i10a802.p.ssafy.io/api/ws-stomp"
 let stompClient = undefined
 const voteStore = useVoteStore();
 
