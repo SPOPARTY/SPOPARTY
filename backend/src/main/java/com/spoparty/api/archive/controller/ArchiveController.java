@@ -57,7 +57,7 @@ public class ArchiveController {
 		Long memberId = Long.parseLong(request.get("memberId"));
 		Long clubId = Long.parseLong(request.get("clubId"));
 		Long fileId = null;
-		if (!request.get("fileId").isEmpty()) {
+		if (request.get("fileId") != null && !request.get("fileId").isEmpty()) {
 			fileId = Long.parseLong(request.get("fileId"));
 		}
 		Long thumbnailId = Long.parseLong(request.get("thumbnailId"));
@@ -69,7 +69,7 @@ public class ArchiveController {
 		archive.setClub(clubRepository.findById(clubId).orElseThrow(() -> new CustomException(DATA_NOT_FOUND)));
 		archive.setPartyTitle(partyTitle);
 		archive.setFixtureTitle(fixtureTitle);
-		if (!request.get("fileId").isEmpty()) {
+		if (request.get("fileId") != null && !request.get("fileId").isEmpty()) {
 			archive.setFile(fileService.findById(fileId));
 		}
 		archive.setThumbnail(fileService.findById(thumbnailId));
