@@ -114,8 +114,11 @@
         </v-table>
       </v-card-text>
       <v-card-actions>
+        <!-- <v-spacer></v-spacer> -->
+        <v-btn color="red" class="px-4" @click="deleteAllNotification">전체 삭제</v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="grey" @click="isNotificationListVisible = false">확인</v-btn>
+        <v-btn color="green" class="px-4" @click="readAllNotification">전체 읽기</v-btn>
+        <v-btn color="primary" class="px-4" @click="isNotificationListVisible = false">확인</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -251,6 +254,36 @@ const notificationDetail = async (id) => {
   notification.value = notificationList.value.find(args => args.id == id);
   if(notification.value.state == 0) await readNotification(id);
   isNotificationDetailVisible.value = true;
+}
+
+const readAllNotification = async () => {
+  // Prompt the user for confirmation
+  if (confirm("모든 알림을 읽음으로 처리하시겠습니까?")) {
+    // User clicked "OK"
+    for (let i = 0; i < notificationList.value.length; i++) {
+      if (notificationList.value[i].state == 0) {
+        // Call the function to mark the notification as read
+        await readNotification(notificationList.value[i].id);
+      }
+    }
+  } else {
+    // User clicked "Cancel", do nothing
+    console.log("모두 읽기 취소!");
+  }
+}
+
+const deleteAllNotification = async () => {
+  // Prompt the user for confirmation
+  if (confirm("정말 모든 알림을 삭제하시겠습니까?")) {
+    // User clicked "OK"
+    for (let i = 0; i < notificationList.value.length; i++) {
+      // Call the function to delete the notification
+      await deleteNotification(notificationList.value[i].id);
+    }
+  } else {
+    // User clicked "Cancel", do nothing
+    console.log("모두 삭제 취소!");
+  }
 }
 
 const countUnread = computed(() => {

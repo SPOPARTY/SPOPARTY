@@ -125,7 +125,7 @@
                          <!-- 파티 초대 -->
                          <v-col cols="6" class="cam-video" v-if="partyMembers.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
-                              <v-img src="/maruche.jpg" class="invite-img" contain></v-img>
+                              <v-img src="/maruche.jpg" class="invite-img pt-2" contain></v-img>
                               <span>친구를 초대해 보세요!</span>
                          </v-col>
                          <!-- 채팅창 -->
@@ -155,11 +155,21 @@
                                    <v-card class="overlay-card">
                                         <v-img :src="screenshotUrl" contain class="screenshot-preview"></v-img>
                                         <v-card-actions class="justify-end">
-                                             <v-btn color="green" @click="downloadScreenshot" size="x-large">다운로드</v-btn>
-                                             <v-btn color="red" @click="overlay = false" size="large">닫기</v-btn>
-                                        </v-card-actions>
+                                             <v-expansion-panels>
+                                                  <v-btn color="#D3AC2B" @click="uploadScreenshot" size="x-large">
+                                                       <v-tooltip activator="parent" location="top" theme="dark">아카이브에 사진 저장</v-tooltip>
+                                                       업로드
+                                                  </v-btn>
+                                                  <v-btn color="green" @click="downloadScreenshot" size="x-large">
+                                                       <v-tooltip activator="parent" location="top" theme="dark">내 PC에 사진 저장</v-tooltip>
+                                                       다운로드
+                                                  </v-btn>
+                                                  <v-btn color="red pt-1" @click="overlay = false" size="large">닫기</v-btn>
+                                             </v-expansion-panels>
+                                             </v-card-actions>
                                    </v-card>
                               </v-overlay>
+                              <!-- 스크린샷 오버레이 끝 -->
                          </v-col>
                          <v-col cols="3">
                               <v-btn color="secondary" @click="toggleRecording" :disabled="recordingLoading">
@@ -174,7 +184,8 @@
                               <!-- 동영상 미리보기 오버레이 -->
                               <v-overlay v-model="videoOverlay" persistent class="over">
                                    <v-card class="overlay-card">
-                                        <video :src="recordingFile.url" autoplay loop type="video/mp4" class="video-preview" ></video>
+                                        <video :src="recordingFile.url" autoplay loop type="video/mp4"
+                                             class="video-preview"></video>
                                         <v-card-actions class="justify-end">
                                              <v-btn color="green" @click="registerArchive" size="x-large">아카이브 하기</v-btn>
                                              <v-btn color="red" @click="cancelArchive" size="large">닫기</v-btn>
@@ -183,7 +194,7 @@
                               </v-overlay>
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="#D3AC2B">
+                              <v-btn color="#D3AC2B" @click="clickSound">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         효과음
                                    </v-tooltip>
@@ -231,7 +242,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import { format, set, parseISO, addDays } from 'date-fns';
-import {httpStatusCode} from "@/util/http-status"
+import { httpStatusCode } from "@/util/http-status"
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
 import Chat from '../components/party/Chat.vue';
@@ -276,6 +287,8 @@ watch(() => voteStore.finishtedVoteList, (newVal) => {
      })
 })
 
+const titleModel = ref(null);
+
 watch(() => partyStore.partyInfo, (newVal) => {
      console.log(newVal)
      if (newVal?.fixtureUrl != null) {
@@ -285,6 +298,7 @@ watch(() => partyStore.partyInfo, (newVal) => {
           url.value = "https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu";
           isUrlExist.value = false;
      }
+     titleModel.value = newVal.title;
      console.log("isUrlExist", isUrlExist.value);
      console.log("url", url.value);
 }, { immediate: true, deep: true })
@@ -366,9 +380,8 @@ onUnmounted(() => {
      deletePartyMember(clubId, partyId, myId.value);
 })
 
-const delPartyInfo = () => {
-     console.log("delPartyInfo", partyMemberList.value);
-     deletePartyInfo(clubId, partyId);
+const clickSound = () => {
+     alert("기능 준비 중입니다.")
 }
 
 console.log(clubId, partyId);
@@ -435,7 +448,7 @@ const partyMembers = ref([
 
 // 파티 초대
 const inviteToParty = () => {
-     alert("파티 초대하기");
+     alert("친구와 함께 파티를 즐겨보세요!");
 }
 
 // 파티 나가기
@@ -480,7 +493,7 @@ const isEditing = ref(false);
 
 // 파티 정보 수정
 const isTitleEditing = ref(false);
-const titleModel = ref(null);
+
 
 // 영상 주소 수정
 const isUrlEditing = ref(false);
@@ -504,18 +517,25 @@ watch(() => footballStore.matchWatchable, (newVal) => {
 // 시청 가능 경기 목록
 const today = ref(new Date());
 const startDate = ref(format(addDays(today.value, -1), 'yyyy-MM-dd'));
-const endDate = ref(format(addDays(today.value, 7), 'yyyy-MM-dd'));
+const endDate = ref(format(addDays(today.value, 1), 'yyyy-MM-dd'));
 
 // console.log(today.value)
 // console.log(format(addDays(today.value, -1), 'yyyy-MM-dd'))
 // console.log(format(addDays(today.value, 7), 'yyyy-MM-dd'))
 const getMatchTitle = (item) => {
      const status = ref("");
-     if (item.status === "not start") {
+     // 소문자화
+     const statusEng = item.status.toLowerCase();
+     if (statusEng === "not started") {
           status.value = "예정";
+     } else if (statusEng === "match finished") {
+          status.value = "경기 종료";
+     } else if (statusEng === "time to be defined") {
+          status.value = "시간 미정";
      } else {
-          status.value = "경기 중";
+          status.value = "진행중";
      }
+
      matchName.value.push({
           fixtureId: item.fixtureId,
           text: `${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr}`
@@ -563,6 +583,22 @@ function downloadScreenshot() {
      document.body.appendChild(a);
      a.click();
      document.body.removeChild(a);
+}
+
+// 업로드 함수
+async function uploadScreenshot() {
+     const imgData = await archiveStore.createImage(screenshotUrl.value);
+     console.log(imgData);
+     createArchive(
+          {
+               memberId: localStorage.getItem("id"),
+               clubId: clubId,
+               partyTitle: titleModel.value ? titleModel.value : "",
+               fixtureTitle: matchModel.value ? matchModel.value : "",
+               fileId: null,
+               thumbnailId: imgData,
+          }
+     )
 }
 
 
@@ -739,124 +775,124 @@ const timeStr = ref("00:00")
 let min, sec
 
 const toggleRecording = () => {
-  if (!recordingState.value) {
-     console.log("start recording call")
-    startRecording()
-  }
-  else {
-     console.log("stop recording call")
-    stopRecording()
-  }
-  recordingState.value = !recordingState.value
+     if (!recordingState.value) {
+          console.log("start recording call")
+          startRecording()
+     }
+     else {
+          console.log("stop recording call")
+          stopRecording()
+     }
+     recordingState.value = !recordingState.value
 }
 
 const startRecording = () => {
-  if (clubId !== undefined) {
-    recordingLoading.value = true
-    postStartRecording(
-       clubId, 
-       {
-          "session" : clubId,
-          "outputMode" : "COMPOSED",
-          "hasAudio": true,
-          "hasVideo" : true
-       },
-       (res) => {
-          if (res.status === httpStatusCode.OK) {
-            console.log(res.data.data)
-            recordingSession.value = res.data.data
-            recordingLoading.value = false
-            intervalId = setInterval(() => {
-              recordingTime.value++
-              timeStr.value = getTimeFormatString()
-              if (recordingTime.value >= 60) {
-               recordingTime.value = 0
-               recordingState.value = !recordingState.value
-               timeStr.value = "00:00"
-               clearInterval(intervalId)
-              }
-            } , 1000)
-          }
-       },
-       (error) => {
-          console.log(error)
-          if (error.response.status === httpStatusCode.NOTFOUND) {
-            console.error(error)
-          }
-       }
-     )
-  }
+     if (clubId !== undefined) {
+          recordingLoading.value = true
+          postStartRecording(
+               clubId,
+               {
+                    "session": clubId,
+                    "outputMode": "COMPOSED",
+                    "hasAudio": true,
+                    "hasVideo": true
+               },
+               (res) => {
+                    if (res.status === httpStatusCode.OK) {
+                         console.log(res.data.data)
+                         recordingSession.value = res.data.data
+                         recordingLoading.value = false
+                         intervalId = setInterval(() => {
+                              recordingTime.value++
+                              timeStr.value = getTimeFormatString()
+                              if (recordingTime.value >= 60) {
+                                   recordingTime.value = 0
+                                   recordingState.value = !recordingState.value
+                                   timeStr.value = "00:00"
+                                   clearInterval(intervalId)
+                              }
+                         }, 1000)
+                    }
+               },
+               (error) => {
+                    console.log(error)
+                    if (error.response.status === httpStatusCode.NOTFOUND) {
+                         console.error(error)
+                    }
+               }
+          )
+     }
 }
 
 const stopRecording = () => {
-  if (clubId !== undefined && recordingSession.value.id !== undefined) {
-     recordingLoading.value = true
-     console.log("stop recording")
-       postStopRecording(
-       clubId,
-       {
-          "recording": recordingSession.value.id
-       },
-       (res) => {
-          console.log(res)
-          if (res.status === httpStatusCode.OK) {
-            recordingFile.value = res.data.data
-            console.log(res.data.data)
-            recordingLoading.value = false
-            clearInterval(intervalId)
-            recordingTime.value = 0
-            timeStr.value = "00:00"
-            downloadFile(recordingFile.value.url)
-            recordingSession.value = {}
-            videoOverlay.value = true
-          }
-       },
-       (error) => {
-          console.log(error)
-          if (error.response.status === httpStatusCode.NOTFOUND) {
-            console.error(error)
-            }
-       },
-     )
-  }
+     if (clubId !== undefined && recordingSession.value.id !== undefined) {
+          recordingLoading.value = true
+          console.log("stop recording")
+          postStopRecording(
+               clubId,
+               {
+                    "recording": recordingSession.value.id
+               },
+               (res) => {
+                    console.log(res)
+                    if (res.status === httpStatusCode.OK) {
+                         recordingFile.value = res.data.data
+                         console.log(res.data.data)
+                         recordingLoading.value = false
+                         clearInterval(intervalId)
+                         recordingTime.value = 0
+                         timeStr.value = "00:00"
+                         downloadFile(recordingFile.value.url)
+                         recordingSession.value = {}
+                         videoOverlay.value = true
+                    }
+               },
+               (error) => {
+                    console.log(error)
+                    if (error.response.status === httpStatusCode.NOTFOUND) {
+                         console.error(error)
+                    }
+               },
+          )
+     }
 }
 
 const downloadFile = async (url) => {
-    const res = await fetch(url)
-    const blob = await res.blob()
+     const res = await fetch(url)
+     const blob = await res.blob()
 
-    const downloadUrl = window.URL.createObjectURL(blob)
+     const downloadUrl = window.URL.createObjectURL(blob)
 
-    const link = document.createElement('a')
-    link.href = downloadUrl
-    link.download = 'video.mp4'
-    link.click()
+     const link = document.createElement('a')
+     link.href = downloadUrl
+     link.download = 'video.mp4'
+     link.click()
 }
 
 const getTimeFormatString = () => {
-    min = parseInt(String(recordingTime.value / 60));
-    sec = recordingTime.value % 60;
+     min = parseInt(String(recordingTime.value / 60));
+     sec = recordingTime.value % 60;
 
-    return String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
+     return String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
 }
 
 const registerArchive = () => {
-  createArchive(
-     {
-       memberId : localStorage.getItem("id"),
-       clubId : clubId,
-       partyTitle : titleModel.value ? titleModel.value : "",
-       fixtureTitle : matchModel.value ? matchModel.value : "",
-       fileId : recordingFile.value.id,
-       thumbnailId : recordingFile.value.thumbnailId
-     }
-  )
-  videoOverlay.value = false
+     createArchive(
+          {
+               memberId: localStorage.getItem("id"),
+               clubId: clubId,
+               partyTitle: titleModel.value ? titleModel.value : "",
+               fixtureTitle: matchModel.value ? matchModel.value : "",
+               fileId: recordingFile.value.id,
+               thumbnailId: recordingFile.value.thumbnailId
+          }
+     )
+     videoOverlay.value = false
 }
 
 const cancelArchive = () => {
-  videoOverlay.value = false
-  deleteFile(recordingFile.value.id)
+     videoOverlay.value = false
+     deleteFile(recordingFile.value.id)
 }
 
 </script>
@@ -885,7 +921,7 @@ const cancelArchive = () => {
 .selector {
      margin-top: 10px;
      min-height: 110px;
-     height: 27vh;
+     height: 15vh;
      max-height: 200px;
 }
 
@@ -928,7 +964,7 @@ const cancelArchive = () => {
 }
 
 .cam-section {
-     height: 70%;
+     height: 75%;
      /* justify-self: start; */
      align-content: start;
      background-color: #333D51;
@@ -947,7 +983,7 @@ const cancelArchive = () => {
      justify-content: center;
      align-items: center;
      /* aspect-ratio: 16/16; */
-     padding: 1px 0;
+     padding: 2px 0;
 }
 
 .button-section {
@@ -1045,7 +1081,8 @@ const cancelArchive = () => {
      /* max-width: 600px; */
      overflow: hidden;
      /* 내용이 넘칠 경우 숨김 처리 */
-
+     min-width: 300px;
+     min-height: 40px;
 }
 
 .over {
