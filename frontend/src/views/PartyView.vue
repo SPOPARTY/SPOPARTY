@@ -491,32 +491,7 @@ function editPartyInfo(isAsk) {
      if (!isAsk) {
           console.log("editPartyInfo", clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
           putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
-
-          session.value.signal({
-               data: titleModel.value,
-               to: [],
-               type: 'titleChanged'
-          })
-          .then(() => {
-               console.log('Message successfully sent');
-          })
-          .catch(error => {
-               console.error(error);
-          });
-          
-          session.value.signal({
-               data: matchModel.value,
-               to: [],
-               type: 'matchChanged'
-          })
-          .then(() => {
-               console.log('Message successfully sent');
-          })
-          .catch(error => {
-               console.error(error);
-          });
      }
-     
      // console.log("editPartyInfo",clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
      // putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
 }
@@ -715,12 +690,6 @@ const joinSession = (openviduToken, nickName) => {
           })
 
           session.value.on('signal', (event) => {
-               if (event.type == "titleChanged") {
-                    titleModel.value = event.data
-               } else if (event.type == "matchChanged") {
-                    console.log(matchModel.value)
-                    matchModel.value = event.data
-               }
                console.log(event.data) // Message
                console.log(event.from) // Connection object of the sender
                console.log(event.type) // The type of message
