@@ -1,6 +1,7 @@
 package com.spoparty.api.football.response;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.spoparty.api.football.entity.LineupPlayer;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,20 +12,15 @@ import lombok.ToString;
 @ToString
 public class FixtureEventPlayerDTO {
 	private String nameKr;
-	private String nameEng;
-	private String photo;
 
 	@QueryProjection
-	public FixtureEventPlayerDTO(String nameKr, String nameEng, String photo) {
+	public FixtureEventPlayerDTO(String nameKr) {
 		this.nameKr = nameKr;
-		this.nameEng = nameEng;
-		this.photo = photo;
+
 	}
-	// public static FixtureEventPlayerDTO toDTO(Player entity) {
+	// public static FixtureEventPlayerDTO toDTO(LineupPlayer entity) {
 	// 	return FixtureEventPlayerDTO.builder()
-	// 		.nameKr(entity.getNameKr())
-	// 		.nameEng(entity.getNameEng())
-	// 		.photo(entity.getPhoto())
+	// 		.nameKr(entity.getName())
 	// 		.build();
 	// }
 }

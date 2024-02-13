@@ -1,6 +1,7 @@
 package com.spoparty.api.football.response;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.spoparty.api.football.entity.FixtureEvent;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +12,8 @@ import lombok.ToString;
 @ToString
 public class FixtureEventDTO {
 	private FixtureEventTeamDTO team;
-	private FixtureEventPlayerDTO player;
-	private FixtureEventPlayerDTO assist;
+	private String playerName;
+	private String assistName;
 	private long time;
 	private String type;
 	private String detail;
@@ -20,13 +21,13 @@ public class FixtureEventDTO {
 	@QueryProjection
 	public FixtureEventDTO(
 		FixtureEventTeamDTO team,
-		FixtureEventPlayerDTO player,
-		FixtureEventPlayerDTO assist,
+		String player,
+		String assist,
 		long time,
 		String type, String detail) {
 		this.team = team;
-		this.player = player;
-		this.assist = assist;
+		this.playerName = player;
+		this.assistName = assist;
 		this.time = time;
 		this.type = type;
 		this.detail = detail;
@@ -34,19 +35,19 @@ public class FixtureEventDTO {
 	// public static FixtureEventDTO toDTO(FixtureEvent entity) {
 	//
 	// 	FixtureEventTeamDTO teamDTO = FixtureEventTeamDTO.toDTO(entity.getSeasonLeagueTeam().getTeam());
-	// 	FixtureEventPlayerDTO playerDTO = FixtureEventPlayerDTO.toDTO(entity.getPlayer().getPlayer());
 	//
-	// 	FixtureEventPlayerDTO assistDTO = null;
+	//
+	// 	String assistName = null;
 	//
 	// 	if (entity.getAssist() != null) {
-	// 		assistDTO = FixtureEventPlayerDTO.toDTO(entity.getAssist().getPlayer());
+	// 		assistName = entity.getAssist().getName();
 	// 	}
 	//
 	//
 	// 	return FixtureEventDTO.builder()
 	// 		.team(teamDTO)
-	// 		.player(playerDTO)
-	// 		.assist(assistDTO)
+	// 		.playerName(entity.getPlayer().getName())
+	// 		.assistName(assistName)
 	// 		.time(entity.getTime())
 	// 		.type(entity.getType())
 	// 		.detail(entity.getDetail())
