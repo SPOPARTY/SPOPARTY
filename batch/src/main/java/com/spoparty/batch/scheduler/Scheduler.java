@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -57,6 +58,7 @@ public class Scheduler {
 
 	// 응원 테이블 관리
 	@Scheduled(fixedRate = 1000*60*60)
+	@Transactional
 	public void registerCheer() {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -95,6 +97,7 @@ public class Scheduler {
 
 	// 경기로 [경기 이벤트] 테이블 생성
 	@Scheduled(fixedRate = 1000*60)
+	@Transactional
 	public void loadEvents() {
 
 		// 응원 경기 테이블에 있는 경기 중, 현재시간과 3시간 이전 사이의 경기들의 events를 조회하여 테이블에 추가

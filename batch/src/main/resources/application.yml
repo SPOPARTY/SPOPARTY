@@ -30,6 +30,6 @@ spring:
 logging:
   level:
     org.hibernate.SQL: INFO
-    org.hibernate.orm.jdbc.bind: trace
+#    org.hibernate.orm.jdbc.bind: trace
 
 
