@@ -66,7 +66,7 @@ public class SecurityConfig {
 			// 나머지 경로에 대해서 인증(로그인)된 사람만 접근 가능 ( 임시로 모두가능하게 설정 )
 			.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
 				.requestMatchers("/authentication/**", "/members/register", "/members/teams", "/error").permitAll()
-				.requestMatchers("/football/**", "/ws-stomp/**").permitAll()
+				.requestMatchers("/football/**", "/ws-stomp/**", "/notifications/connect/**").permitAll()
 				.requestMatchers("/admin").hasAnyRole("ADMIN")
 				.anyRequest().authenticated()
 			)

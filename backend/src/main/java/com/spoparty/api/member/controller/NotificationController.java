@@ -52,7 +52,7 @@ public class NotificationController {
 
 	@GetMapping(value = "/connect/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public ResponseEntity<SseEmitter> connect(@PathVariable("memberId") Long memberId) {
-		SseEmitter emitter = new SseEmitter(10 * 60 * 1000L);
+		SseEmitter emitter = new SseEmitter(10 * 1000L);
 		notificationService.add(memberId, emitter);
 		try {
 			emitter.send(SseEmitter.event()
