@@ -77,7 +77,7 @@ const showBoardDetail = (post) => {
 }
 
 onMounted(() => {
-    console.log(`********${clubId}의 boardList********`)
+    // console.log(`********${clubId}의 boardList********`)
     boardStore.getBoardList(clubId);
 })
 

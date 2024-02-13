@@ -10,7 +10,7 @@ export const useNotificationStore = defineStore("notification", () => {
         requestNotificationList(
             memberId,
             ({data}) => {
-                console.log("useNotificationStore.requestNotificationList: ",data);
+                // console.log("useNotificationStore.requestNotificationList: ",data);
                 notificationList.value = data.data;
             },
             (error) => {
@@ -23,7 +23,7 @@ export const useNotificationStore = defineStore("notification", () => {
         requestUpdateNoification(
             notificationId,
             ({data}) => {
-                console.log(data);
+                // console.log(data);
                 notificationList.value = notificationList.value.filter(item => item.id != notificationId)
                 notificationList.value.push(data.data);
             },
@@ -37,7 +37,7 @@ export const useNotificationStore = defineStore("notification", () => {
         requestDeleteNoification(
             notificationId,
             ({data}) => {
-                console.log(data);
+                // console.log(data);
                 notificationList.value = notificationList.value.filter(item => item.id != notificationId)
             },
             (error) => {
@@ -50,7 +50,7 @@ export const useNotificationStore = defineStore("notification", () => {
         requestCreateNoification(
             JSON.stringify(notification),
             ({data}) => {
-                console.log(data);
+                // console.log(data);
             },
             (error) => {
                 console.log(error);
@@ -59,13 +59,13 @@ export const useNotificationStore = defineStore("notification", () => {
     }
 
     const connect = (memberId) => {
-        console.log("SSE Connecting");
+        // console.log("SSE Connecting");
         const data = new EventSource(`https://i10a802.p.ssafy.io/api/notifications/connect/${memberId}`);
         data.addEventListener('connect', (emit) => {
-            console.log('SSE Connet Success: ',emit);
+            // console.log('SSE Connet Success: ',emit);
         })
         data.addEventListener('notification', (emit) => {
-        console.log('SSE notification: ',emit);
+        // console.log('SSE notification: ',emit);
             getNotificationList(memberId);
         })
     }

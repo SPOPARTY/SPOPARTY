@@ -126,9 +126,6 @@ function closeModal() {
     emits('ban-member-close')
 }
 
-onMounted(() => {
-    console.log("히히 멤버 강퇴 발사")
-})
 
 </script>
 

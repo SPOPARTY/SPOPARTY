@@ -1,15 +1,6 @@
 <template>
     <v-container class="test">
-        <v-row class="headers">
-            <v-col cols="10">
-                <h1 class="text-center" style="color:white; margin-left:100px;">추억 아카이브</h1>
-            </v-col>
-            <v-col cols="2">
-                <v-btn class="download-button" variant="outlined" @click="showDownloadConfirm">
-                    <v-icon>mdi-download</v-icon>
-                </v-btn>
-            </v-col>
-        </v-row>
+        <h1 class="text-center" style="color:white;">추억 아카이브</h1>
         <v-row>
             <v-col
                 cols="12" sm="4" md="4" lg="4"
@@ -110,12 +101,11 @@ const selectedPosts = computed(() => {
 
 // 진짜 다운로드
 function downloadSelected() {
-    console.log("히히 다운로드 발사 =>", selectedPosts)
     closeDownloadConfirm();
 }
 
 function goBack() {
-    console.log(`********${clubId}의 ArchiveList********`)
+    // console.log(`********${clubId}의 ArchiveList********`)
     router.push(`/club/${clubId}`)
 }
 
