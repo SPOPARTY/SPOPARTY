@@ -412,6 +412,7 @@ const delPartyMem = () => {
 }
 
 onUnmounted(() => {
+     partyStore.deletePartyMember(clubId, partyId, partyStore.myParticipantId);
      console.log("#######", partyStore.partyMemberList);
      console.warn(myMemberId)
      myId.value = partyStore.partyMemberList.find(
