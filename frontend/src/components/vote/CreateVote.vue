@@ -148,7 +148,7 @@ const titleRules = [
 
 const optionRules = [
     v => !!v || "빈 칸이어서는 안됩니다!",
-    v => (v && v.length <= 10) || "선택지의 길이는 최대 10자입니다."
+    v => (v && v.length <= 20) || "선택지의 길이는 최대 20자입니다."
 ]
 
 watch(() => penalties,(newPenalties) => {
@@ -209,6 +209,10 @@ function submitVote() {
             alert("선택지 내용 중에 빈 칸이 있어서는 안됩니다!")
             return;
         }
+        if (options.value[i].length > 20){
+            alert("선택지 내용 길이는 최대 20자입니다!")
+            return
+        } 
     }
 
     console.log("partyId -> ",partyId);

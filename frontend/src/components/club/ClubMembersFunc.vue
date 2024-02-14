@@ -124,6 +124,10 @@ const inviteURL = computed(() => {
 
 const isInviteVisible = ref(false)
 async function showInvite() {
+    if (props.clubMemberList.length === 6) {
+        alert("그룹인원이 모두 찼습니다!")
+        return;
+    }
     isInviteVisible.value = true;
 
     await clubStore.getClubInviteLink(clubId);
@@ -136,10 +140,10 @@ async function showInvite() {
 const copyText = async () => {
     try {
         await navigator.clipboard.writeText(inviteURL.value);
-        alert("텍스트가 클립보드에 복사되었습니다.")
+        alert("초대 url이 복사되었습니다.")
     } catch (err) {
         console.error('복사 실패 : ', err);
-        alert('텍스트 복사에 실패했습니다.')
+        alert('초대 url 복사에 실패했습니다.')
     }
 }
 
@@ -148,7 +152,6 @@ const copyText = async () => {
 const isClubMemberFuncVisible = ref(false);
 
 const showClubMemberFunc = () => {
-    console.log("히히 그룹원/그룹장 세부기능 발사")
     isClubMemberFuncVisible.value = true;
 }
 

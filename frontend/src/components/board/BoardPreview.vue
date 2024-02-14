@@ -49,7 +49,7 @@ const router = useRouter();
 const clubId = ref(routes.params.clubId)
 
 onMounted(() => {
-    boardStore.getBoardList(clubId);
+    boardStore.getBoardList(clubId.value);
 })
 
 const posts = ref([]);
@@ -59,7 +59,7 @@ watch(() => boardStore.boardList,(newBoardList) => {
 
 watch(() => routes.params.clubId, (newClubId) => {
     clubId.value = newClubId;
-    boardStore.getBoardList(newClubId);
+    boardStore.getBoardList(clubId.value);
 });
 
  // 현재 게시글을 담을 변수 -> store로직 추가하면서 바꾸자
