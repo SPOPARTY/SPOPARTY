@@ -403,7 +403,8 @@ if (answer) {
 
 const delPartyMem = () => {
      // console.log("delPartyMem", partyMemberList.value);
-     myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
+     const myMemberId = localStorage.getItem("id");
+     myId.value = partyStore.partyMemberList.find((member) => member.userId === myMemberId);
      if (myId.value !== undefined) {
           // console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
           deletePartyMember(clubId, partyId, myId.value.participantId);
@@ -411,8 +412,9 @@ const delPartyMem = () => {
 }
 
 onUnmounted(() => {
+     const myMemberId = localStorage.getItem("id");
      myId.value = partyStore.partyMemberList.find(
-          (member) => member.userId === partyStore.myUserId
+          (member) => member.userId === myMemberId
      ).participantId;
      deletePartyMember(clubId, partyId, myId.value);
 })
@@ -475,13 +477,13 @@ const fixtureId = ref(null);
 // 파티 최대 인원 수
 const maxMembers = 6
 
-const partyMembers = ref([
-     { memberId: 1, name: "실버스타" },
-     { memberId: 2, name: "제라드" },
-     { memberId: 3, name: "벨타이거" },
-     { memberId: 4, name: "램파드" },
-     { memberId: 5, name: "별명별명" },
-])
+// const partyMembers = ref([
+//      { memberId: 1, name: "실버스타" },
+//      { memberId: 2, name: "제라드" },
+//      { memberId: 3, name: "벨타이거" },
+//      { memberId: 4, name: "램파드" },
+//      { memberId: 5, name: "별명별명" },
+// ])
 
 // 파티 초대
 const inviteToParty = () => {
