@@ -379,13 +379,12 @@ function handleBeforeUnload(event) {
      return message; // 다른 브라우저에서 필요
 }
 
-onMounted( async () =>  {
+onMounted(() => {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
      // console.log("onMounted", clubId, partyId);
      // console.log(getPartyMemberList(clubId, partyId));
-     await postPartyMember(clubId, partyId);
-     await getPartyMemberList(clubId, partyId)
+     postPartyMember(clubId, partyId);
      window.addEventListener('beforeunload', handleBeforeUnload);
 })
 
