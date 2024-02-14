@@ -64,7 +64,7 @@ const emits = defineEmits([
 
 // 다운로드 하기
 const downloadFile = async (url) => {
-    console.log(url)
+    // console.log(url)
     // 1. fetch 실행이 끝나면 FETCH API는 내부적으로 Body Object를 상속받아 Response 인스턴스를 생성
     const res = await fetch(url)
     // 2. blob() 메소드는 Body Object의 메서드로 상속이 되어있으므로 res.blob() 가능, blob 인스턴스 반환
@@ -95,9 +95,6 @@ function closeModal() {
 }
 
 
-onMounted(()=>{
-    console.log("히히 모달 발사")
-})
 
 </script>
 
