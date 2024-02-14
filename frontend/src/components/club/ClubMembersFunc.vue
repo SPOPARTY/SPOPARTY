@@ -124,7 +124,8 @@ const inviteURL = computed(() => {
 
 const isInviteVisible = ref(false)
 async function showInvite() {
-    if (props.clubMemberList.length === 6) {
+    console.log(props.clubMemberList.length)
+    if (props.clubMemberList.length >= 6) {
         alert("그룹인원이 모두 찼습니다!")
         return;
     }
