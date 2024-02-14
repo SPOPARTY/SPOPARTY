@@ -275,12 +275,12 @@ const url = ref("https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu")
 const isUrlExist = ref(false);
 
 watch(() => voteStore.finishtedVoteList, (newVal) => {
-     console.log(newVal)
+     // console.log(newVal)
      subscribers.value.forEach((subscriber) => {
-          console.log(subscriber)
+          // console.log(subscriber)
           const data = subscriber.stream.connection.data
           const memberId = data.substr(5, data.length)
-          console.log(memberId)
+          // console.log(memberId)
           // 페널티 타입 확인
 
           // memberId와 비교하여 페널티 대상자 선택 및 적용
@@ -290,7 +290,7 @@ watch(() => voteStore.finishtedVoteList, (newVal) => {
 const titleModel = ref(null);
 
 watch(() => partyStore.partyInfo, (newVal) => {
-     console.log(newVal)
+     // console.log(newVal)
      if (newVal?.fixtureUrl != null) {
           url.value = newVal.fixtureUrl;
           isUrlExist.value = true;
@@ -299,8 +299,8 @@ watch(() => partyStore.partyInfo, (newVal) => {
           isUrlExist.value = false;
      }
      titleModel.value = newVal.title;
-     console.log("isUrlExist", isUrlExist.value);
-     console.log("url", url.value);
+     // console.log("isUrlExist", isUrlExist.value);
+     // console.log("url", url.value);
 }, { immediate: true, deep: true })
 
 //// 파티 정보 수정 로직
@@ -309,13 +309,13 @@ const clubId = route.params.clubId;
 const partyId = route.params.partyId;
 const partyMemberList = ref(getPartyMemberList(clubId, partyId));
 
-console.log("시작멤버리스트", partyMemberList.value);
+// console.log("시작멤버리스트", partyMemberList.value);
 
 const showVote = ref(false);
 
 let isInit = false
 watch(() => partyStore.partyMemberList, (newPartyMembers) => {
-     console.log("newPartyMembers", newPartyMembers);
+     // console.log("newPartyMembers", newPartyMembers);
      partyMemberList.value = newPartyMembers;
      partyMemberList.value.map((member) => {
           if (member.memberId == localStorage.getItem("id")) {
@@ -327,7 +327,7 @@ watch(() => partyStore.partyMemberList, (newPartyMembers) => {
 const myId = ref(null);
 
 watch(() => partyStore.myParticipantId, (newMyId) => {
-     console.warn("myId changed", newMyId);
+     // console.warn("myId changed", newMyId);
      myId.value = newMyId;
 }, { immediate: true });
 
@@ -345,8 +345,8 @@ function handleBeforeUnload(event) {
 onMounted(() => {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
-     console.log("onMounted", clubId, partyId);
-     console.log(getPartyMemberList(clubId, partyId));
+     // console.log("onMounted", clubId, partyId);
+     // console.log(getPartyMemberList(clubId, partyId));
      postPartyMember(clubId, partyId);
      window.addEventListener('beforeunload', handleBeforeUnload);
 })
@@ -365,10 +365,10 @@ if (answer) {
 }
 
 const delPartyMem = () => {
-     console.log("delPartyMem", partyMemberList.value);
+     // console.log("delPartyMem", partyMemberList.value);
      myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
      if (myId.value !== undefined) {
-          console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
+          // console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
           deletePartyMember(clubId, partyId, myId.value.participantId);
      }
 }
@@ -384,8 +384,8 @@ const clickSound = () => {
      alert("기능 준비 중입니다.")
 }
 
-console.log(clubId, partyId);
-console.log(getPartyMemberList(clubId, partyId));
+// console.log(clubId, partyId);
+// console.log(getPartyMemberList(clubId, partyId));
 
 // 채팅창 표시 여부를 제어할 상태 변수
 const showChat = ref(false);
@@ -418,9 +418,9 @@ setTimeout(() => {
      updatechatDivHeight();
 }, 200);
 
-watch(chatDivHeight, (newVal) => {
-     console.log('chatDivHeight changed', newVal);
-});
+// watch(chatDivHeight, (newVal) => {
+//      console.log('chatDivHeight changed', newVal);
+// });
 
 onMounted(() => {
      updatechatDivHeight();
@@ -473,7 +473,7 @@ function editPartyInfo(isAsk) {
      isUrlEditing.value = isAsk;
 
      if (!isAsk) {
-          console.log("editPartyInfo", clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+          // console.log("editPartyInfo", clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
           putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
 
           session.value.signal({
@@ -535,7 +535,7 @@ const matchName = ref([]);
 const matches = ref([]);
 
 watch(() => footballStore.matchWatchable, (newVal) => {
-     console.log(newVal);
+     // console.log(newVal);
      matches.value = newVal;
 }, { immediate: true }), { deep: true };
 
@@ -576,7 +576,7 @@ const onMatchChange = () => {
      footballStore.fixtureIdForParty = matchModel.value;
      if (matchModel.value !== null) {
           teamIds.value = findTeamIdsByFixtureId(matchModel.value);
-          console.log(teamIds.value);
+          // console.log(teamIds.value);
      }
 }
 
@@ -587,6 +587,7 @@ import html2canvas from 'html2canvas';
 
 const overlay = ref(false);
 const screenshotUrl = ref('');
+const file = ref(null);
 
 // 스크린샷 캡처 함수
 function captureScreen() {
@@ -596,6 +597,12 @@ function captureScreen() {
                // canvas를 이미지 URL로 변환
                screenshotUrl.value = canvas.toDataURL('image/png');
                overlay.value = true;
+               canvas.toBlob(blob => {
+                    file.value = new File([blob], "screenshot.png", { type: "image/png" });
+                    
+                    // 이제 'file'을 사용하여 웹에서 다루거나 서버로 업로드할 수 있습니다.
+                    // uploadFile(file);
+               }, 'image/png');
           });
      }
 }
@@ -612,8 +619,13 @@ function downloadScreenshot() {
 
 // 업로드 함수
 async function uploadScreenshot() {
-     const imgData = await archiveStore.createImage(screenshotUrl.value);
-     console.log(imgData);
+     // console.log("##########", file.value)
+     const formData = new FormData();
+     formData.append('files', file.value);
+     console.log("#######", formData.get('file'));
+     const imgData = await fileStore.uploadFile(formData);
+     console.log(imgData.data.data);
+     console.log(imgData.data.data[0].id);
      createArchive(
           {
                memberId: localStorage.getItem("id"),
@@ -621,7 +633,7 @@ async function uploadScreenshot() {
                partyTitle: titleModel.value ? titleModel.value : "",
                fixtureTitle: matchModel.value ? matchModel.value : "",
                fileId: null,
-               thumbnailId: imgData,
+               thumbnailId: imgData.data.data[0].id,
           }
      )
 }
@@ -687,9 +699,9 @@ const toggleAudioState = () => {
 
 
 const joinSession = (openviduToken, nickName) => {
-     console.log("joinSession Called!!!!!!!!!!!!!!!!!!!")
-     console.log(openviduToken)
-     console.log(nickName)
+     // console.log("joinSession Called!!!!!!!!!!!!!!!!!!!")
+     // console.log(openviduToken)
+     // console.log(nickName)
      if (!isInit) {
           isInit = true
           OV.value = new OpenVidu()
@@ -703,7 +715,7 @@ const joinSession = (openviduToken, nickName) => {
                const subscriber = session.value.subscribe(stream)
                subscribers.value.push(subscriber)
                console.log("subscriber added")
-               console.log(subscribers.value)
+               // console.log(subscribers.value)
           })
 
           // On every Stream destroyed...
@@ -725,12 +737,12 @@ const joinSession = (openviduToken, nickName) => {
                if (event.type == "titleChanged") {
                     titleModel.value = event.data
                } else if (event.type == "matchChanged") {
-                    console.log(matchModel.value)
+                    // console.log(matchModel.value)
                     matchModel.value = event.data
                }
-               console.log(event.data) // Message
-               console.log(event.from) // Connection object of the sender
-               console.log(event.type) // The type of message
+               // console.log(event.data) // Message
+               // console.log(event.from) // Connection object of the sender
+               // console.log(event.type) // The type of message
           })
 
           // --- 4) Connect to the session with a valid user token ---
@@ -738,7 +750,7 @@ const joinSession = (openviduToken, nickName) => {
           // Get a token from the OpenVidu deployment
           // First param is the token. Second param can be retrieved by every user on event
           // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
-          console.log(session.value)
+          // console.log(session.value)
           session.value
                .connect(openviduToken, { clientData: nickName })
                .then(() => {
@@ -830,7 +842,7 @@ const startRecording = () => {
                },
                (res) => {
                     if (res.status === httpStatusCode.OK) {
-                         console.log(res.data.data)
+                         // console.log(res.data.data)
                          recordingSession.value = res.data.data
                          recordingLoading.value = false
                          intervalId = setInterval(() => {
@@ -846,9 +858,9 @@ const startRecording = () => {
                     }
                },
                (error) => {
-                    console.log(error)
+                    console.error(error)
                     if (error.response.status === httpStatusCode.NOTFOUND) {
-                         console.error(error)
+                         // console.error(error)
                     }
                }
           )
@@ -865,10 +877,10 @@ const stopRecording = () => {
                     "recording": recordingSession.value.id
                },
                (res) => {
-                    console.log(res)
+                    // console.log(res)
                     if (res.status === httpStatusCode.OK) {
                          recordingFile.value = res.data.data
-                         console.log(res.data.data)
+                         // console.log(res.data.data)
                          recordingLoading.value = false
                          clearInterval(intervalId)
                          recordingTime.value = 0
@@ -879,9 +891,9 @@ const stopRecording = () => {
                     }
                },
                (error) => {
-                    console.log(error)
+                    console.error(error)
                     if (error.response.status === httpStatusCode.NOTFOUND) {
-                         console.error(error)
+                         // console.error(error)
                     }
                },
           )

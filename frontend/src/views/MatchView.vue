@@ -42,13 +42,13 @@ import { format, addDays, differenceInCalendarDays } from 'date-fns';
 const selectedDate = ref(new Date());
 const showDatePicker = ref(false);
 
-watch(showDatePicker, () => {
-     console.log(showDatePicker.value);
-});
+// watch(showDatePicker, () => {
+     // console.log(showDatePicker.value);
+// });
 
 watch(selectedDate, () => {
-     console.log("날짜변경")
-     console.log(selectedDate.value);
+     // console.log("날짜변경")
+     // console.log(selectedDate.value);
      showDatePicker.value = false;
 });
 

@@ -5,12 +5,11 @@ import { defineStore } from 'pinia';
 import {httpStatusCode} from "@/util/http-status"
 
 import {requestArchiveList, requestArchiveDetail, requestCreateArchive, requestUpdateArchive, 
-    requestDeleteArchive, requestCreateImage} from '@/api/archive'
+    requestDeleteArchive} from '@/api/archive'
 
 export const useArchiveStore = defineStore("archive",() => {
     const archiveList = ref([]);
     const archiveDetail = ref({});
-    const imgThumbnailId = ref(null);
 
     // 추억 목록 조회
     const getArchiveList = (clubId) => {
@@ -67,38 +66,6 @@ export const useArchiveStore = defineStore("archive",() => {
             }
         )
     }
-    
-    const createImage = (url) => {
-        const data = {
-            url: url,
-        }
-        return new Promise((resolve, reject) => {
-            requestCreateImage(
-                data,
-                (res) => {
-                    if (res.status === httpStatusCode.CREATE) {
-                        // console.log("********이미지가 아주 잘 저장됨******")
-                        // console.log(res.data.data)
-                        // {
-                        //     "createdTime": "2024-02-13 12:04:31.076883",
-                        //     "updatedTime": "2024-02-13 12:04:31.076883",
-                        //     "id": 127,
-                        //     "type": "image",
-                        //     "url": "https://spoparty-bucket.s3.ap-northeast-2.amazonaws.com/1707793471062",
-                        //     "thumbnailUrl": "",
-                        //     "deleted": false
-                        // }
-                        imgThumbnailId.value = res.data.data.id;
-                        resolve(imgThumbnailId.value);
-                    }
-                },
-                (error) => {
-                    console.log(error);
-                    reject(error);
-                }
-            )
-        })
-    }
 
     // 추억 수정
     const updateArchive = (data) => {
@@ -146,9 +113,7 @@ export const useArchiveStore = defineStore("archive",() => {
         createArchive,
         updateArchive,
         deleteArchive,
-        createImage,
         archiveList,
         archiveDetail,
-        imgThumbnailId,
     }
 })

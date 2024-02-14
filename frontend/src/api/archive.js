@@ -19,11 +19,6 @@ function requestCreateArchive(data,success,fail) {
     local.post(`${API_URL}`,data).then(success).catch(fail);
 }
 
-// 이미지 DB에 저장
-async function requestCreateImage(data,success,fail) {
-    local.post("/files/url",data).then(success).catch(fail);
-}
-
 // 추억 수정
 function requestUpdateArchive(data,success,fail) {
     local.put(`${API_URL}`,data).then(success).catch(fail);
@@ -40,5 +35,4 @@ export{
     requestCreateArchive,
     requestUpdateArchive,
     requestDeleteArchive,
-    requestCreateImage,
 }
