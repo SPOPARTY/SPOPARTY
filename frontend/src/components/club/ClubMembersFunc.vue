@@ -233,9 +233,9 @@ const goToPartyPage = async () => {
     let maxWaitTime = 2000; // 최대 대기 시간: 2초
     // let tempPartyId = null; 
     // partyId를 임시 저장할 변수
-
+    await getClubInfo(clubId)
     if (isPartyExist.value) {
-        await getClubInfo(clubId);
+        // await getClubInfo(clubId);
         // console.log("파티가 있어요", clubInfo.value.partyId);
     } else {
         await postPartyInfo(clubId);
