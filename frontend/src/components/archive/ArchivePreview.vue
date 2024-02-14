@@ -60,7 +60,7 @@ watch(() => archiveStore.archiveList,(newArchiveList) => {
 
 watch(() => routes.params.clubId, (newClubId) => {
     clubId.value = newClubId;
-    archiveStore.getArchiveList(newClubId);
+    archiveStore.getArchiveList(clubId.value);
 });
 
 

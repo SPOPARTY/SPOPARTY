@@ -79,7 +79,6 @@
         max-width="500px"
         >
         <v-card>
-            <!-- {{ myVoteDetail }} -->
             <v-card-title class="text-center"> <h2>{{ myVoteDetail.title }}</h2> </v-card-title>
             <v-card-text v-for="(option,index) in myVoteDetail.options" :key="index" class="text-left" style="margin-left:150px;"
                          @click="finalizeAnswer(option)">
@@ -261,6 +260,18 @@ let selectedAnswer;
 
 
 function showDetailVote(vote) {
+    for (let i = 0; i < vote.options.length; i++) {
+        // console.log(vote.options[i].users)
+        for (let j = 0; j < vote.options[i].users.length; j++) {
+            console.log(vote.options[i].users[j])
+            // console.log(vote.options[i].users[j])
+            let temp = vote.options[i].users[j]
+            if (temp.userId === memberId){
+                alert("이미 참여한 투표입니다!")
+                return;
+            }
+        }
+    }
     selectedAnswer = ref({
         partyId : partyId,
         voteId : '',
