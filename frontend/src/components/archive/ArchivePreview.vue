@@ -25,8 +25,7 @@
                     <v-card-subtitle v-else class="text-right">수많은 파티 그 중 하나</v-card-subtitle>
                     <v-card-text class="text-right"> {{ detail.member.nickname }} </v-card-text>
                     <v-card-text class="text-right"> {{formatDateTime(detail.createdTime)}} </v-card-text>
-                    <v-img v-if="detail.file.type == 'image'" :src="detail.file.url" :alt="detail.file.url" class="thumb_img" cover height="200px"/>
-                    <v-img v-else :src="detail.thumbnail.url" :alt="detail.thumbnail.url" class="thumb_img" cover height="200px"></v-img>
+                    <v-img :src="detail.thumbnail.url" :alt="detail.thumbnail.url" class="thumb_img" cover height="200px"></v-img>
                 </v-card>
                 <ArchiveDetail 
                     v-if="isDetailVisible && currentDetail.id === detail.id"
