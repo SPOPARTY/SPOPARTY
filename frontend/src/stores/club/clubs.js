@@ -71,7 +71,7 @@ export const useClubStore = defineStore("club",() => {
                     if (res.data.status === httpStatusCode.OK) {
                         clubInfo.value = res.data.data;
                         // console.log(clubInfo.value)
-                        resolve(true)
+                        resolve(res.data.data)
                     }
                 },
                 (error) => {
@@ -154,21 +154,26 @@ export const useClubStore = defineStore("club",() => {
 
     // 그룹원 목록 조회(닉네임, 방장)
     const getClubMemberList = (clubId) => {
-        requestClubMemberList(
-            clubId,
-            (res) => {
-                // console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
-                    // console.log("******히히 그룹원 목록 조회*********")
-                    clubMemberList.value = res.data.data
-                    // console.log(clubMemberList.value)
+        return new Promise((resolve,reject) => {
+            requestClubMemberList(
+                clubId,
+                (res) => {
+                    // console.log(res)
+                    if (res.data.status === httpStatusCode.OK) {
+                        // console.log("******히히 그룹원 목록 조회*********")
+                        clubMemberList.value = res.data.data
+                        // console.log(clubMemberList.value)
+                        resolve(res.data.data);
+                    } else {
+                        reject("그룹원 목록 조회 실패!")
+                    }
+                },
+                (error) => {
+                    console.log(error)
+                    reject("그룹원 목록 조회 실패!")
                 }
-            },
-            (error) => {
-                console.log(error)
-                alert("그룹 목록 조회 실패!")
-            }
-        )
+            )
+        })
     }
 
     // 그룹원 초대
