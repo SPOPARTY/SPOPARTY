@@ -1,5 +1,17 @@
 <template>
      <v-container fluid class="px-4 py-2">
+          <!-- 페널티 생성 시 보여질 화면-->
+               <v-slide-x-transition>
+                    <v-col v-if="showVoteContent" justify="center" align="center" style="position: absolute;">
+                         <div style="font-size: 50px; color: white;">
+                         {{ voteContent.penalty }} 페널티를 받아라!!!
+                    </div>
+                    <div style="font-size: 30px; color: white;">
+                         {{ voteContent.description }}
+                    </div>
+               <v-img src="/penalty-soccer.gif" width="25%" height="25%"></v-img>
+          </v-col>
+          </v-slide-x-transition>
           <!-- 기존 비디오 및 채팅 섹션 -->
           <v-row class="party-section mb-6">
                <v-col class="match-section" cols="9">
@@ -172,7 +184,7 @@
                               <!-- 스크린샷 오버레이 끝 -->
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="secondary" @click="toggleRecording" :disabled="recordingLoading">
+                              <v-btn color="secondary" @click="doVoteContent" :disabled="recordingLoading">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         동영상
                                    </v-tooltip>
@@ -274,17 +286,34 @@ const { deleteFile } = fileStore
 const url = ref("https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu");
 const isUrlExist = ref(false);
 
-watch(() => voteStore.finishtedVoteList, (newVal) => {
-     console.log(newVal)
+const showVoteContent = ref(false)
+const voteContent = ref({})
+
+watch(() => voteStore.currentFinishedVote, (newVal) => {
+     const targetUser = ""
      subscribers.value.forEach((subscriber) => {
-          console.log(subscriber)
           const data = subscriber.stream.connection.data
           const memberId = data.substr(5, data.length)
-          console.log(memberId)
           // 페널티 타입 확인
-
+          const penalty = newVal.penalty.content;
+          console.log(newVal.penaltyUsers)
+          
+          newVal.penaltyUsers.forEach(user => {
+               if (user.userId === memberId) {
+                    targetUser += user.name + ', '
+                    console.log(`페널티 대상자 ID : ${user.userId}, 닉네임 : ${user.name}, 페널티 ${penalty}`)
+                    sendPenalty(subscriber, penalty, penalty)
+               }
+          })
           // memberId와 비교하여 페널티 대상자 선택 및 적용
      })
+     if (targetUser == "") {
+          voteContent.value.penalty = "아무도 페널티를 받지 않았어요!!"
+     } else {
+          const target = targetUser.substr(0, targetUser.length-2)
+          voteContent.value.penalty = target + " 페널티를 받아라!!"
+     }
+     doVoteContent()
 })
 
 const titleModel = ref(null);
@@ -924,6 +953,43 @@ const registerArchive = () => {
 const cancelArchive = () => {
      videoOverlay.value = false
      deleteFile(recordingFile.value.id)
+}
+
+const doVoteContent = () => {
+     voteContent.value.penalty = "테스트"
+     voteContent.value.description = "테스트 입니다!!!"
+     console.log(showVoteContent)
+     showVoteContent.value = !showVoteContent.value
+     if (showVoteContent.value) {
+          const id = setInterval(() => {
+          showVoteContent.value = false
+          clearInterval(id)
+          console.log("toggle state")
+     }, 2000)
+     }
+
+}
+
+const sendPenalty = (subscriber, penalty) => {
+     voteContent.value.content = penalty
+     if (penalty == "음소거") {
+          subscriber.subscribeToAudio(false)
+          voteContent.value.description = "5초간 음소거 됩니다!!!"
+          const id = setInterval(() => {
+               subscriber.subscribeToAudio(true)
+          }, 5000)
+     } else if (penalty == "음성변조") {
+          voteContent.value.description = "5초간 음성변조 됩니다!!!"
+     } else if (penalty == "흑백화면") {
+          subscriber.subscribeToVideo(false)
+          voteContent.value.description = "5초간 화면이 보이지 않습니다!!!"
+          const id = setInterval(() => {
+               subscriber.subscribeToVideo(true)
+               clearInterval(id)
+          }, 5000)
+     } else {
+          voteContent.value.description = `${penalty}에 당첨되었어요!!!`
+     }
 }
 
 </script>

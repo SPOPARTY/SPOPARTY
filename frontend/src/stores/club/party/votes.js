@@ -12,6 +12,7 @@ export const useVoteStore = defineStore("vote", () => {
     const finishedVoteList = ref([]);
     const myVoteList = ref([]);
 
+    const currentFinishedVote = ref({})
     // 진행 중인 투표 조회
     const getOngoingVoteList = (partyId) => {
         requestOngoingVoteList(partyId,
