@@ -81,7 +81,7 @@ const team = ref([]);
 async function GTD(teamId) {
   try {
     team.value = await getTeamDetail(teamId);
-    console.log("#########", team.value);
+    // console.log("#########", team.value);
   } catch (error) {
     console.error(error);
   }

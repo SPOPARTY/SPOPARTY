@@ -9,7 +9,8 @@
                     <v-card-subtitle>{{ match.league.nameKr }} <v-icon>mdi-slash-forward</v-icon> {{ match.round
                     }}</v-card-subtitle>
                     <span>
-                        <v-img :src="match.league.logo" class="league-logo"></v-img>
+                        <v-img :src="match.league.logo" class="league-logo" 
+                        @click="toLDP(match.league.leagueId)"></v-img>
                         {{ setStartTime(match.startTime) }}
                         <v-icon>mdi-circle-small</v-icon>
                         {{ getMatchStatus(match.startTime) }}</span>
@@ -102,6 +103,11 @@ watch(() => footballStore.dateMatches, (newVal) => {
 
 const toTDP = (seasonLeagueTeamId) => {
     router.push(`/team/${seasonLeagueTeamId}`);
+};
+
+const toLDP = (leagueId) => {
+  // console.log("leagueId=", leagueId)
+  router.push(`/league/${leagueId}`);
 };
 
 // 예시 데이터 (특정 날자의 경기 데이터)
@@ -206,6 +212,7 @@ function checkStatus(status) {
     height: 80px;
     min-width: 50px;
     margin: 10px 0px 10px 0px;
+    cursor: pointer;
 }
 
 .team-logo {
@@ -255,5 +262,9 @@ function checkStatus(status) {
     font-size: 1.2rem;
     font-weight: bold;
     color: #292646;
-}</style>
+}
+.team-logo:hover, .team-name:hover, .league-logo:hover {
+    transform: scale(1.15);
+}
+</style>
   
