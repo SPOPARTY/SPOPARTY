@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import org.springframework.stereotype.Component;
 
 import com.spoparty.batch.entity.SeasonLeague;
+import com.spoparty.batch.entity.SeasonLeagueTeam;
 import com.spoparty.batch.scheduler.model.Country;
 import com.spoparty.batch.scheduler.model.League;
 import com.spoparty.batch.scheduler.model.LeagueResponse;
@@ -55,7 +56,7 @@ public class EntityParser {
 
 	}
 
-
+	public SeasonLeagueTeam seasonLeagueTeamParser(SeasonLeagueTeam item, TeamResponse)
 
 	private LocalDateTime ToLocalDateTime(String date) {
 		String[] dateUnit = date.split("-");
