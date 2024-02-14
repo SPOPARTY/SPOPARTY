@@ -3,9 +3,9 @@ import MainPageView from "@/views/MainPageView.vue";
 import MatchView from "@/views/MatchView.vue";
 import LeagueView from "@/views/LeagueView.vue";
 import ClubView from "@/views/ClubView.vue";
-import Signup from "@/components/user/Signup.vue";
-import Login from "@/components/user/Login.vue";
-import MyPage from "@/components/user/Mypage.vue";
+// import Signup from "@/components/user/Signup.vue";
+// import Login from "@/components/user/Login.vue";
+// import MyPage from "@/components/user/Mypage.vue";
 
 
 const router = createRouter({
@@ -56,7 +56,8 @@ const router = createRouter({
     {
       path:"/mypage",
       name:"Mypage",
-      component: () => import("@/components/user/Mypage.vue")
+      component: () => import("@/components/user/Mypage.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path:"/kakao",
@@ -76,6 +77,7 @@ const router = createRouter({
       // name : "ClubMain",
       // component : () => import("@/components/club/ClubMain.vue"),
       props:true,
+      meta: { requiresAuth: true },
       children : [
         {
           path : "",
@@ -111,5 +113,34 @@ const router = createRouter({
     }
   ]
 });
+
+// 라우트 정의에 meta 필드 추가 예시
+// {
+//   path: "/mypage",
+//   name: "Mypage",
+//   component: () => import("@/components/user/Mypage.vue"),
+//   meta: { requiresAuth: true } // 로그인한 사용자만 접근 가능
+// },
+// {
+//   path: "/club/:clubId/party/:partyId",
+//   name: "PartyView",
+//   component: () => import("@/views/PartyView.vue"),
+//   meta: { requiresAuth: true, requiresClubMembership: true } // 특정 클럽 멤버만 접근 가능
+// },
+
+
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const isLoggedIn = !!localStorage.getItem("id"); // 바로 boolean 값으로 변환
+
+  if (requiresAuth && !isLoggedIn) {
+    // await alert("로그인이 필요한 서비스입니다.");
+    next({ name: "Login" });
+  } else {
+    next();
+  }
+});
+
+
 
 export default router;

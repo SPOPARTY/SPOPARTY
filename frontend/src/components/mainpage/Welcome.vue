@@ -3,7 +3,9 @@
     <v-row justify="center" class="card-bg">
       <v-col cols="12" sm="8" md="6">
         <v-card class="text-center pa-12 elevation-12" color="#f5f5f5">
-          <v-icon large color="green darken-2">mdi-soccer</v-icon>
+          <v-icon size="x-large" color="black darken-2" class="mx-1">mdi-soccer</v-icon>
+          <v-icon size="x-large" color="green darken-2" class="mx-1">mdi-soccer</v-icon>
+          <v-icon size="x-large" color="blue darken-2" class="mx-1">mdi-soccer</v-icon>
           <h1 class="pt-2">축구 경기 응원하기</h1>
           <p class="subtitle-1 font-weight-medium pt-2">
             친구들과 함께 축구 경기를 응원하세요. <br>
@@ -46,6 +48,7 @@
   background-image: url('/soccer-field.jpg');
   background-size: cover;
   height: 85vh;
+  border-radius: 12px;
 }
 
 h1 {
