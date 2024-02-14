@@ -511,7 +511,7 @@ function editPartyInfo(isAsk) {
                type: 'titleChanged'
           })
           .then(() => {
-               console.log('Message successfully sent');
+               // console.log('Message successfully sent');
           })
           .catch(error => {
                console.error(error);
@@ -523,7 +523,7 @@ function editPartyInfo(isAsk) {
                type: 'matchChanged'
           })
           .then(() => {
-               console.log('Message successfully sent');
+               // console.log('Message successfully sent');
           })
           .catch(error => {
                console.error(error);
@@ -715,13 +715,13 @@ const videoState = ref(true)
 const audioState = ref(true)
 
 const toggleVideoState = () => {
-     console.log("call toggle video state")
+     // console.log("call toggle video state")
      videoState.value = !videoState.value
      publisher.value.publishVideo(videoState.value);
 }
 
 const toggleAudioState = () => {
-     console.log("call toggle audio state")
+     // console.log("call toggle audio state")
      audioState.value = !audioState.value
      publisher.value.publishAudio(audioState.value)
 }
@@ -743,13 +743,13 @@ const joinSession = (openviduToken, nickName) => {
           session.value.on('streamCreated', ({ stream }) => {
                const subscriber = session.value.subscribe(stream)
                subscribers.value.push(subscriber)
-               console.log("subscriber added")
+               // console.log("subscriber added")
                // console.log(subscribers.value)
           })
 
           // On every Stream destroyed...
           session.value.on('streamDestroyed', ({ stream }) => {
-               console.log("subscriber removed")
+               // console.log("subscriber removed")
                const index = subscribers.value.indexOf(stream.streamManager, 0)
                if (index >= 0) {
                     subscribers.value.splice(index, 1)
@@ -848,11 +848,11 @@ let min, sec
 
 const toggleRecording = () => {
      if (!recordingState.value) {
-          console.log("start recording call")
+          // console.log("start recording call")
           startRecording()
      }
      else {
-          console.log("stop recording call")
+          // console.log("stop recording call")
           stopRecording()
      }
      recordingState.value = !recordingState.value
@@ -889,7 +889,7 @@ const startRecording = () => {
                (error) => {
                     console.error(error)
                     if (error.response.status === httpStatusCode.NOTFOUND) {
-                         // console.error(error)
+                         console.error(error)
                     }
                }
           )
@@ -899,7 +899,7 @@ const startRecording = () => {
 const stopRecording = () => {
      if (clubId !== undefined && recordingSession.value.id !== undefined) {
           recordingLoading.value = true
-          console.log("stop recording")
+          // console.log("stop recording")
           postStopRecording(
                clubId,
                {
@@ -970,13 +970,13 @@ const cancelArchive = () => {
 const doVoteContent = () => {
      voteContent.value.penalty = "테스트"
      voteContent.value.description = "테스트 입니다!!!"
-     console.log(showVoteContent)
+     // console.log(showVoteContent)
      showVoteContent.value = !showVoteContent.value
      if (showVoteContent.value) {
           const id = setInterval(() => {
           showVoteContent.value = false
           clearInterval(id)
-          console.log("toggle state")
+          // console.log("toggle state")
      }, 2000)
      }
 
