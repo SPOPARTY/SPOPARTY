@@ -290,7 +290,7 @@ const showVoteContent = ref(false)
 const voteContent = ref({})
 
 watch(() => voteStore.currentFinishedVote, (newVal) => {
-     const targetUser = ""
+     let targetUser = ""
      subscribers.value.forEach((subscriber) => {
           const data = subscriber.stream.connection.data
           const memberId = data.substr(5, data.length)
