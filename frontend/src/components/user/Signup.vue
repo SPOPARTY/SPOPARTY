@@ -300,14 +300,13 @@
       alert("올바른 이메일을 입력해주세요!")
       return;
     }
-    console.log("이메일 잘 왔나? -> ", email.value)
+    // console.log("이메일 잘 왔나? -> ", email.value)
 
     // 이메일 ㄱㄱ
     emailCheck(
       email.value,
       (res) => {
         if(res.status === httpStatusCode.OK) {
-          // console.log("잘 발송 되었음")
           // console.log(res.status)
           isEmailVerifyVisible.value = true;
         }

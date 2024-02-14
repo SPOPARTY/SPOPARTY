@@ -22,7 +22,7 @@ const voteConnect = (partyId) => {
         // 1. 투표 생성
         // console.log('*******CreateVote********')
         // console.log(response)
-        alert("투표 만들기 성공!")
+        alert("투표가 생성되었습니다!")
         voteStore.getOngoingVoteList(partyId);
         voteStore.getMyVoteList(partyId,memberId);
    

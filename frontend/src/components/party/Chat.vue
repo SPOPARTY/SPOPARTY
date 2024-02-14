@@ -102,9 +102,9 @@ const clearMessage = () => {
 }
 
 const sendMessage = () => {
-  console.log('sendMessage')
+  // console.log('sendMessage')
   if (myMessage.value.userName !== '' && myMessage.value.message !== '') {
-    console.log('sendMessage rrrr')
+    // console.log('sendMessage success')
     send('/chat/send', myMessage.value, myMessage.value)
     myMessage.value.message = ''
   }
@@ -112,14 +112,14 @@ const sendMessage = () => {
 
 const send = (destination, body, header) => {
   if (stompClient) {
-    console.log(
-      `send message destination : ${destination}, body : ${body}, header : ${header}`,
-    )
+    // console.log(
+    //   `send message destination : ${destination}, body : ${body}, header : ${header}`,
+    // )
     stompClient.send(destination, JSON.stringify(body), JSON.stringify(header))
   } else {
-    console.error(
-      `failed to send message destination : ${destination}, body : ${body}, header : ${header}`,
-    )
+    // console.error(
+    //   `failed to send message destination : ${destination}, body : ${body}, header : ${header}`,
+    // )
   }
 }
 
@@ -131,19 +131,19 @@ const connect = () => {
     stompClient.connect(
       {},
       (frame) => {
-        console.log('stomp client connected.')
+        // console.log('stomp client connected.')
         myMessage.value.message = `${myMessage.value.userName} 님이 입장했습니다.`
         send('/chat/enter', myMessage.value, myMessage.value)
         myMessage.value.message = ''
         stompClient.subscribe(`/sub/chat${clubId}-${partyId}`, (response) => {
-          console.log(response)
+          // console.log(response)
           chats.push(JSON.parse(response.body))
         })
         stompClient.subscribe(
           `/user/${myMessage.value.userName}/sub/chat${clubId}-${partyId}`,
           (response) => {
             chats.push(...JSON.parse(response.body))
-            console.log(chats)
+            // console.log(chats)
           },
         )
       },
@@ -168,8 +168,8 @@ const disconnect = () => {
 const chatMessages = ref(null); // chat-messages div에 대한 참조
 
 const scrollToBottom = () => {
-  console.log('scrollToBottom')
-  console.log(chatMessages.value)
+  // console.log('scrollToBottom')
+  // console.log(chatMessages.value)
   nextTick(() => {
     if (chatMessages.value) {
       chatMessages.value.scrollTop = chatMessages.value.scrollHeight;
@@ -196,7 +196,7 @@ const chatsMock = ref([
 
 // chatsMock 배열에 변화가 있을 때마다 스크롤을 맨 아래로 이동
 watch(chatsMock, () => {
-  console.log('chatsMock changed')
+  // console.log('chatsMock changed')
   scrollToBottom();
 }, { immediate: true, deep: true });
 

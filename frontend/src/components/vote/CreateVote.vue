@@ -7,7 +7,7 @@
         persistent
     >
         <v-card class="outer-card">
-            <v-card-title class="text-center">투표 생성 </v-card-title>
+            <v-card-title class="text-center"><h3>투표 생성</h3> </v-card-title>
             <v-row>
                 <v-col>
                     <v-text-field
@@ -39,13 +39,13 @@
             
             <v-row >
                 <v-col>
-                    <v-btn class="button" @click="addOption"><b>선택지 추가</b></v-btn>
+                    <v-btn class="button choice" @click="addOption"><b>선택지 추가</b></v-btn>
                 </v-col>
             </v-row>
 
             <v-row class="justify-center">
                 <v-col cols="4">
-                    <v-btn class="custom-penalty-btn" @click="showCustomPenalty = true">커스텀 벌칙</v-btn>
+                    <v-btn class="button custom-penalty-btn" @click="showCustomPenalty = true"><b>커스텀 벌칙</b></v-btn>
                 </v-col>
                 <v-col cols="8">
                     <v-select
@@ -59,10 +59,10 @@
 
             <v-row >
                 <v-col>
-                    <v-btn class="button" @click="submitVote" color="#292646">투표 생성</v-btn>
+                    <v-btn class="button" @click="submitVote"><b>투표 생성</b></v-btn>
                 </v-col>
                 <v-col>
-                    <v-btn class="button" @click="closeModal" color="#292646">목록으로</v-btn>
+                    <v-btn class="button" @click="closeModal"><b>목록으로</b></v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -83,10 +83,10 @@
             ></v-text-field>
             <v-row >
                 <v-col>
-                    <v-btn class="button" @click="setCustomPenalty(customPenalty)" color="#292646">커스텀 벌칙 생성</v-btn>
+                    <v-btn class="button" @click="setCustomPenalty(customPenalty)" color="#292646" variant="outlined"><b>커스텀 벌칙 생성</b></v-btn>
                 </v-col>
                 <v-col>
-                    <v-btn class="button" @click="showCustomPenalty = false" color="#292646">목록으로</v-btn>
+                    <v-btn class="button" @click="showCustomPenalty = false" color="#292646" variant="outlined"><b>목록으로</b></v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -215,12 +215,12 @@ function submitVote() {
         } 
     }
 
-    console.log("partyId -> ",partyId);
-    console.log("memberId -> ",memberId);
-    console.log("title -> ", voteTitle.value);
-    console.log("nickname -> ", props.nickname);
-    console.log("options -> ", options.value);
-    console.log("penalty -> " , selectedPenalty.value);
+    // console.log("partyId -> ",partyId);
+    // console.log("memberId -> ",memberId);
+    // console.log("title -> ", voteTitle.value);
+    // console.log("nickname -> ", props.nickname);
+    // console.log("options -> ", options.value);
+    // console.log("penalty -> " , selectedPenalty.value);
     const data = {
         partyId : partyId,
         memberId : memberId,
@@ -237,13 +237,18 @@ function submitVote() {
 // 투표 생성 모달 닫기
 function closeModal() {
     isModalVisible.value = false;
-    console.log("CreateVote emit!!!") 
+    // console.log("CreateVote emit!!!") 
     emit('create-vote-close'); 
 }
 
 </script>
 
 <style lang="scss" scoped>
+.v-card-title {
+    margin-top:10px;
+    margin-bottom : 10px;
+}
+
 .vote-title, .select-penalty{
     margin-left:50px;
     margin-right:50px;
@@ -256,8 +261,8 @@ function closeModal() {
 .inner-card {
     text-align: center;
     margin : 20px;
-    border: 1px solid black;
     height:300px;
+    border: 1px solid black;
     overflow-y:auto;
 }
 
@@ -273,7 +278,7 @@ function closeModal() {
     align-items: center;
     margin:auto;
     box-shadow: none !important;
-    background:transparent;
+    background:#EFECEC;
 }
 
 .custom-penalty{
