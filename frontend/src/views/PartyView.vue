@@ -184,7 +184,7 @@
                               <!-- 스크린샷 오버레이 끝 -->
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="secondary" @click="doVoteContent" :disabled="recordingLoading">
+                              <v-btn color="secondary" @click="toggleRecording" :disabled="recordingLoading">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         동영상
                                    </v-tooltip>
@@ -290,7 +290,7 @@ const showVoteContent = ref(false)
 const voteContent = ref({})
 
 watch(() => voteStore.currentFinishedVote, (newVal) => {
-     const targetUser = ""
+     let targetUser = ""
      subscribers.value.forEach((subscriber) => {
           const data = subscriber.stream.connection.data
           const memberId = data.substr(5, data.length)
@@ -968,9 +968,6 @@ const cancelArchive = () => {
 }
 
 const doVoteContent = () => {
-     voteContent.value.penalty = "테스트"
-     voteContent.value.description = "테스트 입니다!!!"
-     // console.log(showVoteContent)
      showVoteContent.value = !showVoteContent.value
      if (showVoteContent.value) {
           const id = setInterval(() => {
