@@ -14,10 +14,10 @@
           <v-container class="pt-4">
             <v-row justify="center">
               <v-col cols="6">
-                <v-btn outlined color="primary" to="/signup" block>회원가입</v-btn>
+                <v-btn outlined color="primary" to="/signup" block class="welcome">회원가입</v-btn>
               </v-col>
               <v-col cols="6">
-                <v-btn outlined color="secondary" to="/login" block>로그인</v-btn>
+                <v-btn outlined color="secondary" to="/login" block class="welcome">로그인</v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -53,6 +53,9 @@
 
 h1 {
   color: #333D51;
+}
+.welcome:hover {
+  transform: scale(1.1);
 }
 </style>
 

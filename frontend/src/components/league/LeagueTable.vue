@@ -46,8 +46,8 @@
                         {{ inputDash(item.standing.form) }}
                     </template>
                     <template v-slot:item.following="{ item }">
-                        <v-icon v-if="item.following" color="pink" @click="changeFollowing(item)">mdi-heart</v-icon>
-                        <v-icon v-else color="grey" @click="changeFollowing(item)">mdi-heart-outline</v-icon>
+                        <v-icon v-if="item.following" color="pink" @click="changeFollowing(item)" class="follow-icon">mdi-heart</v-icon>
+                        <v-icon v-else color="grey" @click="changeFollowing(item)" class="follow-icon">mdi-heart-outline</v-icon>
                     </template>
                     <template v-slot:no-results>
                         <v-alert :value="true" color="error" icon="mdi-alert">
