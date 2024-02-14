@@ -121,9 +121,9 @@
     })
   
     session.value.on('signal', (event) => {
-      console.log(event.data) // Message
-      console.log(event.from) // Connection object of the sender
-      console.log(event.type) // The type of message
+      // console.log(event.data) // Message
+      // console.log(event.from) // Connection object of the sender
+      // console.log(event.type) // The type of message
     })
   
     // --- 4) Connect to the session with a valid user token ---
@@ -159,7 +159,7 @@
           session.value.publish(publisher.value)
         })
         .catch((error) => {
-          console.log(
+          console.error(
             'There was an error connecting to the session:',
             error.code,
             error.message,
@@ -207,7 +207,7 @@
   }
   
   const createToken = async (sessionId) => {
-    console.log(sessionId)
+    // console.log(sessionId)
     const response = await axios.post(
       APPLICATION_SERVER_URL +
         'api/openvidu/sessions/' +

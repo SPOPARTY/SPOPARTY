@@ -2,42 +2,42 @@
     <v-dialog
         class="vote-list"
         v-model="isModalVisible"
-        max-width="400px"
+        max-width="500px"
         @click:outside="closeModal"
         persistent
     >
-        <v-card>
-            <v-card-title class="modal-title text-center">투표합시다</v-card-title>
+        <v-card class="outer-card">
+            <v-card-title class="modal-title text-center"><h3>투표합시다</h3></v-card-title>
             <v-row class="votes">
                 <v-col cols="12" lg="4" md="4" sm="4">
-                    <v-btn @click="chooseVoteType('ongoing')">진행 중인 투표</v-btn>
+                    <v-btn @click="chooseVoteType('ongoing')"><b>진행 중인 투표</b></v-btn>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="4">
-                    <v-btn @click="chooseVoteType('myVotes')">내가 만든 투표</v-btn>
+                    <v-btn @click="chooseVoteType('myVotes')"><b>내가 만든 투표</b></v-btn>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="4">
-                    <v-btn @click="chooseVoteType('finished')">완료된 투표</v-btn>
+                    <v-btn @click="chooseVoteType('finished')"><b>완료된 투표</b></v-btn>
                 </v-col>   
             </v-row>
             <v-card class="inner-card" >
                 <div v-for="(vote, index) in currentVotes" :key="index">
-                    <v-card-text class="vote-title" 
+                    <v-card-text class="vote-title" v-hover="{hover:true}"
                         v-if="voteType == 'ongoing' && vote.user.userId !== memberId" 
-                        @click="showDetailVote(vote)">{{ vote.title }}</v-card-text>
-                    <v-card-text class="vote-title" 
+                        @click="showDetailVote(vote)"><h3>{{ vote.title }}</h3></v-card-text>
+                    <v-card-text class="vote-title" v-hover="{hover:true}"
                         v-if="voteType == 'myVotes' && vote.ongoing === 1" 
-                        @click="showMyVote(vote)">{{ vote.title }}</v-card-text>
-                    <v-card-text class="vote-title" 
+                        @click="showMyVote(vote)"><h3>{{ vote.title }}</h3></v-card-text>
+                    <v-card-text class="vote-title" v-hover="{hover:true}"
                         v-if="voteType == 'finished'" 
-                        @click="showFinishedVote(vote)">{{ vote.title }}</v-card-text>
+                        @click="showFinishedVote(vote)"><h3>{{ vote.title }}</h3></v-card-text>
                 </div>
             </v-card>
             <v-row class="buttons">
-                <v-col cols="8">
-                    <v-btn @click="isCreateVoteVisible = true">투표 생성</v-btn>
+                <v-col cols="auto">
+                    <v-btn color="primary" @click="isCreateVoteVisible = true"><b>투표 생성</b></v-btn>
                 </v-col>
-                <v-col cols="4">
-                    <v-btn @click="closeModal">나가기</v-btn>
+                <v-col cols="auto">
+                    <v-btn color="error" @click="closeModal"><b>나가기</b></v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -59,10 +59,10 @@
             <v-card-text v-if="selectedAnswer.content !== ''">
                 당신의 선택 : <b>{{ selectedAnswer.content }}</b>
             </v-card-text>
-            <v-card-actions class="buttons" style="transform:translateX(-180px)">
+            <v-card-actions class="buttons">
                 <v-spacer></v-spacer>
-                <v-btn color="green" @click="submitAnswer(selectedAnswer)"><h4>제출</h4></v-btn>
-                <v-btn color="blue" @click="isDetailVoteVisible = false"><h4>취소</h4></v-btn>
+                <v-btn class="choice-button"  @click="submitAnswer(selectedAnswer)"><h4>제출</h4></v-btn>
+                <v-btn class="choice-button"  @click="isDetailVoteVisible = false"><h4>취소</h4></v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -73,29 +73,32 @@
         </v-card>
     </v-dialog>
 
-    <!-- 투표 마감 ==> 내가 만든 투표 상세  -->
+    <!-- 투표 마감 ==> 내가 만든 투표 -->
     <v-dialog 
         v-model="isMyVoteVisible"
         max-width="500px"
         >
-        <v-card>
+        <v-card class="vote-detail">
             <v-card-title class="text-center"> <h2>{{ myVoteDetail.title }}</h2> </v-card-title>
-            <v-card-text v-for="(option,index) in myVoteDetail.options" :key="index" class="text-left" style="margin-left:150px;"
+            <v-card-text v-for="(option,index) in myVoteDetail.options" :key="index" class="vote-title text-center" 
                          @click="finalizeAnswer(option)">
-                {{ option.content }} - 
-                <span v-for="(user,index) in option.users" :key="index">
-                    {{ user.name }}
-                </span>
+                {{ option.content }}
+                <div v-for="(user,index) in option.users" :key="index">
+                    <v-tooltip activator="parent" location="top" theme="dark">
+                        {{ user.name }}
+                    </v-tooltip>
+                    <v-icon>mdi-soccer</v-icon>
+                </div>
             </v-card-text>
             <v-card-text v-if="myAnswer.answerOption !== ''" class="text-center">
                 마감 답안 : <b>{{ myAnswer.answerOption }}</b>
             </v-card-text>
 
 
-            <v-card-actions class="buttons" style="transform:translateX(-180px)">
+            <v-card-actions class="buttons">
                 <v-spacer></v-spacer>
-                <v-btn color="green" @click="() => {confirmFinish = true; isMyVoteVisible = false;}"><h4>마감</h4></v-btn>
-                <v-btn color="blue" @click="isMyVoteVisible = false"><h4>취소</h4></v-btn>
+                <v-btn class="choice-button" @click="() => {confirmFinish = true; isMyVoteVisible = false;}" ><h4>마감</h4></v-btn>
+                <v-btn class="choice-button" @click="isMyVoteVisible = false" ><h4>취소</h4></v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -105,10 +108,10 @@
             <v-card-title class="close-vote">투표를 마감하시겠습니까?</v-card-title>
             <v-card-text><h2>최종 답안</h2></v-card-text>
             <v-card-text><h3>{{ myAnswer.answerOption }}</h3></v-card-text>
-            <v-card-actions class="buttons" style="transform:translateX(-80px)">
+            <v-card-actions class="buttons">
                 <v-spacer></v-spacer>
-                <v-btn color="green" @click="doneVote"><h4>확인</h4></v-btn>
-                <v-btn color="blue" @click="confirmFinish = false"><h4>취소</h4></v-btn>
+                <v-btn class="choice-button" @click="doneVote" ><h4>확인</h4></v-btn>
+                <v-btn class="choice-button" @click="confirmFinish = false"><h4>취소</h4></v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -118,21 +121,26 @@
         v-model="isFinishVoteVisible"
         max-width="500px"
         >
-        <v-card>
+        <v-card class="outer-card">
             <!-- {{ finishedVoteDetail }} -->
-            <v-card-title class="text-center">완료된 투표</v-card-title>
+            <v-card-title class="text-center"><h2>완료된 투표</h2></v-card-title>
             <!-- {{ finishedVoteDetail.options }} -->
-            <v-card-text class="text-center">
+            <v-card-text class="text-center" >
                 정답
                 <h3>
-                    {{finishedVoteDetail.options.filter((option) => option.optionId ===finishedVoteDetail.answerOptionId)[0].content }}
+                    {{finishedVoteDetail.options.filter((option) => option.optionId ===finishedVoteDetail.answerOptionId)[0].content}}
                 </h3>
             </v-card-text>
-            <v-card-text v-for="(option, index) in finishedVoteDetail.options" :key="index" class="text-left" style="margin-left:150px;">
-                {{ option.content }} - <span v-for="(user,index) in option.users" :key="index">{{ user.name }}</span>
+            <v-card-text v-for="(option, index) in finishedVoteDetail.options" :key="index" class="text-center">
+                {{ option.content }} 
+                <div v-for="(user,index) in option.users" :key="index">
+                    <v-tooltip activator="parent" location="top" theme="dark">
+                        {{ user.name }}
+                    </v-tooltip>
+                    <v-icon> mdi-soccer</v-icon>
+                </div>
             </v-card-text>
             <v-card class="inner-card" >
-                <!-- <v-card-text><h3>벌칙 당첨자</h3></v-card-text> -->
                 <v-card-text class="text-center">벌칙 <h4>{{ finishedVoteDetail.penalty.content }}</h4></v-card-text>
                 <div v-for="(users,index) in finishedVoteDetail.options.filter((option) => option.optionId !== finishedVoteDetail.answerOptionId)" :key="index">
                     <v-card-text v-for="(user, idx) in users.users" :key="idx">
@@ -140,9 +148,9 @@
                     </v-card-text>
                 </div>
             </v-card>
-            <v-card-actions class="buttons" style="transform:translateX(-200px)">
+            <v-card-actions class="buttons">
                 <v-spacer></v-spacer>
-                <v-btn color="blue" @click="isFinishVoteVisible = false"><h4>목록으로</h4></v-btn>
+                <v-btn @click="isFinishVoteVisible = false" style="color:black"><b>목록으로</b></v-btn>
             </v-card-actions>
         </v-card>
 
@@ -261,10 +269,8 @@ let selectedAnswer;
 
 function showDetailVote(vote) {
     for (let i = 0; i < vote.options.length; i++) {
-        // console.log(vote.options[i].users)
         for (let j = 0; j < vote.options[i].users.length; j++) {
             console.log(vote.options[i].users[j])
-            // console.log(vote.options[i].users[j])
             let temp = vote.options[i].users[j]
             if (temp.userId === memberId){
                 alert("이미 참여한 투표입니다!")
@@ -289,7 +295,7 @@ function selectAnswer(option) {
     selectedAnswer.value.optionId = option.optionId;
     selectedAnswer.value.voteId = voteDetail.value.voteId;
     selectedAnswer.value.content = option.content;
-    console.log("내가 고를 선지")
+    // console.log("내가 고를 선지")
     console.log(selectedAnswer.value)
 }
 
@@ -331,8 +337,8 @@ const myVoteDetail = ref({
 })
 
 function showMyVote(vote) {
-    console.log("*****내가 만든 투표 상세*****")
-    console.log(vote)
+    // console.log("*****내가 만든 투표 상세*****")
+    // console.log(vote)
     isMyVoteVisible.value = true;
     myVoteDetail.value.voteId = vote.voteId;
     myVoteDetail.value.title = vote.title;
@@ -350,7 +356,9 @@ let myAnswer = ref({
     answerOption : '',
 })
 
+
 function finalizeAnswer(answer) {
+    
     if (answer.optionId === '') {
         alert("반드시 고르셔야 합니다!")
         return;
@@ -359,7 +367,7 @@ function finalizeAnswer(answer) {
     myAnswer.value.nickname = myVoteDetail.value.user.name;
     myAnswer.value.answerOptionId = answer.optionId;
     myAnswer.value.answerOption = answer.content;
-    console.log("당신의 최종 답안 => ", myAnswer.value)
+    // console.log("당신의 최종 답안 => ", myAnswer.value)
 }
 
 const confirmFinish = ref(false)
@@ -417,7 +425,7 @@ function showFinishedVote(vote) {
 
 function closeModal() {
     isModalVisible.value = false; 
-    console.log("*****투표 나가기*****")
+    // console.log("*****투표 나가기*****")
     emit('vote-close'); 
 }
 
@@ -426,21 +434,31 @@ onMounted(() => {
     voteStore.getOngoingVoteList(partyId);
     voteStore.getFinishedVoteList(partyId);
     voteStore.getMyVoteList(partyId, memberId);
-    console.log("VoteList ONMOUNTED!!!!!!!");
+    // console.log("VoteList ONMOUNTED!!!!!!!");
 })
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.v-card-title{
+    margin-top:10px;
+    margin-bottom:10px;
+}
 
 
 .inner-card {
     text-align: center;
     margin : 20px;
-    border: 1px solid black;
     height:150px;
+    border: 1px solid black;
     overflow-y:auto; /* 내용이 넘칠 경우 스크롤 허용 */
 }
+
+.v-btn{
+    background-color: #EFECEC;
+    box-shadow: none !important;
+}
+
 
 .submit-vote {
     height:200px;
@@ -462,12 +480,16 @@ onMounted(() => {
 }
 
 .votes {
-    padding:10px;
+    margin:auto;
 }
 
 
 .vote-title {
     cursor: pointer;
+    &:hover {
+        background-color: #CBD0D8; /* 호버됐을 때 배경색 */
+        color:black
+  }
 }
 
 .vote-types {
@@ -480,8 +502,11 @@ onMounted(() => {
 }
 
 .buttons {
-    margin-left : 10px;
-    margin-bottom : 10px;
+    margin:auto;
+}
+
+.choice-button{
+    color:black;
 }
 
 </style>

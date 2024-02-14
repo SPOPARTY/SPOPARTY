@@ -61,22 +61,19 @@ function localAxios() {
                         {Authorization : localStorage.getItem("accessToken")} // header
                         )
                         .then((response) => {
-                            alert("accessToken 재발급!!!")
+                            // alert("accessToken 재발급!!!")
                             let data = response;
                             let accessToken = data["headers"]["accesstoken"];
                             let refreshToken = data["headers"]["refreshtoken"];
                             // if (data["headers"]["refreshtoken"] !== null) {
                             //     refreshToken = data["headers"]["refreshtoken"];
                             // }
-                            console.log("히히 새로운 access-token 발사 -> ", accessToken);
-                            console.log("히히 새로운 refresh-token 발사 -> ", refreshToken)
                             let decodedToken = jwtDecode(accessToken);
-                            console.log("히히 decoded-token 발사 -> ",decodedToken);
 
                             // 스토리지에 각종 토큰 저장
                             localStorage.setItem('accessToken',accessToken);
                             if(refreshToken != undefined) {
-                                console.log("refreshToken 다시 저장!!")
+                                // console.log("refreshToken 다시 저장!!")
                                 localStorage.setItem('refreshToken',refreshToken);
                             }
                             localStorage.setItem("id",decodedToken.id);
@@ -87,7 +84,7 @@ function localAxios() {
                         })
                         .catch(
                             (error) => {
-                                alert("로그아웃!")
+                                alert("로그아웃 되었습니다")
                                 localStorage.clear();
                                 window.location.replace("/")
                             }
@@ -105,8 +102,7 @@ function localAxios() {
 }
 
 function localAxios2() {
-    // console.log("히히 API_URL 발사 -> ", VITE_REST_API)
-    // AccessToken 자동 발급해주고 싶어
+    // AccessToken 자동 발급
     const instance = axios.create({
         baseURL:`${VITE_REST_API}`,
         // headers: {
@@ -161,22 +157,19 @@ function localAxios2() {
                         {Authorization : localStorage.getItem("accessToken")} // header
                         )
                         .then((response) => {
-                            alert("accessToken 재발급!!!")
+                            // alert("accessToken 재발급!!!")
                             let data = response;
                             let accessToken = data["headers"]["accesstoken"];
                             let refreshToken = data["headers"]["refreshtoken"];
                             // if (data["headers"]["refreshtoken"] !== null) {
                             //     refreshToken = data["headers"]["refreshtoken"];
                             // }
-                            console.log("히히 새로운 access-token 발사 -> ", accessToken);
-                            console.log("히히 새로운 refresh-token 발사 -> ", refreshToken)
                             let decodedToken = jwtDecode(accessToken);
-                            console.log("히히 decoded-token 발사 -> ",decodedToken);
 
                             // 스토리지에 각종 토큰 저장
                             localStorage.setItem('accessToken',accessToken);
                             if(refreshToken != undefined) {
-                                console.log("refreshToken 다시 저장!!")
+                                // console.log("refreshToken 다시 저장!!")
                                 localStorage.setItem('refreshToken',refreshToken);
                             }
                             localStorage.setItem("id",decodedToken.id);
@@ -187,7 +180,7 @@ function localAxios2() {
                         })
                         .catch(
                             (error) => {
-                                alert("로그아웃!")
+                                alert("로그아웃 되었습니다")
                                 localStorage.clear();
                                 window.location.replace("/")
                             }
