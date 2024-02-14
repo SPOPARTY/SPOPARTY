@@ -186,18 +186,18 @@ const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 // }, 1000);
 
 watch(() => partyStore.partyInfo, (newPartyInfo) => {
-    console.log("파티인포 와치", newPartyInfo)
+    // console.log("파티인포 와치", newPartyInfo)
     partyInfo.value = newPartyInfo;
     if (newPartyInfo && Object.keys(newPartyInfo).length > 0) {
         // if (newPartyInfo?.partyId) {
-        console.log("11111", newPartyInfo)
+        // console.log("11111", newPartyInfo)
         isPartyExist.value = true;
         partyId.value = newPartyInfo.partyId;
     } else {
         isPartyExist.value = false;
     }
-    console.log("파티id", partyId.value)
-    console.log("파티유무", isPartyExist.value)
+    // console.log("파티id", partyId.value)
+    // console.log("파티유무", isPartyExist.value)
     // getClubInfo(clubId);
 }, { immediate: true, deep: true });
 
@@ -219,15 +219,15 @@ onMounted(() => {
     if (clubInfo?.value.partyId) {
         isPartyExist.value = true;
         partyId.value = clubInfo.value.partyId;
-        console.log("파티가 있어요", partyId.value)
+        // console.log("파티가 있어요", partyId.value)
     } else {
         isPartyExist.value = false;
-        console.log("파티가 없어요")
+        // console.log("파티가 없어요")
     }
 })
 
 const goToPartyPage = async () => {
-    console.log("#########파티 페이지로 이동합니다#######")
+    // console.log("#########파티 페이지로 이동합니다#######")
     let startTime = Date.now(); // 시작 시간
     let timeoutDuration = 100; // 체크 간격: 0.1초
     let maxWaitTime = 2000; // 최대 대기 시간: 2초
@@ -236,11 +236,11 @@ const goToPartyPage = async () => {
 
     if (isPartyExist.value) {
         await getClubInfo(clubId);
-        console.log("파티가 있어요", clubInfo.value.partyId);
+        // console.log("파티가 있어요", clubInfo.value.partyId);
     } else {
         await postPartyInfo(clubId);
         await getClubInfo(clubId);
-        console.log("파티가 생성되었어요", clubInfo.value.partyId);
+        // console.log("파티가 생성되었어요", clubInfo.value.partyId);
         isPartyExist.value = true;
     }
 
@@ -248,7 +248,7 @@ const goToPartyPage = async () => {
     function waitForPartyIdUpdate() {
         let elapsedTime = Date.now() - startTime; // 경과 시간
         if (partyId.value) {
-            console.log("업데이트된 partyId:", partyId.value);
+            // console.log("업데이트된 partyId:", partyId.value);
             openPartyPage(partyId.value);
         } else if (elapsedTime > maxWaitTime) {
             console.error("파티 ID 업데이트 대기 시간 초과");
@@ -263,14 +263,14 @@ const goToPartyPage = async () => {
 };
 
 const openPartyPage = (partyId) => {
-    console.log("파티 페이지로 이동합니다", partyId);
+    // console.log("파티 페이지로 이동합니다", partyId);
     if (!partyId) {
         console.error("partyId가 제공되지 않았습니다.");
         return;
     }
     getPartyInfo(clubId, partyId);
     router.push({ name: 'PartyView', params: { clubId, partyId } });
-    console.log("########종료########")
+    // console.log("########종료########")
 };
 
 // const newPartyInfo = async () => {
@@ -349,16 +349,20 @@ div.text-to-copy {
 }
 
 .enjoy-party {
-    background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, red);
-    background-size: 500% 500%;
-    animation: Gradient 2.5s ease infinite;
+    // background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, red);
+    // background-size: 500% 500%;
+    background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, #5bd2ed, #ff7675, #d332c2);
+    background-size: 800% 800%;
+    animation: Gradient 7s ease infinite;
     font-size: 1.25rem;
     color:#F4F3EA
 }
 .create-party {
-    background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, red);
-    background-size: 500% 500%;
-    animation: Gradient 5s ease infinite;
+    // background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, red);
+    // background-size: 500% 500%;
+    background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, #ff7675, #d332c2);
+    background-size: 800% 800%;
+    animation: Gradient 12s ease infinite;
     font-size: 1.25rem;
     color:#F4F3EA
 }
@@ -367,7 +371,13 @@ div.text-to-copy {
     0% {
         background-position: 0% 50%;
     }
+    25% {
+        background-position: 100% 50%;
+    }
     50% {
+        background-position: 0% 50%;
+    }
+    75% {
         background-position: 100% 50%;
     }
     100% {

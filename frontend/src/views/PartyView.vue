@@ -651,10 +651,10 @@ async function uploadScreenshot() {
      // console.log("##########", file.value)
      const formData = new FormData();
      formData.append('files', file.value);
-     console.log("#######", formData.get('file'));
+     // console.log("#######", formData.get('file'));
      const imgData = await fileStore.uploadFile(formData);
-     console.log(imgData.data.data);
-     console.log(imgData.data.data[0].id);
+     // console.log(imgData.data.data);
+     // console.log(imgData.data.data[0].id);
      createArchive(
           {
                memberId: localStorage.getItem("id"),

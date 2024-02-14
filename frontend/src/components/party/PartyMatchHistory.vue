@@ -123,7 +123,7 @@ watch(() => footballStore.matchHistory, (newVal) => {
         // 날짜를 비교하여 역순으로 정렬
         return new Date(b.startTime) - new Date(a.startTime);
     });
-    console.log('!!!!History!!!!', homeHistory.value, awayHistory.value);
+    // console.log('!!!!History!!!!', homeHistory.value, awayHistory.value);
 }, { immediate: true, deep: true });
 
 function formatDate(dateStr) {

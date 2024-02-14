@@ -2,11 +2,11 @@
   <v-container class="match-near part-section" fluid>
     <v-row>
       <v-col cols="12">
-        <h1 class="near-title">예정 경기 일정</h1>
+        <h1 class="near-title pa-3">예정 경기 일정</h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12" md="6" v-for="match in matches" :key="match.fixtureId" class="mb-4">
+    <v-row class="card-section">
+      <v-col cols="12" md="6" v-for="match in matches" :key="match.fixtureId" class="pa-5 mb-4">
         <v-card class="pa-3 match-card" outlined tile>
           <div class="text-center">
             <!-- 경기 시작 시간 -->
@@ -70,7 +70,7 @@ const matches = ref([]);
 
 watch(() => footballStore.nextMatches, (newVal) => {
   matches.value = newVal;
-  console.warn(matches.value)
+  // console.warn(matches.value)
 }, { immediate: true }
 );
 
@@ -180,16 +180,24 @@ const toTDP = (teamId) => {
 .match-near {
   padding: 20px;
   overflow: hidden;
+  /* min-width: 1000px; */
 }
 
 .near-title {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  margin: auto;
+  /* padding: 20px; */
   color: #292646;
+  background-color: #F5F5F5;
+  border: 1px solid #292646;
+  width: 250px;
+  border-radius: 8px;
 }
 
 .match-card {
   border-radius: 12px;
+  border: 4px solid plum;
 }
 
 .league-logo {
@@ -222,8 +230,13 @@ const toTDP = (teamId) => {
   margin-left: 10px;
   min-width: 60px;
 }
-
 .team-name {
   cursor: pointer;
   padding: 0;
-}</style>
+}
+.card-section {
+  background-image: url('/soccer-field-2.jpg');
+  background-size: cover;
+  border-radius: 12px;
+}
+</style>

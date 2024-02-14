@@ -62,7 +62,7 @@ watch(() => footballStore.fixtureIdForParty, async (newFixtureId) => {
 
 
 watch(() => footballStore.matchRealTimeData, (newData) => {
-  console.log("#####@@@@######", newData)
+  // console.log("#####@@@@######", newData)
   timeLine.value = newData
 }, { immediate: true, deep: true })
 
