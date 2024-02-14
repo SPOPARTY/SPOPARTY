@@ -126,9 +126,19 @@ h1 {
   min-width: 400px;
   white-space: nowrap;
 }
+.league-logo:hover {
+  transform: scale(1.1);
+}
+.league-title:hover {
+  transform: scale(1.2);
+}
 
 .search-section {
   background-color: white;
   border-radius: 4px;
+}
+.btn-detail:hover {
+  transform: scale(1.35);
+  /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); */
 }
 </style>

@@ -18,6 +18,7 @@
               <v-btn
                 class="id-check"
                 color="#333D51"
+                elevation="1"
                 @click="checkId"
               >
                 아이디 중복확인
@@ -76,6 +77,7 @@
             <v-col cols="12" md="3" sm="3" xs="3">
               <v-btn class="email-verify"
                 color="#333D51"
+                elevation="1"
                 @click="showEmailVerify"
                 >이메일 인증</v-btn>
               <!-- <EmailVerify v-if="isEmailVerifyVisible" @close="isEmailVerifyVisible=false"/> -->
@@ -92,6 +94,7 @@
           </v-col>
         </v-row>
         <v-row v-else justify="center" align="center"  class="emblem mx-2 my-2" @click="showEmblemModal">
+          <v-tooltip location="top" activator="parent">대표 엠블렘을 선택하세요!</v-tooltip>
           <h2 style="color:white; cursor:pointer">원하는 구단의 엠블럼을 선택해보세요!</h2>
         </v-row>
 
@@ -103,11 +106,12 @@
         />
           
           <v-row>
-            <v-col>
-              <v-btn color="#333D51" type="submit" block>회원가입</v-btn>
+            <v-col cols=3>
+              <v-btn color="warning" @click="goBack" block>이전</v-btn>
             </v-col>
-            <v-col>
-              <v-btn color="grey" @click="goBack" block>이전</v-btn>
+            <v-spacer></v-spacer>
+            <v-col cols="5">
+              <v-btn color="primary" type="submit" block>회원가입</v-btn>
             </v-col>
           </v-row>
           
@@ -462,12 +466,13 @@
 
 
 .signup-container {
-  max-width: 600px;
-  background-color: #08042B;
+  max-width: 700px;
+  background-color: #CBD0D8
 }
 
 .v-card {
-  background-color: #292646; 
+  // background-color: #CBD0D8
+  padding: 20px;
 }
 
 .input {
@@ -481,7 +486,7 @@
 .title {
   margin-top:10px;
   margin-bottom : 10px;
-  color:#D3AC2B;
+  color : #292646;
 }
 
 .justify-center{
