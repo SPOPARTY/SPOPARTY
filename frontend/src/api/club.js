@@ -15,7 +15,7 @@ function requestCreateClubs(data,success,fail) {
 }
 
 // 그룹 조회
-function requestClubInfo(clubId,success,fail) {
+async function requestClubInfo(clubId,success,fail) {
     local.get(`${API_URL}/${clubId}`).then(success).catch(fail);
 }
 
