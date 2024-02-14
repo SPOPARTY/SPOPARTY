@@ -10,7 +10,7 @@
         <TextEditor class="file-input" v-model="content"/>
         <v-card-text class="file-input-container">
             <v-file-input
-                accept="image/*"
+                accept="image/*,.mp4"
                 label="파일을 첨부해주세요"
                 v-model="file"
                 class="file-input"
