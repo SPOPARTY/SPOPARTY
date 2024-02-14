@@ -19,8 +19,8 @@
                     <v-card-subtitle v-else class="text-right">수많은 파티 그 중 하나</v-card-subtitle>
                     <v-card-text class="text-right">작성자 : {{ detail.member.nickname }}</v-card-text>
                     <v-card-subtitle class="text-right">생성 날짜 : {{ formatDateTime(detail.createdTime) }}</v-card-subtitle>
-                    <v-img v-if="detail.file.type == 'image'" :src="detail.file.url" :alt="detail.file.url" class="thumb_img" cover height="200px"/>
-                    <v-img v-else :src="detail.thumbnail.url" :alt="detail.thumbnail.url" class="thumb_img" cover height="200px"></v-img>                </v-card>
+                    <v-img :src="detail.thumbnail.url" :alt="detail.thumbnail.url" class="thumb_img" cover height="200px"></v-img>                
+                </v-card>
             </v-col>
         </v-row>
 
