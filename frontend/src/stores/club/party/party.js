@@ -163,7 +163,6 @@ export const usePartyStore = defineStore("party",() => {
                     // console.log("히히 파티 멤버 추가하기 발사")
                     // console.log(res.data.data)
                     getPartyInfo(clubId,partyId);
-                    getPartyMemberList(clubId, partyId)
                     // console.log(res.data.data.participantId)
                     myParticipantId.value = res.data.data.participantId;
                 }

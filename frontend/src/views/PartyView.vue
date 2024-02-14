@@ -344,6 +344,7 @@ watch(() => partyStore.partyInfo, (newVal) => {
 // 파티 입장 및 퇴장
 const clubId = route.params.clubId;
 const partyId = route.params.partyId;
+const partyMemberList = ref();
 
 // console.log("시작멤버리스트", partyMemberList.value);
 
