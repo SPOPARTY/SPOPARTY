@@ -135,7 +135,7 @@
                               <UserVideo :stream-manager="sub" />
                          </v-col>
                          <!-- 파티 초대 -->
-                         <v-col cols="6" class="cam-video" v-if="partyMembers?.length < maxMembers" @click="inviteToParty"
+                         <v-col cols="6" class="cam-video" v-if="partyMemberList?.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
                               <v-img src="/maruche.jpg" class="invite-img pt-2" contain></v-img>
                               <span>친구를 초대해 보세요!</span>
