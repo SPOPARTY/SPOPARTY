@@ -12,6 +12,7 @@ export const useVoteStore = defineStore("vote", () => {
     const finishedVoteList = ref([]);
     const myVoteList = ref([]);
 
+    const currentFinishedVote = ref({})
     // 진행 중인 투표 조회
     const getOngoingVoteList = (partyId) => {
         requestOngoingVoteList(partyId,
@@ -23,7 +24,7 @@ export const useVoteStore = defineStore("vote", () => {
                 }
             },
             (error) => {
-                console.log("*******진행 중인 투표 조회 실패*******")
+                // console.log("*******진행 중인 투표 조회 실패*******")
                 console.error(error);
             }
         ) 
@@ -40,7 +41,7 @@ export const useVoteStore = defineStore("vote", () => {
                 }
             },
             (error) => {
-                console.log("*********종료된 투표 조회 실패**********")
+                // console.log("*********종료된 투표 조회 실패**********")
                 console.error(error);
             }
         )
@@ -57,7 +58,7 @@ export const useVoteStore = defineStore("vote", () => {
                 }
             },
             (error) => {
-                console.log("**********내가 만든 투표 조회*************")
+                // console.log("**********내가 만든 투표 조회*************")
                 console.error(error);
             }
         )
@@ -75,7 +76,7 @@ export const useVoteStore = defineStore("vote", () => {
             }
         }, 
         (error) => {
-            console.log("*****투표 상세 조회 실패*******")
+            // console.log("*****투표 상세 조회 실패*******")
             console.error(error);
         }
         )

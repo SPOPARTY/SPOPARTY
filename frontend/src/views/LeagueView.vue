@@ -59,10 +59,10 @@ watch(() => footballStore.leagueList, (leagueList) => {
   leagues.value = leagueList;
 });
 
-console.log(leagues.value);
+// console.log(leagues.value);
 
 const toLeagueDetailPage = (leagueId) => {
-  console.log(leagueId);
+  // console.log(leagueId);
   router.push(`/league/${leagueId}`);
 };
 
