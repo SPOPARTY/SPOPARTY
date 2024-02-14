@@ -84,7 +84,7 @@ function localAxios() {
                         })
                         .catch(
                             (error) => {
-                                alert("로그아웃 되었습니다")
+                                // alert("로그아웃 되었습니다")
                                 localStorage.clear();
                                 window.location.replace("/")
                             }
@@ -180,7 +180,7 @@ function localAxios2() {
                         })
                         .catch(
                             (error) => {
-                                alert("로그아웃 되었습니다")
+                                // alert("로그아웃 되었습니다")
                                 localStorage.clear();
                                 window.location.replace("/")
                             }

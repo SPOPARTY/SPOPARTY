@@ -57,15 +57,16 @@
                         <b>차세대 리더</b> : <b><u>{{ nextLeader.memberNickName }}</u></b> <br>
                     </div>
                 </v-card-text>
-                <v-card-text 
-                    class="member"
-                    v-for="(member, index) in clubMemberList" 
-                    :key="index" 
-                    @click="selectLeader(member)"
-                    >
-                    {{ member.memberNickName}}
-                <v-icon v-if="member.role === 'host'" class="star">mdi-star</v-icon>
-                </v-card-text>
+                <div v-for="(member, index) in clubMemberList" :key="index" >
+                    <v-card-text 
+                        class="member text-center"
+                        v-if="member.role !== 'host'"
+                        @click="selectLeader(member)"
+                        :hover="{hover:true}"
+                        >
+                        {{ member.memberNickName}}
+                    </v-card-text>
+                </div>
                 <v-card-actions style="transform:translateX(-40px)">
                     <v-spacer></v-spacer>
                     <v-btn color="red" @click="showTakeOver">진행시켜</v-btn>
@@ -268,9 +269,13 @@ h1{
 }
 
 .member {
-    margin-left : 150px;
+    // margin-left : 150px;
     cursor: pointer;
+    &:hover{
+        background-color:#FDFFAB
+    }
 }
+
 .star{
     transform:translateY(-5px) translateX(-80px) !important 
 } 

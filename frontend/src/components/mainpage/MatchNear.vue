@@ -203,6 +203,10 @@ const toLDP = (leagueId) => {
   border-radius: 12px;
   border: 4px solid plum;
 }
+.match-card:hover {
+  border: 4px solid #D3AC2B;
+  transform: scale(1.05);
+}
 
 .league-logo {
   width: 80px;
@@ -243,5 +247,8 @@ const toLDP = (leagueId) => {
   background-image: url('/soccer-field-2.jpg');
   background-size: cover;
   border-radius: 12px;
+}
+.team-logo:hover, .team-name:hover, .league-logo:hover {
+  transform: scale(1.15);
 }
 </style>

@@ -358,6 +358,9 @@ function resetBarAnimation(match) {
   height: 14vh;
   cursor:pointer;
 }
+.league-logo:hover{
+  transform: scale(1.15);
+}
 
 .VS {
   font-size: 3rem;
