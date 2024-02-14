@@ -291,11 +291,11 @@ const voteContent = ref({})
 
 watch(() => voteStore.currentFinishedVote, (newVal) => {
      let targetUser = ""
+     const penalty = newVal.penalty.content;
      subscribers.value.forEach((subscriber) => {
           const data = subscriber.stream.connection.data
           const memberId = data.substr(5, data.length)
           // 페널티 타입 확인
-          const penalty = newVal.penalty.content;
           console.log(newVal.penaltyUsers)
           
           newVal.penaltyUsers.forEach(user => {
@@ -305,13 +305,21 @@ watch(() => voteStore.currentFinishedVote, (newVal) => {
                     sendPenalty(subscriber, penalty, penalty)
                }
           })
-          // memberId와 비교하여 페널티 대상자 선택 및 적용
      })
+
+     // 내가 페널티 대상자인 경우
+     newVal.penaltyUsers.forEach(user => {
+          if (user.userId === localStorage.getItem("id")) {
+               targetUser += user.name + ', '
+               sendPenaltyToMe(penalty)
+          }
+     })
+     
      if (targetUser == "") {
           voteContent.value.penalty = "아무도 페널티를 받지 않았어요!!"
      } else {
           const target = targetUser.substr(0, targetUser.length-2)
-          voteContent.value.penalty = target + " 페널티를 받아라!!"
+          voteContent.value.penalty = target
      }
      doVoteContent()
 })
@@ -986,6 +994,7 @@ const sendPenalty = (subscriber, penalty) => {
           voteContent.value.description = "5초간 음소거 됩니다!!!"
           const id = setInterval(() => {
                subscriber.subscribeToAudio(true)
+               clearInterval(id)
           }, 5000)
      } else if (penalty == "음성변조") {
           voteContent.value.description = "5초간 음성변조 됩니다!!!"
@@ -998,6 +1007,29 @@ const sendPenalty = (subscriber, penalty) => {
           }, 5000)
      } else {
           voteContent.value.description = `${penalty}에 당첨되었어요!!!`
+     }
+}
+
+const sendPenaltyToMe = (penalty) => {
+     voteContent.value.content = penalty
+     if (penalty == "음소거") {
+          publisher.value.publishAudio(false)
+          voteContent.value.description = "당신은 5초간 음소거 됩니다!!!"
+          const id = setInterval(() => {
+               publisher.value.publishAudio(true)
+               clearInterval(id)
+          }, 5000)
+     } else if (penalty == "음성변조") {
+          voteContent.value.description = "당신은 5초간 음성변조 됩니다!!!"
+     } else if (penalty == "흑백화면") {
+          publisher.value.publishVideo(false)
+          voteContent.value.description = "당신은 5초간 화면이 보이지 않습니다!!!"
+          const id = setInterval(() => {
+               publisher.value.publishVideo(true)
+               clearInterval(id)
+          }, 5000)
+     } else {
+          voteContent.value.description = `당신은 ${penalty}에 당첨되었어요!!!`
      }
 }
 
