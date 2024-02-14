@@ -15,7 +15,7 @@
             </div>
             
             <div v-for="(member, index) in clubMemberList" :key="index">
-                <v-card-text class="member" v-if="member.role !== 'host'" @click="selectMember(member)">
+                <v-card-text class="member" v-if="member.role !== 'host'" @click="selectMember(member)" :hover="{hover:true}">
                     {{ member.memberNickName }}
                 </v-card-text>
             </div>
@@ -129,7 +129,7 @@ function closeModal() {
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 
 .member-list-title {
@@ -143,6 +143,9 @@ function closeModal() {
 .member {
     text-align: center !important;
     cursor: pointer;
+    &:hover{
+        background-color: #FDFFAB;
+    }
 }
 
 .mention {
