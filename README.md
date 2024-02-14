@@ -219,11 +219,16 @@
 ---
 |**PORT**|**이름**|
 |:---:|:---:|
+|22|SSH|
 |443|HTTPS|
 |80|HTTP - HTTPS로 리다이렉트(프론트 페이지지로 리다이렉트)|
-|8443|Openvidu|
-|8379|Redis|
-|3306|MySQL|
-|8081|Jenkins|
-|8080|Spring boot Docker Container|
-|3000|React, NginX Docker Container|
+|6379|Redis Docker Container|
+|8080|Jenkins Docker Container|
+|9090|Spring boot Docker Container|
+|9091|Batch Docker Container|
+|3478|Openvidu|클라이언트 IP를 확인하기 위해 STUN/TURN 서버에서 사용|
+|5442|Openvidu|OpenVidu 서버|
+|5443|Openvidu|OpenVidu 서버|
+|8888|Openvidu|Kurento Media Server에서|
+|40000~57000|Openvidu|Kurento Media Server에서 미디어 연결을 설정하는 데 사용|
+|57001~65535|Openvidu|TURN 서버에서 중계된 미디어 연결을 설정하는 데 사용|
