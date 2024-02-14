@@ -19,11 +19,13 @@
                 :key="index"
                 >
                 <v-card class="thumbnail" @click="showDetailModal(detail)">
-                    <v-card-title class="text-center"> {{ detail.fixtureTitle }} </v-card-title>
-                    <v-card-subtitle class="text-right"> {{detail.partyTitle}} </v-card-subtitle>
+                    <v-card-title v-if="detail.fixtureTitle" class="text-center"> {{ detail.fixtureTitle }} </v-card-title>
+                    <v-card-title v-else class="text-center"> 이름없는 추억 하나</v-card-title>
+                    <v-card-subtitle v-if="detail.partyTitle" class="text-right"> {{detail.partyTitle}} </v-card-subtitle>
+                    <v-card-subtitle v-else class="text-right">수많은 파티 그 중 하나</v-card-subtitle>
                     <v-card-text class="text-right"> {{ detail.member.nickname }} </v-card-text>
                     <v-card-text class="text-right"> {{formatDateTime(detail.createdTime)}} </v-card-text>
-                    <v-img v-if="detail.file !== null" :src="detail.file.url" :alt="detail.file.url" class="thumb_img" cover height="200px"/>
+                    <v-img :src="detail.thumbnail.url" :alt="detail.thumbnail.url" class="thumb_img" cover height="200px"></v-img>
                 </v-card>
                 <ArchiveDetail 
                     v-if="isDetailVisible && currentDetail.id === detail.id"
@@ -48,12 +50,18 @@ import ArchiveDetail from '@/components/archive/ArchiveDetail.vue';
 const archiveStore = useArchiveStore();
 
 const routes = useRoute();
-const clubId = routes.params.clubId;
+const clubId = ref(routes.params.clubId);
 
 const archiveList = ref([]);
 watch(() => archiveStore.archiveList,(newArchiveList) => {
     archiveList.value = newArchiveList;
 },{immediate:true})
+
+watch(() => routes.params.clubId, (newClubId) => {
+    clubId.value = newClubId;
+    archiveStore.getArchiveList(clubId.value);
+});
+
 
 // 아카이브 상세 모달 보이기
 const isDetailVisible = ref(false);
@@ -68,7 +76,7 @@ const showDetailModal = (detail) => {
 }
 
 onMounted(() => {
-    archiveStore.getArchiveList(clubId);
+    archiveStore.getArchiveList(clubId.value);
 })
 
 </script>

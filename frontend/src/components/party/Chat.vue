@@ -5,14 +5,18 @@
       <v-list lines="one">
         <!-- chatsMock 은 ui 테스트용 -->
         <!-- <v-list-item v-for="(item, i) in chatsMock" :key="i" :value="item" color="primary"> -->
-        <v-list-item v-for="(item, i) in chats" :key="i" :value="item" color="primary">
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
+        <v-list-item v-for="(item, i) in chats" :key="i" :value="item" color="primary" justify="center" class="ma-0 pa-0">
+          <v-row rows="12" class="ma-0 pa-0">
+            <v-col cols="3">
+              <v-img :src="item.teamLogo" height="48" width="48"></v-img>
+            </v-col>
+            <v-col cols="8">
+              <v-list-item-content class="ma-0 pa-0">
             <v-list-item-title v-text="item.userName"></v-list-item-title>
             <v-list-item-subtitle v-text="item.message"></v-list-item-subtitle>
-          </v-list-item-content>
+            </v-list-item-content>
+            </v-col>
+          </v-row>
         </v-list-item>
       </v-list>
     </div>
@@ -36,6 +40,7 @@ import SockJS from 'sockjs-client'
 import { onBeforeUnmount, onMounted, reactive, ref, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePartyStore } from '@/stores/club/party/party'
+import {  getMember } from '@/api/member'
 
 const serverURL = 'https://i10a802.p.ssafy.io/api/ws-stomp'
 
@@ -44,19 +49,12 @@ let stompClient = undefined
 const route = useRoute()
 const router = useRouter()
 
-const partyStore = usePartyStore()
-
 const chats = reactive([])
-
-const message = ref('')
-
-onMounted(() => { })
 
 //// 파티 정보 수정 로직
 // 파티 입장 및 퇴장
 const clubId = route.params.clubId
 const partyId = route.params.partyId
-const partyMemberList = ref(partyStore.partyMemberList)
 
 const myMessage = ref({
   userName: '',
@@ -66,23 +64,37 @@ const myMessage = ref({
   message: '',
 })
 
-watch(
-  () => partyStore.partyMemberList,
-  (newPartyMembers) => {
-    partyMemberList.value = newPartyMembers
-    partyMemberList.value.map((member) => {
-      console.log(member)
-      console.log(localStorage.getItem('id'))
-      if (member.memberId == localStorage.getItem('id')) {
-        myMessage.value.userName = member.memberNickname
-        myMessage.value.teamLogo = 'qwer'
-        myMessage.value.clubId = clubId
-        myMessage.value.partyId = partyId
-        connect()
-      }
-    })
+const props = defineProps({
+  chatDivHeightProp: {
+    type: String,
+    required: true,
+    default: '300'
   },
-  { immediate: true, deep: true },
+  disconnectProp: false
+})
+
+watch(() => props.disconnectProp, (newDisconnectProp) => {
+  console.log(newDisconnectProp)
+  if (newDisconnectProp) {
+    disconnect()
+  }
+})
+
+onMounted(() => { 
+    getMember(
+      localStorage.getItem('id'),
+        ({data,status}) => {
+          myMessage.value.teamLogo = data.data.team.logo
+          myMessage.value.userName = data.data.nickname
+          myMessage.value.clubId = clubId
+          myMessage.value.partyId = partyId
+          connect()
+        },
+        (error) => {
+        console.log(error)
+        }
+    )
+  }
 )
 
 const clearMessage = () => {
@@ -90,9 +102,9 @@ const clearMessage = () => {
 }
 
 const sendMessage = () => {
-  console.log('sendMessage')
+  // console.log('sendMessage')
   if (myMessage.value.userName !== '' && myMessage.value.message !== '') {
-    console.log('sendMessage rrrr')
+    // console.log('sendMessage success')
     send('/chat/send', myMessage.value, myMessage.value)
     myMessage.value.message = ''
   }
@@ -100,14 +112,14 @@ const sendMessage = () => {
 
 const send = (destination, body, header) => {
   if (stompClient) {
-    console.log(
-      `send message destination : ${destination}, body : ${body}, header : ${header}`,
-    )
+    // console.log(
+    //   `send message destination : ${destination}, body : ${body}, header : ${header}`,
+    // )
     stompClient.send(destination, JSON.stringify(body), JSON.stringify(header))
   } else {
-    console.error(
-      `failed to send message destination : ${destination}, body : ${body}, header : ${header}`,
-    )
+    // console.error(
+    //   `failed to send message destination : ${destination}, body : ${body}, header : ${header}`,
+    // )
   }
 }
 
@@ -119,19 +131,19 @@ const connect = () => {
     stompClient.connect(
       {},
       (frame) => {
-        console.log('stomp client connected.')
+        // console.log('stomp client connected.')
         myMessage.value.message = `${myMessage.value.userName} 님이 입장했습니다.`
         send('/chat/enter', myMessage.value, myMessage.value)
         myMessage.value.message = ''
         stompClient.subscribe(`/sub/chat${clubId}-${partyId}`, (response) => {
-          console.log(response)
+          // console.log(response)
           chats.push(JSON.parse(response.body))
         })
         stompClient.subscribe(
           `/user/${myMessage.value.userName}/sub/chat${clubId}-${partyId}`,
           (response) => {
             chats.push(...JSON.parse(response.body))
-            console.log(chats)
+            // console.log(chats)
           },
         )
       },
@@ -144,27 +156,20 @@ const connect = () => {
 
 const disconnect = () => {
   myMessage.value.message = `${myMessage.value.userName} 님이 퇴장했습니다.`
-  send('/sub/chat/out', myMessage.value, myMessage.value)
+  send('/chat/send', myMessage.value, myMessage.value)
+  myMessage.value.message = ""
   stompClient.disconnect(() => {
     console.log('stomp client disconnected.')
   })
 }
 
-////// 그 외 로직
-const props = defineProps({
-  chatDivHeightProp: {
-    type: String,
-    required: true,
-    default: '300'
-  }
-})
 
 // 스크롤을 채팅창의 맨 아래로 이동시키는 함수
 const chatMessages = ref(null); // chat-messages div에 대한 참조
 
 const scrollToBottom = () => {
-  console.log('scrollToBottom')
-  console.log(chatMessages.value)
+  // console.log('scrollToBottom')
+  // console.log(chatMessages.value)
   nextTick(() => {
     if (chatMessages.value) {
       chatMessages.value.scrollTop = chatMessages.value.scrollHeight;
@@ -191,7 +196,7 @@ const chatsMock = ref([
 
 // chatsMock 배열에 변화가 있을 때마다 스크롤을 맨 아래로 이동
 watch(chatsMock, () => {
-  console.log('chatsMock changed')
+  // console.log('chatsMock changed')
   scrollToBottom();
 }, { immediate: true, deep: true });
 

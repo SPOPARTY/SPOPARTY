@@ -24,8 +24,8 @@
             </v-btn>
         </div>
 
-        <v-btn @mouseenter="newPartyInfo" v-bind="props" @click="goToPartyPage" block :color="isPartyExist ? 'primary' : 'red'"
-            dark class="mt-4" style="height:100px;">
+        <v-btn v-bind="props" @click="goToPartyPage" block :class="isPartyExist ? 'enjoy-party' : 'create-party'"
+            dark class="mt-4 party-btn" style="height:100px;">
             <v-tooltip v-if="isPartyExist" activator="parent" location="top">
                 <p>인원 : {{ partyInfo.currentParticipants }} / {{ partyInfo.maxParticipants }}</p>
                 <p>{{ partyInfo.fixtureInfo?.leagueName }} {{ partyInfo.fixtureInfo?.round }}</p>
@@ -101,7 +101,7 @@ getClubInfo(clubId)
 
 watch(() => clubStore.clubInfo, (newClubInfo) => {
     clubInfo.value = newClubInfo;
-    console.log("000클럽인포 와치000", newClubInfo)
+    // console.log("000클럽인포 와치000", newClubInfo)
 }, { immediate: true, deep: true });
 
 const clubMemberList = computed(() => {
@@ -124,6 +124,10 @@ const inviteURL = computed(() => {
 
 const isInviteVisible = ref(false)
 async function showInvite() {
+    if (props.clubMemberList.length === 6) {
+        alert("그룹인원이 모두 찼습니다!")
+        return;
+    }
     isInviteVisible.value = true;
 
     await clubStore.getClubInviteLink(clubId);
@@ -136,10 +140,10 @@ async function showInvite() {
 const copyText = async () => {
     try {
         await navigator.clipboard.writeText(inviteURL.value);
-        alert("텍스트가 클립보드에 복사되었습니다.")
+        alert("초대 url이 복사되었습니다.")
     } catch (err) {
         console.error('복사 실패 : ', err);
-        alert('텍스트 복사에 실패했습니다.')
+        alert('초대 url 복사에 실패했습니다.')
     }
 }
 
@@ -148,7 +152,6 @@ const copyText = async () => {
 const isClubMemberFuncVisible = ref(false);
 
 const showClubMemberFunc = () => {
-    console.log("히히 그룹원/그룹장 세부기능 발사")
     isClubMemberFuncVisible.value = true;
 }
 
@@ -183,18 +186,18 @@ const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 // }, 1000);
 
 watch(() => partyStore.partyInfo, (newPartyInfo) => {
-    console.log("파티인포 와치", newPartyInfo)
+    // console.log("파티인포 와치", newPartyInfo)
     partyInfo.value = newPartyInfo;
     if (newPartyInfo && Object.keys(newPartyInfo).length > 0) {
         // if (newPartyInfo?.partyId) {
-        console.log("11111", newPartyInfo)
+        // console.log("11111", newPartyInfo)
         isPartyExist.value = true;
         partyId.value = newPartyInfo.partyId;
     } else {
         isPartyExist.value = false;
     }
-    console.log("파티id", partyId.value)
-    console.log("파티유무", isPartyExist.value)
+    // console.log("파티id", partyId.value)
+    // console.log("파티유무", isPartyExist.value)
     // getClubInfo(clubId);
 }, { immediate: true, deep: true });
 
@@ -216,28 +219,28 @@ onMounted(() => {
     if (clubInfo?.value.partyId) {
         isPartyExist.value = true;
         partyId.value = clubInfo.value.partyId;
-        console.log("파티가 있어요", partyId.value)
+        // console.log("파티가 있어요", partyId.value)
     } else {
         isPartyExist.value = false;
-        console.log("파티가 없어요")
+        // console.log("파티가 없어요")
     }
 })
 
 const goToPartyPage = async () => {
-    console.log("#########파티 페이지로 이동합니다#######")
+    // console.log("#########파티 페이지로 이동합니다#######")
     let startTime = Date.now(); // 시작 시간
     let timeoutDuration = 100; // 체크 간격: 0.1초
     let maxWaitTime = 2000; // 최대 대기 시간: 2초
     // let tempPartyId = null; 
     // partyId를 임시 저장할 변수
-
+    await getClubInfo(clubId)
     if (isPartyExist.value) {
-        await getClubInfo(clubId);
-        console.log("파티가 있어요", clubInfo.value.partyId);
+        // await getClubInfo(clubId);
+        // console.log("파티가 있어요", clubInfo.value.partyId);
     } else {
         await postPartyInfo(clubId);
         await getClubInfo(clubId);
-        console.log("파티가 생성되었어요", clubInfo.value.partyId);
+        // console.log("파티가 생성되었어요", clubInfo.value.partyId);
         isPartyExist.value = true;
     }
 
@@ -245,7 +248,7 @@ const goToPartyPage = async () => {
     function waitForPartyIdUpdate() {
         let elapsedTime = Date.now() - startTime; // 경과 시간
         if (partyId.value) {
-            console.log("업데이트된 partyId:", partyId.value);
+            // console.log("업데이트된 partyId:", partyId.value);
             openPartyPage(partyId.value);
         } else if (elapsedTime > maxWaitTime) {
             console.error("파티 ID 업데이트 대기 시간 초과");
@@ -260,45 +263,33 @@ const goToPartyPage = async () => {
 };
 
 const openPartyPage = (partyId) => {
-    console.log("파티 페이지로 이동합니다", partyId);
+    // console.log("파티 페이지로 이동합니다", partyId);
     if (!partyId) {
         console.error("partyId가 제공되지 않았습니다.");
         return;
     }
     getPartyInfo(clubId, partyId);
     router.push({ name: 'PartyView', params: { clubId, partyId } });
-    console.log("########종료########")
+    // console.log("########종료########")
 };
 
-const newPartyInfo = async () => {
-    console.log("버튼을 호버해 새 파티 정보를 가져옵니다.")
-    const tempInfo = await getPartyInfo(clubId, partyId.value);
-    setTimeout(() => {
-        console.log("새 파티 정보", tempInfo)
-        if (tempInfo == undefined) {
-            console.log("#새 파티# 파티가 없습니다.")
-            isPartyExist.value = false;
-            partyId.value = null;
-            clubInfo.value.partyId = null;
-            console.log(clubInfo.value)
-        } else {
-            console.log("파티가 있습니다.")
-            isPartyExist.value = true;
-        }
-    }, 500)
-    // if (tempInfo) {
-    //     console.log("파티가 있습니다.")
-    //     if (!isPartyExist.value) {
-    //         isPartyExist.value = true;
-    //     }
-    //     return
-    // } else {
-    //     console.log("파티가 없습니다.")
-    //     if (isPartyExist.value) {
-    //         isPartyExist.value = false;
-    //     }
-    // }
-}
+// const newPartyInfo = async () => {
+//     console.log("버튼을 호버해 새 파티 정보를 가져옵니다.")
+//     const tempInfo = await getPartyInfo(clubId, partyId.value);
+//     setTimeout(() => {
+//         console.log("새 파티 정보", tempInfo)
+//         if (tempInfo == undefined) {
+//             console.log("#새 파티# 파티가 없습니다.")
+//             isPartyExist.value = false;
+//             partyId.value = null;
+//             clubInfo.value.partyId = null;
+//             console.log(clubInfo.value)
+//         } else {
+//             console.log("파티가 있습니다.")
+//             isPartyExist.value = true;
+//         }
+//     }, 500)
+// }
 
 
 </script>
@@ -352,4 +343,46 @@ div.text-to-copy {
     font-size: 1rem;
     font-weight: bold;
 }
+.party-btn {
+    background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, red);
+    background-size: 400% 400%;
+}
+
+.enjoy-party {
+    // background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, red);
+    // background-size: 500% 500%;
+    background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, #5bd2ed, #ff7675, #d332c2);
+    background-size: 800% 800%;
+    animation: Gradient 7s ease infinite;
+    font-size: 1.25rem;
+    color:#F4F3EA
+}
+.create-party {
+    // background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, red);
+    // background-size: 500% 500%;
+    background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, #ff7675, #d332c2);
+    background-size: 800% 800%;
+    animation: Gradient 12s ease infinite;
+    font-size: 1.25rem;
+    color:#F4F3EA
+}
+
+@keyframes Gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    25% {
+        background-position: 100% 50%;
+    }
+    50% {
+        background-position: 0% 50%;
+    }
+    75% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 </style>

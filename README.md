@@ -1,8 +1,11 @@
-# README
+<div align="center">
+  <br />
+  <img src="./frontend/public/spoparty-logo.png" alt="SPOPARTY" />
+  <br />
+  <h1>실시간 축구 시청 화상 모임 플랫폼</h1>
+  <br />
+</div>
 
-<<<<<<< Updated upstream
-완성하고 나면 스토어 내부 console.log 지우기
-=======
 ## 목차
 
 1. [**서비스 소개**](#1)
@@ -26,7 +29,11 @@
 ### 👥 친구들과 함께 축구 경기를 📺 시청하고, 🗳️ 응원하고, ⚽️ 경기 정보를 받아보세요!
 
 온라인에서 소그룹 별 축구 화상 응원과 경기 정보 제공 서비스를 제공합니다.  
+<<<<<<< HEAD
 단순히 경기를 함께 시청하고 응원하는 것뿐만 아니라 실시간 축구 정보 제공, 촬영 기능 등 다양한 부가기능도 함께 제공합니다.
+=======
+단순히 경기를 함께 시청하고 응원하는 것뿐만 아니라 실시간 축구 정보 제공, 촬영 기능 등 다양한 부가기능도 함께 제공합니다.
+> > > > > > > 6dc1d1f1eff68dc6df0c70484b844fbeb3a828e9
 
 #### SPOPARTY에서 새로운 축구 시청을 경험해보세요!
 
@@ -40,6 +47,7 @@
 <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=NGINX&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=Ubuntu&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/><br>
 <img src="https://img.shields.io/badge/vue.Js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/Node.js-339939?style=for-the-badge&logo=Node.js&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <br>
 <img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=Jira&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/GitLab-FCA121?style=for-the-badge&logo=GitLab&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <br/>
+
 
 <h3><details><summary><b> 상세 기술스택 및 버전 (수정 필요) </b> </summary>
 
@@ -79,7 +87,8 @@
 
 ## 🗂️ 시스템 아키텍처 (예시 - 이미지 첨부 필요)
 
-|   시스템 구성   |
+<<<<<<< HEAD
+| 시스템 구성 |
 |:----------:|
 | ![image]() |
 
@@ -87,9 +96,23 @@
 |:------------:|
 |  ![image]()  |
 
-|  디렉토리 구조   |
-|:----------:|
+| 디렉토리 구조 |
+|:-------:|
+
+=======
+| 시스템 구성 |
+| :------------------------------------------------------------------------------: |
 | ![image]() |
+
+| CI/CD 배포 흐름도 |
+|:------------:|
+|  ![image]()  |
+
+| 디렉토리 구조 |
+|:-------:|
+
+> > > > > > > 6dc1d1f1eff68dc6df0c70484b844fbeb3a828e9
+> > > > > > > | ![image]() |
 
 <br />
 
@@ -110,6 +133,8 @@
 ### 파티 내 오락거리
 
 #### 투표
+
+> > > > > > > 6dc1d1f1eff68dc6df0c70484b844fbeb3a828e9
 
 - 10분 뒤에 저 선수가 골을 넣을 수 있을지, 없을지. 내가 응원하는 팀이 전반전 동안 우세를 점할지, 골 점유율은 어떻게 될지. 미래를 점치면서 경기를 즐겨보아요!
 - 예측이 틀렸으면? 어딜가려고 해요? 이리와서 벌칙 받아요! 투표 결과에 따라 다양한 벌칙을 받을 수 있어요
@@ -234,4 +259,5 @@
 |   8081   |               Jenkins                |
 |   8080   |     Spring boot Docker Container     |
 |   3000   |    React, NginX Docker Container     |
->>>>>>> Stashed changes
+
+

@@ -2,11 +2,11 @@
   <v-container class="match-near part-section" fluid>
     <v-row>
       <v-col cols="12">
-        <h1 class="near-title">예정 경기 일정</h1>
+        <h1 class="near-title pa-3">예정 경기 일정</h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12" md="6" v-for="match in matches" :key="match.fixtureId" class="mb-4">
+    <v-row class="card-section">
+      <v-col cols="12" md="6" v-for="match in matches" :key="match.fixtureId" class="pa-5 mb-4">
         <v-card class="pa-3 match-card" outlined tile>
           <div class="text-center">
             <!-- 경기 시작 시간 -->
@@ -16,7 +16,7 @@
             <p id="timeLeft" v-else class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
             <v-row class="league-round-details">
               <v-col cols="auto" align="center" class="pa-1 mx-4">
-                <v-img :src="match.league.logo" class="league-logo"></v-img>
+                <v-img :src="match.league.logo" class="league-logo" @click="toLDP(match.league.leagueId)"></v-img>
               </v-col>
               <v-col cols="auto">
                 <span>{{ match.round }}</span>
@@ -30,8 +30,8 @@
                 <v-img :src="match.homeTeam.logo" class="team-logo team-name"
                   @click="toTDP(match.homeTeam.seasonLeagueTeamId)"></v-img>
               </v-col>
-              <v-col cols="1" class="pa-0">
-                <span class="vs">VS</span>
+              <v-col cols="1" class="pa-0 vs-col">
+                <span class="vs-span">VS</span>
               </v-col>
               <v-col cols="2" align="center">
                 <v-img :src="match.awayTeam.logo" class="team-logo team-name"
@@ -70,7 +70,7 @@ const matches = ref([]);
 
 watch(() => footballStore.nextMatches, (newVal) => {
   matches.value = newVal;
-  console.warn(matches.value)
+  // console.warn(matches.value)
 }, { immediate: true }
 );
 
@@ -144,6 +144,10 @@ const toTDP = (teamId) => {
   router.push(`/team/${teamId}`);
 };
 
+const toLDP = (leagueId) => {
+  router.push(`/league/${leagueId}`);
+};
+
 // 예정 경기 예시 데이터
 // matches
 // {
@@ -180,21 +184,30 @@ const toTDP = (teamId) => {
 .match-near {
   padding: 20px;
   overflow: hidden;
+  /* min-width: 1000px; */
 }
 
 .near-title {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  margin: auto;
+  /* padding: 20px; */
   color: #292646;
+  background-color: #F5F5F5;
+  /* border: 1px solid #292646; */
+  width: 250px;
+  border-radius: 8px;
 }
 
 .match-card {
   border-radius: 12px;
+  border: 4px solid plum;
 }
 
 .league-logo {
   width: 80px;
   height: 80px;
+  cursor : pointer;
 }
 
 .team-logo {
@@ -211,14 +224,24 @@ const toTDP = (teamId) => {
   margin-bottom: 10px;
 }
 
-.vs {
+.vs-col {
+  min-width: 60px;
+}
+
+.vs-span {
   font-size: 24px;
   font-weight: bold;
-  margin: 0 10px;
-  min-width: 70px;
+  margin: 0px;
+  margin-left: 10px;
+  min-width: 60px;
 }
 .team-name {
   cursor: pointer;
   padding: 0;
+}
+.card-section {
+  background-image: url('/soccer-field-2.jpg');
+  background-size: cover;
+  border-radius: 12px;
 }
 </style>

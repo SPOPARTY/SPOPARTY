@@ -6,10 +6,11 @@
             </v-col>
             <v-col cols="12" align="center" v-for="match in matches" :key="match.id">
                 <v-card class="card-match">
-                    <v-card-subtitle>{{ match.league.nameKr }} <v-icon>mdi-slash-forward</v-icon> {{ match.round }}</v-card-subtitle>
+                    <v-card-subtitle>{{ match.league.nameKr }} <v-icon>mdi-slash-forward</v-icon> {{ match.round
+                    }}</v-card-subtitle>
                     <span>
-                    <v-img :src="match.league.logo" class="league-logo"></v-img>
-                    {{ setStartTime(match.startTime) }}
+                        <v-img :src="match.league.logo" class="league-logo"></v-img>
+                        {{ setStartTime(match.startTime) }}
                         <v-icon>mdi-circle-small</v-icon>
                         {{ getMatchStatus(match.startTime) }}</span>
                     <v-card-title class="pb-6">
@@ -18,13 +19,15 @@
                                 {{ match.homeTeam.nameKr }}
                             </v-col>
                             <v-col cols="1" class="d-flex justify-center align-center">
-                                <v-img :src="match.homeTeam.logo" contain class="team-logo team-name" @click="toTDP(match.homeTeam.seasonLeagueTeamId)"></v-img>
+                                <v-img :src="match.homeTeam.logo" contain class="team-logo team-name"
+                                    @click="toTDP(match.homeTeam.seasonLeagueTeamId)"></v-img>
                             </v-col>
                             <v-col cols="1" class="d-flex justify-center align-center">
                                 VS
                             </v-col>
                             <v-col cols="1" class="d-flex justify-center align-center">
-                                <v-img :src="match.awayTeam.logo" contain class="team-logo team-name" @click="toTDP(match.awayTeam.seasonLeagueTeamId)"></v-img>
+                                <v-img :src="match.awayTeam.logo" contain class="team-logo team-name"
+                                    @click="toTDP(match.awayTeam.seasonLeagueTeamId)"></v-img>
                             </v-col>
                             <v-col cols="4" class="text-start team-name" @click="toTDP(match.awayTeam.seasonLeagueTeamId)">
                                 {{ match.awayTeam.nameKr }}
@@ -33,19 +36,22 @@
                     </v-card-title>
                     <v-card-text>
                         <!-- checkStatus : 인풋이 not start이면 false, 그 외엔 true -->
-                        <div v-if="checkStatus(match.status)">
-                            스코어: {{ match.homeTeamGoal }} : {{ match.awayTeamGoal }}
+                        <div v-if="checkStatus(match.status)" class="score">
+                            <p class="score-title">스코어</p>
+                            {{ match.homeTeamGoal }} : {{ match.awayTeamGoal }}
+                            <!-- <br>{{ match.status }} -->
                         </div>
+                        <div v-else class="score-title"></div>
                     </v-card-text>
                 </v-card>
             </v-col>
         </v-row>
         <v-row v-if="matches.length === 0">
             <v-col cols="12" align="center">
-            <v-card class="card-match mt-6">
-                <span>예정된 경기가 없습니다!</span>
-            </v-card>
-        </v-col>
+                <v-card class="card-match mt-6">
+                    <span>예정된 경기가 없습니다!</span>
+                </v-card>
+            </v-col>
         </v-row>
     </v-container>
 </template>
@@ -91,7 +97,7 @@ watch(() => selectedDate.value, (newVal) => {
 
 watch(() => footballStore.dateMatches, (newVal) => {
     matches.value = newVal;
-    console.warn(matches.value);
+    // console.warn(matches.value);
 }, { immediate: true });
 
 const toTDP = (seasonLeagueTeamId) => {
@@ -156,11 +162,25 @@ function getMatchStatus(startTime) {
 }
 
 function checkStatus(status) {
-    if (status != "not start") {
-        return true;
-    } else {
+    const check = status.toLowerCase();
+    // console.log(check)
+    if (check == "not started" || check == "time to be defined") {
         return false;
+    } else {
+        return true;
     }
+    // const status = ref("");
+    //  // 소문자화
+    //  const statusEng = item.status.toLowerCase();
+    //  if (statusEng === "not started") {
+    //       status.value = "예정";
+    //  } else if (statusEng === "match finished") {
+    //       status.value = "경기 종료";
+    //  } else if (statusEng === "time to be defined") {
+    //       status.value = "시간 미정";
+    //  } else {
+    //       status.value = "진행중";
+    //  }
 }
 
 </script>
@@ -221,5 +241,19 @@ function checkStatus(status) {
     font-size: 1.25rem;
     /* font-weight: bold; */
 }
-</style>
+
+.score {
+    font-size: 1.6rem;
+    /* 글자 사이 위아래 간격 */
+    line-height: 2;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #292646;
+}
+
+.score-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #292646;
+}</style>
   

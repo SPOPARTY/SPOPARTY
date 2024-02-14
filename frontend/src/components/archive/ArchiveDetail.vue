@@ -17,8 +17,9 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-card-item class="text-center" v-if="props.detail.file">
-                <v-img :src="props.detail.file.url" :alt="props.detail.title"/>
+            <v-card-item class="text-center" v-if="props.detail">
+                <v-img v-if="props.detail.file == null" :src="props.detail.thumbnail.url" :alt="props.detail.title"/>
+                <video v-else :src="props.detail.file.url" controls type="video/mp4" class="video-preview"></video>
             </v-card-item>
             <v-card-subtitle class="text-right">파티명 : {{ props.detail.partyTitle }}</v-card-subtitle>
             <v-card-text class="text-right">작성자 : {{ props.detail.member.nickname }}</v-card-text>
@@ -63,7 +64,7 @@ const emits = defineEmits([
 
 // 다운로드 하기
 const downloadFile = async (url) => {
-    console.log(url)
+    // console.log(url)
     // 1. fetch 실행이 끝나면 FETCH API는 내부적으로 Body Object를 상속받아 Response 인스턴스를 생성
     const res = await fetch(url)
     // 2. blob() 메소드는 Body Object의 메서드로 상속이 되어있으므로 res.blob() 가능, blob 인스턴스 반환
@@ -94,9 +95,6 @@ function closeModal() {
 }
 
 
-onMounted(()=>{
-    console.log("히히 모달 발사")
-})
 
 </script>
 
@@ -108,5 +106,11 @@ onMounted(()=>{
     background-color: transparent !important;
   }
 }
-
+.video-preview {
+     /* max-height: 80vh; */
+     width: 90%;
+     object-fit: cover;
+     margin: 20px;
+     /* padding: 30px; */
+}
 </style>

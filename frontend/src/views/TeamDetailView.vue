@@ -74,10 +74,10 @@ const changeFollowing = (item) => {
     const oldVal = item.following;
 
     if (item.following) {
-        console.log("언팔로우")
+        // console.log("언팔로우")
         doUnFollow(item.teamId);
     } else {
-        console.log("팔로우")
+        // console.log("팔로우")
         doFollow(item.teamId);
     }
     item.following = !oldVal;

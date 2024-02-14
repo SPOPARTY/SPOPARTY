@@ -1,6 +1,7 @@
 <template>
     <v-container fluid class="vc">
-        <p>선수 목록 페이지. fixtureId = {{ fixtureId? fixtureId : 'null'}}</p>
+        <p class="table-title">선수 목록</p>
+        <!-- <p>선수 목록 페이지. fixtureId = {{ fixtureId? fixtureId : 'null'}}</p> -->
         <p v-if="fixtureId==null" class="alert-msg">경기를 선택해주세요.</p>
         <v-row v-if="fixtureId!=null">
             <v-col cols="6">
@@ -28,7 +29,6 @@ const footballStore = useFootballStore()
 
 const fixtureId = ref(null)
 const teamIds = footballStore.teamIdsForParty
-const count = ref(true)
 
 watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
     fixtureId.value = newFixtureId;
@@ -37,7 +37,7 @@ watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
         teamIds.value = {...footballStore.findTeamIdsByFixtureId(newFixtureId)};
     }
     // count.value = !count.value; // 이 부분은 더 이상 필요하지 않습니다.
-    console.warn("###", teamIds.value);
+    // console.warn("###", teamIds.value);
 }, { immediate: true, deep: true });
 
 
@@ -69,5 +69,11 @@ watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
     margin: 30px;
     font-size: 2rem;
     color: #292646;
+}
+.table-title {
+  height: 25px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 10px;
 }
 </style>

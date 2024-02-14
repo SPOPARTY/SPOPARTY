@@ -35,7 +35,7 @@
 import MatchNear from '@/components/mainpage/MatchNear.vue'
 import CheerVote from '@/components/mainpage/CheerVote.vue'
 import Welcome from '@/components/mainpage/Welcome.vue'
-import { ref, onMounted, watch } from 'vue'
+import { ref } from 'vue'
 
 // import { useManagementStore } from '@/stores/member/managements'
 

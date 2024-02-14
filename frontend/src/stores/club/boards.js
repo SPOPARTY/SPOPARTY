@@ -30,7 +30,6 @@ export const useBoardStore = defineStore("board",() => {
         requestSearchBoard(
             boardId,
             (res) => {
-                // console.log("히히 게시글 상세 조회 발사")
                 // console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     boardDetail.value = res.data.data;
@@ -46,11 +45,10 @@ export const useBoardStore = defineStore("board",() => {
         requestCreateBoard(
             data,
             (res) => {
-                console.log("히히 게시글 작성 발사")
-                console.log(res)
+                // console.log(res)
                 if(res.data.status === httpStatusCode.CREATE) {
-                    console.log("*******게시글이 잘 작성 됨*******")
-                    console.log(res.data.data)
+                    // console.log("*******게시글이 잘 작성 됨*******")
+                    // console.log(res.data.data)
                     // console.log(res.data.data["updated_time"])
                     const clubId = res.data.data["club_id"] // dataForm이므로 data.get()을 써야
                     getBoardList(clubId);
@@ -81,7 +79,7 @@ export const useBoardStore = defineStore("board",() => {
             },
             (error) => {
                 console.log(error);
-                console.log(error.data)
+                // console.log(error.data)
                 alert("게시글 수정 실패!")
             }
         )
@@ -91,7 +89,6 @@ export const useBoardStore = defineStore("board",() => {
         requestDeleteBoard(
             boardId,
             (res) => {
-                // console.log("히히 게시글 삭제 발사")
                 // console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     // console.log("*******게시글이 잘 삭제 됨*******")

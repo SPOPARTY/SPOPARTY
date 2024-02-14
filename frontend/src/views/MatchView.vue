@@ -23,7 +23,8 @@
                               <v-btn class="date-picker-button mx-2" v-bind="attrs" v-on="on" @mousedown="showDatePicker = true" 
                               :style="{ fontSize: '1.2rem', minWidth: '100px', minHeight: '40px'}">날짜 선택</v-btn>
                          </template>
-                         <v-date-picker v-model="selectedDate" show-adjacent-months no-title></v-date-picker>
+                         <v-date-picker v-model="selectedDate" show-adjacent-months no-title
+                         color="primary"></v-date-picker>
                     </v-menu>
                </v-col>
           </v-row>
@@ -42,13 +43,13 @@ import { format, addDays, differenceInCalendarDays } from 'date-fns';
 const selectedDate = ref(new Date());
 const showDatePicker = ref(false);
 
-watch(showDatePicker, () => {
-     console.log(showDatePicker.value);
-});
+// watch(showDatePicker, () => {
+     // console.log(showDatePicker.value);
+// });
 
 watch(selectedDate, () => {
-     console.log("날짜변경")
-     console.log(selectedDate.value);
+     // console.log("날짜변경")
+     // console.log(selectedDate.value);
      showDatePicker.value = false;
 });
 
@@ -134,6 +135,7 @@ function datePickerSelected() {
      height: 55px;
      /* 오늘 날짜의 높이 */
 }
+
 </style>
 
    

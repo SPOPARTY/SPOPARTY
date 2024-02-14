@@ -1,14 +1,14 @@
 <template>
     <v-container class="mypage-container">
-        <v-card class="inner-card pa-4" outlined>
+        <v-card class="inner-card px-6 py-2" outlined>
             <h1>마이페이지</h1>
             <v-row>
                 <v-col cols="12" md="8">
-                    <v-text-field class="input" label="아이디" v-model="memberInfo.loginId" outlined dense readonly/>
+                    <v-text-field class="input" label="아이디" v-model="memberInfo.loginId" outlined dense disabled/>
                 </v-col>
                 <v-col cols="12" md="4">
-                    <v-btn class="input" :disabled="memberInfo.provider !== 'basic'" color="#393646" 
-                    @click="showChangePwdModal" block>비밀번호 수정</v-btn>
+                    <v-btn class="input" :disabled="memberInfo.provider !== 'basic'" color="primary" 
+                    @click="showChangePwdModal" block elevation="1">비밀번호 수정</v-btn>
                 </v-col>
             </v-row>
             <SetNewPwd 
@@ -25,15 +25,15 @@
             
             <v-row>
                 <v-col cols="4" md="4">
-                    <v-text-field class="input" label="이메일 아이디" v-model="memberInfo.email.split('@')[0]" outlined dense readonly></v-text-field>
+                    <v-text-field class="input" label="이메일 아이디" v-model="memberInfo.email.split('@')[0]" outlined dense disabled></v-text-field>
                 </v-col>
                 <v-col cols="1" md="1" class="text-center" style="color:white; margin-top:10px;"><h4>@</h4></v-col>
                 <v-col cols="4" md="4">
-                    <v-text-field class="input" label="도메인" v-model="memberInfo.email.split('@')[1]" outlined dense readonly></v-text-field>
+                    <v-text-field class="input" label="도메인" v-model="memberInfo.email.split('@')[1]" outlined dense disabled></v-text-field>
                 </v-col>
                 <v-col cols="3" md="3">
-                    <v-btn :disabled="memberInfo.provider !== 'basic'" color="#393646" style="margin-top:10px;" 
-                            @click="showChangeEmailModal">이메일 수정</v-btn>
+                    <v-btn :disabled="memberInfo.provider !== 'basic'" color="primary" style="margin-top:10px;" 
+                        elevation="1" @click="showChangeEmailModal">이메일 수정</v-btn>
                 </v-col>
             </v-row>
             <SetNewEmail 
@@ -43,6 +43,7 @@
                 />  
             
             <v-row class="emblem-box mx-2 mb-2 my-6" justify="center" align="center" @click="showEmblemModal" >
+                <v-tooltip location="top" activator="parent">대표 엠블렘을 선택하세요!</v-tooltip>
                 <v-col cols="2">
                     <v-img :src="memberInfo.team.logo" :alt="memberInfo.team.nameKr"  
                     style="width: 50px; height: 50px; transform: translateX(10px);"/>
@@ -61,17 +62,18 @@
             
             <v-row class="follow-box justify-center">
                 <v-col cols="6">
-                    <v-btn 
-                        style="width:100%; background-color:#B4B4B8;"
+                    <v-btn variant="tonal"
+                        style="width:100%; background-color:#B4B4B8; "
                         @click="showFollowModal"
-                    ><h3>팔로우 중인 구단 수 : {{followingClubNum}}</h3></v-btn>
+                    >
+                    <h3>팔로우 중인 구단 수 : {{followingClubNum}}</h3></v-btn>
                 </v-col>
                 <v-col cols="6">
                     <v-card-actions class="justify-center">
                         <v-spacer></v-spacer>
-                        <v-btn color="grey" @click="goBack">이전</v-btn>
-                        <v-btn color="primary" @click="updateChanges">수정</v-btn>
-                        <v-btn color="red" @click="Withdraw">회원 탈퇴</v-btn>
+                        <v-btn color="darkgrey" @click="goBack" variant="tonal">이전</v-btn>
+                        <v-btn color="primary" @click="updateChanges" variant="tonal">수정</v-btn>
+                        <v-btn color="red" @click="Withdraw" variant="tonal">회원 탈퇴</v-btn>
                     </v-card-actions>
                 </v-col>
             </v-row>
@@ -121,7 +123,7 @@ onMounted(() => {
 // 팔로우 리스트 관찰
 watch(() => followStore.followList, (newFollowList) => {
     followList.value = newFollowList
-    console.log("onMounted된 후 팔로우 리스트! -> ",followList.value);
+    // console.log("onMounted된 후 팔로우 리스트 -> ",followList.value);
 },{immediate:true})
 
 watch(() => followStore.teamList, (newTeamList) => {
@@ -158,7 +160,7 @@ const getMemberInfo = () => {
     getMember(
         memberId.value,
         ({data,status}) => {
-        console.log("data ==> ",data);
+        // console.log("data ==> ",data);
         // console.log("message ==> ",data.message);
         // console.log("status ==> ",status);
         memberInfo.value.id = data.data.id;
@@ -173,22 +175,20 @@ const getMemberInfo = () => {
         memberInfo.value.team.status = data.data.status;
         },
         (error) => {
-        console.log("살려줘")
         console.log(error)
         }
     )
 }
 
 const updateChanges = () => {
-    console.log("수정된 회원 정보")
-    console.log(memberInfo.value)
+    // console.log("수정된 회원 정보")
+    // console.log(memberInfo.value)
     updateMember(memberInfo.value, (response)=> {
         if(response.status === httpStatusCode.OK) {
             alert("회원정보 수정 완료!")
             window.location.replace("/")
         }
     },(error) => {
-        console.log("살려줘!")
         console.log(error);
     })
 }
@@ -197,17 +197,17 @@ const Withdraw = () => {
     deleteMember(memberId.value,
     (res) => {
         if (res.status === httpStatusCode.OK) {
-            console.log(res)
+            // console.log(res)
             localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
             localStorage.removeItem("id")
-            alert("함께해서 더러웠고 다신 만나지 말자")
+            alert("성공적으로 회원 탈퇴 되었습니다!")
             window.location.replace("/")
         } 
     },
     (error) => {
         console.log(error)
-        alert("어딜가려고?")
+        alert("회원 탈퇴에 실패하였습니다!")
     }
     )
 }
@@ -222,11 +222,10 @@ function showChangePwdModal() {
 
 function changePwd(newPwds){
     isPwdModalVisible.value = false;
-    console.log(newPwds)
+    // console.log(newPwds)
     updatedPwd.value = newPwds.password;
     memberInfo.value.loginPwd = updatedPwd.value;
-    console.log("새로 바뀐 비밀번호!")
-    console.log(memberInfo.value.loginPwd)
+    // console.log(memberInfo.value.loginPwd)
     
 }
 
@@ -238,8 +237,7 @@ function showChangeEmailModal() {
 }
 
 function updateEmail(newEmail) {
-    console.log("마이페이지에서 update된 이메일을 받아오자!!!")
-    console.log(newEmail.value)
+    // console.log(newEmail.value)
     emailId.value = newEmail.value.split("@")[0];
     emailDomain.value = newEmail.value.split("@")[1];
     memberInfo.value.email = newEmail.value;
@@ -253,28 +251,25 @@ function showEmblemModal() {
 
 
 function setEmblem(newEmblem) {
-    console.log("새로운 emblemId ->",newEmblem.emblemId)
+    // console.log("새로운 emblemId ->",newEmblem.emblemId)
     emblemId.value = newEmblem.emblemId
     emblemIcon.value = newEmblem.emblemIcon;
     emblemName.value = newEmblem.emblemName;
     memberInfo.value.team.id = emblemId.value;
     memberInfo.value.team.logo = emblemIcon.value
     memberInfo.value.team.nameKr = emblemName.value 
-    console.log("잘 바뀌었나? emblemId ->",memberInfo.value.team.id)
+    // console.log("emblemId ->",memberInfo.value.team.id)
 }
 
 // 구단 팔로우 모달
 const isFollowModalVisible = ref(false)
 function showFollowModal() {
-    console.log("구단 팔로우 모달 띄우기!!!")
+    // console.log("구단 팔로우 모달 띄우기!!!")
     isFollowModalVisible.value = true;
 }
 
 // 팔로우 중인 구단 수 
 // 실제로 유저 정보를 받아올 때 onMounted를 통해 업데이트 되도록 한다 현재는 더미값
-// const followingClubNum = computed(() => {
-//     return followList.value.length
-// }); ==>  // 이거 쓰면 followList 불러오기 전에 이게 평가되어서 에러 뜬다 ㅅㅂ
 const followingClubNum = computed(() => {
     return followList.value ? followList.value.length : 0;
 });
@@ -298,21 +293,22 @@ h1 {
     text-align: center;
     margin-top:10px;
     margin-bottom:20px;
-    color : #D3AC2B;
+    color : #292646;
 }
 
 .inner-card{
-    background-color: #292646
+    /* background-color: #292646 */
+    background-color: #CBD0D8;
 }
 
 .input {
     border-radius: 5px;
-    background-color:#F4F3EA ;
+    background-color:#F4F3EA;
     height:50px;
 }
 .mypage-container{
     margin-top:40px;
-    max-width: 600px;
+    max-width: 700px;
 }
 
 .emblem-box{
@@ -320,5 +316,9 @@ h1 {
     background-color: #474F7A;
     border-radius: 5px;
 }
-
+h4 {
+    color: #292646;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 </style>

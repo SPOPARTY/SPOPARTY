@@ -1,5 +1,17 @@
 <template>
      <v-container fluid class="px-4 py-2">
+          <!-- 페널티 생성 시 보여질 화면-->
+               <v-slide-x-transition>
+                    <v-col v-if="showVoteContent" justify="center" align="center" style="position: absolute;">
+                         <div style="font-size: 50px; color: white;">
+                         {{ voteContent.penalty }} 페널티를 받아라!!!
+                    </div>
+                    <div style="font-size: 30px; color: white;">
+                         {{ voteContent.description }}
+                    </div>
+               <v-img src="/penalty-soccer.gif" width="25%" height="25%"></v-img>
+          </v-col>
+          </v-slide-x-transition>
           <!-- 기존 비디오 및 채팅 섹션 -->
           <v-row class="party-section mb-6">
                <v-col class="match-section" cols="9">
@@ -125,7 +137,7 @@
                          <!-- 파티 초대 -->
                          <v-col cols="6" class="cam-video" v-if="partyMembers.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
-                              <v-img src="/maruche.jpg" class="invite-img" contain></v-img>
+                              <v-img src="/maruche.jpg" class="invite-img pt-2" contain></v-img>
                               <span>친구를 초대해 보세요!</span>
                          </v-col>
                          <!-- 채팅창 -->
@@ -133,7 +145,7 @@
                               <div class="chat-content">
                                    <!-- 채팅 내용을 여기에 표시 -->
                                    <!-- {{ chatDivHeightProp }} -->
-                                   <Chat :chat-div-height-prop="chatDivHeightProp" />
+                                   <Chat :chat-div-height-prop="chatDivHeightProp" :disconnect-prop="chatDisconnectProp" />
                               </div>
                          </v-col>
                          <v-spacer></v-spacer>
@@ -155,14 +167,24 @@
                                    <v-card class="overlay-card">
                                         <v-img :src="screenshotUrl" contain class="screenshot-preview"></v-img>
                                         <v-card-actions class="justify-end">
-                                             <v-btn color="green" @click="downloadScreenshot" size="x-large">다운로드</v-btn>
-                                             <v-btn color="red" @click="overlay = false" size="large">닫기</v-btn>
-                                        </v-card-actions>
+                                             <v-expansion-panels>
+                                                  <v-btn color="#D3AC2B" @click="uploadScreenshot" size="x-large">
+                                                       <v-tooltip activator="parent" location="top" theme="dark">아카이브에 사진 저장</v-tooltip>
+                                                       업로드
+                                                  </v-btn>
+                                                  <v-btn color="green" @click="downloadScreenshot" size="x-large">
+                                                       <v-tooltip activator="parent" location="top" theme="dark">내 PC에 사진 저장</v-tooltip>
+                                                       다운로드
+                                                  </v-btn>
+                                                  <v-btn color="red pt-1" @click="overlay = false" size="large">닫기</v-btn>
+                                             </v-expansion-panels>
+                                             </v-card-actions>
                                    </v-card>
                               </v-overlay>
+                              <!-- 스크린샷 오버레이 끝 -->
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="secondary" @click="toggleRecording">
+                              <v-btn color="secondary" @click="toggleRecording" :disabled="recordingLoading">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         동영상
                                    </v-tooltip>
@@ -170,11 +192,21 @@
                                    <div v-else>
                                         {{ timeStr }}
                                    </div>
-                                   
                               </v-btn>
+                              <!-- 동영상 미리보기 오버레이 -->
+                              <v-overlay v-model="videoOverlay" persistent class="over">
+                                   <v-card class="overlay-card">
+                                        <video :src="recordingFile.url" autoplay loop type="video/mp4"
+                                             class="video-preview"></video>
+                                        <v-card-actions class="justify-end">
+                                             <v-btn color="green" @click="registerArchive" size="x-large">아카이브 하기</v-btn>
+                                             <v-btn color="red" @click="cancelArchive" size="large">닫기</v-btn>
+                                        </v-card-actions>
+                                   </v-card>
+                              </v-overlay>
                          </v-col>
                          <v-col cols="3">
-                              <v-btn color="#D3AC2B">
+                              <v-btn color="#D3AC2B" @click="clickSound">
                                    <v-tooltip activator="parent" location="top" theme="dark">
                                         효과음
                                    </v-tooltip>
@@ -222,7 +254,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import { format, set, parseISO, addDays } from 'date-fns';
-import {httpStatusCode} from "@/util/http-status"
+import { httpStatusCode } from "@/util/http-status"
 
 import PartyMatch from '@/components/party/PartyMatch.vue'
 import Chat from '../components/party/Chat.vue';
@@ -230,7 +262,9 @@ import VoteList from "@/components/vote/VoteList.vue"
 
 import { useFootballStore } from '@/stores/football/football'
 import { usePartyStore } from '@/stores/club/party/party'
-
+import { useArchiveStore } from '@/stores/club/archives'
+import { useFileStore } from '@/stores/member/file'
+import { useVoteStore } from '@/stores/club/party/votes'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../components/openvidu/UserVideo.vue'
 
@@ -239,17 +273,61 @@ const router = useRouter()
 
 const footballStore = useFootballStore()
 const partyStore = usePartyStore()
+const archiveStore = useArchiveStore()
+const fileStore = useFileStore()
+const voteStore = useVoteStore()
 
 const { getMatchWatchable, findTeamIdsByFixtureId } = footballStore
 const { getPartyMemberList, putPartyInfo, deletePartyInfo, postPartyMember,
      getPartyParticipant, deletePartyMember, postStartRecording, postStopRecording } = partyStore
-
+const { createArchive } = archiveStore
+const { deleteFile } = fileStore
 
 const url = ref("https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu");
 const isUrlExist = ref(false);
 
+const showVoteContent = ref(false)
+const voteContent = ref({})
+
+watch(() => voteStore.currentFinishedVote, (newVal) => {
+     let targetUser = ""
+     const penalty = newVal.penalty.content;
+     subscribers.value.forEach((subscriber) => {
+          const data = subscriber.stream.connection.data
+          const memberId = data.substr(5, data.length)
+          // 페널티 타입 확인
+          console.log(newVal.penaltyUsers)
+          
+          newVal.penaltyUsers.forEach(user => {
+               if (user.userId === memberId) {
+                    targetUser += user.name + ', '
+                    console.log(`페널티 대상자 ID : ${user.userId}, 닉네임 : ${user.name}, 페널티 ${penalty}`)
+                    sendPenalty(subscriber, penalty, penalty)
+               }
+          })
+     })
+
+     // 내가 페널티 대상자인 경우
+     newVal.penaltyUsers.forEach(user => {
+          if (user.userId === localStorage.getItem("id")) {
+               targetUser += user.name + ', '
+               sendPenaltyToMe(penalty)
+          }
+     })
+     
+     if (targetUser == "") {
+          voteContent.value.penalty = "아무도 페널티를 받지 않았어요!!"
+     } else {
+          const target = targetUser.substr(0, targetUser.length-2)
+          voteContent.value.penalty = target
+     }
+     doVoteContent()
+})
+
+const titleModel = ref(null);
+
 watch(() => partyStore.partyInfo, (newVal) => {
-     console.log(newVal)
+     // console.log(newVal)
      if (newVal?.fixtureUrl != null) {
           url.value = newVal.fixtureUrl;
           isUrlExist.value = true;
@@ -257,8 +335,9 @@ watch(() => partyStore.partyInfo, (newVal) => {
           url.value = "https://www.youtube.com/embed/IMq_dbhxwAY?si=hgpV4dB_yymFN2Uu";
           isUrlExist.value = false;
      }
-     console.log("isUrlExist", isUrlExist.value);
-     console.log("url", url.value);
+     titleModel.value = newVal.title;
+     // console.log("isUrlExist", isUrlExist.value);
+     // console.log("url", url.value);
 }, { immediate: true, deep: true })
 
 //// 파티 정보 수정 로직
@@ -267,17 +346,15 @@ const clubId = route.params.clubId;
 const partyId = route.params.partyId;
 const partyMemberList = ref(getPartyMemberList(clubId, partyId));
 
-console.log("시작멤버리스트", partyMemberList.value);
+// console.log("시작멤버리스트", partyMemberList.value);
 
 const showVote = ref(false);
 
 let isInit = false
 watch(() => partyStore.partyMemberList, (newPartyMembers) => {
-     console.log("newPartyMembers", newPartyMembers);
+     // console.log("newPartyMembers", newPartyMembers);
      partyMemberList.value = newPartyMembers;
      partyMemberList.value.map((member) => {
-          console.log(member)
-          console.log(localStorage.getItem("id"))
           if (member.memberId == localStorage.getItem("id")) {
                joinSession(member.openviduToken, member.nickName)
           }
@@ -287,7 +364,7 @@ watch(() => partyStore.partyMemberList, (newPartyMembers) => {
 const myId = ref(null);
 
 watch(() => partyStore.myParticipantId, (newMyId) => {
-     console.warn("myId changed", newMyId);
+     // console.warn("myId changed", newMyId);
      myId.value = newMyId;
 }, { immediate: true });
 
@@ -305,8 +382,8 @@ function handleBeforeUnload(event) {
 onMounted(() => {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
-     console.log("onMounted", clubId, partyId);
-     console.log(getPartyMemberList(clubId, partyId));
+     // console.log("onMounted", clubId, partyId);
+     // console.log(getPartyMemberList(clubId, partyId));
      postPartyMember(clubId, partyId);
      window.addEventListener('beforeunload', handleBeforeUnload);
 })
@@ -325,10 +402,10 @@ if (answer) {
 }
 
 const delPartyMem = () => {
-     console.log("delPartyMem", partyMemberList.value);
+     // console.log("delPartyMem", partyMemberList.value);
      myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
      if (myId.value !== undefined) {
-          console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
+          // console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
           deletePartyMember(clubId, partyId, myId.value.participantId);
      }
 }
@@ -340,13 +417,12 @@ onUnmounted(() => {
      deletePartyMember(clubId, partyId, myId.value);
 })
 
-const delPartyInfo = () => {
-     console.log("delPartyInfo", partyMemberList.value);
-     deletePartyInfo(clubId, partyId);
+const clickSound = () => {
+     alert("기능 준비 중입니다.")
 }
 
-console.log(clubId, partyId);
-console.log(getPartyMemberList(clubId, partyId));
+// console.log(clubId, partyId);
+// console.log(getPartyMemberList(clubId, partyId));
 
 // 채팅창 표시 여부를 제어할 상태 변수
 const showChat = ref(false);
@@ -359,6 +435,8 @@ function toggleChat() {
 // 채팅창 높이 동적 설정
 const chatDivHeight = ref('300px'); // 초기값 설정
 const chatDivHeightProp = ref(300); // 초기값 설정
+
+const chatDisconnectProp = ref(false)
 
 const updatechatDivHeight = () => {
      const chattingSection = document.querySelector('.chatting-section');
@@ -377,9 +455,9 @@ setTimeout(() => {
      updatechatDivHeight();
 }, 200);
 
-watch(chatDivHeight, (newVal) => {
-     console.log('chatDivHeight changed', newVal);
-});
+// watch(chatDivHeight, (newVal) => {
+//      console.log('chatDivHeight changed', newVal);
+// });
 
 onMounted(() => {
      updatechatDivHeight();
@@ -407,13 +485,14 @@ const partyMembers = ref([
 
 // 파티 초대
 const inviteToParty = () => {
-     alert("파티 초대하기");
+     alert("친구와 함께 파티를 즐겨보세요!");
 }
 
 // 파티 나가기
 const exitParty = () => {
      // 사용자에게 확인을 요청하는 대화상자 표시
      if (confirm("파티를 나가시겠습니까?")) {
+          chatDisconnectProp.value = true;
           delPartyMem();
           setTimeout(() => {
                // confirm 후 100ms 지나서 클럽 페이지로 이동
@@ -431,9 +510,34 @@ function editPartyInfo(isAsk) {
      isUrlEditing.value = isAsk;
 
      if (!isAsk) {
-          console.log("editPartyInfo", clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+          // console.log("editPartyInfo", clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
           putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
+
+          session.value.signal({
+               data: titleModel.value,
+               to: [],
+               type: 'titleChanged'
+          })
+          .then(() => {
+               // console.log('Message successfully sent');
+          })
+          .catch(error => {
+               console.error(error);
+          });
+          
+          session.value.signal({
+               data: matchModel.value,
+               to: [],
+               type: 'matchChanged'
+          })
+          .then(() => {
+               // console.log('Message successfully sent');
+          })
+          .catch(error => {
+               console.error(error);
+          });
      }
+     
      // console.log("editPartyInfo",clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
      // putPartyInfo(clubId, partyId, titleModel.value, urlModel.value, matchModel.value);
 }
@@ -451,7 +555,7 @@ const isEditing = ref(false);
 
 // 파티 정보 수정
 const isTitleEditing = ref(false);
-const titleModel = ref(null);
+
 
 // 영상 주소 수정
 const isUrlEditing = ref(false);
@@ -468,25 +572,32 @@ const matchName = ref([]);
 const matches = ref([]);
 
 watch(() => footballStore.matchWatchable, (newVal) => {
-     console.log(newVal);
+     // console.log(newVal);
      matches.value = newVal;
 }, { immediate: true }), { deep: true };
 
 // 시청 가능 경기 목록
 const today = ref(new Date());
 const startDate = ref(format(addDays(today.value, -1), 'yyyy-MM-dd'));
-const endDate = ref(format(addDays(today.value, 7), 'yyyy-MM-dd'));
+const endDate = ref(format(addDays(today.value, 1), 'yyyy-MM-dd'));
 
 // console.log(today.value)
 // console.log(format(addDays(today.value, -1), 'yyyy-MM-dd'))
 // console.log(format(addDays(today.value, 7), 'yyyy-MM-dd'))
 const getMatchTitle = (item) => {
      const status = ref("");
-     if (item.status === "not start") {
+     // 소문자화
+     const statusEng = item.status.toLowerCase();
+     if (statusEng === "not started") {
           status.value = "예정";
+     } else if (statusEng === "match finished") {
+          status.value = "경기 종료";
+     } else if (statusEng === "time to be defined") {
+          status.value = "시간 미정";
      } else {
-          status.value = "경기 중";
+          status.value = "진행중";
      }
+
      matchName.value.push({
           fixtureId: item.fixtureId,
           text: `${item.homeTeam.nameKr} vs ${item.awayTeam.nameKr}`
@@ -502,7 +613,7 @@ const onMatchChange = () => {
      footballStore.fixtureIdForParty = matchModel.value;
      if (matchModel.value !== null) {
           teamIds.value = findTeamIdsByFixtureId(matchModel.value);
-          console.log(teamIds.value);
+          // console.log(teamIds.value);
      }
 }
 
@@ -513,6 +624,7 @@ import html2canvas from 'html2canvas';
 
 const overlay = ref(false);
 const screenshotUrl = ref('');
+const file = ref(null);
 
 // 스크린샷 캡처 함수
 function captureScreen() {
@@ -522,6 +634,12 @@ function captureScreen() {
                // canvas를 이미지 URL로 변환
                screenshotUrl.value = canvas.toDataURL('image/png');
                overlay.value = true;
+               canvas.toBlob(blob => {
+                    file.value = new File([blob], "screenshot.png", { type: "image/png" });
+                    
+                    // 이제 'file'을 사용하여 웹에서 다루거나 서버로 업로드할 수 있습니다.
+                    // uploadFile(file);
+               }, 'image/png');
           });
      }
 }
@@ -534,6 +652,27 @@ function downloadScreenshot() {
      document.body.appendChild(a);
      a.click();
      document.body.removeChild(a);
+}
+
+// 업로드 함수
+async function uploadScreenshot() {
+     // console.log("##########", file.value)
+     const formData = new FormData();
+     formData.append('files', file.value);
+     // console.log("#######", formData.get('file'));
+     const imgData = await fileStore.uploadFile(formData);
+     // console.log(imgData.data.data);
+     // console.log(imgData.data.data[0].id);
+     createArchive(
+          {
+               memberId: localStorage.getItem("id"),
+               clubId: clubId,
+               partyTitle: titleModel.value ? titleModel.value : "",
+               fixtureTitle: matchModel.value ? matchModel.value : "",
+               fileId: null,
+               thumbnailId: imgData.data.data[0].id,
+          }
+     )
 }
 
 
@@ -584,22 +723,22 @@ const videoState = ref(true)
 const audioState = ref(true)
 
 const toggleVideoState = () => {
-     console.log("call toggle video state")
+     // console.log("call toggle video state")
      videoState.value = !videoState.value
      publisher.value.publishVideo(videoState.value);
 }
 
 const toggleAudioState = () => {
-     console.log("call toggle audio state")
+     // console.log("call toggle audio state")
      audioState.value = !audioState.value
      publisher.value.publishAudio(audioState.value)
 }
 
 
 const joinSession = (openviduToken, nickName) => {
-     console.log("joinSession Called!!!!!!!!!!!!!!!!!!!")
-     console.log(openviduToken)
-     console.log(nickName)
+     // console.log("joinSession Called!!!!!!!!!!!!!!!!!!!")
+     // console.log(openviduToken)
+     // console.log(nickName)
      if (!isInit) {
           isInit = true
           OV.value = new OpenVidu()
@@ -612,13 +751,13 @@ const joinSession = (openviduToken, nickName) => {
           session.value.on('streamCreated', ({ stream }) => {
                const subscriber = session.value.subscribe(stream)
                subscribers.value.push(subscriber)
-               console.log("subscriber added")
-               console.log(subscribers.value)
+               // console.log("subscriber added")
+               // console.log(subscribers.value)
           })
 
           // On every Stream destroyed...
           session.value.on('streamDestroyed', ({ stream }) => {
-               console.log("subscriber removed")
+               // console.log("subscriber removed")
                const index = subscribers.value.indexOf(stream.streamManager, 0)
                if (index >= 0) {
                     subscribers.value.splice(index, 1)
@@ -632,9 +771,15 @@ const joinSession = (openviduToken, nickName) => {
           })
 
           session.value.on('signal', (event) => {
-               console.log(event.data) // Message
-               console.log(event.from) // Connection object of the sender
-               console.log(event.type) // The type of message
+               if (event.type == "titleChanged") {
+                    titleModel.value = event.data
+               } else if (event.type == "matchChanged") {
+                    // console.log(matchModel.value)
+                    matchModel.value = event.data
+               }
+               // console.log(event.data) // Message
+               // console.log(event.from) // Connection object of the sender
+               // console.log(event.type) // The type of message
           })
 
           // --- 4) Connect to the session with a valid user token ---
@@ -642,7 +787,7 @@ const joinSession = (openviduToken, nickName) => {
           // Get a token from the OpenVidu deployment
           // First param is the token. Second param can be retrieved by every user on event
           // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
-          console.log(session.value)
+          // console.log(session.value)
           session.value
                .connect(openviduToken, { clientData: nickName })
                .then(() => {
@@ -696,10 +841,13 @@ const leaveSession = () => {
      window.removeEventListener('beforeunload', leaveSession)
 }
 
+const videoOverlay = ref(false);
+
 const recordingSession = ref({})
 const recordingFile = ref({})
 
 const recordingState = ref(false)
+const recordingLoading = ref(false)
 const recordingTime = ref(0)
 
 let intervalId = undefined
@@ -707,104 +855,184 @@ const timeStr = ref("00:00")
 let min, sec
 
 const toggleRecording = () => {
-  if (!recordingState.value) {
-     console.log("start recording call")
-    startRecording()
-  }
-  else {
-     console.log("stop recording call")
-    stopRecording()
-  }
-  recordingState.value = !recordingState.value
+     if (!recordingState.value) {
+          // console.log("start recording call")
+          startRecording()
+     }
+     else {
+          // console.log("stop recording call")
+          stopRecording()
+     }
+     recordingState.value = !recordingState.value
 }
 
 const startRecording = () => {
-  if (clubId !== undefined) {
-    postStartRecording(
-       clubId, 
-       {
-          "session" : clubId,
-          "outputMode" : "COMPOSED",
-          "hasAudio": true,
-          "hasVideo" : true
-       },
-       (res) => {
-          if (res.status === httpStatusCode.OK) {
-            console.log(res.data.data)
-            recordingSession.value = res.data.data
-            intervalId = setInterval(() => {
-              recordingTime.value++
-              timeStr.value = getTimeFormatString()
-              if (recordingTime.value >= 60) {
-               recordingTime.value = 0
-               recordingState.value = !recordingState.value
-               timeStr.value = "00:00"
-               clearInterval(intervalId)
-              }
-            } , 1000)
-          }
-       },
-       (error) => {
-          console.log(error)
-          if (error.response.status === httpStatusCode.NOTFOUND) {
-            console.error(error)
-          }
-       }
-     )
-  }
+     if (clubId !== undefined) {
+          recordingLoading.value = true
+          postStartRecording(
+               clubId,
+               {
+                    "session": clubId,
+                    "outputMode": "COMPOSED",
+                    "hasAudio": true,
+                    "hasVideo": true
+               },
+               (res) => {
+                    if (res.status === httpStatusCode.OK) {
+                         // console.log(res.data.data)
+                         recordingSession.value = res.data.data
+                         recordingLoading.value = false
+                         intervalId = setInterval(() => {
+                              recordingTime.value++
+                              timeStr.value = getTimeFormatString()
+                              if (recordingTime.value >= 60) {
+                                   recordingTime.value = 0
+                                   recordingState.value = !recordingState.value
+                                   timeStr.value = "00:00"
+                                   clearInterval(intervalId)
+                              }
+                         }, 1000)
+                    }
+               },
+               (error) => {
+                    console.error(error)
+                    if (error.response.status === httpStatusCode.NOTFOUND) {
+                         console.error(error)
+                    }
+               }
+          )
+     }
 }
 
 const stopRecording = () => {
-  if (clubId !== undefined && recordingSession.value.id !== undefined) {
-     console.log("stop recording")
-       postStopRecording(
-       clubId,
-       {
-          "recording": recordingSession.value.id
-       },
-       (res) => {
-          console.log(res)
-          if (res.status === httpStatusCode.OK) {
-            recordingFile.value = res.data.data
-            console.log(res.data.data)
-            clearInterval(intervalId)
-            recordingTime.value = 0
-            timeStr.value = "00:00"
-            downloadFile(recordingFile.value.url)
-            recordingSession.value = {}
-          }
-       },
-       (error) => {
-          console.log(error)
-          if (error.response.status === httpStatusCode.NOTFOUND) {
-            console.error(error)
-            }
-       },
-     )
-  }
+     if (clubId !== undefined && recordingSession.value.id !== undefined) {
+          recordingLoading.value = true
+          // console.log("stop recording")
+          postStopRecording(
+               clubId,
+               {
+                    "recording": recordingSession.value.id
+               },
+               (res) => {
+                    // console.log(res)
+                    if (res.status === httpStatusCode.OK) {
+                         recordingFile.value = res.data.data
+                         // console.log(res.data.data)
+                         recordingLoading.value = false
+                         clearInterval(intervalId)
+                         recordingTime.value = 0
+                         timeStr.value = "00:00"
+                         downloadFile(recordingFile.value.url)
+                         recordingSession.value = {}
+                         videoOverlay.value = true
+                    }
+               },
+               (error) => {
+                    console.error(error)
+                    if (error.response.status === httpStatusCode.NOTFOUND) {
+                         // console.error(error)
+                    }
+               },
+          )
+     }
 }
 
 const downloadFile = async (url) => {
-    // 1. fetch 실행이 끝나면 FETCH API는 내부적으로 Body Object를 상속받아 Response 인스턴스를 생성
-    const res = await fetch(url)
-    // 2. blob() 메소드는 Body Object의 메서드로 상속이 되어있으므로 res.blob() 가능, blob 인스턴스 반환
-    const blob = await res.blob()
-    // 3. 여기서 이 작업을 해주지않으면 link.download에 있는 파일명으로 다운로드하지 못한다.
-    // createObjectURL()는 URL을 DOMString으로 반환한다. (URL 해제는 revokeObjectURL())
-    const downloadUrl = window.URL.createObjectURL(blob) // 이 과정이 필요하다.
+     const res = await fetch(url)
+     const blob = await res.blob()
 
-    const link = document.createElement('a')
-    link.href = downloadUrl
-    link.download = 'video.mp4'
-    link.click()
+     const downloadUrl = window.URL.createObjectURL(blob)
+
+     const link = document.createElement('a')
+     link.href = downloadUrl
+     link.download = 'video.mp4'
+     link.click()
 }
 
 const getTimeFormatString = () => {
-    min = parseInt(String(recordingTime.value / 60));
-    sec = recordingTime.value % 60;
+     min = parseInt(String(recordingTime.value / 60));
+     sec = recordingTime.value % 60;
 
-    return String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
+     return String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
 }
+
+const registerArchive = () => {
+     createArchive(
+          {
+               memberId: localStorage.getItem("id"),
+               clubId: clubId,
+               partyTitle: titleModel.value ? titleModel.value : "",
+               fixtureTitle: matchModel.value ? matchModel.value : "",
+               fileId: recordingFile.value.id,
+               thumbnailId: recordingFile.value.thumbnailId
+          }
+     )
+     videoOverlay.value = false
+}
+
+const cancelArchive = () => {
+     videoOverlay.value = false
+     deleteFile(recordingFile.value.id)
+}
+
+const doVoteContent = () => {
+     showVoteContent.value = !showVoteContent.value
+     if (showVoteContent.value) {
+          const id = setInterval(() => {
+          showVoteContent.value = false
+          clearInterval(id)
+          // console.log("toggle state")
+     }, 2000)
+     }
+
+}
+
+const sendPenalty = (subscriber, penalty) => {
+     voteContent.value.content = penalty
+     if (penalty == "음소거") {
+          subscriber.subscribeToAudio(false)
+          voteContent.value.description = "5초간 음소거 됩니다!!!"
+          const id = setInterval(() => {
+               subscriber.subscribeToAudio(true)
+               clearInterval(id)
+          }, 5000)
+     } else if (penalty == "음성변조") {
+          voteContent.value.description = "5초간 음성변조 됩니다!!!"
+     } else if (penalty == "흑백화면") {
+          subscriber.subscribeToVideo(false)
+          voteContent.value.description = "5초간 화면이 보이지 않습니다!!!"
+          const id = setInterval(() => {
+               subscriber.subscribeToVideo(true)
+               clearInterval(id)
+          }, 5000)
+     } else {
+          voteContent.value.description = `${penalty}에 당첨되었어요!!!`
+     }
+}
+
+const sendPenaltyToMe = (penalty) => {
+     voteContent.value.content = penalty
+     if (penalty == "음소거") {
+          publisher.value.publishAudio(false)
+          voteContent.value.description = "당신은 5초간 음소거 됩니다!!!"
+          const id = setInterval(() => {
+               publisher.value.publishAudio(true)
+               clearInterval(id)
+          }, 5000)
+     } else if (penalty == "음성변조") {
+          voteContent.value.description = "당신은 5초간 음성변조 됩니다!!!"
+     } else if (penalty == "흑백화면") {
+          publisher.value.publishVideo(false)
+          voteContent.value.description = "당신은 5초간 화면이 보이지 않습니다!!!"
+          const id = setInterval(() => {
+               publisher.value.publishVideo(true)
+               clearInterval(id)
+          }, 5000)
+     } else {
+          voteContent.value.description = `당신은 ${penalty}에 당첨되었어요!!!`
+     }
+}
+
 </script>
 
 <style>
@@ -831,7 +1059,7 @@ const getTimeFormatString = () => {
 .selector {
      margin-top: 10px;
      min-height: 110px;
-     height: 27vh;
+     height: 15vh;
      max-height: 200px;
 }
 
@@ -874,7 +1102,7 @@ const getTimeFormatString = () => {
 }
 
 .cam-section {
-     height: 70%;
+     height: 75%;
      /* justify-self: start; */
      align-content: start;
      background-color: #333D51;
@@ -893,7 +1121,7 @@ const getTimeFormatString = () => {
      justify-content: center;
      align-items: center;
      /* aspect-ratio: 16/16; */
-     padding: 1px 0;
+     padding: 2px 0;
 }
 
 .button-section {
@@ -991,7 +1219,8 @@ const getTimeFormatString = () => {
      /* max-width: 600px; */
      overflow: hidden;
      /* 내용이 넘칠 경우 숨김 처리 */
-
+     min-width: 300px;
+     min-height: 40px;
 }
 
 .over {
@@ -1000,9 +1229,16 @@ const getTimeFormatString = () => {
      justify-content: center;
 }
 
-
 .screenshot-preview {
      /* max-height: 80vh; */
+     margin: 20px;
+     /* padding: 30px; */
+}
+
+.video-preview {
+     /* max-height: 80vh; */
+     width: 90%;
+     object-fit: cover;
      margin: 20px;
      /* padding: 30px; */
 }

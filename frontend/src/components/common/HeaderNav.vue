@@ -4,7 +4,7 @@
     <!-- <v-navigation-drawer class="bar-border" v-model="drawer" app permanent color="grey darken-3"> -->
     <!-- 네비게이션 타이틀 굵은 글씨로 -->
     <v-list-item class="py-2 club-title">
-      <div>클럽 목록</div>
+      <div class="text-center">클럽 목록</div>
     </v-list-item>
 
     <!-- 클럽 목록: 버튼처럼 보이도록 디자인 -->
@@ -12,7 +12,7 @@
       <v-list-item v-for="(club, index) in clubs"  :key="index" class="mb-1">
         <div @click="goToOneClubPage(club.clubId)" class="d-flex justify-start align-center club-item"
           style="text-transform: none; padding: 16px; cursor: pointer;">
-          <v-list-item-title class="align-start">{{ club.name }}<br>{{ 'ID: ' + club.clubId }}</v-list-item-title>
+          <v-list-item-title class="align-start">{{ club.name }}<br>{{ '클럽장 : ' + club.hostName }}</v-list-item-title>
         </div>
       </v-list-item>
 
@@ -20,27 +20,27 @@
       <v-list-item>
         <div @click="goToNewClubPage" class="d-flex justify-start align-center club-item"
           style="text-transform: none; padding: 16px; cursor: pointer;">
-          <v-list-item-title class="align-start">새 클럽</v-list-item-title>
+          <v-list-item-title class="align-start" >새 클럽</v-list-item-title>
         </div>
       </v-list-item>
     </v-list>
 
     <!-- 로그인 관련 footer -->
     <v-list-item class="sidebar-footer" align="center">
-      <v-btn v-if="!isLogined" text to="/signup" class="mx-2" color="primary">
+      <v-btn v-if="!isLogined" text to="/signup" class="mx-2 nav-btn" color="primary">
         <v-tooltip activator="parent" location="top" theme="dark">회원가입</v-tooltip>
         <v-icon size="x-large">mdi-account-plus</v-icon>
       </v-btn>
-      <v-btn v-if="isLogined" text to="/mypage" class="mx-2" color="primary">
+      <v-btn v-if="isLogined" text to="/mypage" class="mx-2 nav-btn" color="primary">
         <v-tooltip activator="parent" location="top" theme="dark">마이페이지</v-tooltip>
         <v-icon size="x-large">mdi-home-edit-outline</v-icon>
       </v-btn>
 
-      <v-btn v-if="!isLogined" text to="/login" class="mx-2" color="primary">
+      <v-btn v-if="!isLogined" text to="/login" class="mx-2 nav-btn" color="primary">
         <v-tooltip activator="parent" location="top" theme="dark">로그인</v-tooltip>
         <v-icon size="x-large">mdi-login</v-icon>
       </v-btn>
-      <v-btn v-if="isLogined" @click="logout" class="mx-2" color="primary">
+      <v-btn v-if="isLogined" @click="logout" class="mx-2 nav-btn" color="primary">
         <v-tooltip activator="parent" location="top" theme="dark">로그아웃</v-tooltip>
         <v-icon size="x-large">mdi-logout</v-icon>
       </v-btn>
@@ -48,7 +48,7 @@
   </v-navigation-drawer>
 
   <v-app-bar class="bar-border" app color="#000000" :elevation="1">
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="nav-btn"></v-app-bar-nav-icon>
     <v-divider vertical class="mx-2"></v-divider>
 
     <!-- 로고 이미지 영역 -->
@@ -63,7 +63,7 @@
     <template v-if="isLogined">
       <v-divider vertical class="mx-2"></v-divider>
       <v-badge :content="countUnread>0? countUnread:null" :color="countUnread>0? '#D3AC2B':'#08042B'">
-        <v-btn @click="() => isNotificationListVisible = true" class="mx-2 btn-text">알림</v-btn>
+        <v-btn @click="() => isNotificationListVisible = true" class="mx-2 btn-text nav-btn">알림</v-btn>
       </v-badge>
     </template>
     <v-divider vertical class="mx-2"></v-divider>
@@ -74,7 +74,7 @@
     <v-btn v-if="isLogined" text to="/mypage" class="mx-2 btn-text">마이페이지</v-btn>
     <v-btn v-else text to="/signup" class="mx-2 btn-text">회원가입</v-btn>
     <v-divider vertical class="mx-2"></v-divider>
-    <v-btn v-if="isLogined" text class="mx-2 btn-text" @click="logout">로그아웃</v-btn>
+    <v-btn v-if="isLogined" text class="mx-2 btn-text nav-btn" @click="logout">로그아웃</v-btn>
     <v-btn v-else text to="/login" class="mx-2 btn-text">로그인</v-btn>
   </v-app-bar>
   <NewClub v-if="isNewClubModalVisible" @close-new-club="isNewClubModalVisible = false"/>
@@ -114,8 +114,11 @@
         </v-table>
       </v-card-text>
       <v-card-actions>
+        <!-- <v-spacer></v-spacer> -->
+        <v-btn color="red" class="px-4" @click="deleteAllNotification">전체 삭제</v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="grey" @click="isNotificationListVisible = false">확인</v-btn>
+        <v-btn color="green" class="px-4" @click="readAllNotification">전체 읽기</v-btn>
+        <v-btn color="primary" class="px-4" @click="isNotificationListVisible = false">확인</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -197,9 +200,10 @@ function goHome() {
 function goToOneClubPage(clubId) {
   // const url = router.resolve({ name: 'ClubView', params: { clubId } }).href;
   // window.open(url, '_blank');
-  console.log("클럽 페이지로 이동")
+  // console.log("클럽 페이지로 이동")
   drawer.value = false;
-  router.push({ name: 'ClubMain', params: { clubId } });
+  // router.push({ name: 'ClubMain', params: { clubId } });
+  window.location.href = `/club/${clubId}`;
 }
 
 
@@ -208,7 +212,7 @@ const isNewClubModalVisible = ref(false)
 
 function goToNewClubPage() {
   if (localStorage.getItem("accessToken")== null) {
-    console.log()
+    // console.log()
     if(confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?") === true) {
       window.location.replace("/login")
       return;
@@ -253,6 +257,36 @@ const notificationDetail = async (id) => {
   isNotificationDetailVisible.value = true;
 }
 
+const readAllNotification = async () => {
+  // Prompt the user for confirmation
+  if (confirm("모든 알림을 읽음으로 처리하시겠습니까?")) {
+    // User clicked "OK"
+    for (let i = 0; i < notificationList.value.length; i++) {
+      if (notificationList.value[i].state == 0) {
+        // Call the function to mark the notification as read
+        await readNotification(notificationList.value[i].id);
+      }
+    }
+  } else {
+    // User clicked "Cancel", do nothing
+    console.log("모두 읽기 취소!");
+  }
+}
+
+const deleteAllNotification = async () => {
+  // Prompt the user for confirmation
+  if (confirm("정말 모든 알림을 삭제하시겠습니까?")) {
+    // User clicked "OK"
+    for (let i = 0; i < notificationList.value.length; i++) {
+      // Call the function to delete the notification
+      await deleteNotification(notificationList.value[i].id);
+    }
+  } else {
+    // User clicked "Cancel", do nothing
+    console.log("모두 삭제 취소!");
+  }
+}
+
 const countUnread = computed(() => {
   return notificationList.value.filter(args => args.state == 0).length;
 })
@@ -271,7 +305,7 @@ const countUnread = computed(() => {
 .club-title {
   background-color: #08042B;
   border: 2px solid #292071;
-  height: 64px;
+  height: 65px;
   font-size: 2rem;
   color: white;
   padding: 2rem;
@@ -301,8 +335,9 @@ span.v-btn__content {
 
 .club-list {
   overflow: auto;
+  padding-top: 15px;
   /* max-height: calc(100% + 360px); */
-  height: calc(100% - 128px);
+  height: calc(100% - 129px);
 }
 
 .club-item {
@@ -339,5 +374,14 @@ span.v-btn__content {
   -ms-overflow-style: none; /* Internet Explorer 및 Edge에서 스크롤바를 숨깁니다 */
   overscroll-behavior: contain;
 }
-
+.nav-btn:hover {
+  color: #D3AC2B;
+}
+.logo-container:hover {
+  border-bottom : 2px solid #D3AC2B;
+}
+.club-item:hover {
+  border: 4px solid #D3AC2B;
+  border-radius: 8px;
+}
 </style>

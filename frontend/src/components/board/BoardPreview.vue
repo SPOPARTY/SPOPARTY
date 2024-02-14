@@ -5,7 +5,7 @@
             <v-spacer></v-spacer>
             <v-toolbar-items>
                 <RouterLink :to="`/club/${clubId}/board`">
-                    <v-btn icon>
+                    <v-btn icon @click="goToDetail">
                         <v-icon class="plus-btn">mdi-plus</v-icon>
                     </v-btn>
                 </RouterLink>
@@ -45,18 +45,22 @@ import BoardDetail from '@/components/board/BoardDetail.vue';
 const boardStore = useBoardStore();
 
 const routes = useRoute();
-const clubId = routes.params.clubId
+const router = useRouter();
+const clubId = ref(routes.params.clubId)
 
 onMounted(() => {
-    boardStore.getBoardList(clubId);
+    boardStore.getBoardList(clubId.value);
 })
-
 
 const posts = ref([]);
 watch(() => boardStore.boardList,(newBoardList) => {
     posts.value = newBoardList;
 })
 
+watch(() => routes.params.clubId, (newClubId) => {
+    clubId.value = newClubId;
+    boardStore.getBoardList(clubId.value);
+});
 
  // 현재 게시글을 담을 변수 -> store로직 추가하면서 바꾸자
  const currentPost = ref(null);

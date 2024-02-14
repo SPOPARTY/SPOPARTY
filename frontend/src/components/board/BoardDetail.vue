@@ -11,7 +11,8 @@
             <v-card-subtitle class="text-right">{{ props.post.member.nickname }}</v-card-subtitle>
             <v-card-text v-if="post.file">{{ formatDateTime(post.file.updatedTime) }}</v-card-text>
             <v-card-item v-if="props.post.file">
-                <v-img :src="props.post.file.url" class="img" cover width="100%"></v-img>
+                <v-img v-if="props.post.file.type == 'image'" :src="props.post.file.url" class="img" cover width="100%"></v-img>
+                <video v-if="props.post.file.type == 'video'" :src="props.post.file.url" controls type="video/mp4" cover width="100%"></video>
             </v-card-item>
             <v-card-text>
                 <div>

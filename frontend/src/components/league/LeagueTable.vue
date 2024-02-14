@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="pa-2 mt-3">
+    <v-container fluid class="pa-1 mt-3">
         <v-row class="pb-1 table-section">
             <v-card flat class="card-ranking">
                 <v-card-title>
@@ -22,12 +22,20 @@
                     </v-row>
                     <br>
                 </v-card-title>
-                
-                <v-data-table v-if="teams" :headers="headers" :items="teams" :search="search" :items-per-page="-1" 
-                    class="elevation-1"
-                    hide-default-footer>
+
+                <v-data-table v-if="teams" :headers="headers" :items="teams" :search="search" :items-per-page="-1"
+                    class="elevation-1" hide-default-footer>
+                    <template v-slot:item.standing.rank="{ item }">
+                        <p :class="{
+                            'red-text': item.standing.rank <= 3,
+                            'green-text': item.standing.rank > 3 && item.standing.rank <= 8
+                        }">
+                            {{ item.standing.rank }}
+                        </p>
+                    </template>
                     <template v-slot:item.logo="{ item }">
-                        <v-img :src="item.logo" class="mr-2" style="width: 50px; height: 50px;" contain></v-img>
+                        <v-img :src="item.logo" class="mr-2 team-logo" style="width: 50px; height: 50px;" 
+                        contain @click="toTDP(item.seasonLeagueTeamId)"></v-img>
                     </template>
                     <!-- 팀 상세 페이지로 보내기 (밑줄 none)-->
                     <template @click="toTDP(item.seasonLeagueTeamId)" v-slot:item.nameKr="{ item }">
@@ -46,7 +54,9 @@
                             Your search for "{{ search }}" found no results.
                         </v-alert>
                     </template>
-                    <template #bottom><hr><br></template>
+                    <template #bottom>
+                        <hr><br>
+                    </template>
                 </v-data-table>
                 <h1 v-else>데이터가 없습니다.</h1>
             </v-card>
@@ -97,7 +107,7 @@ const search = ref('');
 // 테이블 헤더
 const headers = ref([
     { title: '순위', value: 'standing.rank', sortable: true },
-    { title: '로고', value: 'logo'},
+    { title: '로고', value: 'logo' },
     { title: '팀 이름', value: 'nameKr', sortable: true },
     { title: '승점', value: 'standing.points', sortable: true },
     { title: '승', value: 'standing.win', sortable: true },
@@ -182,10 +192,13 @@ const changeFollowing = (item) => {
     height: 125px;
     min-width: 125px;
 }
+.team-logo {
+    cursor : pointer;
+}
 
 .table-section {
     white-space: nowrap;
-    /* min-width: 1100px */
+    min-width: 1100px
 
 }
 
@@ -206,4 +219,18 @@ hr {
     /* 밑줄 색상 */
 }
 
+.red-text {
+    color: red;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.green-text {
+    color: green;
+    font-weight: bold;
+    font-size: 1rem;
+}
+td:hover {
+    background-color: #B3E5FC;
+}
 </style>

@@ -33,7 +33,7 @@ const clubName = ref("");
 const clubStore = useClubStore();
 
 function generateClub() {
-    console.log("히히 클럽 창단 발사")
+    // console.log("히히 클럽 창단 발사")
     const data = {
         memberId:memberId,
         name : clubName.value
