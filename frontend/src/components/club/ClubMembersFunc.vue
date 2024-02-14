@@ -179,7 +179,8 @@ const isPartyExist = ref(false);
 //     }
 // })
 
-const partyInfo = ref(getPartyInfo(clubId, partyId.value));
+const partyInfo = ref();
+// const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 
 // setInterval(() => {
 //     count.value = !count.value;

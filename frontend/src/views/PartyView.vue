@@ -344,7 +344,7 @@ watch(() => partyStore.partyInfo, (newVal) => {
 // 파티 입장 및 퇴장
 const clubId = route.params.clubId;
 const partyId = route.params.partyId;
-const partyMemberList = ref(getPartyMemberList(clubId, partyId));
+const partyMemberList = ref();
 
 // console.log("시작멤버리스트", partyMemberList.value);
 
@@ -379,12 +379,13 @@ function handleBeforeUnload(event) {
      return message; // 다른 브라우저에서 필요
 }
 
-onMounted(() => {
+onMounted( async () =>  {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
      // console.log("onMounted", clubId, partyId);
      // console.log(getPartyMemberList(clubId, partyId));
-     postPartyMember(clubId, partyId);
+     await postPartyMember(clubId, partyId);
+     await getPartyMemberList(clubId, partyId)
      window.addEventListener('beforeunload', handleBeforeUnload);
 })
 
