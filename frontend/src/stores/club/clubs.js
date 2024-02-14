@@ -63,24 +63,28 @@ export const useClubStore = defineStore("club",() => {
 
     // 그룹 조회
     const getClubInfo = (clubId) => {
-        requestClubInfo(
-            clubId,
-            (res) => {
-                // console.log(res)
-                if (res.data.status === httpStatusCode.OK) {
-                    clubInfo.value = res.data.data;
-                    // console.log(clubInfo.value)
-
+        return new Promise((resolve,reject) => {
+            requestClubInfo(
+                clubId,
+                (res) => {
+                    // console.log(res)
+                    if (res.data.status === httpStatusCode.OK) {
+                        clubInfo.value = res.data.data;
+                        // console.log(clubInfo.value)
+                        resolve(true)
+                    }
+                },
+                (error) => {
+                    if (error.response.status === httpStatusCode.NOTFOUND) {
+                        // console.log("*******해당 그룹 접근 불가!********")
+                        alert("해당 그룹에 접근할 수 없습니다!")
+                        console.log(error);
+                        window.location.replace("/")
+                    }
+                    reject(error)
                 }
-            },
-            (error) => {
-                if (error.response.status === httpStatusCode.NOTFOUND) {
-                    // console.log("*******해당 그룹 접근 불가!********")
-                    alert("해당 그룹에 접근할 수 없습니다!")
-                    console.log(error);
-                    window.location.replace("/")
-                }
-            }
+            )
+        }
         )
     }
 
