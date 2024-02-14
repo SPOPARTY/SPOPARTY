@@ -185,7 +185,7 @@ function voteForTeam(match, team) {
         fixtureId: fixtureId
     }
 
-    console.log("data=", data);
+    // console.log("data=", data);
     postCheers(data);
     // postCheers(data);
 }
@@ -214,7 +214,7 @@ onMounted(() => {
                 resetBarAnimation(currentMatch);
             }
             // 필요한 작업을 수행한 후, 더 이상 확인이 필요 없으므로 setInterval을 정리
-            console.log("clearInterval")
+            // console.log("clearInterval")
             clearInterval(checkCheerLength);
         }
     }, 1000); // 1초 간격으로 확인
@@ -224,11 +224,11 @@ onMounted(() => {
 watch(model, async (newVal) => {
     await nextTick(); // 캐러셀 항목 변경 후 DOM 업데이트를 기다림
     const currentMatch = cheer.value[newVal];
-    console.log("nextTick", newVal)
+    // console.log("nextTick", newVal)
     if (currentMatch && currentMatch.alreadyCheer) {
         // 막대 애니메이션 초기화
         // 여기서 막대의 높이를 0으로 설정한 후 실제 높이로 변경
-        console.log("reset")
+        // console.log("reset")
         resetBarAnimation(currentMatch);
     }
 }, { immediate: true, deep: true });

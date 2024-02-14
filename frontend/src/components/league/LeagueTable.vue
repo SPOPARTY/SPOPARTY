@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="pa-2 mt-3">
+    <v-container fluid class="pa-1 mt-3">
         <v-row class="pb-1 table-section">
             <v-card flat class="card-ranking">
                 <v-card-title>
@@ -34,7 +34,8 @@
                         </p>
                     </template>
                     <template v-slot:item.logo="{ item }">
-                        <v-img :src="item.logo" class="mr-2" style="width: 50px; height: 50px;" contain></v-img>
+                        <v-img :src="item.logo" class="mr-2 team-logo" style="width: 50px; height: 50px;" 
+                        contain @click="toTDP(item.seasonLeagueTeamId)"></v-img>
                     </template>
                     <!-- 팀 상세 페이지로 보내기 (밑줄 none)-->
                     <template @click="toTDP(item.seasonLeagueTeamId)" v-slot:item.nameKr="{ item }">
@@ -191,10 +192,13 @@ const changeFollowing = (item) => {
     height: 125px;
     min-width: 125px;
 }
+.team-logo {
+    cursor : pointer;
+}
 
 .table-section {
     white-space: nowrap;
-    /* min-width: 1100px */
+    min-width: 1100px
 
 }
 
@@ -225,5 +229,8 @@ hr {
     color: green;
     font-weight: bold;
     font-size: 1rem;
+}
+td:hover {
+    background-color: #B3E5FC;
 }
 </style>
