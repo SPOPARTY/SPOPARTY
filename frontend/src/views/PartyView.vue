@@ -135,7 +135,7 @@
                               <UserVideo :stream-manager="sub" />
                          </v-col>
                          <!-- 파티 초대 -->
-                         <v-col cols="6" class="cam-video" v-if="partyMembers.length < maxMembers" @click="inviteToParty"
+                         <v-col cols="6" class="cam-video" v-if="partyMembers?.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
                               <v-img src="/maruche.jpg" class="invite-img pt-2" contain></v-img>
                               <span>친구를 초대해 보세요!</span>
@@ -352,7 +352,7 @@ const showVote = ref(false);
 
 let isInit = false
 watch(() => partyStore.partyMemberList, (newPartyMembers) => {
-     // console.log("newPartyMembers", newPartyMembers);
+     console.log("newPartyMembers", newPartyMembers);
      partyMemberList.value = newPartyMembers;
      partyMemberList.value.map((member) => {
           if (member.memberId == localStorage.getItem("id")) {
@@ -401,20 +401,24 @@ if (answer) {
      window.open(url, '_blank');
 }
 
+const myMemberId = localStorage.getItem("id");
 const delPartyMem = () => {
      // console.log("delPartyMem", partyMemberList.value);
-     myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
+     myId.value = partyStore.partyMemberList.find((member) => member.memberId == myMemberId);
      if (myId.value !== undefined) {
-          // console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
+          console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
           deletePartyMember(clubId, partyId, myId.value.participantId);
      }
 }
 
 onUnmounted(() => {
+     console.log("#######", partyStore.partyMemberList);
+     console.warn(myMemberId)
      myId.value = partyStore.partyMemberList.find(
-          (member) => member.userId === partyStore.myUserId
-     ).participantId;
-     deletePartyMember(clubId, partyId, myId.value);
+          (member) => member.memberId == myMemberId
+     );
+     console.log("##########", myId.value);
+     deletePartyMember(clubId, partyId, myId.value.participantId);
 })
 
 const clickSound = () => {
@@ -475,13 +479,13 @@ const fixtureId = ref(null);
 // 파티 최대 인원 수
 const maxMembers = 6
 
-const partyMembers = ref([
-     { memberId: 1, name: "실버스타" },
-     { memberId: 2, name: "제라드" },
-     { memberId: 3, name: "벨타이거" },
-     { memberId: 4, name: "램파드" },
-     { memberId: 5, name: "별명별명" },
-])
+// const partyMembers = ref([
+//      { memberId: 1, name: "실버스타" },
+//      { memberId: 2, name: "제라드" },
+//      { memberId: 3, name: "벨타이거" },
+//      { memberId: 4, name: "램파드" },
+//      { memberId: 5, name: "별명별명" },
+// ])
 
 // 파티 초대
 const inviteToParty = () => {
