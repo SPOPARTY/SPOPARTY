@@ -41,16 +41,19 @@
                 @set-email-close="isEmailModalVisible = false"
                 @update-email="updateEmail($event)"
                 />  
-            
-            <v-row class="emblem-box mx-2 mb-2 my-6" justify="center" align="center" @click="showEmblemModal" >
-                <v-tooltip location="top" activator="parent">대표 엠블렘을 선택하세요!</v-tooltip>
-                <v-col cols="2">
-                    <v-img :src="memberInfo.team.logo" :alt="memberInfo.team.nameKr"  
-                    style="width: 50px; height: 50px; transform: translateX(10px);"/>
-                </v-col>
-                <v-col cols="6">
-                    <h2 style="color:white;">{{ memberInfo.team.nameKr }}</h2>
-                </v-col>
+            <v-row v-if="memberInfo.team.id !== ''" class="emblem-box mx-2 mb-2 my-6" justify="center" align="center" @click="showEmblemModal" >
+                <v-tooltip location="top" activator="parent">대표 엠블럼을 선택하세요!</v-tooltip>
+                    <v-col cols="2">
+                        <v-img :src="memberInfo.team.logo" :alt="memberInfo.team.nameKr"  
+                        style="width: 50px; height: 50px; transform: translateX(10px);"/>
+                    </v-col>
+                    <v-col cols="6">
+                        <h2 style="color:white;">{{ memberInfo.team.nameKr }}</h2>
+                    </v-col>
+            </v-row>
+            <v-row v-else class="emblem-box mx-2 mb-2 my-6" justify="center" align="center" @click="showEmblemModal">
+                <v-tooltip location="top" activator="parent">대표 엠블럼을 선택하세요!</v-tooltip>
+                <h2 style="color:white; cursor:pointer">원하는 구단의 엠블럼을 선택해보세요!</h2>
             </v-row>
             <EmblemList 
                 v-if="isEmblemModalVisible"
