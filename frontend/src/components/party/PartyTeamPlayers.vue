@@ -1,6 +1,7 @@
 <template>
     <v-container fluid class="vc">
-        <p>선수 목록 페이지. fixtureId = {{ fixtureId? fixtureId : 'null'}}</p>
+        <p class="table-title">선수 목록</p>
+        <!-- <p>선수 목록 페이지. fixtureId = {{ fixtureId? fixtureId : 'null'}}</p> -->
         <p v-if="fixtureId==null" class="alert-msg">경기를 선택해주세요.</p>
         <v-row v-if="fixtureId!=null">
             <v-col cols="6">
@@ -69,5 +70,11 @@ watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
     margin: 30px;
     font-size: 2rem;
     color: #292646;
+}
+.table-title {
+  height: 25px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 10px;
 }
 </style>

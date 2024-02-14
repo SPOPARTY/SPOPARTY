@@ -15,9 +15,9 @@ const clubStore = useClubStore();
 const managementStore = useManagementStore();
 
 onMounted(() => {
-    alert("너, 동료가 되어라!!!!!!")
+    // alert("너, 동료가 되어라!!!!!!")
     const memberId = localStorage.getItem("id"); // 로그인 여부 판단
-    // const inviteUrl = route.path; // 로컬에서 시험이 안됨 ㅠ
+    // const inviteUrl = route.path; // 로컬에서 시험 X
     const param = route.params.inviteUrl;
     const inviteUrl = `https://i10a802.p.ssafy.io/invite/${param}`;
     // https://i10a802.p.ssafy.io/invite/W2EkfweFSvSE7r2%2FWGm6y%2B9JQLHPgvYUtbJbLG5b9SYP9vlp31vze9qE%2BHn%2FLcmB

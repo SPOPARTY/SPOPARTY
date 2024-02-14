@@ -125,7 +125,7 @@
       if (!props.followList || props.followList.length === 0){
           return [];
       }
-      console.log("실행실행")
+      // console.log("실행실행")
       const followedTeamIds = props.followList.map(follow => follow.teamId); // map을 통해 객체 배열을 teamId 배열로 변환
       return allClubs.filter(team => followedTeamIds.includes(team.id));
   })
@@ -138,12 +138,12 @@
 
   const showAllClubs = () => {
       clubData.current = clubData.all;
-      console.log("clubs ->" , clubData.current)
+      // console.log("clubs ->" , clubData.current)
   }
 
   const showFollwingClubs = () => {
       clubData.current = clubData.following;
-      console.log("clubs ->" , clubData.current)
+      // console.log("clubs ->" , clubData.current)
   }
 
   // 구단 검색
@@ -172,7 +172,7 @@
 
     // 구단을 언팔로우
   const unfollowClub = (id) => {
-    console.log("teamid가 무엇이냐? -> ", id)
+    // console.log("teamid ", id)
     if (confirm("해당 구단을 팔로우 취소하시겠습니까?") === true) {
         followStore.doUnFollow(id);
 

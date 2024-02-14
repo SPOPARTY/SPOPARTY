@@ -47,9 +47,12 @@
               style="width: 80px; height: 80px;" contain>
               </v-img>
             </td>
-            <td class="text-center">{{ player.nameKr }}</td>
+            <td class="text-center">
+              <!-- <v-icon v-if="player.captain">mdi-plus</v-icon> -->
+              {{ player.nameKr }}
+            </td>
             <td class="text-center">{{ player.nameEng }}</td>
-            <td class="text-center">{{ player.age }}</td>
+            <td class="text-center">{{ player.age }}세</td>
             <td class="text-center">{{ player.height }}</td>
             <td class="text-center">{{ player.weight }}</td>
           </tr>

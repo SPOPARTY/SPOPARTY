@@ -9,7 +9,7 @@ export const useFileStore = defineStore('file', () => {
     requestDeleteFile(fileId,
       (res) => {
         if (res.status === httpStatusCode.OK) {
-          console.log("delete file success")
+          // console.log("delete file success")
         }
       },
       (error) => {

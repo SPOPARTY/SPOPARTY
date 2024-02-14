@@ -14,12 +14,6 @@
                     v-model="clubName"
 
                 >   
-                    <!-- 연필 아이콘 -> 필요? -->
-                    <!-- <template v-slot:append>
-                        <v-btn icon class="no-background-hover">
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                    </template> -->
                 </v-text-field>
                 <v-card-actions>
                     <v-btn class="button" color="#292646" text @click="submitName">변경</v-btn>
@@ -86,14 +80,13 @@ const submitName = () =>  {
     try{
         const success = updateClub(clubId,data);
         if (success) {
-            console.log("그룹 명 수정, 성공적!")
             modalVisible.value = false;
             confirm.value = true
         } else {
             console.error("그룹 정보 수정 실패!")
         }
     } catch(error) {
-        console.log("비상!!!!!" + error)
+        console.error( error)
     }
         
     }
@@ -107,9 +100,6 @@ function closeModal() {
     emits('change-club-name-close')
 }
 
-onMounted(() => {
-    console.log("히히 그룹명 변경 발사")
-})
 
 </script>
 

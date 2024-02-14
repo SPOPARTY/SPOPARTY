@@ -64,6 +64,22 @@ const myMessage = ref({
   message: '',
 })
 
+const props = defineProps({
+  chatDivHeightProp: {
+    type: String,
+    required: true,
+    default: '300'
+  },
+  disconnectProp: false
+})
+
+watch(() => props.disconnectProp, (newDisconnectProp) => {
+  console.log(newDisconnectProp)
+  if (newDisconnectProp) {
+    disconnect()
+  }
+})
+
 onMounted(() => { 
     getMember(
       localStorage.getItem('id'),
@@ -140,20 +156,13 @@ const connect = () => {
 
 const disconnect = () => {
   myMessage.value.message = `${myMessage.value.userName} 님이 퇴장했습니다.`
-  send('/sub/chat/out', myMessage.value, myMessage.value)
+  send('/chat/send', myMessage.value, myMessage.value)
+  myMessage.value.message = ""
   stompClient.disconnect(() => {
     console.log('stomp client disconnected.')
   })
 }
 
-////// 그 외 로직
-const props = defineProps({
-  chatDivHeightProp: {
-    type: String,
-    required: true,
-    default: '300'
-  }
-})
 
 // 스크롤을 채팅창의 맨 아래로 이동시키는 함수
 const chatMessages = ref(null); // chat-messages div에 대한 참조

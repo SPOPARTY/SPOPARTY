@@ -105,9 +105,9 @@ const editPost = () => {
     formdata.append("content",editedContent.value);
     formdata.append("file",editedFile.value[0])
 
-    console.log("이건 formData 내용")
+    // console.log("이건 formData 내용")
     for (let [key, value] of formdata.entries()) {
-        console.log(key, value);
+        // console.log(key, value);
     }
 
     boardStore.updateBoard(formdata)

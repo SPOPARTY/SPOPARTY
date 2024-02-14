@@ -42,15 +42,12 @@ export const useFollowStore = defineStore("follow", () => {
         ({data,status}) => {
             console.log(data)
             if(status === httpStatusCode.OK) {
-                // console.log("히히 팔로우 리스트 발사")
                 followList.value = data.data;
                 // console.log(followList.value)
             }
         }),
         (error) => {
-            console.log("팔로우 리스트 가져오는데 에러")
             if(error.response.status === httpStatusCode.NOTFOUND) {
-                // console.log("***********비상***********")
                 console.err(err);
                 alert("팔로우 리스트 가져오기 실패!")
             }
@@ -66,17 +63,16 @@ export const useFollowStore = defineStore("follow", () => {
         requestFollow(
             data,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.CREATE) {
                     getFollowList(memberId);
                     alert("팔로우 완료!")
                 }
             },
             (error) => {
-                console.log(error)
+                // console.log(error)
                 if(error.status === httpStatusCode.NOTFOUND) {
-                    console.log("비상!!!!")
-                    console.log(err);
+                    // console.log(err);
                     alert("팔로우 실패!")
                 }
             }
@@ -94,7 +90,6 @@ export const useFollowStore = defineStore("follow", () => {
         requestUnFollow(
             followTeamId,
             (res) => {
-                console.log(res)
                 if(res.status === httpStatusCode.OK) {
                     getFollowList(memberId);
                     alert("팔로우 취소 완료")
@@ -103,7 +98,7 @@ export const useFollowStore = defineStore("follow", () => {
             },
             (error) => {
                 if(error.status === 400) {
-                    console.log(error)
+                    // console.log(error)
                     alert("팔로우 취소 실패!")
                 }
             }

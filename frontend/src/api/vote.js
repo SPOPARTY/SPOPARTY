@@ -20,8 +20,8 @@ const voteConnect = (partyId) => {
     stompClient.connect({}, function () {
       stompClient.subscribe(`/sub/vote/create/${partyId}`, function (response) {
         // 1. 투표 생성
-        console.log('*******CreateVote********')
-        console.log(response)
+        // console.log('*******CreateVote********')
+        // console.log(response)
         alert("투표 만들기 성공!")
         voteStore.getOngoingVoteList(partyId);
         voteStore.getMyVoteList(partyId,memberId);
@@ -32,9 +32,9 @@ const voteConnect = (partyId) => {
       // voteCount : 투표에 참여했습니다.
       // 총인원수 == voteCount : 투표 종료 할 수 있으니까 -> 생성한 사람한테 보내주기
       stompClient.subscribe(`/sub/vote/do/${partyId}`, function (response) {
-        console.log('*******do********')
-        alert("투표 참여 성공!")
-        console.log(response)
+        // console.log('*******do********')
+        // alert("투표 참여 성공!")
+        // console.log(response)
         voteStore.getOngoingVoteList(partyId);
         voteStore.getMyVoteList(partyId,memberId);
         voteStore.getFinishedVoteList(partyId);
