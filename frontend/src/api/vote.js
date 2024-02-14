@@ -44,9 +44,9 @@ const voteConnect = (partyId) => {
       stompClient.subscribe(
         `/sub/vote/counting/${partyId}`,
         function (response) {
-          alert("투표 마감 성공!")
-          console.log('*******counting********')
-          console.log(response)
+          alert("투표가 마감되었습니다!")
+          // console.log('*******counting********')
+          // console.log(response)
 
           voteStore.currentFinishedVote = JSON.parse(response.body)
 
