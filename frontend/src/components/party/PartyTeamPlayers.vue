@@ -29,7 +29,6 @@ const footballStore = useFootballStore()
 
 const fixtureId = ref(null)
 const teamIds = footballStore.teamIdsForParty
-const count = ref(true)
 
 watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
     fixtureId.value = newFixtureId;
@@ -38,7 +37,7 @@ watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
         teamIds.value = {...footballStore.findTeamIdsByFixtureId(newFixtureId)};
     }
     // count.value = !count.value; // 이 부분은 더 이상 필요하지 않습니다.
-    console.warn("###", teamIds.value);
+    // console.warn("###", teamIds.value);
 }, { immediate: true, deep: true });
 
 

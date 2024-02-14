@@ -22,11 +22,11 @@ export const usePartyStore = defineStore("party",() => {
         requestGetPartyInfo(
             clubId,partyId,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.OK) {
-                    console.log("히히 파티 정보 가져오기 발사")
+                    // console.log("히히 파티 정보 가져오기 발사")
                     partyInfo.value = res.data.data;
-                    console.log(partyInfo.value)
+                    // console.log(partyInfo.value)
                     return partyInfo.value;
                 }
                 // {
@@ -42,9 +42,9 @@ export const usePartyStore = defineStore("party",() => {
                 // }
             },
             (error) => {
-                console.log("파티 정보 가져오는데 에러")
+                // console.log("파티 정보 가져오는데 에러")
                 if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
+                    // console.log("***********비상***********")
                     console.error(error)
                     partyInfo.value = [];
                     // alert("파티 정보 가져오기 실패!")
@@ -58,21 +58,21 @@ export const usePartyStore = defineStore("party",() => {
         requestPostPartyInfo(
             clubId,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.CREATE) {
-                    console.log("히히 파티 정보 등록하기 발사")
-                    console.log(res.data.data)
+                    // console.log("히히 파티 정보 등록하기 발사")
+                    // console.log(res.data.data)
                     partyInfo.value = res.data.data;
                     return partyInfo.value.partyId;
                 }
             },
             (error) => {
-                console.log("파티 정보 등록하는데 에러")
-                console.log(error)
+                // console.log("파티 정보 등록하는데 에러")
+                // console.log(error)
                 if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
+                    // console.log("***********비상***********")
                     console.error(error)
-                    alert("파티 정보 등록하기 실패!")
+                    // alert("파티 정보 등록하기 실패!")
                 }
             }
         )
@@ -88,21 +88,21 @@ export const usePartyStore = defineStore("party",() => {
         requestPutPartyInfo(
             clubId,partyId,data,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.OK) {
-                    console.log("히히 파티 정보 수정하기 발사")
-                    console.log(res.data.data)
+                    // console.log("히히 파티 정보 수정하기 발사")
+                    // console.log(res.data.data)
                     partyInfo.value = res.data.data;
                     return partyInfo.value;
                 }
             },
             (error) => {
-                console.log("파티 정보 수정하는데 에러")
-                console.log(error)
+                // console.log("파티 정보 수정하는데 에러")
+                // console.log(error)
                 if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
+                    // console.log("***********비상***********")
                     console.error(error)
-                    alert("파티 정보 수정하기 실패!")
+                    // alert("파티 정보 수정하기 실패!")
                 }
             }
         )
@@ -112,21 +112,21 @@ export const usePartyStore = defineStore("party",() => {
         requestDeletePartyInfo(
             clubId,partyId,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.OK) {
-                    console.log("히히 파티 정보 삭제하기 발사")
-                    console.log(res.data.data)
+                    // console.log("히히 파티 정보 삭제하기 발사")
+                    // console.log(res.data.data)
                     partyInfo.value = [];
                     return partyInfo.value;
                 }
             },
             (error) => {
-                console.log("파티 정보 삭제하는데 에러")
-                console.log(error)
+                // console.log("파티 정보 삭제하는데 에러")
+                // console.log(error)
                 if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
+                    // console.log("***********비상***********")
                     console.error(error)
-                    alert("파티 정보 삭제하기 실패!")
+                    // alert("파티 정보 삭제하기 실패!")
                 }
             }
         )
@@ -136,19 +136,19 @@ export const usePartyStore = defineStore("party",() => {
         requestGetPartyMemberList(
             clubId,partyId,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.OK) {
-                    console.log("히히 파티 멤버 리스트 가져오기 발사")
+                    // console.log("히히 파티 멤버 리스트 가져오기 발사")
                     partyMemberList.value = res.data.data;
                     return partyMemberList.value;
                 }
             },
             (error) => {
-                console.log("파티 멤버 리스트 가져오는데 에러")
+                // console.log("파티 멤버 리스트 가져오는데 에러")
                 if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
+                    // console.log("***********비상***********")
                     console.error(error)
-                    alert("파티 멤버 리스트 가져오기 실패!")
+                    // alert("파티 멤버 리스트 가져오기 실패!")
                 }
             }
         )
@@ -158,22 +158,22 @@ export const usePartyStore = defineStore("party",() => {
         requestPostPartyMember(
             clubId,partyId,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.CREATE) {
-                    console.log("히히 파티 멤버 추가하기 발사")
-                    console.log(res.data.data)
+                    // console.log("히히 파티 멤버 추가하기 발사")
+                    // console.log(res.data.data)
                     getPartyInfo(clubId,partyId);
-                    console.log(res.data.data.participantId)
+                    // console.log(res.data.data.participantId)
                     myParticipantId.value = res.data.data.participantId;
                 }
             },
             (error) => {
-                console.log("파티 멤버 추가하는데 에러")
-                console.log(error)
+                // console.log("파티 멤버 추가하는데 에러")
+                // console.log(error)
                 if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
+                    // console.log("***********비상***********")
                     console.error(error)
-                    alert("파티 멤버 추가하기 실패!")
+                    // alert("파티 멤버 추가하기 실패!")
                 }
             }
         )
@@ -184,19 +184,19 @@ export const usePartyStore = defineStore("party",() => {
         requestGetPartyMember(
             clubId,partyId,participantId,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.OK) {
-                    console.log("히히 파티 참가자 정보 가져오기 발사")
+                    // console.log("히히 파티 참가자 정보 가져오기 발사")
                     partyMemberList.value = res.data.data;
                     return partyMemberList.value;
                 }
             },
             (error) => {
-                console.log("파티 참가자 정보 가져오는데 에러")
+                // console.log("파티 참가자 정보 가져오는데 에러")
                 if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
+                    // console.log("***********비상***********")
                     console.error(error)
-                    alert("파티 참가자 정보 가져오기 실패!")
+                    // alert("파티 참가자 정보 가져오기 실패!")
                 }
             }
         )
@@ -206,22 +206,22 @@ export const usePartyStore = defineStore("party",() => {
         requestDeletePartyMember(
             clubId,partyId,participantId,
             (res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.status === httpStatusCode.OK) {
-                    console.log("히히 파티 멤버 삭제하기 발사")
-                    console.log(res.data.data)
+                    // console.log("히히 파티 멤버 삭제하기 발사")
+                    // console.log(res.data.data)
                     partyMemberList.value = res.data.data;
                     partyInfo.value = getPartyInfo(clubId,partyId);
                     return partyMemberList.value;
                 }
             },
             (error) => {
-                console.log("파티 멤버 삭제하는데 에러")
-                console.log(error)
+                // console.log("파티 멤버 삭제하는데 에러")
+                // console.log(error)
                 if(error.response.status === httpStatusCode.NOTFOUND) {
-                    console.log("***********비상***********")
+                    // console.log("***********비상***********")
                     console.error(error)
-                    alert("파티 멤버 삭제하기 실패!")
+                    // alert("파티 멤버 삭제하기 실패!")
                 }
             }
         )
