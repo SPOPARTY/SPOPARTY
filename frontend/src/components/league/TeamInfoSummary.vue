@@ -165,4 +165,7 @@ const headers = ref([
   box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
   border-radius: 8px;
 }
+td:hover {
+    background-color: #B3E5FC;
+}
 </style>

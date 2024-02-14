@@ -143,7 +143,7 @@ function sendEmail () {
       return;
     }
 
-    console.log("새로운 이메일 잘 왔나 ->", newEmail.value)
+    // console.log("새로운 이메일 잘 왔는지 확인 ->", newEmail.value)
 
     emailCheck(
       newEmail.value,
@@ -151,16 +151,14 @@ function sendEmail () {
         console.log(res)
         if(res.status === httpStatusCode.OK) {
             startTimer.value = true; // 잘 발송되면 타이머 시작
-            console.log("잘 발송 되었음")
-            console.log(res.status)
+            // console.log(res.status)
             emailSent.value = true;
         }
       },
       (error) => {
-        console.log("비상!")
         console.log(error)
         if (error.response.status === httpStatusCode.CONFLICT) {
-          console.log(error)
+        //   console.log(error)
           alert("이미 사용 중인 이메일입니다!")
         }
       }
@@ -178,12 +176,11 @@ function checkVerifyCode () {
       email:newEmail.value,
       code:verifyCode.value,
     }
-    console.log(data)
+    // console.log(data)
     verifyCodeCheck(
       data,
       (res)=>{
         if(res.status === httpStatusCode.OK){
-            console.log("")
             codeChecked.value = true // 인증코드가 알맞고
             emailVerifiedConfirm.value = true; // 그로 인해 이메일 인증도 되었음
             //   verifyDone.value = true; // 인증완료 ==> 얘는 최후의 수정버튼을 클릭했을 때만!
@@ -206,7 +203,6 @@ function confirmChange() {
 
     if (emailVerifiedConfirm.value) { // 이메일 인증이 되었다면
         verifyDone.value = true; // 인증 O 모달을 띄움
-        // console.log("바뀐 이메일??")
         // console.log(newEmail.value)
         emit('update-email',newEmail)
     }

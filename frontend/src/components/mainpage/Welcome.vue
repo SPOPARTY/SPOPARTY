@@ -1,6 +1,6 @@
 <template>
-    <v-container fluid class="pa-2 fill-height part-section">
-        <v-row justify="center" class="card-bg">
+  <v-container fluid class="pa-2 fill-height part-section">
+    <v-row justify="center" class="card-bg">
       <v-col cols="12" sm="8" md="6">
         <v-card class="text-center pa-12 elevation-12" color="#f5f5f5">
           <v-icon large color="green darken-2">mdi-soccer</v-icon>
@@ -25,7 +25,7 @@
         </v-card>
       </v-col>
     </v-row>
-    </v-container>
+  </v-container>
 </template>
 
   
@@ -36,19 +36,20 @@
     
 <style scoped>
 .part-section {
-    height: 100vh;
+  height: 100vh;
 }
+
 .card-bg {
-    display: flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   background-image: url('/soccer-field.jpg');
   background-size: cover;
-    height: 85vh;
+  height: 85vh;
 }
 
 h1 {
-    color : #333D51;
+  color: #333D51;
 }
 </style>
 

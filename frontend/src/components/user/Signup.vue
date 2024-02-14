@@ -244,8 +244,8 @@
 
   function setEmblem(newEmblem) {
     emblem.value = newEmblem
-    console.log("******내가 선택한 엠블럼********")
-    console.log(emblem.value)
+    // console.log("******내가 선택한 엠블럼********")
+    // console.log(emblem.value)
   }
 
 
@@ -260,27 +260,27 @@
       blankId.value = true;
     }
     idDuplicatedChecked.value = false;
-    console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
+    // console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
     idCheck(
       id.value,
       (res) => {
         // console.log(res);
         if (res.data.status === httpStatusCode.OK) {
-          console.log("히히 아이디 중복 검사 발사")
+          // console.log("히히 아이디 중복 검사 발사")
           idDuplicatedChecked.value = true; // 아이디 중복 검사 완료
-          console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
+          // console.log("idDuplicatedChecked -> ",idDuplicatedChecked.value)
           validId.value = true // 아이디 검사 완료 모달
         }
       },
       (error) => {
         // console.error("*******비상*******")
         if (error.response.status === httpStatusCode.CONFLICT) {
-          console.log("히히 이미 있는 아이디 발사")
+          // console.log("히히 이미 있는 아이디 발사")
           inValidId.value = true; // 아이디 중복 모달 
         }
         if (error.response.status === 500) {
-          console.log("중복체크를 하지 않음!!")
-          // console.error(error)
+          // console.log("중복체크를 하지 않음!!")
+          console.error(error)
         }
       }
     )
@@ -300,15 +300,14 @@
       alert("올바른 이메일을 입력해주세요!")
       return;
     }
-    console.log("이메일 잘 왔나? -> ", email.value)
+    // console.log("이메일 잘 왔나? -> ", email.value)
 
     // 이메일 ㄱㄱ
     emailCheck(
       email.value,
       (res) => {
         if(res.status === httpStatusCode.OK) {
-          console.log("잘 발송 되었음")
-          console.log(res.status)
+          // console.log(res.status)
           isEmailVerifyVisible.value = true;
         }
       },
@@ -331,12 +330,12 @@
       email:email.value,
       code:verifyCode.value
     }
-    console.log(data)
+    // console.log(data)
     verifyCodeCheck(
       data,
       (res)=>{
         if(res.status === httpStatusCode.OK){
-          alert("이게 옳게된 인증코드지")
+          alert("알맞은 인증코드입니다!")
           validEmail.value = true
           emailVerified.value = true
           isEmailVerifyVisible.value = false;
@@ -378,11 +377,11 @@
       emblem.value.emblemId === ""
       ) {
         alert("모든 내용을 입력해주세요");
-        console.log("id -> ",id.value)
-        console.log("password -> ",password.value)
-        console.log("nickname -> ",nickname.value)
-        console.log("email -> ",email.value)
-        console.log("emblem -> ",emblem.value.emblemId)
+        // console.log("id -> ",id.value)
+        // console.log("password -> ",password.value)
+        // console.log("nickname -> ",nickname.value)
+        // console.log("email -> ",email.value)
+        // console.log("emblem -> ",emblem.value.emblemId)
         return;
       }
     if (!idDuplicatedChecked.value){
@@ -411,7 +410,7 @@
     }
 
     if(emblem.value.emblemId === '') {
-      console.log(emblem.value.emblemId == '')
+      // console.log(emblem.value.emblemId == '')
       alert("엠블럼은 반드시 골라야 합니다!!");
       return;
     }
@@ -430,20 +429,17 @@
     registMember(member,
       (res) => {
         if (res.status === httpStatusCode.CREATE) {
-          console.log("히히 회원가입 성공")
           console.log(res);
-          alert("히히 회원가입 성공")
+          alert("축하합니다! SPOPARTY의 회원이 되셨습니다!")
           window.location.replace("/")
         } 
         else if (res.status === httpStatusCode.CONFLICT) {
-          console.log("이미 등록된 아이디 ㅠㅠ")
           alert("이미 등록된 아이디입니다. ")
           return;
         }
       },
       (error) => {
         console.log(error)
-        console.log("ㅅㅂ")
         alert("히히 회원가입 실패 발사")
       }
     )

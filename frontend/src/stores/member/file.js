@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { requestDeleteFile } from '@/api/file'
+import { requestDeleteFile, requestUploadFile } from '@/api/file'
 
 import { httpStatusCode } from '@/util/http-status'
 
@@ -9,7 +9,7 @@ export const useFileStore = defineStore('file', () => {
     requestDeleteFile(fileId,
       (res) => {
         if (res.status === httpStatusCode.OK) {
-          console.log("delete file success")
+          // console.log("delete file success")
         }
       },
       (error) => {
@@ -18,7 +18,27 @@ export const useFileStore = defineStore('file', () => {
     )
   }
 
+  const uploadFile = (data) => {
+    return new Promise((resolve, reject) => {
+      requestUploadFile(data,
+        (res) => {
+          if (res.status === httpStatusCode.CREATE) {
+            console.log("upload file success")
+            console.log(res)
+            resolve(res)
+          }
+        },
+        (error) => {
+          console.error(error)
+          reject(error)
+        },
+      )
+    })
+  }
+
+
   return {
-    deleteFile
+    deleteFile,
+    uploadFile,
   }
 })

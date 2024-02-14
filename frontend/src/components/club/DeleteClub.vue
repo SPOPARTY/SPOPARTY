@@ -72,12 +72,12 @@ const deleteClub = () => {
     try{
         const success = clubStore.deleteClub(clubId);
         if (success) {
-            console.log("*****성공적으로 그룹 폭파*****")
+            // console.log("*****성공적으로 그룹 폭파*****")
             modalVisible.value = false;
             finalDelete.value = true;
         }
     } catch {
-        alert("그룹 폭파 실패")
+        alert("그룹 삭제를 실패하였습니다.")
     }
 }
 

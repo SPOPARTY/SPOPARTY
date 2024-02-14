@@ -39,7 +39,9 @@
                         <div v-if="checkStatus(match.status)" class="score">
                             <p class="score-title">스코어</p>
                             {{ match.homeTeamGoal }} : {{ match.awayTeamGoal }}
+                            <!-- <br>{{ match.status }} -->
                         </div>
+                        <div v-else class="score-title"></div>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -95,7 +97,7 @@ watch(() => selectedDate.value, (newVal) => {
 
 watch(() => footballStore.dateMatches, (newVal) => {
     matches.value = newVal;
-    console.warn(matches.value);
+    // console.warn(matches.value);
 }, { immediate: true });
 
 const toTDP = (seasonLeagueTeamId) => {
@@ -160,11 +162,25 @@ function getMatchStatus(startTime) {
 }
 
 function checkStatus(status) {
-    if (status != "not start") {
-        return true;
-    } else {
+    const check = status.toLowerCase();
+    // console.log(check)
+    if (check == "not started" || check == "time to be defined") {
         return false;
+    } else {
+        return true;
     }
+    // const status = ref("");
+    //  // 소문자화
+    //  const statusEng = item.status.toLowerCase();
+    //  if (statusEng === "not started") {
+    //       status.value = "예정";
+    //  } else if (statusEng === "match finished") {
+    //       status.value = "경기 종료";
+    //  } else if (statusEng === "time to be defined") {
+    //       status.value = "시간 미정";
+    //  } else {
+    //       status.value = "진행중";
+    //  }
 }
 
 </script>

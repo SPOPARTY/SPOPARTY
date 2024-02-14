@@ -17,8 +17,8 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-card-item class="text-center" v-if="props.detail.file">
-                <v-img v-if="props.detail.file.type == 'image'" :src="props.detail.file.url" :alt="props.detail.title"/>
+            <v-card-item class="text-center" v-if="props.detail">
+                <v-img v-if="props.detail.file == null" :src="props.detail.thumbnail.url" :alt="props.detail.title"/>
                 <video v-else :src="props.detail.file.url" controls type="video/mp4" class="video-preview"></video>
             </v-card-item>
             <v-card-subtitle class="text-right">파티명 : {{ props.detail.partyTitle }}</v-card-subtitle>

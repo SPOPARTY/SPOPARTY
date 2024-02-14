@@ -119,14 +119,14 @@ function selectEmblem(emblem) {
     currentEmblemId.value = emblem.id;
     currEmblemIcon.value = emblem.logo;
     currEmblemName.value = emblem.nameKr;
-    console.log("선택된 emblemid -> ",currentEmblemId.value)
+    // console.log("선택된 emblemid -> ",currentEmblemId.value)
 }
 
 function confirmEmblem() {
     newEmblem.value.emblemId = currentEmblemId.value;
     newEmblem.value.emblemIcon = currEmblemIcon.value;
     newEmblem.value.emblemName = currEmblemName.value;
-    console.log("나중에 바뀔 emblemId -> ", newEmblem.value.emblemId)
+    // console.log("나중에 바뀔 emblemId -> ", newEmblem.value.emblemId)
     emit('select-emblem',newEmblem.value);
     closeModal();
 }

@@ -2,7 +2,7 @@
   <v-container fluid class="pa-2 fill-height part-section">
     <v-row justify="center">
       <v-col cols="12" class="d-flex flex-column align-center justify-center">
-        <v-carousel v-model="model" class='carousel' cycle interval="6000" height="500px" hide-delimiter-background
+        <v-carousel v-model="model" class='carousel' cycle interval="7000" height="520px" hide-delimiter-background
           progress="primary" color="red" :key="carouselKey">
           <v-carousel-item v-for="(match, index) in cheer" :key="match.cheerFixtureId">
             <div class="d-flex flex-column justify-center align-center" style="height: 100%;">
@@ -35,7 +35,9 @@
                 </div>
                 <!-- 여기까지 득표율에 따른 막대기 -->
                 <v-card :disabled="match.alreadyCheer || match.fixture.status == 'Match Finished'"
-                  class="team-card text-center" @click="() => voteForTeam(match, 'home')">
+                  class="team-card text-center" :class="{ notDisabled: !(match.alreadyCheer || match.fixture.status == 'Match Finished') }"
+                  @click="() => voteForTeam(match, 'home')">
+                  <v-tooltip location="top" activator="parent">홈 팀을 선택하시겠습니까?</v-tooltip>
                   <v-img :src="match.fixture.homeTeam.logo" class="team-logo"></v-img>
                   <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.homeTeam.seasonLeagueTeamId }">
                     {{ match.fixture.homeTeam.nameKr }}
@@ -47,7 +49,9 @@
                 <span class="VS">VS</span>
                 <!-- 원정 팀 카드 -->
                 <v-card :disabled="match.alreadyCheer || match.fixture.status == 'Match Finished'"
-                  class="team-card text-center" @click="() => voteForTeam(match, 'away')">
+                  class="team-card text-center" :class="{ notDisabled: !(match.alreadyCheer || match.fixture.status == 'Match Finished') }"
+                  @click="() => voteForTeam(match, 'away')">
+                  <v-tooltip location="top" activator="parent">어웨이 팀을 선택하시겠습니까?</v-tooltip>
                   <v-img :src="match.fixture.awayTeam.logo" class="team-logo"></v-img>
                   <v-card-title :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.seasonLeagueTeamId }">
                     {{ match.fixture.awayTeam.nameKr }}
@@ -168,7 +172,7 @@ async function voteForTeam(match, team) {
       fixtureId: fixtureId
     }
 
-    console.log("data=", data);
+    // console.log("data=", data);
     postCheers(data).then(() => {
       // 강제 리렌더링을 위한 key 값 변경
       // carouselKey.value++; 
@@ -206,7 +210,7 @@ onMounted(() => {
         resetBarAnimation(currentMatch);
       }
       // 필요한 작업을 수행한 후, 더 이상 확인이 필요 없으므로 setInterval을 정리
-      console.log("clearInterval")
+      // console.log("clearInterval")
       clearInterval(checkCheerLength);
     }
   }, 1000); // 1초 간격으로 확인
@@ -217,11 +221,11 @@ watch(model, async (newVal) => {
   // 캐러셀 항목 변경 후 DOM 업데이트를 기다림
   // await nextTick(); 
   const currentMatch = cheer.value[newVal];
-  console.log("nextTick", newVal)
+  // console.log("nextTick", newVal)
   if (currentMatch && currentMatch.alreadyCheer) {
     // 막대 애니메이션 초기화
     // 여기서 막대의 높이를 0으로 설정한 후 실제 높이로 변경
-    console.log("reset")
+    // console.log("reset")
     resetBarAnimation(currentMatch);
   }
 }, { immediate: true, deep: true });
@@ -305,7 +309,7 @@ function resetBarAnimation(match) {
   width: 350px;
   cursor: pointer;
   /* 마우스 오버 시 커서 변경 */
-  margin: 0px 30px;
+  margin: 0px 40px;
   padding: 20px 20px 0px 20px;
 }
 
@@ -344,6 +348,43 @@ function resetBarAnimation(match) {
 
 .VS {
   font-size: 3rem;
+}
+
+.notDisabled {
+    position: relative;
+    background-color: #ffffff; /* 배경 색상 설정 */
+    padding: 20px; /* 패딩으로 내용물과 테두리 사이의 공간 생성 */
+    margin: 20px; /* 마진으로 요소 주변의 공간 생성 */
+}
+
+.notDisabled::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 4px solid transparent; /* 투명한 보더 설정 */
+    border-radius: 4px; /* 보더 둥글기 설정 */
+    animation: borderAnimation 3.5s infinite ease-in-out; /* 애니메이션 적용 */
+}
+
+@keyframes borderAnimation {
+    0% {
+        border-color: #ffe258;
+    }
+    25% {
+        border-color: #ff587b;
+    }
+    50% {
+        border-color: #d332c2;
+    }
+    75% {
+        border-color: #33d9b2;
+    }
+    100% {
+        border-color: #ffe258;
+    }
 }
 
 </style>
