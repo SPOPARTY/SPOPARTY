@@ -1,36 +1,37 @@
 <template>
     <v-dialog
         v-model="isModalVisible"
-        max-width="400px"
-        max-height="700px"
+        max-width="480px"
         @click:outside="closeModal"
         persistent
     >
-        <v-card class="outer-card">
-            <v-card-title class="text-center"><h3>투표 생성</h3> </v-card-title>
-            <v-row>
+        <v-card class="outer-card pb-4">
+            <!-- <v-card-title class="text-center"><h3>투표 생성</h3> </v-card-title> -->
+            <v-row class="mt-2">
                 <v-col>
                     <v-text-field
-                    class="vote-title"
+                    class="vote-title px-12"
                     v-model="voteTitle"
                     label="투표 제목"
+                    bg-color="#E5E8EE"
                     :rules="titleRules"
                     ></v-text-field>
                 </v-col>
             </v-row>
 
-            <v-card class="inner-card">
+            <v-card class="inner-card pt-4">
                 <v-row v-for="(option, index) in options" :key="index">
-                    <v-col cols="10">
+                    <v-col cols="9">
                         <v-text-field
                         class="option-text"
                         v-model="options[index]"
                         label="선택지 내용"
                         :rules="optionRules"
+                        bg-color="#E5E8EE"
                         ></v-text-field>
                     </v-col>
                     <v-col cols="2">
-                        <v-btn class="button" @click="removeOption(index)" icon>
+                        <v-btn background-color="white" class="button" @click="removeOption(index)" icon>
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
                     </v-col>
@@ -47,22 +48,24 @@
                 <v-col cols="4">
                     <v-btn class="button custom-penalty-btn" @click="showCustomPenalty = true"><b>커스텀 벌칙</b></v-btn>
                 </v-col>
-                <v-col cols="8">
+                <v-col cols="7">
                     <v-select
                     class="select-penalty"
+                    density="comfortable"
                     v-model="selectedPenalty"
                     :items="penalties"
                     label="벌칙 선택"
+                    bg-color="#E5E8EE"
                     ></v-select>
                 </v-col>
             </v-row>
 
-            <v-row >
-                <v-col>
-                    <v-btn class="button" @click="submitVote"><b>투표 생성</b></v-btn>
+            <v-row class="justify-center">
+                <v-col cols="4">
+                    <v-btn class="bt-button" @click="submitVote" color="primary">투표 생성</v-btn>
                 </v-col>
-                <v-col>
-                    <v-btn class="button" @click="closeModal"><b>목록으로</b></v-btn>
+                <v-col cols="3">
+                    <v-btn class="bt-button" @click="closeModal" color="red">뒤로</v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -81,12 +84,12 @@
                 v-model="customPenalty"
                 :rules="penaltyRules"
             ></v-text-field>
-            <v-row >
-                <v-col>
-                    <v-btn class="button" @click="setCustomPenalty(customPenalty)" color="#292646" variant="outlined"><b>커스텀 벌칙 생성</b></v-btn>
+            <v-row class="my-6 justify-center">
+                <v-col cols="5">
+                    <v-btn class="custom-button" @click="setCustomPenalty(customPenalty)" color="primary">커스텀 벌칙 생성</v-btn>
                 </v-col>
-                <v-col>
-                    <v-btn class="button" @click="showCustomPenalty = false" color="#292646" variant="outlined"><b>목록으로</b></v-btn>
+                <v-col cols="3">
+                    <v-btn class="custom-button" @click="showCustomPenalty = false" color="#292646" variant="outlined"><b>뒤로</b></v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -249,20 +252,22 @@ function closeModal() {
     margin-bottom : 10px;
 }
 
-.vote-title, .select-penalty{
-    margin-left:50px;
-    margin-right:50px;
-}
+// .vote-title, .select-penalty{
+//     margin-left:50px;
+//     margin-right:50px;
+// }
 
 .outer-card {
-    padding:0px;
+    border : 5px solid royalblue;
+    border-radius: 6px;
+
 }
 
 .inner-card {
     text-align: center;
     margin : 20px;
     height:300px;
-    border: 1px solid black;
+    border: 1px solid #D3AC2B;
     overflow-y:auto;
 }
 
@@ -278,14 +283,25 @@ function closeModal() {
     align-items: center;
     margin:auto;
     box-shadow: none !important;
-    background:#EFECEC;
+    background:#E4E3DD;
 }
-
+.custom-button {
+    background-color: #c3cad5;
+}
+.bt-button {
+    font-size: 1.1rem;
+    box-shadow: none !important;
+    // background:#CBD0D8;
+}
 .custom-penalty{
     padding:20px;
 }
 
 .custom-penalty-btn{
-    transform: translate(50px,10px);
+    height: 3rem;
+}
+.v-btn:hover {
+    transform: scale(1.15);
+    /* 호버 시 버튼 y축 방향으로 이동 */
 }
 </style>

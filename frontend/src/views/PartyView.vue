@@ -33,7 +33,7 @@
                                    <template v-slot:append>
                                         <v-slide-x-reverse-transition mode="out-in">
                                              <v-icon size="large" :key="`icon-${isTitleEditing}`"
-                                                  :color="isTitleEditing ? 'info' : 'success'"
+                                                  :color="isTitleEditing ? 'info' : 'success'" class="lock-icon"
                                                   :icon="isTitleEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
                                                   @click="[(isTitleEditing = !isTitleEditing), editPartyInfo(isTitleEditing)]"></v-icon>
                                         </v-slide-x-reverse-transition>
@@ -52,7 +52,7 @@
                               </v-btn>
                               <v-dialog v-model="dialog" max-width="600">
                                    <v-card>
-                                        <v-card-title>항목 선택</v-card-title>
+                                        <v-card-title>경기 선택</v-card-title>
                                         <v-card-text>
                                              <v-autocomplete v-model="matchModel" class="select-field"
                                                   :hint="!isMatchEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
@@ -64,7 +64,7 @@
                                                   <template v-slot:append>
                                                        <v-slide-x-reverse-transition mode="out-in">
                                                             <v-icon size="large" :key="`icon-${isMatchEditing}`"
-                                                                 :color="isMatchEditing ? 'info' : 'success'"
+                                                                 :color="isMatchEditing ? 'info' : 'success'" class="lock-icon"
                                                                  :icon="isMatchEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
                                                                  @click="[(isMatchEditing = !isMatchEditing), editPartyInfo(isMatchEditing)]"></v-icon>
                                                        </v-slide-x-reverse-transition>
@@ -79,7 +79,7 @@
                                                   <template v-slot:append>
                                                        <v-slide-x-reverse-transition mode="out-in">
                                                             <v-icon size="large" :key="`icon-${isUrlEditing}`"
-                                                                 :color="isUrlEditing ? 'info' : 'success'"
+                                                                 :color="isUrlEditing ? 'info' : 'success'" class="lock-icon"
                                                                  :icon="isUrlEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
                                                                  @click="[(isUrlEditing = !isUrlEditing), editPartyInfo(isUrlEditing)]"></v-icon>
                                                        </v-slide-x-reverse-transition>
@@ -1040,7 +1040,7 @@ const sendPenaltyToMe = (penalty) => {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .party-section {
      background-color: #08042B;
      color: white;
@@ -1257,5 +1257,29 @@ const sendPenaltyToMe = (penalty) => {
      margin: 20px;
      /* padding: 30px; */
 }
+.lock-icon:hover {
+     /* transform: scale(1.2); */
+     animation: shake 0.5s ease-in-out infinite;
+}
 
+@keyframes shake {
+  0% {
+    transform: rotate(-2deg) scale(1.15);
+  }
+  20% {
+    transform: rotate(3deg) scale(1.15);
+  }
+  40% {
+    transform: rotate(-4deg) scale(1.15);
+  }
+  60% {
+    transform: rotate(7deg) scale(1.15);
+  }
+  80% {
+    transform: rotate(-6deg) scale(1.15);
+  }
+  100% {
+    transform: rotate(4deg) scale(1.15);
+  }
+}
 </style> 

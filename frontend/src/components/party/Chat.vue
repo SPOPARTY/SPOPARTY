@@ -7,10 +7,10 @@
         <!-- <v-list-item v-for="(item, i) in chatsMock" :key="i" :value="item" color="primary"> -->
         <v-list-item v-for="(item, i) in chats" :key="i" :value="item" color="primary" justify="center" class="ma-0 pa-0">
           <v-row rows="12" class="ma-0 pa-0">
-            <v-col cols="3">
-              <v-img :src="item.teamLogo" height="48" width="48"></v-img>
+            <v-col cols="2">
+              <v-img :src="item.teamLogo" height="45" width="45"></v-img>
             </v-col>
-            <v-col cols="8">
+            <v-col cols="10">
               <v-list-item-content class="ma-0 pa-0">
             <v-list-item-title v-text="item.userName"></v-list-item-title>
             <v-list-item-subtitle v-text="item.message"></v-list-item-subtitle>
@@ -24,7 +24,7 @@
     <!-- 입력창 -->
     <v-form @submit.prevent class="chat-form">
       <v-text-field class="chat-input" v-model="myMessage.message" append-icon="mdi-send" variant="outlined"
-        clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="sendMessage" 
+        clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="sendMessage"
         @click:append="sendMessage" @click:clear="clearMessage"></v-text-field>
       <!-- <v-text-field class="chat-input" v-model="myMessage.message" append-icon="mdi-send" variant="outlined"
         clear-icon="mdi-close-circle" clearable label="Message" type="text" @keyup.enter="sendMessage"
