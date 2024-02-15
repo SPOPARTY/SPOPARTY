@@ -33,6 +33,7 @@ span {
     margin : 0 10px;
 }
 .foot-con {
+    min-width: 240px;
     margin: auto;
     // transform: rotate(360deg);
     transition: transform 0.5s ease;
@@ -46,22 +47,22 @@ span {
 
 @keyframes shake {
   0% {
-    transform: rotate(-1deg) scale(1.1);
+    transform: rotate(-2deg) scale(1.1);
   }
   20% {
-    transform: rotate(2deg) scale(1.1);
+    transform: rotate(3deg) scale(1.1);
   }
   40% {
     transform: rotate(-4deg) scale(1.1);
   }
   60% {
-    transform: rotate(6deg) scale(1.1);
+    transform: rotate(7deg) scale(1.1);
   }
   80% {
-    transform: rotate(-4deg) scale(1.1);
+    transform: rotate(-6deg) scale(1.1);
   }
   100% {
-    transform: rotate(1deg) scale(1.1);
+    transform: rotate(4deg) scale(1.1);
   }
 }
 </style>
