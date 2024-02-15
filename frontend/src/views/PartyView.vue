@@ -47,7 +47,7 @@
                               <!-- {{ dialog }} -->
                               <v-btn
                                    @click="[dialog = true, isTitleEditing = true, isMatchEditing = true, isUrlEditing = true]"
-                                   block variant="outlined" size="x-large">
+                                   block variant="outlined" size="x-large" class="select-match-btn">
                                    {{ matchName.find((item) => item.fixtureId === matchModel)?.text || '경기 선택' }}
                               </v-btn>
                               <v-dialog v-model="dialog" max-width="600">
@@ -231,7 +231,7 @@
                               <v-btn @click="toggleChat" color="yellow" class="chat-button">채팅창</v-btn>
                          </v-col>
                          <v-col cols="4">
-                              <v-btn color="error" @click="exitParty">파티 나가기</v-btn>
+                              <v-btn color="error" @click="exitParty" class="exit-btn">파티 나가기</v-btn>
                          </v-col>
                     </v-row>
                </v-col>
@@ -1040,7 +1040,7 @@ const sendPenaltyToMe = (penalty) => {
 
 </script>
 
-<style>
+<style scoped>
 .party-section {
      background-color: #08042B;
      color: white;
@@ -1138,13 +1138,23 @@ const sendPenaltyToMe = (penalty) => {
      /* 버튼을 가운데 정렬 */
      justify-content: space-between;
 }
-
+.v-btn:hover {
+     transform: scale(1.16);
+}
 .chat-button {
      background-color: yellow;
      /* width: 150px; */
      /* 채팅창 버튼의 너비 조정 */
+     &:hover {
+          transform: scale(1.08);
+     }
 }
-
+.select-match-btn:hover {
+     transform: scale(1.02);
+}
+.exit-btn:hover {
+     transform: scale(0.8);
+}
 .chat-window {
      border: 2px solid black;
      position: absolute;
@@ -1247,4 +1257,5 @@ const sendPenaltyToMe = (penalty) => {
      margin: 20px;
      /* padding: 30px; */
 }
+
 </style> 
