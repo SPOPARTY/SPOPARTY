@@ -347,7 +347,7 @@ Project
             <img src="img/황인규.png" width="140px" /> <br><br> 황인규 <br>(Front-End) </a> <br></td>
     </tr>
     <tr>
-        <td align="center">Infra</br>Openvidu api<br/>채팅 api<br/>
+        <td align="center">Infra<br/>Openvidu api<br/>채팅 api<br/>
         <td align="center">회원관리 api<br/>추억 아카이브, <br/>그룹 게시판 api<br/>알림 api</td>
         <td align="center">팀, 리그 경기정보 api<br/>배치 시스템</td>
         <td align="center">Infra<br/>그룹, 파티 api<br>투표 api<br/>
