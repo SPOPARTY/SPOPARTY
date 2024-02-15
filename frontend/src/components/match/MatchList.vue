@@ -155,7 +155,7 @@ function getMatchStatus(startTime) {
     } else if (diffHours < 0) {
         return "경기 종료";
     } else if (24 > diffHours && diffHours >= 0) {
-        console.log("경기 시작까지 남은 시간", startTime, diffHours);
+        // console.log("경기 시작까지 남은 시간", startTime, diffHours);
         // 경기까지 남은 시간을 hh:mm 분 남았다고 표시
         const diffMinutes = differenceInMinutes(start, now);
         if (diffMinutes < 0) {

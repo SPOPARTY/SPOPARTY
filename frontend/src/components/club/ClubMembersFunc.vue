@@ -45,9 +45,9 @@
         <v-card class="member-list">
             <v-card-title>그룹원 목록</v-card-title>
             <div v-for="(member, index) in clubMemberList" :key="index" class="member">
-                <v-card-text>
+                <v-card-text :class="{'host-name':member.role == 'host'}">
                     {{ member.memberNickName }}
-                    <v-icon v-if="member.role == 'host'" class="star">mdi-star</v-icon>
+                    <v-icon v-if="member.role == 'host'" class="star" color="red">mdi-star</v-icon>
                 </v-card-text>
             </div>
         </v-card>
@@ -396,5 +396,8 @@ div.text-to-copy {
         background-position: 0% 50%;
     }
 }
-
+.host-name {
+    color: #ff587b;
+    font-size: 1.25rem;
+}
 </style>
