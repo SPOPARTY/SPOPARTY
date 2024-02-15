@@ -8,7 +8,7 @@
                 <v-tab value="four">응원하기</v-tab>
                 <!-- 새로고침 버튼 -->
                 <v-spacer></v-spacer>
-                <v-btn :loading="loading" icon @click="refreshData" variant="text">
+                <v-btn :loading="loading" icon @click="refreshData" variant="text" class="loading-btn">
                     <v-tooltip activator="parent" location="top" theme="dark">새로고침</v-tooltip>
                     <v-icon>mdi-refresh</v-icon>
                 </v-btn>
@@ -94,4 +94,23 @@ h1 {
     /* 버튼 스타일 */
     margin-right: 10px;
 }
+@keyframes rotate {
+  from {
+    transform: rotate(0deg) scale(1.05);
+  }
+  to {
+    transform: rotate(360deg) scale(1.1);
+  }
+}
+
+.loading-btn {
+    /* 새로고침 버튼 스타일 */
+    color: #121212;
+
+    &:hover {
+        animation: rotate 0.5s linear infinite;
+    }
+}
+
+
 </style>

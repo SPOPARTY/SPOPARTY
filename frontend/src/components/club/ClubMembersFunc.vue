@@ -360,7 +360,11 @@ div.text-to-copy {
     background-size: 800% 800%;
     animation: Gradient 7s ease infinite;
     font-size: 1.25rem;
-    color:#F4F3EA
+    color:#F4F3EA;
+
+    &:hover {
+        transform: translateY(-0.6rem);
+    }
 }
 .create-party {
     // background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, red);
@@ -369,7 +373,11 @@ div.text-to-copy {
     background-size: 800% 800%;
     animation: Gradient 12s ease infinite;
     font-size: 1.25rem;
-    color:#F4F3EA
+    color:#F4F3EA;
+
+    &:hover {
+        transform: translateY(-0.6rem);
+    }
 }
 
 @keyframes Gradient {

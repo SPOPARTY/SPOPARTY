@@ -36,7 +36,8 @@
                                 </div>
                                 <!-- 여기까지 득표율에 따른 막대기 -->
                                 <v-card :disabled="match.alreadyCheer" class="team-card text-center"
-                                    @click="() => voteForTeam(match, 'home')">
+                                    @click="() => voteForTeam(match, 'home')" :class="{ notDisabled: !(match.alreadyCheer || match.fixture.status == 'Match Finished') }">
+                                    <v-tooltip location="top" activator="parent">홈 팀을 선택하시겠습니까?</v-tooltip>
                                     <v-img :src="match.fixture.homeTeam.logo" class="team-logo"></v-img>
                                     <v-card-title
                                         :class="{ chosen: match.cheerTeamId == match.fixture.homeTeam.seasonLeagueTeamId }">
@@ -49,7 +50,8 @@
                                 <span class="VS">VS</span>
                                 <!-- 원정 팀 카드 -->
                                 <v-card :disabled="match.alreadyCheer" class="team-card text-center"
-                                    @click="() => voteForTeam(match, 'away')">
+                                    @click="() => voteForTeam(match, 'away')" :class="{ notDisabled: !(match.alreadyCheer || match.fixture.status == 'Match Finished') }">
+                                    <v-tooltip location="top" activator="parent">어웨이 팀을 선택하시겠습니까?</v-tooltip>
                                     <v-img :src="match.fixture.awayTeam.logo" class="team-logo"></v-img>
                                     <v-card-title
                                         :class="{ chosen: match.cheerTeamId == match.fixture.awayTeam.seasonLeagueTeamId }">
@@ -352,6 +354,49 @@ function resetBarAnimation(match) {
     margin: 30px;
     font-size: 2rem;
     color: #292646;
+}
+.league-logo:hover{
+  transform: scale(1.15);
+}
+.team-card:hover {
+  transform: scale(1.09);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+.notDisabled {
+    position: relative;
+    background-color: #ffffff; /* 배경 색상 설정 */
+    padding: 20px; /* 패딩으로 내용물과 테두리 사이의 공간 생성 */
+    margin: 20px; /* 마진으로 요소 주변의 공간 생성 */
+}
+
+.notDisabled::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 4px solid transparent; /* 투명한 보더 설정 */
+    border-radius: 4px; /* 보더 둥글기 설정 */
+    animation: borderAnimation 3.5s infinite ease-in-out; /* 애니메이션 적용 */
+}
+
+@keyframes borderAnimation {
+    0% {
+        border-color: #ffe258;
+    }
+    25% {
+        border-color: #ff587b;
+    }
+    50% {
+        border-color: #d332c2;
+    }
+    75% {
+        border-color: #33d9b2;
+    }
+    100% {
+        border-color: #ffe258;
+    }
 }
 </style>
   
