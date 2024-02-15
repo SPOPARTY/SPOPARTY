@@ -334,25 +334,25 @@ Project
 <table>
     <tr>
         <td height="140px" align="center"> <a href="https://github.com/gogoadl">
-            <img src="" width="140px" /> <br><br> 👑 박현우 <br>(Back-End) </a> <br></td>
+            <img src="img/박현우.png" width="140px" /> <br><br> 👑 박현우 <br>(Back-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/jongbum97">
-            <img src="" width="140px" /> <br><br> 김종범 <br>(Back-End) </a> <br></td>
+            <img src="img/김종범.png" width="140px" /> <br><br> 김종범 <br>(Back-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/hrlee12">
-            <img src="" width="140px" /> <br><br> 이효리 <br>(Back-End) </a> <br></td>
+            <img src="img/이효리.jpeg" width="140px"  /> <br><br> 이효리 <br>(Back-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/eun-byeol">
-            <img src="" width="140px" /> <br><br> 조은별 <br>(Back-End) </a> <br></td>
+            <img src="img/조은별.png" width="140px" /> <br><br> 조은별 <br>(Back-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/jshEIT">
-            <img src="" width="140px" /> <br><br> 장승호 <br>(Front-End) </a> <br></td>
+            <img src="img/장승호.png" width="140px" /> <br><br> 장승호 <br>(Front-End) </a> <br></td>
         <td height="140px" align="center"> <a href="https://github.com/com2s">
-            <img src="" width="140px" /> <br><br> 황인규 <br>(Front-End) </a> <br></td>
+            <img src="img/황인규.png" width="140px" /> <br><br> 황인규 <br>(Front-End) </a> <br></td>
     </tr>
     <tr>
-        <td align="center">REST API<br/>
-        <td align="center">REST API</td>
-        <td align="center">REST API</td>
-        <td align="center">REST API<br/>
-        <td align="center">UI/UX<br/>
-        <td align="center">UI/UX<br/>
+        <td align="center">Infra</br>Openvidu api<br/>채팅 api<br/>
+        <td align="center">회원관리 api<br/>추억 아카이브, <br/>그룹 게시판 api<br/>알림 api</td>
+        <td align="center">팀, 리그 경기정보 api<br/>배치 시스템</td>
+        <td align="center">Infra<br/>그룹, 파티 api<br>투표 api<br/>
+        <td align="center">회원관리 UI<br/>추억 아카이브 UI <br/>그룹 게시판 UI<br/>
+        <td align="center">리그, 경기 정보 UI <br>파티 UI<br/>
     </tr>
 </table>
 
