@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        {{ props.clubId }}
+        <!-- {{ props.clubId }} -->
          <v-row style="padding:15px;">
               <v-col cols="12" md="8">
                    <ArchivePreview />
