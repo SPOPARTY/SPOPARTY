@@ -249,8 +249,8 @@ Project
 |                ERD                 |
 |:----------------------------------:|
 | ![ERD_Total](img/SPOPARTY_ERD.png) |
-|  ![ERD_1](img/SPOPARTY_ERD_1.png)  |
-| ![ERD_2](img/SPOPARTY_ERD_2.png )  |
+|  ![ERD_1](img/SPOPARTY_ERD_1.PNG)  |
+| ![ERD_2](img/SPOPARTY_ERD_2.PNG )  |
 
 <br />
 
