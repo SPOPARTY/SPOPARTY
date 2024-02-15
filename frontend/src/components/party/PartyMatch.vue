@@ -78,16 +78,15 @@ h1 {
     padding : 10px;
 }
 
-.tabs {
-    /* 탭 스타일 */
-    
-}
-
 .v-tab {
     /* 개별 탭 스타일 */
     width: 20%;
     text-transform: none;
     font-size: 1.1em;
+    &:hover {
+        color: mediumblue;
+        font-size: larger;
+    }
 }
 
 .v-btn {
