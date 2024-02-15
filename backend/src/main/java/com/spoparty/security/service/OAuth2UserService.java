@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.spoparty.api.football.repository.TeamRepository;
 import com.spoparty.api.member.entity.Member;
 import com.spoparty.api.member.repository.MemberRepository;
 import com.spoparty.security.model.PrincipalDetails;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
 	private final MemberRepository memberRepository;
+	private final TeamRepository teamRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
@@ -46,6 +48,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 			member.setEmail(email);
 			member.setLoginPwd(bCryptPasswordEncoder.encode(id));
 			member.setProvider(provider);
+			member.setTeam(teamRepository.findById(157L).orElse(null));
 			member = memberRepository.save(member);
 			log.info("OAuth 회원가입 완료 : {}", member);
 		} else {
