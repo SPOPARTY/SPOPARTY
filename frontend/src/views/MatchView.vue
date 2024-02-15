@@ -18,7 +18,7 @@
                     <v-btn @click="resetDate" class="mx-2" 
                     :style="{ fontSize: '1.2rem', minWidth: '100px', minHeight: '40px'}">오늘</v-btn>
                     <v-menu v-model="showDatePicker" :close-on-content-click="false" :nudge-bottom="10" offset-y
-                         attach=".date-picker-button">
+                         attach=".date-picker-button" z-index=100>
                          <template v-slot:activator="{ on, attrs }">
                               <v-btn class="date-picker-button mx-2" v-bind="attrs" v-on="on" @mousedown="showDatePicker = true" 
                               :style="{ fontSize: '1.2rem', minWidth: '100px', minHeight: '40px'}">날짜 선택</v-btn>
@@ -142,6 +142,9 @@ function datePickerSelected() {
      /* 버튼에 마우스를 올렸을 때 크기를 1.1배로 확대 */
      transform: translateY(-0.6rem);
      /* 호버 시 버튼 y축 방향으로 이동 */
+}
+.v-btn {
+     z-index:100;
 }
 .chevron:hover {
      transform: scale(1.15);
