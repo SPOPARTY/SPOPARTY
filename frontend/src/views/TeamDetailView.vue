@@ -25,8 +25,8 @@
                         <v-icon x-large>mdi-heart</v-icon>
                     </v-btn>
                     <v-btn v-bind="props" v-else :color="isHovering ? 'red' : 'grey'"
-                        @click="changeFollowing(team)" x-large>
-                        <v-icon x-large>mdi-heart-outline</v-icon>
+                        @click="changeFollowing(team)" size="x-large" class="follow-btn">
+                        <v-icon size="x-large">mdi-heart-outline</v-icon>
                     </v-btn>
                     </template>
                 </v-hover>
@@ -183,7 +183,7 @@ watch(() => footballStore.teamDetail, (newValue) => {
 }
 
 .league-logo {
-    cursor: pointer;
+    /* cursor: pointer; */
     background-color: white;
 }
 
@@ -196,5 +196,8 @@ h3 {
 
 .v-simple-table {
     margin-top: 20px;
+}
+.follow-btn:hover {
+    transform: scale(1.1);
 }
 </style>

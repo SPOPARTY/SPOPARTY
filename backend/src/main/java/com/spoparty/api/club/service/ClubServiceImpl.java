@@ -32,14 +32,6 @@ public class ClubServiceImpl implements ClubService {
 	public List<ClubResponseDTO> findRecentClubs(PrincipalDetails principalDetails) {
 		Member member = validatePrincipalDetails(principalDetails);
 		return clubRepository.findClubsAndClubMemberCountOrderByTime(member.getId());
-		// List<ClubMember> clubMembers = clubMemberRepository.findAllByMember(member);
-		// return clubMembers.stream()
-		// 	.map(clubMember -> {
-		// 		Club club = clubMember.getClub();
-		// 		return new ClubResponseDTO(club, clubMemberRepository.findAllByClub(club).size());
-		// 	})
-		// 	.sorted(Comparator.comparing(ClubResponseDTO::getUpdatedTime).reversed())
-		// 	.collect(Collectors.toList());
 	}
 
 	@Transactional

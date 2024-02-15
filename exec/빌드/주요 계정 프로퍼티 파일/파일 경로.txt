@@ -1,0 +1,6 @@
+1. backend 폴더의 yml파일 위치
+	backend/src/main/resources/application-private.yml
+
+
+2. batch 폴더의 yml파일 위치
+	batch/src/main/resources/application-private.yml

@@ -9,7 +9,7 @@
         <v-card>
             <div class="title-container">
                 <div class="flex-item title">
-                    <v-card-title class="text-center">그룹원 기능</v-card-title>
+                    <v-card-title class="text-center"><h3>그룹원 기능</h3></v-card-title>
                 </div>
                 <div class="flex-item icon">
                     <v-btn :ripple="false" @click="closeModal" class="no-background-hover">
@@ -18,7 +18,7 @@
                 </div>
             </div>
 
-            <div class="feature-container" @click="showQuitClub">
+            <div class="feature-container" @click="showQuitClub" :hover="{hover:true}">
                 <v-img class="img" src="/exit_club.png" alt="그룹 나가기"/>
                 <v-card-text class="feature-text">그룹 나가기</v-card-text>
             </div>
@@ -86,6 +86,11 @@ onMounted(()=> {
   }
 }
 
+.v-card-title{
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
 .title-container {
     display: flex;
     flex-direction: row; /* 가로 방향으로 요소들을 배치 */
@@ -107,14 +112,19 @@ onMounted(()=> {
     flex-direction : row;
     margin: 8px 4px;
     cursor: pointer;
+    &:hover{
+        background-color:#FDFFAB;
+    }
 }
 
 .feature-text {
+    margin-top:10px;
     margin-left : 12px;
     transform: translateY(-12px); // 10px위로 올리기
 }
 
 .img{
+    margin-top:15px;
     width : 40px;
     height: 30px;
 }

@@ -25,14 +25,14 @@
               ></v-text-field>
 
               <v-row>
-                <v-col cols="12" md="4">
-                  <v-btn color="#333D51" type="submit" block @click="doLogin">로그인</v-btn>
+                <v-col cols="12">
+                  <v-btn color="primary" class="py-5" type="submit" block @click="doLogin">로그인</v-btn>
                 </v-col>
-                <v-col cols="12" md="4">
-                  <v-btn text color="#333D51" @click="handleSignup" block>회원가입</v-btn>
-                </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="6">
                   <v-btn text color="#333D51" @click="showFindPwdModal" block>비밀번호 찾기</v-btn>
+                </v-col>
+                <v-col cols="6">
+                  <v-btn text color="#333D51" @click="handleSignup" block>회원가입</v-btn>
                 </v-col>
               </v-row>
 
@@ -121,11 +121,11 @@ function showKakaoLoginModal() {
 }
 
 h2 {
-  color: #D3AC2B;
+  color : #292646;
 }
 
 .v-card{
-  background-color: #292646;
+  background-color: white;
   margin-top:100px;
 }
 
@@ -141,9 +141,10 @@ h2 {
 }
 
 .kakao{
-  background-color: yellow; 
+  background-color: rgb(240, 240, 0); 
   width:200px; 
   height:50px;
+  font-weight: bold;
   align-items: center;
 }
 </style>

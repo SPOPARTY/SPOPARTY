@@ -10,12 +10,12 @@ function requestRecentClubs(success,fail) {
 }
 
 // 그룹 생성
-function requestCreateClubs(data,success,fail) {
+async function requestCreateClubs(data,success,fail) {
     local.post("/clubs",data).then(success).catch(fail);
 }
 
 // 그룹 조회
-function requestClubInfo(clubId,success,fail) {
+async function requestClubInfo(clubId,success,fail) {
     local.get(`${API_URL}/${clubId}`).then(success).catch(fail);
 }
 
@@ -35,7 +35,7 @@ function requestClubInviteLink(clubId, success, fail) {
 }
 
 // 그룹원 목록 조회(닉네임, 방장)
-function requestClubMemberList(clubId, success, fail) {
+async function requestClubMemberList(clubId, success, fail) {
     local.get(`${API_URL}/${clubId}/clubmembers`).then(success).catch(fail);
 }
 

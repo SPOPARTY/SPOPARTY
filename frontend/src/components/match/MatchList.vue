@@ -9,7 +9,8 @@
                     <v-card-subtitle>{{ match.league.nameKr }} <v-icon>mdi-slash-forward</v-icon> {{ match.round
                     }}</v-card-subtitle>
                     <span>
-                        <v-img :src="match.league.logo" class="league-logo"></v-img>
+                        <v-img :src="match.league.logo" class="league-logo" 
+                        @click="toLDP(match.league.leagueId)"></v-img>
                         {{ setStartTime(match.startTime) }}
                         <v-icon>mdi-circle-small</v-icon>
                         {{ getMatchStatus(match.startTime) }}</span>
@@ -35,7 +36,7 @@
                         </v-row>
                     </v-card-title>
                     <v-card-text>
-                        <!-- checkStatus : 인풋이 not start이면 false, 그 외엔 true -->
+                        <!-- checkStatus : 인풋이 not started이면 false, 그 외엔 true -->
                         <div v-if="checkStatus(match.status)" class="score">
                             <p class="score-title">스코어</p>
                             {{ match.homeTeamGoal }} : {{ match.awayTeamGoal }}
@@ -104,6 +105,11 @@ const toTDP = (seasonLeagueTeamId) => {
     router.push(`/team/${seasonLeagueTeamId}`);
 };
 
+const toLDP = (leagueId) => {
+  // console.log("leagueId=", leagueId)
+  router.push(`/league/${leagueId}`);
+};
+
 // 예시 데이터 (특정 날자의 경기 데이터)
 // matches
 // {
@@ -149,12 +155,19 @@ function getMatchStatus(startTime) {
     } else if (diffHours < 0) {
         return "경기 종료";
     } else if (24 > diffHours && diffHours >= 0) {
+        console.log("경기 시작까지 남은 시간", startTime, diffHours);
         // 경기까지 남은 시간을 hh:mm 분 남았다고 표시
         const diffMinutes = differenceInMinutes(start, now);
+        if (diffMinutes < 0) {
+            return "진행 중";
+        }
         // 시간과 분으로 변환
         const hoursLeft = Math.floor(diffMinutes / 60);
+        if (hoursLeft <= 0) {
+            return `곧 시작! ${diffMinutes+1}분 남았습니다`;
+        }
         const minutesLeft = diffMinutes % 60;
-        return `${hoursLeft}시간 ${minutesLeft}분 남았습니다`;
+        return `${hoursLeft}시간 ${minutesLeft+1}분 남았습니다`;
     } else if (diffHours <= 0 && diffHours > -2) {
         // 진행 중인 경우 현재 스코어 표시 필요
         return "진행 중";
@@ -206,6 +219,7 @@ function checkStatus(status) {
     height: 80px;
     min-width: 50px;
     margin: 10px 0px 10px 0px;
+    cursor: pointer;
 }
 
 .team-logo {
@@ -255,5 +269,13 @@ function checkStatus(status) {
     font-size: 1.2rem;
     font-weight: bold;
     color: #292646;
-}</style>
+}
+.team-logo:hover, .team-name:hover, .league-logo:hover {
+    transform: scale(1.15);
+}
+.card-match:hover {
+    transform: scale(1.05);
+    border : 4px solid #D3AC2B;
+}
+</style>
   

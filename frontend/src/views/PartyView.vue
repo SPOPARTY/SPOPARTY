@@ -33,7 +33,7 @@
                                    <template v-slot:append>
                                         <v-slide-x-reverse-transition mode="out-in">
                                              <v-icon size="large" :key="`icon-${isTitleEditing}`"
-                                                  :color="isTitleEditing ? 'info' : 'success'"
+                                                  :color="isTitleEditing ? 'info' : 'success'" class="lock-icon"
                                                   :icon="isTitleEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
                                                   @click="[(isTitleEditing = !isTitleEditing), editPartyInfo(isTitleEditing)]"></v-icon>
                                         </v-slide-x-reverse-transition>
@@ -47,12 +47,12 @@
                               <!-- {{ dialog }} -->
                               <v-btn
                                    @click="[dialog = true, isTitleEditing = true, isMatchEditing = true, isUrlEditing = true]"
-                                   block variant="outlined" size="x-large">
+                                   block variant="outlined" size="x-large" class="select-match-btn">
                                    {{ matchName.find((item) => item.fixtureId === matchModel)?.text || '경기 선택' }}
                               </v-btn>
                               <v-dialog v-model="dialog" max-width="600">
                                    <v-card>
-                                        <v-card-title>항목 선택</v-card-title>
+                                        <v-card-title>경기 선택</v-card-title>
                                         <v-card-text>
                                              <v-autocomplete v-model="matchModel" class="select-field"
                                                   :hint="!isMatchEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
@@ -64,7 +64,7 @@
                                                   <template v-slot:append>
                                                        <v-slide-x-reverse-transition mode="out-in">
                                                             <v-icon size="large" :key="`icon-${isMatchEditing}`"
-                                                                 :color="isMatchEditing ? 'info' : 'success'"
+                                                                 :color="isMatchEditing ? 'info' : 'success'" class="lock-icon"
                                                                  :icon="isMatchEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
                                                                  @click="[(isMatchEditing = !isMatchEditing), editPartyInfo(isMatchEditing)]"></v-icon>
                                                        </v-slide-x-reverse-transition>
@@ -79,7 +79,7 @@
                                                   <template v-slot:append>
                                                        <v-slide-x-reverse-transition mode="out-in">
                                                             <v-icon size="large" :key="`icon-${isUrlEditing}`"
-                                                                 :color="isUrlEditing ? 'info' : 'success'"
+                                                                 :color="isUrlEditing ? 'info' : 'success'" class="lock-icon"
                                                                  :icon="isUrlEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
                                                                  @click="[(isUrlEditing = !isUrlEditing), editPartyInfo(isUrlEditing)]"></v-icon>
                                                        </v-slide-x-reverse-transition>
@@ -135,7 +135,7 @@
                               <UserVideo :stream-manager="sub" />
                          </v-col>
                          <!-- 파티 초대 -->
-                         <v-col cols="6" class="cam-video" v-if="partyMembers.length < maxMembers" @click="inviteToParty"
+                         <v-col cols="6" class="cam-video" v-if="partyMemberList?.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
                               <v-img src="/maruche.jpg" class="invite-img pt-2" contain></v-img>
                               <span>친구를 초대해 보세요!</span>
@@ -231,7 +231,7 @@
                               <v-btn @click="toggleChat" color="yellow" class="chat-button">채팅창</v-btn>
                          </v-col>
                          <v-col cols="4">
-                              <v-btn color="error" @click="exitParty">파티 나가기</v-btn>
+                              <v-btn color="error" @click="exitParty" class="exit-btn">파티 나가기</v-btn>
                          </v-col>
                     </v-row>
                </v-col>
@@ -290,12 +290,12 @@ const showVoteContent = ref(false)
 const voteContent = ref({})
 
 watch(() => voteStore.currentFinishedVote, (newVal) => {
-     const targetUser = ""
+     let targetUser = ""
+     const penalty = newVal.penalty.content;
      subscribers.value.forEach((subscriber) => {
           const data = subscriber.stream.connection.data
           const memberId = data.substr(5, data.length)
           // 페널티 타입 확인
-          const penalty = newVal.penalty.content;
           console.log(newVal.penaltyUsers)
           
           newVal.penaltyUsers.forEach(user => {
@@ -305,13 +305,21 @@ watch(() => voteStore.currentFinishedVote, (newVal) => {
                     sendPenalty(subscriber, penalty, penalty)
                }
           })
-          // memberId와 비교하여 페널티 대상자 선택 및 적용
      })
+
+     // 내가 페널티 대상자인 경우
+     newVal.penaltyUsers.forEach(user => {
+          if (user.userId === localStorage.getItem("id")) {
+               targetUser += user.name + ', '
+               sendPenaltyToMe(penalty)
+          }
+     })
+     
      if (targetUser == "") {
           voteContent.value.penalty = "아무도 페널티를 받지 않았어요!!"
      } else {
           const target = targetUser.substr(0, targetUser.length-2)
-          voteContent.value.penalty = target + " 페널티를 받아라!!"
+          voteContent.value.penalty = target
      }
      doVoteContent()
 })
@@ -344,7 +352,7 @@ const showVote = ref(false);
 
 let isInit = false
 watch(() => partyStore.partyMemberList, (newPartyMembers) => {
-     // console.log("newPartyMembers", newPartyMembers);
+     console.log("newPartyMembers", newPartyMembers);
      partyMemberList.value = newPartyMembers;
      partyMemberList.value.map((member) => {
           if (member.memberId == localStorage.getItem("id")) {
@@ -393,20 +401,25 @@ if (answer) {
      window.open(url, '_blank');
 }
 
+const myMemberId = localStorage.getItem("id");
 const delPartyMem = () => {
      // console.log("delPartyMem", partyMemberList.value);
-     myId.value = partyStore.partyMemberList.find((member) => member.userId === partyStore.myUserId);
+     myId.value = partyStore.partyMemberList.find((member) => member.memberId == myMemberId);
      if (myId.value !== undefined) {
-          // console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
+          console.warn("delPartyMem", clubId, partyId, myId.value.participantId);
           deletePartyMember(clubId, partyId, myId.value.participantId);
      }
 }
 
 onUnmounted(() => {
+     partyStore.deletePartyMember(clubId, partyId, partyStore.myParticipantId);
+     console.log("#######", partyStore.partyMemberList);
+     console.warn(myMemberId)
      myId.value = partyStore.partyMemberList.find(
-          (member) => member.userId === partyStore.myUserId
-     ).participantId;
-     deletePartyMember(clubId, partyId, myId.value);
+          (member) => member.memberId == myMemberId
+     );
+     console.log("##########", myId.value);
+     deletePartyMember(clubId, partyId, myId.value.participantId);
 })
 
 const clickSound = () => {
@@ -467,13 +480,13 @@ const fixtureId = ref(null);
 // 파티 최대 인원 수
 const maxMembers = 6
 
-const partyMembers = ref([
-     { memberId: 1, name: "실버스타" },
-     { memberId: 2, name: "제라드" },
-     { memberId: 3, name: "벨타이거" },
-     { memberId: 4, name: "램파드" },
-     { memberId: 5, name: "별명별명" },
-])
+// const partyMembers = ref([
+//      { memberId: 1, name: "실버스타" },
+//      { memberId: 2, name: "제라드" },
+//      { memberId: 3, name: "벨타이거" },
+//      { memberId: 4, name: "램파드" },
+//      { memberId: 5, name: "별명별명" },
+// ])
 
 // 파티 초대
 const inviteToParty = () => {
@@ -511,7 +524,7 @@ function editPartyInfo(isAsk) {
                type: 'titleChanged'
           })
           .then(() => {
-               console.log('Message successfully sent');
+               // console.log('Message successfully sent');
           })
           .catch(error => {
                console.error(error);
@@ -523,7 +536,7 @@ function editPartyInfo(isAsk) {
                type: 'matchChanged'
           })
           .then(() => {
-               console.log('Message successfully sent');
+               // console.log('Message successfully sent');
           })
           .catch(error => {
                console.error(error);
@@ -715,13 +728,13 @@ const videoState = ref(true)
 const audioState = ref(true)
 
 const toggleVideoState = () => {
-     console.log("call toggle video state")
+     // console.log("call toggle video state")
      videoState.value = !videoState.value
      publisher.value.publishVideo(videoState.value);
 }
 
 const toggleAudioState = () => {
-     console.log("call toggle audio state")
+     // console.log("call toggle audio state")
      audioState.value = !audioState.value
      publisher.value.publishAudio(audioState.value)
 }
@@ -743,13 +756,13 @@ const joinSession = (openviduToken, nickName) => {
           session.value.on('streamCreated', ({ stream }) => {
                const subscriber = session.value.subscribe(stream)
                subscribers.value.push(subscriber)
-               console.log("subscriber added")
+               // console.log("subscriber added")
                // console.log(subscribers.value)
           })
 
           // On every Stream destroyed...
           session.value.on('streamDestroyed', ({ stream }) => {
-               console.log("subscriber removed")
+               // console.log("subscriber removed")
                const index = subscribers.value.indexOf(stream.streamManager, 0)
                if (index >= 0) {
                     subscribers.value.splice(index, 1)
@@ -848,11 +861,11 @@ let min, sec
 
 const toggleRecording = () => {
      if (!recordingState.value) {
-          console.log("start recording call")
+          // console.log("start recording call")
           startRecording()
      }
      else {
-          console.log("stop recording call")
+          // console.log("stop recording call")
           stopRecording()
      }
      recordingState.value = !recordingState.value
@@ -889,7 +902,7 @@ const startRecording = () => {
                (error) => {
                     console.error(error)
                     if (error.response.status === httpStatusCode.NOTFOUND) {
-                         // console.error(error)
+                         console.error(error)
                     }
                }
           )
@@ -899,7 +912,7 @@ const startRecording = () => {
 const stopRecording = () => {
      if (clubId !== undefined && recordingSession.value.id !== undefined) {
           recordingLoading.value = true
-          console.log("stop recording")
+          // console.log("stop recording")
           postStopRecording(
                clubId,
                {
@@ -973,7 +986,7 @@ const doVoteContent = () => {
           const id = setInterval(() => {
           showVoteContent.value = false
           clearInterval(id)
-          console.log("toggle state")
+          // console.log("toggle state")
      }, 2000)
      }
 
@@ -986,6 +999,7 @@ const sendPenalty = (subscriber, penalty) => {
           voteContent.value.description = "5초간 음소거 됩니다!!!"
           const id = setInterval(() => {
                subscriber.subscribeToAudio(true)
+               clearInterval(id)
           }, 5000)
      } else if (penalty == "음성변조") {
           voteContent.value.description = "5초간 음성변조 됩니다!!!"
@@ -1001,9 +1015,32 @@ const sendPenalty = (subscriber, penalty) => {
      }
 }
 
+const sendPenaltyToMe = (penalty) => {
+     voteContent.value.content = penalty
+     if (penalty == "음소거") {
+          publisher.value.publishAudio(false)
+          voteContent.value.description = "당신은 5초간 음소거 됩니다!!!"
+          const id = setInterval(() => {
+               publisher.value.publishAudio(true)
+               clearInterval(id)
+          }, 5000)
+     } else if (penalty == "음성변조") {
+          voteContent.value.description = "당신은 5초간 음성변조 됩니다!!!"
+     } else if (penalty == "흑백화면") {
+          publisher.value.publishVideo(false)
+          voteContent.value.description = "당신은 5초간 화면이 보이지 않습니다!!!"
+          const id = setInterval(() => {
+               publisher.value.publishVideo(true)
+               clearInterval(id)
+          }, 5000)
+     } else {
+          voteContent.value.description = `당신은 ${penalty}에 당첨되었어요!!!`
+     }
+}
+
 </script>
 
-<style>
+<style lang="scss" scoped>
 .party-section {
      background-color: #08042B;
      color: white;
@@ -1101,13 +1138,23 @@ const sendPenalty = (subscriber, penalty) => {
      /* 버튼을 가운데 정렬 */
      justify-content: space-between;
 }
-
+.v-btn:hover {
+     transform: scale(1.16);
+}
 .chat-button {
      background-color: yellow;
      /* width: 150px; */
      /* 채팅창 버튼의 너비 조정 */
+     &:hover {
+          transform: scale(1.08);
+     }
 }
-
+.select-match-btn:hover {
+     transform: scale(1.02);
+}
+.exit-btn:hover {
+     transform: scale(0.8);
+}
 .chat-window {
      border: 2px solid black;
      position: absolute;
@@ -1209,5 +1256,30 @@ const sendPenalty = (subscriber, penalty) => {
      object-fit: cover;
      margin: 20px;
      /* padding: 30px; */
+}
+.lock-icon:hover {
+     /* transform: scale(1.2); */
+     animation: shake 0.5s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(-2deg) scale(1.15);
+  }
+  20% {
+    transform: rotate(3deg) scale(1.15);
+  }
+  40% {
+    transform: rotate(-4deg) scale(1.15);
+  }
+  60% {
+    transform: rotate(7deg) scale(1.15);
+  }
+  80% {
+    transform: rotate(-6deg) scale(1.15);
+  }
+  100% {
+    transform: rotate(4deg) scale(1.15);
+  }
 }
 </style> 

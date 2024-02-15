@@ -16,7 +16,7 @@
             <p id="timeLeft" v-else class="pb-6">{{ calculateTimeLeft(match.startTime) }}</p>
             <v-row class="league-round-details">
               <v-col cols="auto" align="center" class="pa-1 mx-4">
-                <v-img :src="match.league.logo" class="league-logo"></v-img>
+                <v-img :src="match.league.logo" class="league-logo" @click="toLDP(match.league.leagueId)"></v-img>
               </v-col>
               <v-col cols="auto">
                 <span>{{ match.round }}</span>
@@ -144,6 +144,10 @@ const toTDP = (teamId) => {
   router.push(`/team/${teamId}`);
 };
 
+const toLDP = (leagueId) => {
+  router.push(`/league/${leagueId}`);
+};
+
 // 예정 경기 예시 데이터
 // matches
 // {
@@ -190,7 +194,7 @@ const toTDP = (teamId) => {
   /* padding: 20px; */
   color: #292646;
   background-color: #F5F5F5;
-  border: 1px solid #292646;
+  /* border: 1px solid #292646; */
   width: 250px;
   border-radius: 8px;
 }
@@ -199,10 +203,15 @@ const toTDP = (teamId) => {
   border-radius: 12px;
   border: 4px solid plum;
 }
+.match-card:hover {
+  border: 4px solid #D3AC2B;
+  transform: scale(1.05);
+}
 
 .league-logo {
   width: 80px;
   height: 80px;
+  cursor : pointer;
 }
 
 .team-logo {
@@ -238,5 +247,8 @@ const toTDP = (teamId) => {
   background-image: url('/soccer-field-2.jpg');
   background-size: cover;
   border-radius: 12px;
+}
+.team-logo:hover, .team-name:hover, .league-logo:hover {
+  transform: scale(1.15);
 }
 </style>

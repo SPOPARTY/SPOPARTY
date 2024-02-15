@@ -13,7 +13,8 @@
                   <v-icon>mdi-circle-small</v-icon>
                   {{ match.fixture.league.nameKr }}
                   <v-icon>mdi-circle-small</v-icon>
-                  <v-img :src="match.fixture.league.logo" class="league-logo"></v-img>
+                  <v-img :src="match.fixture.league.logo" class="league-logo"
+                  @click="toLDP(match.fixture.league.leagueId)"></v-img>
                 </p>
               </div>
               <!-- 투표 상태 메시지 -->
@@ -82,9 +83,11 @@
 
 <script setup>
 import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue';
+import { useRouter } from 'vue-router';
 import { useFootballStore } from '@/stores/football/football';
 import { set } from 'date-fns';
 
+const router = useRouter();
 const footballStore = useFootballStore();
 
 const { getCheersData, postCheersData } = footballStore;
@@ -114,6 +117,11 @@ function formatDate(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleString();
 }
+
+const toLDP = (leagueId) => {
+  // console.log("leagueId=", leagueId)
+  router.push(`/league/${leagueId}`);
+};
 
 // 예시 응원 데이터
 // cheer
@@ -312,6 +320,10 @@ function resetBarAnimation(match) {
   margin: 0px 40px;
   padding: 20px 20px 0px 20px;
 }
+.team-card:hover {
+  transform: scale(1.09);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
 
 .team-logo {
   width: 100%;
@@ -344,6 +356,10 @@ function resetBarAnimation(match) {
   width: 14vw;
   /* 로고 크기 조정 */
   height: 14vh;
+  cursor:pointer;
+}
+.league-logo:hover{
+  transform: scale(1.15);
 }
 
 .VS {

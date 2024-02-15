@@ -12,7 +12,7 @@
       <v-list-item v-for="(club, index) in clubs"  :key="index" class="mb-1">
         <div @click="goToOneClubPage(club.clubId)" class="d-flex justify-start align-center club-item"
           style="text-transform: none; padding: 16px; cursor: pointer;">
-          <v-list-item-title class="align-start">{{ club.name }}<br>{{ 'ID: ' + club.clubId }}</v-list-item-title>
+          <v-list-item-title class="align-start">{{ club.name }}<br>{{ '클럽장 : ' + club.hostName }}</v-list-item-title>
         </div>
       </v-list-item>
 
@@ -202,7 +202,8 @@ function goToOneClubPage(clubId) {
   // window.open(url, '_blank');
   // console.log("클럽 페이지로 이동")
   drawer.value = false;
-  router.push({ name: 'ClubMain', params: { clubId } });
+  // router.push({ name: 'ClubMain', params: { clubId } });
+  window.location.href = `/club/${clubId}`;
 }
 
 
