@@ -282,10 +282,14 @@ function resetBarAnimation(match) {
   transform-origin: bottom;
   /* 바의 변형 기준점을 아래쪽으로 설정 */
   animation: heightChange 1s ease;
+  /* animation: transform 1s ease; */
   /* 애니메이션 적용 */
   bottom: 0;
   display: block;
   /* 또는 필요에 따라 inline-block */
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 .barWin {
@@ -319,10 +323,23 @@ function resetBarAnimation(match) {
   /* 마우스 오버 시 커서 변경 */
   margin: 0px 40px;
   padding: 20px 20px 0px 20px;
+  transition: box-shadow 0.3s ease;
 }
 .team-card:hover {
   transform: scale(1.09);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  animation: shadowAnimation 3.5s infinite ease-in-out;
+  background-color: #ffffff;
+}
+@keyframes shadowAnimation {
+  0% {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+  }
+  50% {
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+  }
+  100% {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+  }
 }
 
 .team-logo {
