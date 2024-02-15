@@ -5,7 +5,8 @@
         <p v-if="fixtureId == null" class="alert-msg">경기를 선택해주세요.</p>
         <v-row v-else>
             <v-col cols="6">
-                <p class="team-title text-center">Home {{ homeName }}</p>
+                <p class="team-title text-center">
+                    Home <v-icon color="red">mdi-circle-small</v-icon> {{ homeName }}</p>
                 <v-card v-for="match in homeHistory" class="pa-3 mb-6 match-card" :key="match.id" 
                 variant="outlined">
                     <!-- 경기 내역 표시 -->
@@ -43,7 +44,8 @@
                 </v-card>
             </v-col>
             <v-col cols="6">
-                <p class="team-title text-center">Away {{ awayName }}</p>
+                <p class="team-title text-center">
+                    Away <v-icon color="red">mdi-circle-small</v-icon> {{ awayName }}</p>
                 <v-card v-for="match in awayHistory" class="pa-3 mb-6 match-card" :key="match.id" 
                 variant="outlined">
                     <!-- 경기 내역 표시 -->
@@ -176,7 +178,7 @@ const toTDP = (teamId) => {
 .match-card {
   border-radius: 12px;
   color : #333D51;
-  background-color: #CBD0D8;
+  background-color: #e4e8ee;
   min-height: 280px;
 }
 
@@ -233,8 +235,16 @@ const toTDP = (teamId) => {
 }
 .table-title {
   height: 25px;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
   margin: 10px;
+}
+.league-logo:hover, .team-logo:hover, .team-name:hover {
+  transform: scale(1.15);
+}
+
+.match-card:hover {
+  transform: translateY(-0.6rem);
+  border : 4px solid #D3AC2B;
 }
 </style>

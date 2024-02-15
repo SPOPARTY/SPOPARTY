@@ -322,7 +322,7 @@ function resetBarAnimation(match) {
 }
 .team-card:hover {
   transform: scale(1.09);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .team-logo {

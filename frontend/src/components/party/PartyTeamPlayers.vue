@@ -5,13 +5,15 @@
         <p v-if="fixtureId==null" class="alert-msg">경기를 선택해주세요.</p>
         <v-row v-if="fixtureId!=null">
             <v-col cols="6">
-                <p class="team-name text-center">Home {{ teamIds['homeName'] }}</p>
+                <p class="team-name text-center">
+                    Home <v-icon color="red">mdi-circle-small</v-icon> {{ teamIds['homeName'] }}</p>
                 <!-- {{ teamIds.home }} -->
                 <TeamInfoMembers :key="'home-' + teamIds.home" :team-id="teamIds.home" />
                 <!-- <TeamInfoMembers v-else :team-id="teamIds.home" /> -->
             </v-col>
             <v-col cols="6">
-                <p class="team-name text-center">Away {{ teamIds['awayName'] }}</p>
+                <p class="team-name text-center">
+                    Away <v-icon color="red">mdi-circle-small</v-icon> {{ teamIds['awayName'] }}</p>
                 <!-- {{ teamIds.away }} -->
                 <TeamInfoMembers :key="'away-' + teamIds.away" :team-id="teamIds.away" />
                 <!-- <TeamInfoMembers v-else :team-id="teamIds.away" /> -->
@@ -72,7 +74,7 @@ watch (() => footballStore.fixtureIdForParty, (newFixtureId) => {
 }
 .table-title {
   height: 25px;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
   margin: 10px;
 }
