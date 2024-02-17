@@ -20,14 +20,14 @@
                 <v-hover open-delay="100" close-delay="100">
                     <template v-slot:default="{ isHovering, props }">
                         <v-btn v-bind="props" v-if="team.following" 
-                        :color="isHovering ? 'grey' : 'pink'"
-                        @click="changeFollowing(team)" x-large>
-                        <v-icon x-large>mdi-heart</v-icon>
-                    </v-btn>
-                    <v-btn v-bind="props" v-else :color="isHovering ? 'red' : 'grey'"
-                        @click="changeFollowing(team)" size="x-large" class="follow-btn">
-                        <v-icon size="x-large">mdi-heart-outline</v-icon>
-                    </v-btn>
+                            :color="isHovering ? 'grey' : 'pink'" class="follow-btn"
+                            @click="changeFollowing(team)" size="x-large">
+                            <v-icon x-large>mdi-heart</v-icon>
+                        </v-btn>
+                        <v-btn v-bind="props" v-else :color="isHovering ? 'red' : 'grey'"
+                            @click="changeFollowing(team)" size="x-large" class="follow-btn">
+                            <v-icon size="x-large">mdi-heart-outline</v-icon>
+                        </v-btn>
                     </template>
                 </v-hover>
             </v-col>

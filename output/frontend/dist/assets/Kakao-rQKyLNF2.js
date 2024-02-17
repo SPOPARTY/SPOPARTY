@@ -1,0 +1,1 @@
+import{D as s,p as c,i as l,o as r}from"./index-w_VBQHr5.js";const _={__name:"Kakao",setup(i){const{login:t}=s();return c(()=>{const n=new URL(document.location).searchParams.get("path"),o=n,a=n.split("_")[1],e=JSON.stringify({loginId:o,loginPwd:a});t(e)}),(n,o)=>(r(),l("h1",null," 카카오 로그인 진행 중..."))}};export{_ as default};

@@ -16,11 +16,11 @@
         </thead>
         <tbody>
           <tr v-for="(event, index) in sortedEvents" :key="index">
-            <td class="text-center">{{ event.time }}'</td>
+            <td class="text-center time">{{ event.time }}'</td>
             <td class="text-center">
               <img :src="event.team.logo" class="mx-3" alt="logo" style="height:30px;">
                <span :class="{'text-red' : checkTeam(event.team.nameKr) == 'home',
-              'text-blue' : checkTeam(event.team.nameKr) == 'away' }">
+              'text-blue' : checkTeam(event.team.nameKr) == 'away' }" class="team-name">
                 {{ event.team.nameKr }}
               </span>
             </td>
@@ -132,9 +132,9 @@ const checkTeam = (teamName) => {
 
 .table-title {
   height: 25px;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
-  margin: 10px;
+  margin: 10px 10px 20px 10px;
 }
 
 thead tr {
@@ -174,10 +174,19 @@ th {
 }
 .text-red {
   color: red;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 .text-blue {
   color: blue;
+  font-size: 1.2rem;
+}
+.time {
   font-size: 1.1rem;
 }
+// .team-name {
+//   // cursor: pointer;
+//   // font-size: 1.5rem;
+//   font-weight: bold;
+//   margin-bottom: 20px;
+// }
 </style>

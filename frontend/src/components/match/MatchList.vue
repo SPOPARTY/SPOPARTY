@@ -36,7 +36,7 @@
                         </v-row>
                     </v-card-title>
                     <v-card-text>
-                        <!-- checkStatus : 인풋이 not start이면 false, 그 외엔 true -->
+                        <!-- checkStatus : 인풋이 not started이면 false, 그 외엔 true -->
                         <div v-if="checkStatus(match.status)" class="score">
                             <p class="score-title">스코어</p>
                             {{ match.homeTeamGoal }} : {{ match.awayTeamGoal }}
@@ -47,7 +47,7 @@
                 </v-card>
             </v-col>
         </v-row>
-        <v-row v-if="matches.length === 0">
+        <v-row v-if="matches == null || matches?.length === 0">
             <v-col cols="12" align="center">
                 <v-card class="card-match mt-6">
                     <span>예정된 경기가 없습니다!</span>
@@ -155,12 +155,19 @@ function getMatchStatus(startTime) {
     } else if (diffHours < 0) {
         return "경기 종료";
     } else if (24 > diffHours && diffHours >= 0) {
+        // console.log("경기 시작까지 남은 시간", startTime, diffHours);
         // 경기까지 남은 시간을 hh:mm 분 남았다고 표시
         const diffMinutes = differenceInMinutes(start, now);
+        if (diffMinutes < 0) {
+            return "진행 중";
+        }
         // 시간과 분으로 변환
         const hoursLeft = Math.floor(diffMinutes / 60);
+        if (hoursLeft <= 0) {
+            return `곧 시작! ${diffMinutes+1}분 남았습니다`;
+        }
         const minutesLeft = diffMinutes % 60;
-        return `${hoursLeft}시간 ${minutesLeft}분 남았습니다`;
+        return `${hoursLeft}시간 ${minutesLeft+1}분 남았습니다`;
     } else if (diffHours <= 0 && diffHours > -2) {
         // 진행 중인 경우 현재 스코어 표시 필요
         return "진행 중";
@@ -265,6 +272,10 @@ function checkStatus(status) {
 }
 .team-logo:hover, .team-name:hover, .league-logo:hover {
     transform: scale(1.15);
+}
+.card-match:hover {
+    transform: scale(1.05);
+    border : 4px solid #D3AC2B;
 }
 </style>
   

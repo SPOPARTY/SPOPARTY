@@ -443,19 +443,23 @@ onMounted(() => {
 .v-card-title{
     margin-top:10px;
     margin-bottom:10px;
+    color : #292646;
 }
-
+.outer-card {
+    border : 5px solid mediumslateblue;
+    border-radius: 6px;
+}
 
 .inner-card {
     text-align: center;
     margin : 20px;
     height:150px;
-    border: 1px solid black;
+    border: 3px solid #CBD0D8;
     overflow-y:auto; /* 내용이 넘칠 경우 스크롤 허용 */
 }
 
 .v-btn{
-    background-color: #EFECEC;
+    background-color: #E4E3DD;
     box-shadow: none !important;
 }
 
@@ -472,7 +476,7 @@ onMounted(() => {
 }
 
 .vote-list {
-    max-height : 500p;
+    max-height : 500px;
 }
 
 .vote-detail {
@@ -508,5 +512,7 @@ onMounted(() => {
 .choice-button{
     color:black;
 }
-
+.v-btn:hover {
+    transform: scale(1.15);
+}
 </style>

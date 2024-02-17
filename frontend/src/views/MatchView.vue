@@ -2,7 +2,7 @@
      <v-container fluid>
           <v-row align="center" justify="center" class="pb-1 mb-2 contents-box title-section">
                <v-col cols="12" class="text-center">
-                    <v-btn icon @click="changeDate(-1)" class="mx-12" :style="{ fontSize: '1.5rem' }">
+                    <v-btn icon @click="changeDate(-1)" class="mx-12 chevron" :style="{ fontSize: '1.5rem' }">
                          <v-icon size="large">mdi-chevron-left</v-icon>
                     </v-btn>
                     <v-btn v-for="day in displayedDates" :key="day.date" :class="dateClass(day.date)" class="ma-1"
@@ -10,7 +10,7 @@
                          <div class="d-day" v-if="day.dDay">{{ day.dDay }}</div>
                          <div>{{ day.display }}</div>
                     </v-btn>
-                    <v-btn icon @click="changeDate(1)" class="mx-12" :style="{ fontSize: '1.5rem' }">
+                    <v-btn icon @click="changeDate(1)" class="mx-12 chevron" :style="{ fontSize: '1.5rem' }">
                          <v-icon size="large">mdi-chevron-right</v-icon>
                     </v-btn>
                </v-col>
@@ -18,7 +18,7 @@
                     <v-btn @click="resetDate" class="mx-2" 
                     :style="{ fontSize: '1.2rem', minWidth: '100px', minHeight: '40px'}">오늘</v-btn>
                     <v-menu v-model="showDatePicker" :close-on-content-click="false" :nudge-bottom="10" offset-y
-                         attach=".date-picker-button">
+                         attach=".date-picker-button" z-index=100>
                          <template v-slot:activator="{ on, attrs }">
                               <v-btn class="date-picker-button mx-2" v-bind="attrs" v-on="on" @mousedown="showDatePicker = true" 
                               :style="{ fontSize: '1.2rem', minWidth: '100px', minHeight: '40px'}">날짜 선택</v-btn>
@@ -111,6 +111,7 @@ function datePickerSelected() {
      /* background-color: #292646; */
      /* 날짜 관련 부분의 백그라운드 컬러 */
      white-space: nowrap;
+     /* width: 100%; */
 }
 
 .d-day {
@@ -136,6 +137,19 @@ function datePickerSelected() {
      /* 오늘 날짜의 높이 */
 }
 
+.v-btn:hover {
+     /* transform: scale(1.1); */
+     /* 버튼에 마우스를 올렸을 때 크기를 1.1배로 확대 */
+     transform: translateY(-0.6rem);
+     /* 호버 시 버튼 y축 방향으로 이동 */
+}
+.v-btn {
+     z-index:100;
+}
+.chevron:hover {
+     transform: scale(1.15);
+     /* 버튼에 마우스를 올렸을 때 크기를 1.15배로 확대 */
+}
 </style>
 
    

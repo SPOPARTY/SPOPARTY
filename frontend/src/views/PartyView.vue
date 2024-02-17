@@ -33,7 +33,7 @@
                                    <template v-slot:append>
                                         <v-slide-x-reverse-transition mode="out-in">
                                              <v-icon size="large" :key="`icon-${isTitleEditing}`"
-                                                  :color="isTitleEditing ? 'info' : 'success'"
+                                                  :color="isTitleEditing ? 'info' : 'success'" class="lock-icon"
                                                   :icon="isTitleEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
                                                   @click="[(isTitleEditing = !isTitleEditing), editPartyInfo(isTitleEditing)]"></v-icon>
                                         </v-slide-x-reverse-transition>
@@ -47,12 +47,12 @@
                               <!-- {{ dialog }} -->
                               <v-btn
                                    @click="[dialog = true, isTitleEditing = true, isMatchEditing = true, isUrlEditing = true]"
-                                   block variant="outlined" size="x-large">
+                                   block variant="outlined" size="x-large" class="select-match-btn">
                                    {{ matchName.find((item) => item.fixtureId === matchModel)?.text || '경기 선택' }}
                               </v-btn>
                               <v-dialog v-model="dialog" max-width="600">
                                    <v-card>
-                                        <v-card-title>항목 선택</v-card-title>
+                                        <v-card-title>경기 선택</v-card-title>
                                         <v-card-text>
                                              <v-autocomplete v-model="matchModel" class="select-field"
                                                   :hint="!isMatchEditing ? 'Click the icon to EDIT' : 'Click the icon to SAVE'"
@@ -64,7 +64,7 @@
                                                   <template v-slot:append>
                                                        <v-slide-x-reverse-transition mode="out-in">
                                                             <v-icon size="large" :key="`icon-${isMatchEditing}`"
-                                                                 :color="isMatchEditing ? 'info' : 'success'"
+                                                                 :color="isMatchEditing ? 'info' : 'success'" class="lock-icon"
                                                                  :icon="isMatchEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
                                                                  @click="[(isMatchEditing = !isMatchEditing), editPartyInfo(isMatchEditing)]"></v-icon>
                                                        </v-slide-x-reverse-transition>
@@ -79,7 +79,7 @@
                                                   <template v-slot:append>
                                                        <v-slide-x-reverse-transition mode="out-in">
                                                             <v-icon size="large" :key="`icon-${isUrlEditing}`"
-                                                                 :color="isUrlEditing ? 'info' : 'success'"
+                                                                 :color="isUrlEditing ? 'info' : 'success'" class="lock-icon"
                                                                  :icon="isUrlEditing ? 'mdi-lock-open-variant-outline' : 'mdi-lock-outline'"
                                                                  @click="[(isUrlEditing = !isUrlEditing), editPartyInfo(isUrlEditing)]"></v-icon>
                                                        </v-slide-x-reverse-transition>
@@ -135,7 +135,7 @@
                               <UserVideo :stream-manager="sub" />
                          </v-col>
                          <!-- 파티 초대 -->
-                         <v-col cols="6" class="cam-video" v-if="partyMembers?.length < maxMembers" @click="inviteToParty"
+                         <v-col cols="6" class="cam-video" v-if="partyMemberList?.length < maxMembers" @click="inviteToParty"
                               style="cursor: pointer">
                               <v-img src="/maruche.jpg" class="invite-img pt-2" contain></v-img>
                               <span>친구를 초대해 보세요!</span>
@@ -231,7 +231,7 @@
                               <v-btn @click="toggleChat" color="yellow" class="chat-button">채팅창</v-btn>
                          </v-col>
                          <v-col cols="4">
-                              <v-btn color="error" @click="exitParty">파티 나가기</v-btn>
+                              <v-btn color="error" @click="exitParty" class="exit-btn">파티 나가기</v-btn>
                          </v-col>
                     </v-row>
                </v-col>
@@ -344,7 +344,7 @@ watch(() => partyStore.partyInfo, (newVal) => {
 // 파티 입장 및 퇴장
 const clubId = route.params.clubId;
 const partyId = route.params.partyId;
-const partyMemberList = ref();
+const partyMemberList = ref(getPartyMemberList(clubId, partyId));
 
 // console.log("시작멤버리스트", partyMemberList.value);
 
@@ -379,13 +379,12 @@ function handleBeforeUnload(event) {
      return message; // 다른 브라우저에서 필요
 }
 
-onMounted( async () =>  {
+onMounted(() => {
      // const clubId = route.params.clubId;
      // const partyId = route.params.partyId;
      // console.log("onMounted", clubId, partyId);
      // console.log(getPartyMemberList(clubId, partyId));
-     await postPartyMember(clubId, partyId);
-     await getPartyMemberList(clubId, partyId)
+     postPartyMember(clubId, partyId);
      window.addEventListener('beforeunload', handleBeforeUnload);
 })
 
@@ -1041,7 +1040,7 @@ const sendPenaltyToMe = (penalty) => {
 
 </script>
 
-<style>
+<style lang="scss" scoped>
 .party-section {
      background-color: #08042B;
      color: white;
@@ -1139,13 +1138,23 @@ const sendPenaltyToMe = (penalty) => {
      /* 버튼을 가운데 정렬 */
      justify-content: space-between;
 }
-
+.v-btn:hover {
+     transform: scale(1.16);
+}
 .chat-button {
      background-color: yellow;
      /* width: 150px; */
      /* 채팅창 버튼의 너비 조정 */
+     &:hover {
+          transform: scale(1.08);
+     }
 }
-
+.select-match-btn:hover {
+     transform: scale(1.02);
+}
+.exit-btn:hover {
+     transform: scale(0.8);
+}
 .chat-window {
      border: 2px solid black;
      position: absolute;
@@ -1247,5 +1256,30 @@ const sendPenaltyToMe = (penalty) => {
      object-fit: cover;
      margin: 20px;
      /* padding: 30px; */
+}
+.lock-icon:hover {
+     /* transform: scale(1.2); */
+     animation: shake 0.5s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(-2deg) scale(1.15);
+  }
+  20% {
+    transform: rotate(3deg) scale(1.15);
+  }
+  40% {
+    transform: rotate(-4deg) scale(1.15);
+  }
+  60% {
+    transform: rotate(7deg) scale(1.15);
+  }
+  80% {
+    transform: rotate(-6deg) scale(1.15);
+  }
+  100% {
+    transform: rotate(4deg) scale(1.15);
+  }
 }
 </style> 

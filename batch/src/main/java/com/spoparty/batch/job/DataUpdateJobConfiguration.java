@@ -31,7 +31,7 @@ import com.spoparty.batch.entity.Season;
 import com.spoparty.batch.entity.SeasonLeague;
 import com.spoparty.batch.entity.SeasonLeagueTeam;
 import com.spoparty.batch.scheduler.model.LeagueResponse;
-import com.spoparty.batch.step.seasonLeagueJpaStepConfiguration;
+import com.spoparty.batch.step.SeasonLeagueJpaStepConfiguration;
 import com.spoparty.batch.util.EntityParser;
 import com.spoparty.batch.util.FootballApiUtil;
 
@@ -44,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DataUpdateJobConfiguration {
 
-	private final seasonLeagueJpaStepConfiguration seasonLeagueJpaStepConfiguration;
+	private final SeasonLeagueJpaStepConfiguration seasonLeagueJpaStepConfiguration;
 
 	@Bean
 	public Job jpaJob(JobRepository jobRepository, Step seasonLeagueStep) {
@@ -52,7 +52,6 @@ public class DataUpdateJobConfiguration {
 			.start(seasonLeagueStep)
 			.build();
 	}
-
 
 	// @Bean
 	// public ItemWriter<SeasonLeague> itemWriter() {
@@ -65,6 +64,5 @@ public class DataUpdateJobConfiguration {
 	//
 	// 	};
 	// }
-
 
 }

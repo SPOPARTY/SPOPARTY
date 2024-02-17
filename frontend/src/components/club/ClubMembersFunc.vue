@@ -45,9 +45,9 @@
         <v-card class="member-list">
             <v-card-title>그룹원 목록</v-card-title>
             <div v-for="(member, index) in clubMemberList" :key="index" class="member">
-                <v-card-text>
+                <v-card-text :class="{'host-name':member.role == 'host'}">
                     {{ member.memberNickName }}
-                    <v-icon v-if="member.role == 'host'" class="star">mdi-star</v-icon>
+                    <v-icon v-if="member.role == 'host'" class="star" color="red">mdi-star</v-icon>
                 </v-card-text>
             </div>
         </v-card>
@@ -124,7 +124,8 @@ const inviteURL = computed(() => {
 
 const isInviteVisible = ref(false)
 async function showInvite() {
-    if (props.clubMemberList.length === 6) {
+    console.log(props.clubMemberList.length)
+    if (props.clubMemberList.length >= 6) {
         alert("그룹인원이 모두 찼습니다!")
         return;
     }
@@ -179,8 +180,7 @@ const isPartyExist = ref(false);
 //     }
 // })
 
-const partyInfo = ref();
-// const partyInfo = ref(getPartyInfo(clubId, partyId.value));
+const partyInfo = ref(getPartyInfo(clubId, partyId.value));
 
 // setInterval(() => {
 //     count.value = !count.value;
@@ -360,7 +360,11 @@ div.text-to-copy {
     background-size: 800% 800%;
     animation: Gradient 7s ease infinite;
     font-size: 1.25rem;
-    color:#F4F3EA
+    color:#F4F3EA;
+
+    &:hover {
+        transform: translateY(-0.6rem);
+    }
 }
 .create-party {
     // background: linear-gradient(-45deg, #ffe258, #ff587b, #d332c2, red);
@@ -369,7 +373,11 @@ div.text-to-copy {
     background-size: 800% 800%;
     animation: Gradient 12s ease infinite;
     font-size: 1.25rem;
-    color:#F4F3EA
+    color:#F4F3EA;
+
+    &:hover {
+        transform: translateY(-0.6rem);
+    }
 }
 
 @keyframes Gradient {
@@ -389,5 +397,8 @@ div.text-to-copy {
         background-position: 0% 50%;
     }
 }
-
+.host-name {
+    color: #ff587b;
+    font-size: 1.25rem;
+}
 </style>

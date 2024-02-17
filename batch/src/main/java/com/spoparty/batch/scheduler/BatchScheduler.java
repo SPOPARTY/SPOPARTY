@@ -22,11 +22,11 @@ public class BatchScheduler {
 	private final Job job;
 
 	@Scheduled(cron = "0 0 12 * * *")
+	// @Scheduled(fixedRate = 10000 * 600000)
 	public void runJOb() throws Exception {
 		JobParameters parameters = new JobParametersBuilder()
-			.addString("jobName",  "jpaTest " + LocalDateTime.now())
+			.addString("jobName", "jpaTest " + LocalDateTime.now())
 			.toJobParameters();
-
 
 		jobLauncher.run(job, parameters);
 
