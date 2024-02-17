@@ -161,7 +161,7 @@ pipeline {
                 sh '''
                 ssh -o StrictHostKeyChecking=no $releaseServerAccount@$releaseServerUri 
                 docker-compose pull
-                docker-compose up -d --remove-orphans
+                docker compose --env-file .env up -d
                 '''
                 }
             }
