@@ -17,7 +17,7 @@
         />
         </v-card-text>
         <v-card-text>
-            <TextEditor v-model = "editedContent"/>
+            <TextEditor v-model = "editedContent" :rules="contentRules"/>
         </v-card-text>
         <v-card-text class="file-input-container">
             <v-file-input
@@ -41,8 +41,8 @@
             max-width="500px"
         >
         <v-card>
-            <v-card-title>게시글 수정</v-card-title>
-            <v-card-text>이 게시글을 수정하시겠습니까?</v-card-text>
+            <v-card-title class="text-center">게시글 수정</v-card-title>
+            <v-card-text class=text-center>이 게시글을 수정하시겠습니까?</v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="green darken-1" text @click="editPost">예</v-btn>
@@ -83,6 +83,11 @@ const titleRules = [
     v => (v && v.length <= 40) || '제목은 40자 이하로 작성해주세요'
 ];
 
+const contentRules = [
+    v => !!v || "게시글이 공란이어서는 안됩니다!",
+    v => (v && v.length <= 2000) || "게시글의 길이는 2000자 이하가 되도록 작성해주세요"
+]
+
 const boardId = props.detail.id
 const clubId = props.detail.clubId
 const editedTitle = ref(props.detail.title);
@@ -94,6 +99,15 @@ const editConfirmVisible = ref(false);
 
 // 수정 확인 Modal on
 function confirmEdit(){
+    if (editedTitle.value === '') {
+        alert("제목은 필수입니다!")
+        return;
+    }
+    
+    if (editedContent.value === '' ) {
+        alert("게시글이 공란이 되어서는 안됩니다!")
+        return;
+    }
     editConfirmVisible.value = true;
 }
 

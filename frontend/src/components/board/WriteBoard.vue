@@ -7,7 +7,7 @@
             outlined
             class="title"
         />
-        <TextEditor class="file-input" v-model="content"/>
+        <TextEditor class="file-input" v-model="content" :rules="contentRules"/>
         <v-card-text class="file-input-container">
             <v-file-input
                 accept="image/*,.mp4"
@@ -48,10 +48,14 @@ const content = ref('');
 const file = ref([]); // 업로드 데이터는 배열에 담음
 
 const titleRules = [
-    v => !!v || '제목을 필수입니다!',
+    v => !!v || '제목은 필수입니다!',
     v => (v && v.length <= 40) || '제목은 40자 이하로 작성해주세요'
 ];
 
+const contentRules = [
+    v => !!v || "게시글이 공란이어서는 안됩니다!",
+    v => (v && v.length <= 2000) || "게시글의 길이는 2000자 이하가 되도록 작성해주세요"
+]
 
 const writeBoard = () => {
     // 사진을 비롯한 미디어 파일들은 form형식으로 보내줘야한다.
@@ -61,6 +65,15 @@ const writeBoard = () => {
     formdata.append("title",title.value);
     formdata.append("content",content.value);
     formdata.append("file",file.value[0])
+    if (title.value === '') {
+        alert("제목은 필수입니다!")
+        return;
+    }
+
+    if (content.value === '' ) {
+        alert("게시글이 공란이 되어서는 안됩니다!")
+        return;
+    }
 
     if (confirm("게시글을 작성하시겠습니까??") === true) {
         boardStore.createBoard(formdata);

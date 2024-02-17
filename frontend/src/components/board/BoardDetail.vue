@@ -28,8 +28,8 @@
             
             <v-dialog v-model="deleteConfirmVisible" persistent max-width="500px">
                 <v-card>
-                    <v-card-title class="text-h5">게시글 삭제</v-card-title>
-                    <v-card-text>정말로 이 게시글을 삭제하시겠습니까?</v-card-text>
+                    <v-card-title class="text-center text-h5">게시글 삭제</v-card-title>
+                    <v-card-text class=text-center>정말로 이 게시글을 삭제하시겠습니까?</v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="blue darken-1" text @click="deleteConfirmVisible = false">취소</v-btn>
