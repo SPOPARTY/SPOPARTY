@@ -23,11 +23,12 @@
                         @detail-close="isDetailVisible = false"
                         @delete-post="deletePost"
                 />
-                <v-card class="thumbnail" @click="showBoardDetail(post)">
+                <v-card class="card" @click="showBoardDetail(post)">
                     <v-card-title class="text-center">{{ post.title }}</v-card-title>
                     <v-card-subtitle class=text-right>{{ post.member.nickname }}</v-card-subtitle>
                     <v-card-text class="text-right">{{formatDateTime(post.updatedTime)}}</v-card-text>
-                    <v-img class="thumb_img" v-if="post.file" :src="post.file.url" cover height="200px" />
+                    <v-img v-if="post.file && post.file.type ==='image'" class="thumbnail" :src="post.file.url" :alt="post.title" cover height="200px"/>
+                    <video v-if="post.file && post.file.type === 'video'" :src="post.file.url" cover height="200px"></video>
                 </v-card>
             </v-col>
         </v-row>
@@ -98,9 +99,17 @@ h1{
     background:white
 }
 
-.thumbnail {
-    height:100%;
+.card {
+    min-height: 300px; /* 예시 높이, 필요에 따라 조정 */
+    display: flex;
+    flex-direction: column;
     background-color: #F4F3EA ;
+}
+
+.thumbnail {
+    width : 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .thumb_img{
