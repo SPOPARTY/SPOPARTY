@@ -19,9 +19,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.spoparty.batch.Exception.ApiRequestFailedException;
+import com.spoparty.batch.Exception.ApiWrongDataResponseException;
 import com.spoparty.batch.entity.SeasonLeague;
 import com.spoparty.batch.entity.SeasonLeagueTeam;
 import com.spoparty.batch.entity.Team;
+import com.spoparty.batch.scheduler.model.CoachResponse;
 import com.spoparty.batch.scheduler.model.LeagueResponse;
 import com.spoparty.batch.scheduler.model.TeamResponse;
 import com.spoparty.batch.util.EntityParser;
@@ -46,20 +48,21 @@ public class SeasonLeagueTeamJpaStepConfiguration {
 	@JobScope
 	public Step seasonLeagueTeamStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
 		return new StepBuilder("jpaTeamStep", jobRepository)
-			.<SeasonLeague, SeasonLeague>chunk(chunkSize, transactionManager)
+			.<SeasonLeagueTeam, SeasonLeagueTeam>chunk(chunkSize, transactionManager)
 			.reader(seasonLeagueTeamjpaPagingItemReader())
 			.processor(seasonLeagueTeamprocessor())
 			.writer(seasonLeagueTeamjpaItemWriter())
 			.faultTolerant()
 			.retry(ApiRequestFailedException.class)
 			.retry(DataAccessResourceFailureException.class)
+			.retry(ApiWrongDataResponseException.class)
 			.retryLimit(3)
 			.build();
 	}
 
 	@Bean
-	public ItemReader<SeasonLeague> seasonLeagueTeamjpaPagingItemReader() {
-		return new JpaPagingItemReaderBuilder<SeasonLeague>()
+	public ItemReader<SeasonLeagueTeam> seasonLeagueTeamjpaPagingItemReader() {
+		return new JpaPagingItemReaderBuilder<SeasonLeagueTeam>()
 			.name("seasonLeagueTeamjpaPagingReader")
 			.entityManagerFactory(entityManagerFactory)
 			.pageSize(chunkSize)
@@ -68,27 +71,28 @@ public class SeasonLeagueTeamJpaStepConfiguration {
 	}
 
 	@Bean
-	public ItemProcessor<SeasonLeague, SeasonLeague> seasonLeagueTeamprocessor() {
+	public ItemProcessor<SeasonLeagueTeam, SeasonLeagueTeam> seasonLeagueTeamprocessor() {
 		return new ItemProcessor<SeasonLeagueTeam, SeasonLeagueTeam>() {
 			@Override
 			public SeasonLeagueTeam process(SeasonLeagueTeam item) throws Exception {
 
 				log.info(">>>>>>>id>>>>>> " + item.getId());
 
-				String teamId = String.valueOf(item.getTeam());
+				String teamId = String.valueOf(item.getTeam().getId());
 				MultiValueMap<String, String> paramsTeam = new LinkedMultiValueMap<>();
 				paramsTeam.add("id", teamId);
 
-				ResponseEntity teamResponse = footballApiUtil.sendRequest("/teams", params, LeagueResponse.class);
+				ResponseEntity teamResponse = footballApiUtil.sendRequest("/teams", paramsTeam, TeamResponse.class);
 
 				MultiValueMap<String, String> paramsCoach = new LinkedMultiValueMap<>();
-				params.add("team", teamId);
-				ResponseEntity coa
+				paramsCoach.add("team", teamId);
+				ResponseEntity coachResponse = footballApiUtil.sendRequest("/coachs", paramsCoach, CoachResponse.class);
 
-				if (response.getStatusCode() != HttpStatus.OK) {
+
+				if (teamResponse.getStatusCode() != HttpStatus.OK || coachResponse.getStatusCode() != HttpStatus.OK) {
 					throw new ApiRequestFailedException("API 요청에 실패하였습니다.");
 				}
-				return entityParser.seasonLeagueTeamParser(item, (TeamResponse)teamResponse.getBody());
+				return entityParser.seasonLeagueTeamParser(item, (TeamResponse)teamResponse.getBody(), (CoachResponse)coachResponse.getBody());
 
 			}
 
@@ -97,8 +101,8 @@ public class SeasonLeagueTeamJpaStepConfiguration {
 	}
 
 	@Bean
-	public ItemWriter<SeasonLeague> seasonLeagueTeamjpaItemWriter() {
-		return new JpaItemWriterBuilder<SeasonLeague>()
+	public ItemWriter<SeasonLeagueTeam> seasonLeagueTeamjpaItemWriter() {
+		return new JpaItemWriterBuilder<SeasonLeagueTeam>()
 			.entityManagerFactory(entityManagerFactory)
 			.build();
 	}
