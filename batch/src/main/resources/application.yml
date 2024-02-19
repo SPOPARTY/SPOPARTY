@@ -14,7 +14,7 @@ spring:
 #        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.CamelCaseToUnderscoresNamingStrategy
       ddl-auto: none
       jdbc:
-        batch_size: 10
+        batch_size: 50
     properties:
       hibernate:
         format_sql: true

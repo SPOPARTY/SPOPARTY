@@ -5,27 +5,28 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.spoparty.batch.entity.*;
+import com.spoparty.batch.entity.Team;
+import com.spoparty.batch.repository.SeasonLeagueTeamPlayerRepository;
+import com.spoparty.batch.scheduler.model.*;
+import com.spoparty.batch.scheduler.model.League;
+import com.spoparty.batch.scheduler.model.Player;
+import com.spoparty.batch.scheduler.model.Season;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.spoparty.batch.Exception.ApiWrongDataResponseException;
-import com.spoparty.batch.entity.Coach;
-import com.spoparty.batch.entity.SeasonLeague;
-import com.spoparty.batch.entity.SeasonLeagueTeam;
-import com.spoparty.batch.entity.Team;
-import com.spoparty.batch.scheduler.model.Career;
-import com.spoparty.batch.scheduler.model.CoachResponse;
-import com.spoparty.batch.scheduler.model.Coaches;
-import com.spoparty.batch.scheduler.model.Country;
-import com.spoparty.batch.scheduler.model.League;
-import com.spoparty.batch.scheduler.model.LeagueResponse;
-import com.spoparty.batch.scheduler.model.Leagues;
-import com.spoparty.batch.scheduler.model.Season;
-import com.spoparty.batch.scheduler.model.TeamResponse;
 
 @Component
+@RequiredArgsConstructor
 public class EntityParser {
+
+	SeasonLeagueTeamPlayerRepository seasonLeagueTeamPlayerRepository;
+
+
 	public SeasonLeague seasonLeagueParser(Long seasonLeagueId, LeagueResponse leagueResponse) {
 		Leagues leagues = leagueResponse.getResponse().get(0);
 		League league = leagues.getLeague();
@@ -159,8 +160,43 @@ public class EntityParser {
 		// return item;
 	}
 
+	public List<SeasonLeagueTeamPlayer> seasonLeagueTeamPlayerParser(SeasonLeagueTeam item, List<Player> players) {
+		List<SeasonLeagueTeamPlayer> beforePlayers = item.getSeasonLeagueTeamPlayers();
+		List<SeasonLeagueTeamPlayer> changePlayers = new ArrayList<>();
 
 
+		for (Player player : players) {
+			boolean isCatch = false;
+			for (SeasonLeagueTeamPlayer beforePlayer : beforePlayers) {
+				if (beforePlayer.getPlayer().getId() != player.getId()) continue;
+
+				isCatch = true;
+				beforePlayers.remove(beforePlayer);
+				// 기존의 선수의 정보가 바꼈으면 추가.
+				if (changePlayerInfo(beforePlayer.getPlayer(), player)) {
+
+					changePlayers.add(makeSeasonLeagueTeamPlayer(item, player));
+
+				}
+
+					break;
+
+			}
+
+			if (isCatch) continue;
+
+			// 기존 선수중에 선수가 없었다면
+			changePlayers.add(makeSeasonLeagueTeamPlayer(item, player));
+
+
+		}
+
+		for (SeasonLeagueTeamPlayer removePlayer : beforePlayers) {
+			seasonLeagueTeamPlayerRepository.delete(removePlayer);
+		}
+
+		return changePlayers;
+	}
 
 	private LocalDateTime ToLocalDateTime(String date) {
 		String[] dateUnit = date.split("-");
@@ -201,4 +237,40 @@ public class EntityParser {
 		else
 			return false;
 	}
+
+
+
+	private boolean changePlayerInfo(com.spoparty.batch.entity.Player beforePlayer, Player afterPlayer) {
+		if (beforePlayer.getAge() != afterPlayer.getAge()
+			|| !beforePlayer.getNameKr().equals(afterPlayer.getName())
+			|| !beforePlayer.getNameEng().equals(afterPlayer.getName())
+			|| !beforePlayer.getNationality().equals(afterPlayer.getNationality())
+			|| !beforePlayer.getHeight().equals(afterPlayer.getHeight())
+			|| !beforePlayer.getWeight().equals(afterPlayer.getWeight())
+			|| 	!beforePlayer.getPhoto().equals(afterPlayer.getPhoto()))
+			return true;
+		else
+			return false;
+	}
+
+
+	private SeasonLeagueTeamPlayer makeSeasonLeagueTeamPlayer(SeasonLeagueTeam item, Player player) {
+		com.spoparty.batch.entity.Player newPlayer = com.spoparty.batch.entity.Player.builder()
+				.age(player.getAge())
+				.height(player.getHeight())
+				.photo(player.getPhoto())
+				.weight(player.getWeight())
+				.id(player.getId())
+				.nameEng(player.getName())
+				.nameKr(player.getName())
+				.nationality(player.getNationality())
+				.build();
+
+		return SeasonLeagueTeamPlayer.builder()
+				.seasonLeagueTeam(item)
+				.player(newPlayer)
+				.build();
+
+	}
+
 }
