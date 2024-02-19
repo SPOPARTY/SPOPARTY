@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -37,12 +38,12 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	private SeasonLeague seasonLeague;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "team_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Team team;
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "coach_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Coach coach;
 
@@ -56,6 +57,11 @@ public class SeasonLeagueTeam extends FootballBaseEntity {
 	@OneToMany(mappedBy = "seasonLeagueTeam")
 	private List<Lineup> lineups = new ArrayList<>();
 
+	public void changeCoach(Coach newCoach) {
+		coach = newCoach;
+	}
+
+	public void changeTeam(Team newTeam) { team = newTeam; }
 	@Builder
 	public SeasonLeagueTeam(SeasonLeague seasonLeague, Team team, Coach coach) {
 		this.seasonLeague = seasonLeague;

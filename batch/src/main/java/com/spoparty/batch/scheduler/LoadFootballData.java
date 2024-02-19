@@ -141,7 +141,7 @@ public class LoadFootballData {
 						SeasonLeagueTeam saveData = SeasonLeagueTeam.builder()
 							.seasonLeague(seasonLeague)
 							.team(team)
-							.coach(coach)
+							.	coach(coach)
 							.build();
 						log.info("seasonLeagueTeam: {}", saveData);
 						seasonLeagueTeamRepository.save(saveData);

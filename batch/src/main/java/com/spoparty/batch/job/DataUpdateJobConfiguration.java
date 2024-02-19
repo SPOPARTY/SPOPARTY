@@ -20,9 +20,10 @@ public class DataUpdateJobConfiguration {
 	private final SeasonLeagueJpaStepConfiguration seasonLeagueJpaStepConfiguration;
 
 	@Bean
-	public Job jpaJob(JobRepository jobRepository, Step seasonLeagueStep) {
+	public Job jpaJob(JobRepository jobRepository, Step seasonLeagueStep, Step seasonLeagueTeamStep) {
 		return new JobBuilder("jpaJob", jobRepository)
 			.start(seasonLeagueStep)
+			.next(seasonLeagueTeamStep)
 			.build();
 	}
 
