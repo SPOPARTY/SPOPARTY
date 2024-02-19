@@ -144,7 +144,9 @@ public class dataRequest {
 	public void getStandings() {
 
 
-		String[] leagueIds = new String[]{"140", "78", "292"};
+		// String[] leagueIds = new String[]{"140", "78", "292"};
+
+		String[] leagueIds = new String[]{"39"};
 
 		for (String leagueId : leagueIds) {
 

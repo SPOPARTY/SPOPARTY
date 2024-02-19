@@ -74,6 +74,7 @@ public class EntityParser {
 		if (beforeTeam.getId() != teamInfo.getId())
 			throw new ApiWrongDataResponseException("잘못된 팀 정보를 가져왔습니다.");
 
+
 		Team afterTeam = Team.builder()
 			.id(teamInfo.getId())
 			.nameKr(teamInfo.getName())
@@ -102,6 +103,7 @@ public class EntityParser {
 				}
 			}
 		Boolean changeTeam;
+		SeasonLeagueTeam afterSeasonLeagueTeam = null;
 
 		// 팀 정보가 바뀌지 않은 경우
 		if (!changeTeamInfo(beforeTeam, afterTeam)) {
@@ -109,19 +111,28 @@ public class EntityParser {
 		// 팀 정보가 바뀐 경우
 		} else {
 			changeTeam = true;
-			item.changeTeam(afterTeam);
 		}
 
 		// 현재 코치가 없는 경우
 		if (afterCoach == null) {
 			// SeasonLeagueTeam 엔티티에서 coach만 null로 변경한다.
-			item.changeCoach(null);
+			// afterSeasonLeagueTeam = SeasonLeagueTeam.builder()
+			// 		.seasonLeague(item.getSeasonLeague())
+			// 		.team(afterTeam)
+			// 		.coach(null)
+			// 		.build();
+			// item.changeCoach(null);
 		// 현재 코치가 기존 코치와 동일인물인 경우
 		} else if (item.getCoach().getId() == afterCoach.getId()){
 			// 코치의 세부 정보가 달라졌다면
 			if (changeCoachInfo(item.getCoach(), afterCoach)){
-				// 엔티티에서 코치 정보 수정.
-				item.changeCoach(afterCoach);
+				// // 엔티티에서 코치 정보 수정.
+				// afterSeasonLeagueTeam = SeasonLeagueTeam.builder()
+				// 	.seasonLeague(item.getSeasonLeague())
+				// 	.team(afterTeam)
+				// 	.coach(afterCoach)
+				// 	.build();
+				//
 			// 코치의 세부정보가 그대로라면
 			} else {
 				// 팀도 변경사항이 없다면 전부 그대로이므로 SeasonLeagueTeam 수정하지 않는다.
@@ -134,8 +145,18 @@ public class EntityParser {
 			item.changeCoach(afterCoach);
 		}
 
+		afterSeasonLeagueTeam = SeasonLeagueTeam.builder()
+			.seasonLeague(item.getSeasonLeague())
+			.team(afterTeam)
+			.coach(afterCoach)
+			.build();
 
-		return item;
+
+		afterSeasonLeagueTeam.setId(item.getId());
+		return afterSeasonLeagueTeam;
+
+
+		// return item;
 	}
 
 

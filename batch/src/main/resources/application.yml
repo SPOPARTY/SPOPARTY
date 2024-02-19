@@ -8,6 +8,7 @@ spring:
   jpa:
 #    database-platform: mariadb
     hibernate:
+      default_batch_fetch_size: 30
       dialect: org.hibernate.dialect.MySQLDialect
 #      naming:
 #        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.CamelCaseToUnderscoresNamingStrategy
